@@ -9,8 +9,50 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RedirectsRouteImport } from './routes/redirects'
+import { Route as PersonalSettingsRouteImport } from './routes/personal-settings'
+import { Route as MediaRouteImport } from './routes/media'
+import { Route as HeaderNavigationRouteImport } from './routes/header-navigation'
+import { Route as FooterRouteImport } from './routes/footer'
+import { Route as EditorRouteImport } from './routes/editor'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 
+const RedirectsRoute = RedirectsRouteImport.update({
+  id: '/redirects',
+  path: '/redirects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonalSettingsRoute = PersonalSettingsRouteImport.update({
+  id: '/personal-settings',
+  path: '/personal-settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MediaRoute = MediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HeaderNavigationRoute = HeaderNavigationRouteImport.update({
+  id: '/header-navigation',
+  path: '/header-navigation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FooterRoute = FooterRouteImport.update({
+  id: '/footer',
+  path: '/footer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EditorRoute = EditorRouteImport.update({
+  id: '/editor',
+  path: '/editor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +61,130 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/editor': typeof EditorRoute
+  '/footer': typeof FooterRoute
+  '/header-navigation': typeof HeaderNavigationRoute
+  '/media': typeof MediaRoute
+  '/personal-settings': typeof PersonalSettingsRoute
+  '/redirects': typeof RedirectsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/editor': typeof EditorRoute
+  '/footer': typeof FooterRoute
+  '/header-navigation': typeof HeaderNavigationRoute
+  '/media': typeof MediaRoute
+  '/personal-settings': typeof PersonalSettingsRoute
+  '/redirects': typeof RedirectsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/editor': typeof EditorRoute
+  '/footer': typeof FooterRoute
+  '/header-navigation': typeof HeaderNavigationRoute
+  '/media': typeof MediaRoute
+  '/personal-settings': typeof PersonalSettingsRoute
+  '/redirects': typeof RedirectsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/editor'
+    | '/footer'
+    | '/header-navigation'
+    | '/media'
+    | '/personal-settings'
+    | '/redirects'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/editor'
+    | '/footer'
+    | '/header-navigation'
+    | '/media'
+    | '/personal-settings'
+    | '/redirects'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/editor'
+    | '/footer'
+    | '/header-navigation'
+    | '/media'
+    | '/personal-settings'
+    | '/redirects'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  EditorRoute: typeof EditorRoute
+  FooterRoute: typeof FooterRoute
+  HeaderNavigationRoute: typeof HeaderNavigationRoute
+  MediaRoute: typeof MediaRoute
+  PersonalSettingsRoute: typeof PersonalSettingsRoute
+  RedirectsRoute: typeof RedirectsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/redirects': {
+      id: '/redirects'
+      path: '/redirects'
+      fullPath: '/redirects'
+      preLoaderRoute: typeof RedirectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/personal-settings': {
+      id: '/personal-settings'
+      path: '/personal-settings'
+      fullPath: '/personal-settings'
+      preLoaderRoute: typeof PersonalSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/media': {
+      id: '/media'
+      path: '/media'
+      fullPath: '/media'
+      preLoaderRoute: typeof MediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/header-navigation': {
+      id: '/header-navigation'
+      path: '/header-navigation'
+      fullPath: '/header-navigation'
+      preLoaderRoute: typeof HeaderNavigationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/footer': {
+      id: '/footer'
+      path: '/footer'
+      fullPath: '/footer'
+      preLoaderRoute: typeof FooterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/editor': {
+      id: '/editor'
+      path: '/editor'
+      fullPath: '/editor'
+      preLoaderRoute: typeof EditorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +197,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  EditorRoute: EditorRoute,
+  FooterRoute: FooterRoute,
+  HeaderNavigationRoute: HeaderNavigationRoute,
+  MediaRoute: MediaRoute,
+  PersonalSettingsRoute: PersonalSettingsRoute,
+  RedirectsRoute: RedirectsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

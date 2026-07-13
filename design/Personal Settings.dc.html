@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:#F5F7F4;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden}
+  a{text-decoration:none}
+  ::selection{background:#CFE6E1}
+  input,select{font-family:inherit}
+  i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
+  .sf-scroll{scrollbar-width:thin;scrollbar-color:#9AA8A4 transparent}
+  .sf-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .sf-scroll::-webkit-scrollbar-thumb{background:rgba(140,150,147,0.4);border-radius:8px;border:3px solid transparent;background-clip:padding-box}
+  .sf-f{width:100%;height:40px;padding:0 12px;border-radius:8px;border:1.5px solid var(--field);background:var(--surface);font-size:13.5px;color:var(--ink);outline:none;transition:border-color .12s,box-shadow .12s}
+  .sf-f:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
+  .sf-f::placeholder{color:var(--ink3)}
+  @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+  @keyframes sfSpin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+
+<div data-screen-label="Personal settings" style="{{ pageStyle }}">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="display:flex;align-items:center;gap:12px;padding:0 20px;height:58px;flex:none;border-bottom:1px solid var(--border);background:var(--surface)">
+    <a href="#" onClick="{{ noop }}" style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 11px;border:1px solid var(--field);border-radius:8px;color:var(--ink2);font-size:13px;font-weight:600" style-hover="background:var(--sunken)"><i class="ph-bold ph-arrow-left" style="font-size:15px"></i>Back to app</a>
+    <div style="width:34px;height:34px;border-radius:9px;background:var(--accentSoft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none"><i class="ph-bold ph-user-gear" style="font-size:18px"></i></div>
+    <div style="display:flex;flex-direction:column;gap:1px;min-width:0">
+      <span style="font-size:15px;font-weight:600;letter-spacing:-0.01em;color:var(--ink)">Personal settings</span>
+      <span style="font-size:12px;color:var(--ink3)">Applies to your account across every website</span>
+    </div>
+    <span style="flex:1"></span>
+    <sc-if value="{{ dirty }}" hint-placeholder-val="{{ false }}">
+      <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--warn)"><span style="width:7px;height:7px;border-radius:999px;background:var(--warn)"></span>Unsaved changes</span>
+      <button onClick="{{ discard }}" style="height:34px;padding:0 12px;border:1px solid var(--field);border-radius:8px;background:var(--surface);color:var(--ink2);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:var(--sunken)">Discard</button>
+    </sc-if>
+    <sc-if value="{{ clean }}" hint-placeholder-val="{{ true }}">
+      <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink3)"><i class="ph {{ saveIcon }}" style="font-size:14px;color:{{ saveIconColor }}"></i>{{ savedLabel }}</span>
+    </sc-if>
+    <button onClick="{{ save }}" style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 15px;border:none;border-radius:8px;background:var(--accent);color:var(--onAccent);font-family:inherit;font-size:13px;font-weight:600;cursor:{{ saveCursor }};opacity:{{ saveOpacity }};box-shadow:0 1px 2px rgba(0,0,0,0.12)" style-hover="background:var(--accentH)"><i class="ph-bold ph-check" style="font-size:15px"></i>{{ saveLabel }}</button>
+  </div>
+
+  <!-- ===== CONTENT ===== -->
+  <div class="sf-scroll" style="flex:1;overflow:auto">
+    <div style="max-width:720px;margin:0 auto;padding:26px 24px 60px;display:flex;flex-direction:column;gap:18px">
+
+      <!-- identity strip -->
+      <div style="display:flex;align-items:center;gap:15px;padding:18px 20px;border-radius:12px;background:var(--surface);border:1px solid var(--border)">
+        <span style="width:52px;height:52px;border-radius:999px;background:var(--accentSoft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex:none">{{ initials }}</span>
+        <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+          <span style="font-size:16px;font-weight:600;color:var(--ink)">{{ displayName }}</span>
+          <span style="font-size:12.5px;color:var(--ink3);font-family:'Geist Mono',monospace">{{ savedEmail }}</span>
+        </div>
+        <span style="flex:1"></span>
+        <span style="display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;background:var(--sunken);color:var(--ink2);font-size:11.5px;font-weight:600"><i class="ph-fill ph-globe-hemisphere-west" style="font-size:13px"></i>Account-wide</span>
+      </div>
+
+      <!-- ============ PROFILE ============ -->
+      <div style="border-radius:12px;background:var(--surface);border:1px solid var(--border);overflow:hidden">
+        <div style="display:flex;align-items:center;gap:10px;padding:15px 20px;border-bottom:1px solid var(--border)">
+          <span style="width:30px;height:30px;border-radius:8px;background:var(--accentSoft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-user-circle" style="font-size:17px"></i></span>
+          <div style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600;color:var(--ink)">Profile</span><span style="font-size:12px;color:var(--ink3)">Your name and sign-in identity</span></div>
+        </div>
+        <div style="padding:18px 20px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px">First name<span style="color:var(--accent)">*</span><sc-if value="{{ dFirst }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:999px;background:var(--warn)"></span></sc-if></label>
+              <input class="sf-f" value="{{ fFirst }}" onInput="{{ onFirst }}" placeholder="First name" autocomplete="given-name"/>
+              <sc-if value="{{ eFirst }}" hint-placeholder-val="x"><span style="font-size:11.5px;color:var(--danger);display:inline-flex;align-items:center;gap:4px"><i class="ph-fill ph-warning-circle" style="font-size:12px"></i>{{ eFirst }}</span></sc-if>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px">Last name<sc-if value="{{ dLast }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:999px;background:var(--warn)"></span></sc-if></label>
+              <input class="sf-f" value="{{ fLast }}" onInput="{{ onLast }}" placeholder="Last name" autocomplete="family-name"/>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px">Email<span style="color:var(--accent)">*</span><sc-if value="{{ dEmail }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:999px;background:var(--warn)"></span></sc-if></label>
+            <input class="sf-f" value="{{ fEmail }}" onInput="{{ onEmail }}" placeholder="you@company.com" autocomplete="email" style="font-family:'Geist Mono',monospace;font-size:13px"/>
+            <sc-if value="{{ eEmail }}" hint-placeholder-val="x"><span style="font-size:11.5px;color:var(--danger);display:inline-flex;align-items:center;gap:4px"><i class="ph-fill ph-warning-circle" style="font-size:12px"></i>{{ eEmail }}</span></sc-if>
+            <sc-if value="{{ emailChanged }}" hint-placeholder-val="{{ false }}"><span style="font-size:11.5px;color:var(--ink2);display:inline-flex;align-items:center;gap:5px;padding:8px 10px;border-radius:7px;background:var(--infoSoft)"><i class="ph-fill ph-envelope-simple" style="font-size:13px;color:var(--accent)"></i>You'll confirm this change from a link sent to the new address before it takes effect.</span></sc-if>
+          </div>
+          <sc-if value="{{ showUsername }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px">Display name<sc-if value="{{ dUser }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:999px;background:var(--warn)"></span></sc-if></label>
+              <input class="sf-f" value="{{ fUser }}" onInput="{{ onUser }}" placeholder="How your name appears in the admin" autocomplete="nickname"/>
+              <span style="font-size:11.5px;color:var(--ink3)">Shown on your user card and in activity logs. Not your public author name.</span>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <!-- ============ CHANGE PASSWORD ============ -->
+      <div style="border-radius:12px;background:var(--surface);border:1px solid var(--border);overflow:hidden">
+        <div style="display:flex;align-items:center;gap:10px;padding:15px 20px;border-bottom:1px solid var(--border)">
+          <span style="width:30px;height:30px;border-radius:8px;background:var(--accentSoft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-lock-key" style="font-size:17px"></i></span>
+          <div style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600;color:var(--ink)">Change password</span><span style="font-size:12px;color:var(--ink3)">Update the password you use to sign in</span></div>
+        </div>
+
+        <sc-if value="{{ isProvider }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:18px 20px;display:flex;align-items:center;gap:13px">
+            <span style="width:40px;height:40px;border-radius:10px;background:var(--sunken);display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-google-logo" style="font-size:20px;color:var(--ink2)"></i></span>
+            <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
+              <span style="font-size:13.5px;font-weight:600;color:var(--ink)">You sign in with Google</span>
+              <span style="font-size:12.5px;color:var(--ink3);line-height:1.5">There's no SiteFoundry password to change. Manage your credentials in your Google account.</span>
+            </div>
+            <a href="#" onClick="{{ noop }}" style="display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border:1px solid var(--field);border-radius:8px;color:var(--ink2);font-size:12.5px;font-weight:600;white-space:nowrap;flex:none" style-hover="background:var(--sunken)">Manage in Google<i class="ph ph-arrow-square-out" style="font-size:14px"></i></a>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isPassword }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:18px 20px;display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="font-size:12px;font-weight:600;color:var(--ink2)">Current password</label>
+              <div style="position:relative;display:flex;align-items:center">
+                <input class="sf-f" type="{{ curType }}" value="{{ pCur }}" onInput="{{ onCur }}" placeholder="Enter current password" autocomplete="current-password" style="padding-right:40px"/>
+                <span onClick="{{ toggleCur }}" title="Show or hide" style="position:absolute;right:10px;display:flex;color:var(--ink3);cursor:pointer" style-hover="color:var(--ink)"><i class="ph {{ curEye }}" style="font-size:17px"></i></span>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label style="font-size:12px;font-weight:600;color:var(--ink2)">New password</label>
+                <div style="position:relative;display:flex;align-items:center">
+                  <input class="sf-f" type="{{ newType }}" value="{{ pNew }}" onInput="{{ onNew }}" placeholder="New password" autocomplete="new-password" style="padding-right:40px"/>
+                  <span onClick="{{ toggleNew }}" title="Show or hide" style="position:absolute;right:10px;display:flex;color:var(--ink3);cursor:pointer" style-hover="color:var(--ink)"><i class="ph {{ newEye }}" style="font-size:17px"></i></span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label style="font-size:12px;font-weight:600;color:var(--ink2)">Confirm new password</label>
+                <div style="position:relative;display:flex;align-items:center">
+                  <input class="sf-f" type="{{ confType }}" value="{{ pConf }}" onInput="{{ onConf }}" placeholder="Repeat new password" autocomplete="new-password" style="padding-right:40px"/>
+                  <span onClick="{{ toggleConf }}" title="Show or hide" style="position:absolute;right:10px;display:flex;color:var(--ink3);cursor:pointer" style-hover="color:var(--ink)"><i class="ph {{ confEye }}" style="font-size:17px"></i></span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:{{ lenFg }}"><i class="ph-fill {{ lenIcon }}" style="font-size:13px"></i>At least 10 characters</span>
+              <sc-if value="{{ pwError }}" hint-placeholder-val="x"><span style="flex:1"></span><span style="font-size:11.5px;color:var(--danger);display:inline-flex;align-items:center;gap:4px"><i class="ph-fill ph-warning-circle" style="font-size:12px"></i>{{ pwError }}</span></sc-if>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding-top:2px">
+              <sc-if value="{{ pwDone }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ok)"><i class="ph-fill ph-check-circle" style="font-size:15px"></i>Password updated</span></sc-if>
+              <span style="flex:1"></span>
+              <button onClick="{{ updatePw }}" style="display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 15px;border:none;border-radius:8px;background:var(--accent);color:var(--onAccent);font-family:inherit;font-size:13px;font-weight:600;cursor:{{ pwCursor }};opacity:{{ pwOpacity }}" style-hover="background:var(--accentH)"><i class="ph {{ pwBtnIcon }}" style="font-size:15px;animation:{{ pwBtnAnim }}"></i>{{ pwBtnLabel }}</button>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- ============ EXPERIENCE ============ -->
+      <div style="border-radius:12px;background:var(--surface);border:1px solid var(--border);overflow:hidden">
+        <div style="display:flex;align-items:center;gap:10px;padding:15px 20px;border-bottom:1px solid var(--border)">
+          <span style="width:30px;height:30px;border-radius:8px;background:var(--accentSoft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-sliders-horizontal" style="font-size:17px"></i></span>
+          <div style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600;color:var(--ink)">Experience</span><span style="font-size:12px;color:var(--ink3)">How the admin interface looks and reads</span></div>
+        </div>
+        <div style="padding:18px 20px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px">Interface language<sc-if value="{{ dLang }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:999px;background:var(--warn)"></span></sc-if></label>
+            <select value="{{ fLang }}" onChange="{{ onLang }}" class="sf-f" style="cursor:pointer;max-width:320px">
+              <sc-for list="{{ langs }}" as="l" hint-placeholder-count="4"><option value="{{ l.code }}">{{ l.name }}</option></sc-for>
+            </select>
+            <span style="font-size:11.5px;color:var(--ink3)">Only changes the admin interface — never your websites' content language.</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <label style="font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px">Interface mode<sc-if value="{{ dMode }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:999px;background:var(--warn)"></span></sc-if></label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <sc-for list="{{ modes }}" as="m" hint-placeholder-count="3">
+                <div onClick="{{ m.onClick }}" style="flex:1;min-width:140px;display:flex;flex-direction:column;gap:9px;padding:12px;border-radius:10px;border:1.5px solid {{ m.border }};background:{{ m.bg }};cursor:pointer;transition:border-color .12s,background .12s">
+                  <div style="height:46px;border-radius:7px;overflow:hidden;border:1px solid {{ m.swBorder }};display:flex">
+                    <div style="width:34%;background:{{ m.swSide }};border-right:1px solid {{ m.swBorder }}"></div>
+                    <div style="flex:1;background:{{ m.swMain }};padding:8px"><div style="height:5px;width:70%;border-radius:999px;background:{{ m.swLine }};margin-bottom:5px"></div><div style="height:5px;width:45%;border-radius:999px;background:{{ m.swLine }}"></div></div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:7px">
+                    <span style="width:16px;height:16px;border-radius:999px;border:1.5px solid {{ m.dotBorder }};background:{{ m.dotBg }};display:flex;align-items:center;justify-content:center;flex:none"><sc-if value="{{ m.on }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:999px;background:#fff"></span></sc-if></span>
+                    <i class="ph {{ m.icon }}" style="font-size:15px;color:var(--ink2)"></i>
+                    <span style="font-size:13px;font-weight:600;color:var(--ink)">{{ m.label }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <span style="font-size:11.5px;color:var(--ink3)">“System” follows your device and switches automatically when it does.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:sfToast .2s cubic-bezier(.2,.8,.2,1)">
+    <i class="ph {{ toastIcon }}" style="font-size:18px;color:#58C3C7"></i>
+    <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;},&quot;authMethod&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;password&quot;,&quot;google&quot;],&quot;default&quot;:&quot;password&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Account&quot;},&quot;usernameField&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Profile&quot;}}">
+const LANGS = [
+  { code: "en", name: "English" },
+  { code: "nl", name: "Nederlands" },
+  { code: "fr", name: "Français" },
+  { code: "de", name: "Deutsch" },
+  { code: "es", name: "Español" },
+];
+const THEME = {
+  light: {
+    "--bg": "#F5F7F4", "--surface": "#FFFFFF", "--sunken": "#EEF1ED", "--border": "#E2E7E2",
+    "--ink": "#172326", "--ink2": "#526366", "--ink3": "#869693",
+    "--field": "#CFD6D0", "--accent": "#0D6770", "--accentH": "#0A545C", "--accentSoft": "#DCEDEA",
+    "--onAccent": "#FFFFFF", "--ring": "rgba(13,103,112,0.16)",
+    "--warn": "#B8860B", "--danger": "#B5382C", "--ok": "#147A4A", "--infoSoft": "#EAF3F1",
+  },
+  dark: {
+    "--bg": "#101718", "--surface": "#172123", "--sunken": "#1E2A2B", "--border": "#2A3739",
+    "--ink": "#EDF4F2", "--ink2": "#A9B7B5", "--ink3": "#7C8C8A",
+    "--field": "#35474A", "--accent": "#58C3C7", "--accentH": "#7FD3D6", "--accentSoft": "#173033",
+    "--onAccent": "#0A2224", "--ring": "rgba(88,195,199,0.22)",
+    "--warn": "#E0B341", "--danger": "#F0857A", "--ok": "#4FBE86", "--infoSoft": "#15292B",
+  },
+};
+
+class Component extends DCLogic {
+  state = {
+    saved: { first: "Mara", last: "Jensen", email: "mara@acmemarketing.com", user: "Mara Jensen", lang: "en", mode: "system" },
+    form: { first: "Mara", last: "Jensen", email: "mara@acmemarketing.com", user: "Mara Jensen", lang: "en", mode: "system" },
+    pw: { cur: "", nw: "", conf: "" },
+    show: { cur: false, nw: false, conf: false },
+    saving: false, savedLabel: "All changes saved",
+    pwSaving: false, pwDone: false, pwTouched: false,
+    systemDark: false,
+    toast: null,
+  };
+  componentDidMount() {
+    try {
+      this._mq = window.matchMedia("(prefers-color-scheme: dark)");
+      this.setState({ systemDark: this._mq.matches });
+      this._onMq = (e) => this.setState({ systemDark: e.matches });
+      this._mq.addEventListener ? this._mq.addEventListener("change", this._onMq) : this._mq.addListener(this._onMq);
+    } catch (x) {}
+  }
+  componentWillUnmount() {
+    clearTimeout(this._t); clearTimeout(this._sv); clearTimeout(this._pw);
+    if (this._mq && this._onMq) { this._mq.removeEventListener ? this._mq.removeEventListener("change", this._onMq) : this._mq.removeListener(this._onMq); }
+  }
+
+  toast(msg, icon) { clearTimeout(this._t); this.setState({ toast: { msg, icon: icon || "ph-check-circle" } }); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
+  setForm(patch) { this.setState({ form: { ...this.state.form, ...patch }, savedLabel: "All changes saved" }); }
+  setPw(patch) { this.setState({ pw: { ...this.state.pw, ...patch }, pwTouched: true, pwDone: false }); }
+
+  emailValid(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((e || "").trim()); }
+  dirty() { const a = this.state.form, b = this.state.saved; return ["first", "last", "email", "user", "lang", "mode"].some(k => a[k] !== b[k]); }
+  canSave() { const f = this.state.form; return this.dirty() && !!f.first.trim() && this.emailValid(f.email) && !this.state.saving; }
+
+  save() {
+    if (!this.canSave()) return;
+    this.setState({ saving: true, savedLabel: "Saving…" });
+    clearTimeout(this._sv);
+    this._sv = setTimeout(() => {
+      const emailChanged = this.state.form.email.trim() !== this.state.saved.email;
+      this.setState({ saved: { ...this.state.form, email: this.state.form.email.trim() }, saving: false, savedLabel: "All changes saved" });
+      this.toast(emailChanged ? "Profile saved — check your inbox to confirm the new email" : "Personal settings saved");
+    }, 700);
+  }
+  discard() { this.setState({ form: { ...this.state.saved } }); }
+
+  pwState() {
+    const { cur, nw, conf } = this.state.pw;
+    const lenOk = nw.length >= 10;
+    const match = nw === conf;
+    let error = "";
+    if (this.state.pwTouched) {
+      if (nw && !lenOk) error = "New password must be at least 10 characters.";
+      else if (nw && conf && !match) error = "New password and confirmation don't match.";
+    }
+    const canSave = !!cur && lenOk && match && !!conf && !this.state.pwSaving;
+    return { lenOk, match, error, canSave };
+  }
+  updatePw() {
+    const ps = this.pwState();
+    if (!ps.canSave) { this.setState({ pwTouched: true }); return; }
+    this.setState({ pwSaving: true });
+    clearTimeout(this._pw);
+    this._pw = setTimeout(() => {
+      this.setState({ pwSaving: false, pwDone: true, pw: { cur: "", nw: "", conf: "" }, pwTouched: false });
+      this.toast("Password updated", "ph-lock-key");
+    }, 750);
+  }
+
+  renderVals() {
+    const s = this.state;
+    const p = this.props || {};
+    const isProvider = p.authMethod === "google";
+    const showUsername = p.usernameField !== false;
+    const resolvedMode = s.form.mode === "system" ? (s.systemDark ? "dark" : "light") : s.form.mode;
+    const T = THEME[resolvedMode] || THEME.light;
+    const pageStyle = { ...T, height: "100vh", overflow: "hidden", display: "flex", flexDirection: "column", background: "var(--bg)", color: "var(--ink)", transition: "background .2s,color .2s" };
+
+    const f = s.form, sv = s.saved;
+    const first = (f.first || "").trim(), last = (f.last || "").trim();
+    const initials = ((first[0] || "") + (last[0] || "")).toUpperCase() || (first[0] || "U").toUpperCase();
+    const displayName = showUsername && f.user.trim() ? f.user : ([first, last].filter(Boolean).join(" ") || "Your account");
+    const emailValid = this.emailValid(f.email);
+    const dirty = this.dirty();
+    const canSave = this.canSave();
+
+    const ps = this.pwState();
+
+    const modeDef = [
+      { id: "system", label: "System", icon: "ph-desktop" },
+      { id: "light", label: "Light", icon: "ph-sun" },
+      { id: "dark", label: "Dark", icon: "ph-moon-stars" },
+    ];
+    const SW = {
+      system: { side: "#D5DCD7", main: "#F5F7F4", line: "#C2CBC4", border: "#DDE3DE" },
+      light: { side: "#E7EBE7", main: "#FFFFFF", line: "#DCE2DD", border: "#E2E7E2" },
+      dark: { side: "#101718", main: "#172123", line: "#33454A", border: "#2A3739" },
+    };
+    const modes = modeDef.map(m => {
+      const on = f.mode === m.id;
+      const sw = SW[m.id];
+      return {
+        id: m.id, label: m.label, icon: m.icon, on,
+        border: on ? "var(--accent)" : "var(--border)", bg: on ? "var(--accentSoft)" : "var(--surface)",
+        dotBorder: on ? "var(--accent)" : "var(--field)", dotBg: on ? "var(--accent)" : "transparent",
+        swSide: sw.side, swMain: sw.main, swLine: sw.line, swBorder: sw.border,
+        onClick: () => this.setForm({ mode: m.id }),
+      };
+    });
+
+    const eye = (on) => on ? "ph-eye-slash" : "ph-eye";
+    const typ = (on) => on ? "text" : "password";
+
+    return {
+      pageStyle, noop: (e) => e.preventDefault(),
+
+      // identity
+      initials, displayName, savedEmail: sv.email,
+
+      // dirty / save
+      dirty, clean: !dirty,
+      savedLabel: s.savedLabel, saveIcon: s.saving ? "ph-spinner" : "ph-cloud-check", saveIconColor: s.saving ? "var(--ink3)" : "var(--ok)",
+      saveLabel: s.saving ? "Saving…" : "Save changes",
+      saveCursor: canSave ? "pointer" : "not-allowed", saveOpacity: canSave ? "1" : "0.55",
+      save: () => this.save(), discard: () => this.discard(),
+
+      // profile fields
+      fFirst: f.first, onFirst: (e) => this.setForm({ first: e.target.value }),
+      fLast: f.last, onLast: (e) => this.setForm({ last: e.target.value }),
+      fEmail: f.email, onEmail: (e) => this.setForm({ email: e.target.value }),
+      fUser: f.user, onUser: (e) => this.setForm({ user: e.target.value }),
+      showUsername,
+      dFirst: f.first !== sv.first, dLast: f.last !== sv.last, dEmail: f.email !== sv.email, dUser: f.user !== sv.user,
+      eFirst: (!first ? "First name is required." : ""),
+      eEmail: (f.email && !emailValid ? "Enter a valid email address." : ""),
+      emailChanged: f.email.trim() !== sv.email && emailValid,
+
+      // password
+      isProvider, isPassword: !isProvider,
+      pCur: s.pw.cur, onCur: (e) => this.setPw({ cur: e.target.value }),
+      pNew: s.pw.nw, onNew: (e) => this.setPw({ nw: e.target.value }),
+      pConf: s.pw.conf, onConf: (e) => this.setPw({ conf: e.target.value }),
+      curType: typ(s.show.cur), newType: typ(s.show.nw), confType: typ(s.show.conf),
+      curEye: eye(s.show.cur), newEye: eye(s.show.nw), confEye: eye(s.show.conf),
+      toggleCur: () => this.setState({ show: { ...s.show, cur: !s.show.cur } }),
+      toggleNew: () => this.setState({ show: { ...s.show, nw: !s.show.nw } }),
+      toggleConf: () => this.setState({ show: { ...s.show, conf: !s.show.conf } }),
+      lenFg: ps.lenOk ? "var(--ok)" : "var(--ink3)", lenIcon: ps.lenOk ? "ph-check-circle" : "ph-circle-dashed",
+      pwError: ps.error, pwDone: s.pwDone,
+      pwCursor: ps.canSave ? "pointer" : "not-allowed", pwOpacity: ps.canSave ? "1" : "0.55",
+      pwBtnLabel: s.pwSaving ? "Updating…" : "Update password",
+      pwBtnIcon: s.pwSaving ? "ph-spinner" : "ph-check", pwBtnAnim: s.pwSaving ? "sfSpin .6s linear infinite" : "none",
+      updatePw: () => this.updatePw(),
+
+      // experience
+      fLang: f.lang, onLang: (e) => this.setForm({ lang: e.target.value }), langs: LANGS, dLang: f.lang !== sv.lang,
+      modes, dMode: f.mode !== sv.mode,
+
+      showToast: !!s.toast, toastMsg: s.toast ? s.toast.msg : "", toastIcon: s.toast ? s.toast.icon : "ph-check-circle",
+    };
+  }
+}
+</script>
+</body>
+</html>

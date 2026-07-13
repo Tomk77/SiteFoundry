@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:#F5F7F4;color:#172326;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden}
+  a{color:#0D6770;text-decoration:none}a:hover{color:#0A545C}
+  ::selection{background:#CFE6E1}
+  input,textarea,select{font-family:inherit}
+  i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
+  .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
+  .sf-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .sf-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #fff}
+  @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+  @keyframes sfFlash{0%{box-shadow:0 0 0 2px #0D6770}100%{box-shadow:0 0 0 2px transparent}}
+</style>
+</helmet>
+
+<div style="display:flex;height:100vh;width:100vw;overflow:hidden">
+
+  <!-- LEFT NAV -->
+  <aside style="width:244px;flex:none;background:#FAFCFA;border-right:1px solid #E2E7E2;display:flex;flex-direction:column">
+    <div style="padding:14px 14px 8px">
+      <div style="display:flex;align-items:center;gap:10px;height:46px;padding:0 10px;border:1px solid #E2E7E2;border-radius:10px;background:#fff;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.04)" style-hover="border-color:#CFD6D0">
+        <div style="width:28px;height:28px;border-radius:7px;background:#E07A4F;display:flex;align-items:center;justify-content:center;color:#172326;flex:none"><i class="ph-bold ph-hammer" style="font-size:16px"></i></div>
+        <div style="display:flex;flex-direction:column;min-width:0;flex:1">
+          <span style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Acme Marketing</span>
+          <span style="font-size:11px;color:#869693;font-weight:500">English · EN</span>
+        </div>
+        <i class="ph ph-caret-up-down" style="font-size:15px;color:#869693"></i>
+      </div>
+    </div>
+    <div style="padding:8px 10px;display:flex;flex-direction:column;gap:1px">
+      <div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#A5B0AD;padding:8px 10px 4px">Content</div>
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="7">
+        <div onClick="{{ n.onClick }}" style="display:flex;align-items:center;gap:11px;height:34px;padding:0 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;background:{{ n.bg }};color:{{ n.fg }}" style-hover="filter:brightness(0.98)">
+          <span style="display:flex;width:17px;flex:none"><i class="ph {{ n.icon }}" style="font-size:16px"></i></span>
+          <span>{{ n.label }}</span>
+          <span style="flex:1"></span>
+          <sc-if value="{{ n.count }}" hint-placeholder-val="0"><span style="font-size:11px;font-weight:600;color:#A5B0AD;font-family:'Geist Mono',monospace">{{ n.count }}</span></sc-if>
+        </div>
+      </sc-for>
+    </div>
+    <div style="flex:1"></div>
+    <div style="padding:10px 12px;border-top:1px solid #E2E7E2;display:flex;align-items:center;gap:10px">
+      <span style="width:28px;height:28px;border-radius:999px;background:#FBEBE1;color:#B45F38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none">MJ</span>
+      <div style="display:flex;flex-direction:column;min-width:0"><span style="font-size:12.5px;font-weight:500">Mara Jensen</span><span style="font-size:11px;color:#869693">Editor</span></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main data-screen-label="Media" style="flex:1;min-width:0;display:flex;flex-direction:column;background:#fff">
+    <!-- header -->
+    <div style="display:flex;align-items:center;gap:12px;padding:16px 22px 14px;border-bottom:1px solid #EEF1ED">
+      <div style="display:flex;flex-direction:column;gap:1px;min-width:0">
+        <div style="display:flex;align-items:center;gap:9px">
+          <h1 style="margin:0;font-size:19px;font-weight:600;letter-spacing:-0.015em">Media</h1>
+          <span style="font-size:12px;color:#869693;font-weight:500;font-family:'Geist Mono',monospace;white-space:nowrap">{{ libCount }} files · {{ libSize }}</span>
+        </div>
+        <span style="font-size:12px;color:#869693;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Images and assets referenced by your pages</span>
+      </div>
+      <span style="flex:1"></span>
+      <div style="display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;border-radius:8px;background:#fff;width:196px;flex:none;border:1.5px solid {{ searchBorder }};box-shadow:{{ searchRing }};transition:border-color .12s,box-shadow .12s">
+        <i class="ph ph-magnifying-glass" style="font-size:15px;color:{{ searchIcon }}"></i>
+        <input value="{{ q }}" onInput="{{ onSearch }}" onFocus="{{ focusSearch }}" onBlur="{{ blurSearch }}" placeholder="Search this folder…" style="border:none;outline:none;background:transparent;font-size:13px;color:#172326;width:100%;padding:0"/>
+      </div>
+      <div style="display:flex;background:#EEF1ED;border-radius:8px;padding:2px;gap:2px;flex:none">
+        <span onClick="{{ setGrid }}" title="Grid" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;background:{{ gridBg }};color:{{ gridFg }};box-shadow:{{ gridShadow }}"><i class="ph-bold ph-squares-four" style="font-size:16px"></i></span>
+        <span onClick="{{ setList }}" title="List" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;background:{{ listBg }};color:{{ listFg }};box-shadow:{{ listShadow }}"><i class="ph-bold ph-rows" style="font-size:16px"></i></span>
+      </div>
+      <button onClick="{{ newFolder }}" style="display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 12px;border:1px solid #CFD6D0;border-radius:8px;background:#fff;color:#33474A;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#F5F7F4"><i class="ph ph-folder-plus" style="font-size:16px"></i>New folder</button>
+      <button onClick="{{ upload }}" style="display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border:none;border-radius:8px;background:#0D6770;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.1);white-space:nowrap;flex:none" style-hover="background:#0A545C"><i class="ph-bold ph-upload-simple" style="font-size:16px"></i>Upload</button>
+    </div>
+
+    <!-- breadcrumb -->
+    <div style="display:flex;align-items:center;gap:6px;padding:11px 22px;border-bottom:1px solid #EEF1ED;font-size:13px">
+      <sc-for list="{{ crumbs }}" as="c" hint-placeholder-count="1">
+        <sc-if value="{{ c.sep }}" hint-placeholder-val="{{ false }}"><i class="ph ph-caret-right" style="font-size:12px;color:#AEBAB6"></i></sc-if>
+        <span onClick="{{ c.onClick }}" style="display:inline-flex;align-items:center;gap:5px;font-weight:{{ c.weight }};color:{{ c.color }};cursor:pointer" style-hover="color:#0D6770"><sc-if value="{{ c.home }}" hint-placeholder-val="{{ false }}"><i class="ph ph-house" style="font-size:14px"></i></sc-if>{{ c.name }}</span>
+      </sc-for>
+    </div>
+
+    <div style="flex:1;display:flex;min-height:0">
+      <!-- content scroll -->
+      <div class="sf-scroll" style="flex:1;overflow:auto;padding:20px 22px 40px" onDragOver="{{ zoneOver }}" onDrop="{{ zoneDrop }}">
+
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:60px 20px;text-align:center;border:2px dashed #DCE3DE;border-radius:14px;background:#FAFCFA">
+            <div style="width:60px;height:60px;border-radius:16px;background:#FBEBE1;color:#C05F35;display:flex;align-items:center;justify-content:center"><i class="ph ph-images-square" style="font-size:30px"></i></div>
+            <div style="display:flex;flex-direction:column;gap:6px;max-width:320px">
+              <span style="font-size:16px;font-weight:600">{{ emptyTitle }}</span>
+              <span style="font-size:13.5px;line-height:1.55;color:#526366">{{ emptyBody }}</span>
+            </div>
+            <button onClick="{{ upload }}" style="display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 15px;border:none;border-radius:8px;background:#0D6770;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#0A545C"><i class="ph-bold ph-upload-simple" style="font-size:16px"></i>Upload images</button>
+          </div>
+        </sc-if>
+
+        <!-- FOLDERS (grid) -->
+        <sc-if value="{{ showFolders }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-bottom:26px">
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#A5B0AD;margin-bottom:12px">Folders</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
+              <sc-for list="{{ folders }}" as="f" hint-placeholder-count="4">
+                <div draggable="true" onClick="{{ f.onOpen }}" onDragStart="{{ f.onDragStart }}" onDragOver="{{ f.onDragOver }}" onDragEnter="{{ f.onDragOver }}" onDrop="{{ f.onDrop }}" onDragEnd="{{ f.onDragEnd }}" style="display:flex;align-items:center;gap:11px;padding:12px;border:1.5px solid {{ f.border }};border-radius:10px;background:{{ f.bg }};cursor:pointer;transition:border-color .12s,background .12s" style-hover="border-color:#CFD6D0;background:#FAFCFA">
+                  <span style="width:38px;height:38px;border-radius:9px;background:#DCEDEA;color:#0D6770;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph-fill ph-folder" style="font-size:20px"></i></span>
+                  <div style="display:flex;flex-direction:column;gap:1px;min-width:0;flex:1">
+                    <sc-if value="{{ f.editing }}" hint-placeholder-val="{{ false }}">
+                      <input value="{{ f.name }}" onInput="{{ f.onRename }}" onBlur="{{ f.commitRename }}" onKeyDown="{{ f.onRenameKey }}" onClick="{{ stop }}" autofocus="true" style="border:1.5px solid #0D6770;border-radius:6px;padding:3px 6px;font-size:13px;font-weight:600;color:#172326;outline:none;width:100%"/>
+                    </sc-if>
+                    <sc-if value="{{ f.notEditing }}" hint-placeholder-val="{{ true }}">
+                      <span style="font-size:13.5px;font-weight:600;color:#172326;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</span>
+                      <span style="font-size:11.5px;color:#869693">{{ f.count }} items</span>
+                    </sc-if>
+                  </div>
+                  <span onClick="{{ f.onMenu }}" style="width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:pointer;flex:none" style-hover="background:#EEF1ED;color:#172326"><i class="ph-bold ph-dots-three" style="font-size:16px"></i></span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- FILES grid -->
+        <sc-if value="{{ showFilesGrid }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <sc-if value="{{ showFolders }}" hint-placeholder-val="{{ false }}"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#A5B0AD;margin-bottom:12px">Files</div></sc-if>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:16px">
+              <sc-for list="{{ files }}" as="i" hint-placeholder-count="8">
+                <div draggable="true" onClick="{{ i.onSelect }}" onDragStart="{{ i.onDragStart }}" onDragEnd="{{ i.onDragEnd }}" style="display:flex;flex-direction:column;gap:8px;cursor:pointer;animation:{{ i.anim }}">
+                  <div style="position:relative;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:{{ i.tint }};border:2px solid {{ i.ring }};display:flex;align-items:center;justify-content:center;transition:border-color .12s">
+                    <i class="{{ i.glyph }}" style="font-size:30px;color:{{ i.glyphColor }}"></i>
+                    <span style="position:absolute;top:7px;left:7px;font-size:9.5px;font-weight:700;letter-spacing:0.04em;padding:2px 6px;border-radius:5px;background:rgba(23,35,38,0.55);color:#fff">{{ i.ext }}</span>
+                    <sc-if value="{{ i.selected }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:7px;right:7px;width:20px;height:20px;border-radius:999px;background:#0D6770;color:#fff;display:flex;align-items:center;justify-content:center"><i class="ph-bold ph-check" style="font-size:12px"></i></span></sc-if>
+                    <sc-if value="{{ i.uploading }}" hint-placeholder-val="{{ false }}">
+                      <div style="position:absolute;inset:0;background:rgba(245,247,244,0.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:0 18px">
+                        <span style="font-size:11px;font-weight:600;color:#0D6770">Uploading… {{ i.progress }}%</span>
+                        <span style="width:100%;height:4px;border-radius:3px;background:#DCE3DE;overflow:hidden"><span style="display:block;height:100%;background:#0D6770;width:{{ i.progressW }};transition:width .2s"></span></span>
+                      </div>
+                    </sc-if>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:1px;padding:0 2px">
+                    <span style="font-size:12.5px;font-weight:500;color:#172326;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ i.name }}</span>
+                    <span style="font-family:'Geist Mono',monospace;font-size:11px;color:#869693">{{ i.dims }} · {{ i.size }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- FILES list -->
+        <sc-if value="{{ showFilesList }}" hint-placeholder-val="{{ false }}">
+          <div style="border:1px solid #EAEEEA;border-radius:10px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:12px;padding:8px 14px;background:#FAFCFA;border-bottom:1px solid #EEF1ED;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">
+              <span style="width:34px;flex:none"></span><span style="flex:1">Name</span><span style="width:70px;flex:none">Type</span><span style="width:110px;flex:none">Dimensions</span><span style="width:80px;flex:none">Size</span><span style="width:120px;flex:none">Uploaded</span>
+            </div>
+            <sc-for list="{{ files }}" as="i" hint-placeholder-count="8">
+              <div draggable="true" onClick="{{ i.onSelect }}" onDragStart="{{ i.onDragStart }}" onDragEnd="{{ i.onDragEnd }}" style="display:flex;align-items:center;gap:12px;padding:8px 14px;border-bottom:1px solid #F5F7F4;cursor:pointer;background:{{ i.rowBg }}" style-hover="filter:brightness(0.98)">
+                <span style="width:34px;height:34px;flex:none;border-radius:7px;background:{{ i.tint }};display:flex;align-items:center;justify-content:center"><i class="{{ i.glyph }}" style="font-size:16px;color:{{ i.glyphColor }}"></i></span>
+                <span style="flex:1;font-size:13px;font-weight:500;color:#172326;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ i.name }}</span>
+                <span style="width:70px;flex:none;font-size:11.5px;color:#526366;font-weight:600">{{ i.ext }}</span>
+                <span style="width:110px;flex:none;font-family:'Geist Mono',monospace;font-size:12px;color:#869693">{{ i.dims }}</span>
+                <span style="width:80px;flex:none;font-family:'Geist Mono',monospace;font-size:12px;color:#869693">{{ i.size }}</span>
+                <span style="width:120px;flex:none;font-size:12px;color:#869693">{{ i.modified }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- DETAILS PANEL -->
+      <sc-if value="{{ hasSelection }}" hint-placeholder-val="{{ false }}">
+        <div style="width:312px;flex:none;border-left:1px solid #E2E7E2;background:#FAFCFA;display:flex;flex-direction:column;overflow:auto" class="sf-scroll">
+          <div style="display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #EEF1ED">
+            <span style="font-size:13px;font-weight:600">Details</span>
+            <span style="flex:1"></span>
+            <span onClick="{{ clearSelection }}" style="display:flex;cursor:pointer;color:#869693" style-hover="color:#172326"><i class="ph ph-x" style="font-size:16px"></i></span>
+          </div>
+          <div style="padding:16px;display:flex;flex-direction:column;gap:16px">
+            <div style="aspect-ratio:4/3;border-radius:10px;background:{{ selTint }};border:1px solid #E2E7E2;display:flex;align-items:center;justify-content:center;position:relative">
+              <i class="{{ selGlyph }}" style="font-size:40px;color:{{ selGlyphColor }}"></i>
+              <span style="position:absolute;bottom:8px;right:8px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(23,35,38,0.55);color:#fff">{{ selExt }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">File name</label>
+              <input value="{{ selName }}" onInput="{{ onSelName }}" style="height:36px;padding:0 10px;border:1.5px solid #CFD6D0;border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none" style-focus="border-color:#0D6770;box-shadow:0 0 0 3px rgba(13,103,112,0.15)"/>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Alt text <span style="color:#DC4436">·</span></label>
+              <textarea value="{{ selAlt }}" onInput="{{ onSelAlt }}" placeholder="Describe this image for screen readers and SEO" style="min-height:60px;padding:8px 10px;border:1.5px solid {{ altBorder }};border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none;resize:vertical;line-height:1.45" style-focus="border-color:#0D6770;box-shadow:0 0 0 3px rgba(13,103,112,0.15)"></textarea>
+              <sc-if value="{{ altMissing }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:5px;font-size:11.5px;color:#8A5A06"><i class="ph-fill ph-warning" style="font-size:12px"></i>Missing alt text flags a validation problem on pages using this image.</span></sc-if>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;padding:12px;background:#fff;border:1px solid #E2E7E2;border-radius:10px">
+              <sc-for list="{{ selMeta }}" as="m" hint-placeholder-count="5">
+                <div style="display:flex;align-items:center;gap:10px;font-size:12.5px"><span style="color:#869693;width:88px;flex:none">{{ m.k }}</span><span style="color:#172326;font-weight:500;font-family:{{ m.font }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.v }}</span></div>
+              </sc-for>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Move to folder</label>
+              <select value="{{ selFolder }}" onChange="{{ onMove }}" style="height:36px;padding:0 10px;border:1.5px solid #CFD6D0;border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none;cursor:pointer">
+                <sc-for list="{{ folderOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.label }}</option></sc-for>
+              </select>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button onClick="{{ copyUrl }}" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;border:1px solid #CFD6D0;border-radius:8px;background:#fff;color:#172326;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#F5F7F4"><i class="ph {{ copyIcon }}" style="font-size:15px;color:{{ copyColor }}"></i>{{ copyLabel }}</button>
+              <button style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;border:1px solid #CFD6D0;border-radius:8px;background:#fff;color:#172326;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#F5F7F4"><i class="ph ph-download-simple" style="font-size:15px"></i>Download</button>
+            </div>
+            <button onClick="{{ deleteSel }}" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;border:1px solid #EEC6BC;border-radius:8px;background:#F8E6E3;color:#B5382C;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#F2D6D0"><i class="ph ph-trash" style="font-size:16px"></i>Delete file</button>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </main>
+</div>
+
+<!-- folder menu -->
+<sc-if value="{{ showFolderMenu }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeMenu }}" style="position:fixed;inset:0;z-index:40"></div>
+  <div style="position:fixed;left:{{ menuX }};top:{{ menuY }};z-index:50;width:180px;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:sfPop .13s ease">
+    <div onClick="{{ menuOpen }}" style="display:flex;align-items:center;gap:10px;height:34px;padding:0 9px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:#172326" style-hover="background:#F5F7F4"><i class="ph ph-folder-open" style="font-size:16px"></i>Open</div>
+    <div onClick="{{ menuRename }}" style="display:flex;align-items:center;gap:10px;height:34px;padding:0 9px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:#172326" style-hover="background:#F5F7F4"><i class="ph ph-pencil-simple" style="font-size:16px"></i>Rename</div>
+    <div style="height:1px;background:#EEF1ED;margin:5px 6px"></div>
+    <div onClick="{{ menuDelete }}" style="display:flex;align-items:center;gap:10px;height:34px;padding:0 9px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:#B5382C" style-hover="background:#F8E6E3"><i class="ph ph-trash" style="font-size:16px"></i>Delete folder</div>
+  </div>
+</sc-if>
+
+<!-- toast -->
+<sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:sfToast .2s cubic-bezier(.2,.8,.2,1);max-width:520px">
+    <i class="{{ toastIcon }}" style="font-size:18px;color:#58C3C7"></i>
+    <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+const AUTHORS = { "Mara Jensen": "MJ", "Devin Park": "DP", "Sofia Ruiz": "SR" };
+const TINTS = ["#DCEDEA", "#FBEBE1", "#EAE6F5", "#E3F3EA", "#F7EDDA", "#E7EEF5", "#F0E6EC"];
+const GLYPHS = { image: ["ph-fill ph-image", "#7FA9A4"], svg: ["ph-fill ph-bezier-curve", "#7F8FA9"], pdf: ["ph-fill ph-file-pdf", "#C0776A"] };
+let SEQ = 100;
+function file(name, ext, w, h, size, kb, author, date, parentId, tint) {
+  return { id: "i" + (++SEQ), type: "file", parentId: parentId || null, name, ext, w, h, size, kb, author, date, tint: tint || TINTS[SEQ % TINTS.length], kind: ext === "SVG" ? "svg" : ext === "PDF" ? "pdf" : "image", alt: "", status: "ready", progress: 100 };
+}
+function folder(id, name, parentId) { return { id, type: "folder", parentId: parentId || null, name }; }
+
+function seed() {
+  return [
+    folder("F1", "Brand", null),
+    folder("F2", "Blog images", null),
+    folder("F3", "Team", null),
+    folder("F4", "Product shots", null),
+    file("hero-home", "JPG", 1920, 960, "412 KB", 412, "Mara Jensen", "Jul 8, 2026", null),
+    file("og-default", "PNG", 1200, 630, "188 KB", 188, "Devin Park", "Jul 2, 2026", null),
+    file("cta-background", "JPG", 2400, 1200, "690 KB", 690, "Sofia Ruiz", "Jun 28, 2026", null),
+    file("favicon", "PNG", 512, 512, "24 KB", 24, "Mara Jensen", "May 3, 2026", null),
+    // Brand
+    file("logo-primary", "SVG", 512, 512, "12 KB", 12, "Mara Jensen", "Jun 1, 2026", "F1"),
+    file("logo-white", "SVG", 512, 512, "12 KB", 12, "Mara Jensen", "Jun 1, 2026", "F1"),
+    file("brand-guidelines", "PDF", 0, 0, "3.2 MB", 3200, "Mara Jensen", "Jun 1, 2026", "F1"),
+    file("color-swatches", "PNG", 1600, 900, "146 KB", 146, "Devin Park", "Jun 4, 2026", "F1"),
+    // Blog images
+    file("headless-cms-cover", "JPG", 1600, 900, "302 KB", 302, "Sofia Ruiz", "Jul 5, 2026", "F2"),
+    file("migration-diagram", "PNG", 1400, 1000, "210 KB", 210, "Devin Park", "Jul 6, 2026", "F2"),
+    file("page-tree-screenshot", "PNG", 2000, 1250, "520 KB", 520, "Mara Jensen", "Jul 7, 2026", "F2"),
+    // Team
+    file("mara-jensen", "JPG", 800, 800, "96 KB", 96, "Mara Jensen", "Apr 2, 2026", "F3"),
+    file("devin-park", "JPG", 800, 800, "92 KB", 92, "Devin Park", "Apr 2, 2026", "F3"),
+    file("sofia-ruiz", "JPG", 800, 800, "98 KB", 98, "Sofia Ruiz", "Apr 2, 2026", "F3"),
+  ];
+}
+
+class Component extends DCLogic {
+  state = {
+    items: seed(), cwd: null, view: "grid", q: "", searchFocus: false,
+    selected: null, dragId: null, dropFolder: null,
+    menu: null, editingFolder: null, toast: null, copied: false, flashId: null,
+  };
+  componentWillUnmount() { clearInterval(this._up); clearTimeout(this._t); clearTimeout(this._c); clearTimeout(this._f); }
+
+  childrenOf(id) { return this.state.items.filter(x => x.parentId === id); }
+  find(id) { return this.state.items.find(x => x.id === id); }
+  folderCount(id) { return this.state.items.filter(x => x.parentId === id).length; }
+  toast(msg, icon) { clearTimeout(this._t); this.setState({ toast: { msg, icon: icon || "ph-fill ph-check-circle" } }); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
+  flash(id) { clearTimeout(this._f); this.setState({ flashId: id }); this._f = setTimeout(() => this.setState({ flashId: null }), 900); }
+
+  upload() {
+    const names = [["banner-promo", "JPG", 1800, 800, 356], ["feature-grid", "PNG", 1400, 900, 224], ["testimonial-avatar", "JPG", 400, 400, 38]];
+    const add = names.map((n, k) => {
+      const f = file(n[0], n[1], n[2], n[3], n[4] + " KB", n[4], "Mara Jensen", "Just now", this.state.cwd);
+      f.status = "uploading"; f.progress = 0; f.startAt = Date.now() + k * 250; return f;
+    });
+    this.setState({ items: [...add, ...this.state.items] });
+    clearInterval(this._up);
+    this._up = setInterval(() => {
+      let anyUp = false;
+      const items = this.state.items.map(it => {
+        if (it.status !== "uploading") return it;
+        if (Date.now() < (it.startAt || 0)) { anyUp = true; return it; }
+        const p = Math.min(100, it.progress + 9 + Math.random() * 12);
+        anyUp = anyUp || p < 100;
+        return { ...it, progress: p, status: p >= 100 ? "ready" : "uploading" };
+      });
+      this.setState({ items });
+      if (!anyUp) { clearInterval(this._up); this.toast(add.length + " images uploaded", "ph-fill ph-check-circle"); }
+    }, 260);
+  }
+  newFolder() {
+    let n = 1, name = "New folder";
+    const names = this.childrenOf(this.state.cwd).filter(x => x.type === "folder").map(x => x.name);
+    while (names.includes(name)) { n++; name = "New folder " + n; }
+    const id = "F" + (++SEQ);
+    this.setState({ items: [folder(id, name, this.state.cwd), ...this.state.items], editingFolder: id, menu: null });
+    this.flash(id);
+  }
+  moveFile(id, folderId) {
+    const it = this.find(id); if (!it) return;
+    this.setState({ items: this.state.items.map(x => x.id === id ? { ...x, parentId: folderId } : x) });
+    const dest = folderId ? this.find(folderId).name : "Media root";
+    this.toast("Moved “" + it.name + "” to " + dest, "ph-fill ph-folder");
+  }
+  deleteFile(id) {
+    const it = this.find(id);
+    this.setState({ items: this.state.items.filter(x => x.id !== id), selected: this.state.selected === id ? null : this.state.selected });
+    this.toast("Deleted “" + it.name + "”", "ph ph-trash");
+  }
+  deleteFolder(id) {
+    const it = this.find(id);
+    const gather = (fid, acc) => { acc.push(fid); this.state.items.filter(x => x.parentId === fid).forEach(c => { if (c.type === "folder") gather(c.id, acc); else acc.push(c.id); }); return acc; };
+    const ids = gather(id, []);
+    this.setState({ items: this.state.items.filter(x => !ids.includes(x.id)), menu: null });
+    this.toast("Deleted folder “" + it.name + "”", "ph ph-trash");
+  }
+
+  renderVals() {
+    const s = this.state;
+    const icon = (name) => name;
+    const allFiles = s.items.filter(x => x.type === "file");
+    const totalKb = allFiles.reduce((a, b) => a + (b.kb || 0), 0);
+    const libSize = totalKb > 1024 ? (totalKb / 1024).toFixed(1) + " MB" : totalKb + " KB";
+
+    const q = s.q.trim().toLowerCase();
+    let kids = this.childrenOf(s.cwd);
+    if (q) kids = kids.filter(x => x.name.toLowerCase().includes(q));
+    const folderItems = kids.filter(x => x.type === "folder");
+    const fileItems = kids.filter(x => x.type === "file");
+
+    const nav = [
+      { icon: "ph-tree-structure", label: "Pages", bg: "transparent", fg: "#33474A", count: 0, onClick: () => {} },
+      { icon: "ph-image-square", label: "Media", bg: "#DCEDEA", fg: "#0D6770", count: allFiles.length, onClick: () => {} },
+      { icon: "ph-arrow-bend-up-right", label: "Redirects", bg: "transparent", fg: "#33474A", count: 0, onClick: () => {} },
+      { icon: "ph-app-window", label: "Header navigation", bg: "transparent", fg: "#33474A", count: 0, onClick: () => {} },
+      { icon: "ph-cards", label: "Footer", bg: "transparent", fg: "#33474A", count: 0, onClick: () => {} },
+      { icon: "ph-cube", label: "Structured content", bg: "transparent", fg: "#33474A", count: 0, onClick: () => {} },
+      { icon: "ph-gear-six", label: "Settings", bg: "transparent", fg: "#33474A", count: 0, onClick: () => {} },
+    ];
+
+    // breadcrumb
+    const chain = [];
+    let c = s.cwd;
+    while (c) { const f = this.find(c); if (!f) break; chain.unshift(f); c = f.parentId; }
+    const crumbs = [{ name: "Media", home: true, sep: false, weight: s.cwd ? "500" : "600", color: s.cwd ? "#526366" : "#172326", onClick: () => this.setState({ cwd: null, selected: null, q: "" }) }];
+    chain.forEach((f, idx) => {
+      const last = idx === chain.length - 1;
+      crumbs.push({ name: f.name, home: false, sep: true, weight: last ? "600" : "500", color: last ? "#172326" : "#526366", onClick: () => this.setState({ cwd: f.id, selected: null, q: "" }) });
+    });
+
+    const glyphOf = (it) => GLYPHS[it.kind] || GLYPHS.image;
+
+    const folders = folderItems.map(f => ({
+      id: f.id, name: f.name, count: this.folderCount(f.id),
+      editing: s.editingFolder === f.id, notEditing: s.editingFolder !== f.id,
+      bg: s.dropFolder === f.id ? "#DCEDEA" : "#fff",
+      border: s.dropFolder === f.id ? "#0D6770" : (s.flashId === f.id ? "#0D6770" : "#E2E7E2"),
+      onOpen: () => { if (s.editingFolder === f.id) return; this.setState({ cwd: f.id, selected: null, q: "" }); },
+      onMenu: (e) => { e.stopPropagation(); const r = e.currentTarget.getBoundingClientRect(); this.setState({ menu: { id: f.id, x: Math.min(r.right - 180, window.innerWidth - 190), y: r.bottom + 6 } }); },
+      onRename: (e) => this.setState({ items: s.items.map(x => x.id === f.id ? { ...x, name: e.target.value } : x) }),
+      commitRename: () => this.setState({ editingFolder: null }),
+      onRenameKey: (e) => { if (e.key === "Enter") this.setState({ editingFolder: null }); },
+      onDragStart: (e) => { e.stopPropagation(); e.preventDefault(); },
+      onDragOver: (e) => { if (s.dragId && this.find(s.dragId) && this.find(s.dragId).parentId !== f.id) { e.preventDefault(); if (s.dropFolder !== f.id) this.setState({ dropFolder: f.id }); } },
+      onDrop: (e) => { e.preventDefault(); if (s.dragId) this.moveFile(s.dragId, f.id); this.setState({ dragId: null, dropFolder: null }); },
+      onDragEnd: () => this.setState({ dragId: null, dropFolder: null }),
+    }));
+
+    const mkFile = (it) => {
+      const g = glyphOf(it);
+      const up = it.status === "uploading";
+      return {
+        id: it.id, name: it.name + "." + it.ext.toLowerCase(), ext: it.ext,
+        dims: it.kind === "pdf" ? "Document" : it.w + "×" + it.h, size: it.size, modified: it.date,
+        tint: it.tint, glyph: g[0], glyphColor: g[1],
+        selected: s.selected === it.id && !up,
+        ring: s.selected === it.id && !up ? "#0D6770" : "transparent",
+        rowBg: s.selected === it.id ? "#DCEDEA" : "transparent",
+        uploading: up, progress: Math.round(it.progress), progressW: Math.round(it.progress) + "%",
+        anim: s.flashId === it.id ? "sfFlash .9s ease" : "none",
+        onSelect: () => { if (up) return; this.setState({ selected: it.id, copied: false }); },
+        onDragStart: (e) => { if (up) { e.preventDefault(); return; } e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/plain", it.id); } catch (x) {} this.setState({ dragId: it.id, selected: it.id }); },
+        onDragEnd: () => this.setState({ dragId: null, dropFolder: null }),
+      };
+    };
+    const files = fileItems.map(mkFile);
+
+    const isEmpty = folderItems.length === 0 && fileItems.length === 0;
+    const sel = s.selected ? this.find(s.selected) : null;
+
+    // selection details
+    let selVals = {};
+    if (sel) {
+      const g = glyphOf(sel);
+      const folderName = sel.parentId ? (this.find(sel.parentId) ? this.find(sel.parentId).name : "Media root") : "Media root";
+      selVals = {
+        selTint: sel.tint, selGlyph: g[0], selGlyphColor: g[1], selExt: sel.ext,
+        selName: sel.name + "." + sel.ext.toLowerCase(),
+        onSelName: (e) => { const v = e.target.value.replace(/\.[^.]+$/, ""); this.setState({ items: s.items.map(x => x.id === sel.id ? { ...x, name: v || x.name } : x) }); },
+        selAlt: sel.alt, onSelAlt: (e) => this.setState({ items: s.items.map(x => x.id === sel.id ? { ...x, alt: e.target.value } : x) }),
+        altMissing: sel.kind !== "pdf" && !sel.alt.trim(), altBorder: (sel.kind !== "pdf" && !sel.alt.trim()) ? "#E7D3A6" : "#CFD6D0",
+        selMeta: [
+          { k: "Type", v: sel.ext + (sel.kind === "svg" ? " · vector" : sel.kind === "pdf" ? " · document" : " · raster"), font: "Geist" },
+          { k: "Dimensions", v: sel.kind === "pdf" ? "—" : sel.w + " × " + sel.h + " px", font: "'Geist Mono',monospace" },
+          { k: "Size", v: sel.size, font: "'Geist Mono',monospace" },
+          { k: "Uploaded by", v: sel.author, font: "Geist" },
+          { k: "Date", v: sel.date, font: "Geist" },
+        ],
+        selFolder: sel.parentId || "root",
+        folderOptions: [{ id: "root", label: "Media root" }].concat(s.items.filter(x => x.type === "folder").map(f => ({ id: f.id, label: f.name }))),
+        onMove: (e) => this.moveFile(sel.id, e.target.value === "root" ? null : e.target.value),
+        copyLabel: s.copied ? "Copied!" : "Copy URL", copyIcon: s.copied ? "ph-check" : "ph-link-simple", copyColor: s.copied ? "#147A4A" : "#526366",
+        copyUrl: () => { clearTimeout(this._c); this.setState({ copied: true }); this._c = setTimeout(() => this.setState({ copied: false }), 2000); },
+        deleteSel: () => this.deleteFile(sel.id),
+      };
+    }
+
+    const menuFolder = s.menu ? this.find(s.menu.id) : null;
+
+    return {
+      nav, libCount: allFiles.length, libSize,
+      q: s.q, onSearch: (e) => this.setState({ q: e.target.value }),
+      focusSearch: () => this.setState({ searchFocus: true }), blurSearch: () => this.setState({ searchFocus: false }),
+      searchBorder: s.searchFocus ? "#0D6770" : "#CFD6D0", searchRing: s.searchFocus ? "0 0 0 3px rgba(13,103,112,0.15)" : "none", searchIcon: s.searchFocus ? "#0D6770" : "#869693",
+      setGrid: () => this.setState({ view: "grid" }), setList: () => this.setState({ view: "list" }),
+      gridBg: s.view === "grid" ? "#fff" : "transparent", gridFg: s.view === "grid" ? "#0D6770" : "#869693", gridShadow: s.view === "grid" ? "0 1px 2px rgba(23,35,38,0.12)" : "none",
+      listBg: s.view === "list" ? "#fff" : "transparent", listFg: s.view === "list" ? "#0D6770" : "#869693", listShadow: s.view === "list" ? "0 1px 2px rgba(23,35,38,0.12)" : "none",
+      upload: () => this.upload(), newFolder: () => this.newFolder(),
+      crumbs,
+      isEmpty,
+      emptyTitle: q ? "No matches in this folder" : "This folder is empty",
+      emptyBody: q ? "Try a different search, or clear it to see everything here." : "Drag images in, or use Upload to add your first assets to this folder.",
+      showFolders: folderItems.length > 0,
+      showFilesGrid: s.view === "grid" && fileItems.length > 0,
+      showFilesList: s.view === "list" && fileItems.length > 0,
+      folders, files,
+      zoneOver: (e) => { if (s.dragId) e.preventDefault(); },
+      zoneDrop: (e) => { e.preventDefault(); this.setState({ dragId: null, dropFolder: null }); },
+      stop: (e) => e.stopPropagation(),
+
+      hasSelection: !!sel, clearSelection: () => this.setState({ selected: null }),
+      ...selVals,
+
+      showFolderMenu: !!s.menu, menuX: s.menu ? s.menu.x + "px" : "0", menuY: s.menu ? s.menu.y + "px" : "0",
+      closeMenu: () => this.setState({ menu: null }),
+      menuOpen: () => { if (menuFolder) this.setState({ cwd: menuFolder.id, menu: null, selected: null, q: "" }); },
+      menuRename: () => this.setState({ editingFolder: s.menu.id, menu: null }),
+      menuDelete: () => this.deleteFolder(s.menu.id),
+
+      showToast: !!s.toast, toastMsg: s.toast ? s.toast.msg : "", toastIcon: s.toast ? s.toast.icon : "ph-fill ph-check-circle",
+    };
+  }
+}
+</script>
+</body>
+</html>

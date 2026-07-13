@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:#F5F7F4;color:#172326;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden}
+  a{color:#0D6770;text-decoration:none}
+  a:hover{color:#0A545C}
+  ::selection{background:#CFE6E1}
+  .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
+  .sf-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .sf-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #fff}
+  input{font-family:inherit}
+  i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
+  @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes sfFade{from{opacity:0}to{opacity:1}}
+  @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+  @keyframes sfFlash{0%{background:#DCEDEA}100%{background:transparent}}
+  @keyframes sfMenu{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+
+<div style="display:flex;height:100vh;width:100vw;overflow:hidden">
+
+  <!-- ================= LEFT NAV ================= -->
+  <aside style="width:244px;flex:none;background:#FAFCFA;border-right:1px solid #E2E7E2;display:flex;flex-direction:column">
+    <div style="padding:14px 14px 8px">
+      <div onClick="{{ openLang }}" style="display:flex;align-items:center;gap:10px;height:46px;padding:0 10px;border:1px solid #E2E7E2;border-radius:10px;background:#fff;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.04)" style-hover="border-color:#CFD6D0">
+        <div style="width:28px;height:28px;border-radius:7px;background:#E07A4F;display:flex;align-items:center;justify-content:center;color:#172326;flex:none"><i class="ph ph-globe-hemisphere-west" style="font-size:17px"></i></div>
+        <div style="display:flex;flex-direction:column;min-width:0;flex:1">
+          <span style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Acme Marketing</span>
+          <span style="font-size:11px;color:#869693;font-weight:500">{{ langLabel }}</span>
+        </div>
+        <i class="ph ph-caret-up-down" style="font-size:15px;color:#869693"></i>
+      </div>
+    </div>
+
+    <div style="padding:8px 10px;display:flex;flex-direction:column;gap:1px">
+      <div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#A5B0AD;padding:8px 10px 4px">Content</div>
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="7">
+        <div style="display:flex;align-items:center;gap:11px;height:34px;padding:0 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;background:{{ n.bg }};color:{{ n.fg }}" style-hover="filter:brightness(0.98)">
+          <span style="display:flex;width:17px;flex:none">{{ n.icon }}</span>
+          <span>{{ n.label }}</span>
+          <span style="flex:1"></span>
+          <sc-if value="{{ n.count }}" hint-placeholder-val="0"><span style="font-size:11px;font-weight:600;color:#A5B0AD;font-family:'Geist Mono',monospace">{{ n.count }}</span></sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="flex:1"></div>
+    <div style="padding:10px 12px;border-top:1px solid #E2E7E2;display:flex;align-items:center;gap:10px">
+      <span style="width:28px;height:28px;border-radius:999px;background:#FBEBE1;color:#B45F38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none">MJ</span>
+      <div style="display:flex;flex-direction:column;min-width:0"><span style="font-size:12.5px;font-weight:500">Mara Jensen</span><span style="font-size:11px;color:#869693">Editor</span></div>
+      <span style="flex:1"></span>
+      <span style="display:flex;color:#AEBAB6;cursor:pointer" style-hover="color:#172326"><i class="ph ph-sliders-horizontal" style="font-size:16px"></i></span>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main style="flex:1;display:flex;flex-direction:column;min-width:0;background:#fff">
+
+    <!-- header -->
+    <div style="display:flex;align-items:center;gap:12px;padding:16px 22px 14px;border-bottom:1px solid #EEF1ED">
+      <div style="display:flex;flex-direction:column;gap:1px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <h1 style="margin:0;font-size:19px;font-weight:600;letter-spacing:-0.015em">Pages</h1>
+          <span style="font-size:12px;color:#869693;font-weight:500;font-family:'Geist Mono',monospace">{{ totalCount }} pages</span>
+        </div>
+        <span style="font-size:12px;color:#869693">Canonical page tree · {{ langLabel }}</span>
+      </div>
+      <span style="flex:1"></span>
+      <div style="display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;border-radius:8px;background:#fff;width:248px;flex:none;border:1.5px solid {{ searchBorder }};box-shadow:{{ searchRing }};transition:border-color .12s,box-shadow .12s">
+        <i class="ph ph-magnifying-glass" style="font-size:15px;color:{{ searchIcon }}"></i>
+        <input value="{{ q }}" onInput="{{ onSearch }}" onFocus="{{ onSearchFocus }}" onBlur="{{ onSearchBlur }}" placeholder="Search pages…" style="border:none;outline:none;background:transparent;font-size:13px;color:#172326;width:100%;padding:0"/>
+        <sc-if value="{{ q }}" hint-placeholder-val="x"><span onClick="{{ clearSearch }}" style="display:flex;cursor:pointer;color:#AEBAB6" style-hover="color:#172326"><i class="ph ph-x" style="font-size:14px"></i></span></sc-if>
+      </div>
+      <button onClick="{{ toggleFilters }}" style="display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 12px;border:1px solid {{ filterBtnBorder }};border-radius:8px;background:{{ filterBtnBg }};color:{{ filterBtnFg }};font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex:none" style-hover="filter:brightness(0.98)">
+        <i class="ph ph-funnel" style="font-size:15px"></i>
+        Filters
+        <sc-if value="{{ activeFilterCount }}" hint-placeholder-val="0"><span style="min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#0D6770;color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">{{ activeFilterCount }}</span></sc-if>
+      </button>
+      <button onClick="{{ addTopLevel }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:none;border-radius:8px;background:#0D6770;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.1);white-space:nowrap;flex:none" style-hover="background:#0A545C">
+        <i class="ph-bold ph-plus" style="font-size:15px"></i>
+        Add page
+      </button>
+    </div>
+
+    <!-- filter bar -->
+    <sc-if value="{{ showFilters }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:14px;padding:11px 22px;border-bottom:1px solid #EEF1ED;background:#FAFCFA;flex-wrap:wrap;animation:sfMenu .16s ease">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;font-weight:600;color:#526366">Status</span>
+          <div style="display:flex;background:#EEF1ED;border-radius:8px;padding:2px;gap:2px">
+            <sc-for list="{{ statusSeg }}" as="s" hint-placeholder-count="3">
+              <button onClick="{{ s.onClick }}" style="height:26px;padding:0 12px;border:none;border-radius:6px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};box-shadow:{{ s.shadow }}">{{ s.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <button onClick="{{ openTemplateFilter }}" style="display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 11px;border:1px solid {{ tmplBtnBorder }};border-radius:8px;background:{{ tmplBtnBg }};color:{{ tmplBtnFg }};font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap">
+          <i class="ph ph-file-text" style="font-size:14px"></i>
+          {{ tmplBtnLabel }}
+          <i class="ph ph-caret-down" style="font-size:12px"></i>
+        </button>
+        <button onClick="{{ openAuthorFilter }}" style="display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 11px;border:1px solid {{ authBtnBorder }};border-radius:8px;background:{{ authBtnBg }};color:{{ authBtnFg }};font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap">
+          <i class="ph ph-user" style="font-size:14px"></i>
+          {{ authBtnLabel }}
+          <i class="ph ph-caret-down" style="font-size:12px"></i>
+        </button>
+        <button onClick="{{ toggleProblems }}" style="display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 11px;border:1px solid {{ probBorder }};border-radius:8px;background:{{ probBg }};color:{{ probFg }};font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap">
+          <i class="ph ph-warning" style="font-size:14px"></i>
+          Has problems
+        </button>
+        <span style="flex:1"></span>
+        <span style="font-size:12px;color:#869693;font-family:'Geist Mono',monospace">{{ resultLabel }}</span>
+        <sc-if value="{{ activeFilterCount }}" hint-placeholder-val="0"><button onClick="{{ clearFilters }}" style="display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 10px;border:none;border-radius:8px;background:transparent;color:#0D6770;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#DCEDEA">Clear all</button></sc-if>
+      </div>
+    </sc-if>
+
+    <!-- tree scroll -->
+    <div class="sf-scroll" style="flex:1;overflow:auto;position:relative">
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;padding:40px;text-align:center;animation:sfFade .2s ease">
+          <div style="width:64px;height:64px;border-radius:16px;background:#FBEBE1;display:flex;align-items:center;justify-content:center;color:#C05F35">
+            <span style="display:flex">{{ emptyIcon }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;max-width:340px">
+            <span style="font-size:16px;font-weight:600;color:#172326">{{ emptyTitle }}</span>
+            <span style="font-size:13.5px;line-height:1.55;color:#526366">{{ emptyBody }}</span>
+          </div>
+          <button onClick="{{ emptyAction }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 15px;border:none;border-radius:8px;background:#0D6770;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#0A545C">{{ emptyCta }}</button>
+        </div>
+      </sc-if>
+
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="12">
+        <div draggable="true" onClick="{{ r.onClick }}" onDragStart="{{ r.onDragStart }}" onDragOver="{{ r.onDragOver }}" onDragEnter="{{ r.onDragOver }}" onDrop="{{ r.onDrop }}" onDragEnd="{{ r.onDragEnd }}" style="position:relative;display:flex;align-items:center;gap:8px;height:{{ rowH }};padding-right:14px;padding-left:{{ r.pad }};background:{{ r.bg }};opacity:{{ r.op }};box-shadow:{{ r.shadow }};cursor:pointer;transition:background .12s,box-shadow .12s;animation:{{ r.anim }};border-bottom:1px solid #F5F7F4" style-hover="filter:brightness(0.975)">
+          <sc-if value="{{ r.dropBefore }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:{{ r.pad }};right:14px;top:-1px;height:2px;background:#0D6770;border-radius:2px;z-index:2"><span style="position:absolute;left:-3px;top:-2px;width:6px;height:6px;border-radius:999px;background:#0D6770"></span></div></sc-if>
+          <sc-if value="{{ r.dropAfter }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:{{ r.pad }};right:14px;bottom:-1px;height:2px;background:#0D6770;border-radius:2px;z-index:2"><span style="position:absolute;left:-3px;top:-2px;width:6px;height:6px;border-radius:999px;background:#0D6770"></span></div></sc-if>
+
+          <span onClick="{{ r.onToggle }}" style="width:17px;height:17px;flex:none;display:flex;align-items:center;justify-content:center;color:#8A9895;transition:transform .15s;transform:rotate({{ r.chevRot }});visibility:{{ r.chevVis }};border-radius:4px" style-hover="background:#E2E7E2;color:#172326">
+            <i class="ph-bold ph-caret-right" style="font-size:13px"></i>
+          </span>
+
+          <span style="width:17px;flex:none;display:flex;align-items:center;color:{{ r.iconColor }}"><i class="ph {{ r.iconClass }}" style="font-size:16px"></i></span>
+
+          <span style="font-size:13.5px;font-weight:500;color:#172326;white-space:nowrap">{{ r.title }}</span>
+          <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#9AA8A4;white-space:nowrap">{{ r.slugOwn }}</span>
+          <sc-if value="{{ r.hasProblems }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 7px;border-radius:5px;background:#F8E6E3;color:#B5382C;font-size:11px;font-weight:600"><i class="ph-fill ph-warning" style="font-size:12px"></i>{{ r.problems }}</span></sc-if>
+
+          <span style="flex:1"></span>
+
+          <sc-if value="{{ r.showTag }}" hint-placeholder-val="{{ false }}"><span style="font-size:11.5px;color:#526366;background:#EEF1ED;padding:2px 8px;border-radius:5px;white-space:nowrap">{{ r.template }}</span></sc-if>
+          <span style="display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:5px;font-size:11.5px;font-weight:600;background:{{ r.stBg }};color:{{ r.stFg }};white-space:nowrap"><span style="width:5px;height:5px;border-radius:999px;background:{{ r.stDot }}"></span>{{ r.status }}</span>
+
+          <span onClick="{{ r.onPlus }}" title="Add child page" style="width:26px;height:26px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:pointer" style-hover="background:#DCEDEA;color:#0D6770"><i class="ph-bold ph-plus" style="font-size:15px"></i></span>
+          <span onClick="{{ r.onMenu }}" title="More actions" style="width:26px;height:26px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:pointer" style-hover="background:#EEF1ED;color:#172326"><i class="ph-bold ph-dots-three" style="font-size:18px"></i></span>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- status bar -->
+    <div style="display:flex;align-items:center;gap:14px;padding:9px 22px;border-top:1px solid #EEF1ED;background:#FAFCFA;font-size:12px;color:#869693">
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ph ph-arrows-out-cardinal" style="font-size:15px;color:#0D6770"></i>Drag a row to reorder, or onto another page to reparent</span>
+      <span style="flex:1"></span>
+      <span style="font-family:'Geist Mono',monospace">{{ footerLabel }}</span>
+    </div>
+  </main>
+</div>
+
+<!-- ================= OVERLAY + MENUS ================= -->
+<sc-if value="{{ anyPopover }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeMenu }}" style="position:fixed;inset:0;z-index:40;animation:sfFade .1s ease"></div>
+</sc-if>
+
+<!-- row actions -->
+<sc-if value="{{ showRowMenu }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:{{ menuX }};top:{{ menuY }};z-index:50;width:216px;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:sfPop .13s ease">
+    <sc-for list="{{ rowMenuItems }}" as="m" hint-placeholder-count="6">
+      <sc-if value="{{ m.divider }}" hint-placeholder-val="{{ false }}"><div style="height:1px;background:#EEF1ED;margin:5px 6px"></div></sc-if>
+      <sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+        <div onClick="{{ m.onClick }}" style="display:flex;align-items:center;gap:10px;height:34px;padding:0 9px;border-radius:7px;cursor:{{ m.cursor }};font-size:13px;font-weight:500;color:{{ m.color }};opacity:{{ m.opacity }}" style-hover="background:{{ m.hoverBg }}">
+          <span style="display:flex;width:16px">{{ m.icon }}</span>
+          <span>{{ m.label }}</span>
+          <sc-if value="{{ m.hint }}" hint-placeholder-val="x"><span style="flex:1"></span><span style="font-size:10.5px;color:#A5B0AD;font-weight:500">{{ m.hint }}</span></sc-if>
+        </div>
+      </sc-if>
+    </sc-for>
+  </div>
+</sc-if>
+
+<!-- plus / create menu -->
+<sc-if value="{{ showPlusMenu }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:{{ menuX }};top:{{ menuY }};z-index:50;width:250px;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:sfPop .13s ease">
+    <div style="padding:8px 10px 4px;font-size:11px;font-weight:600;color:#A5B0AD;text-transform:uppercase;letter-spacing:0.05em">Add under “{{ plusParent }}”</div>
+    <div onClick="{{ plusQuick }}" style="display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:7px;cursor:pointer" style-hover="background:#DCEDEA">
+      <span style="width:30px;height:30px;border-radius:7px;background:#DCEDEA;color:#0D6770;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-arrow-elbow-down-right" style="font-size:17px"></i></span>
+      <div style="display:flex;flex-direction:column;min-width:0"><span style="font-size:13px;font-weight:600;color:#172326">Add {{ plusPreferred }}</span><span style="font-size:11.5px;color:#869693">Preferred template here</span></div>
+    </div>
+    <div onClick="{{ plusOther }}" style="display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:7px;cursor:pointer" style-hover="background:#F5F7F4">
+      <span style="width:30px;height:30px;border-radius:7px;background:#EEF1ED;color:#526366;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-squares-four" style="font-size:17px"></i></span>
+      <div style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600;color:#172326">Add different kind of page…</span><span style="font-size:11.5px;color:#869693">Choose from all templates</span></div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- template filter checklist -->
+<sc-if value="{{ showTemplateFilter }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:{{ menuX }};top:{{ menuY }};z-index:50;width:220px;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:sfPop .13s ease">
+    <div style="padding:8px 10px 6px;font-size:11px;font-weight:600;color:#A5B0AD;text-transform:uppercase;letter-spacing:0.05em">Originating template</div>
+    <sc-for list="{{ templateFilterItems }}" as="t" hint-placeholder-count="7">
+      <div onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:9px;height:32px;padding:0 9px;border-radius:7px;cursor:pointer;font-size:13px;color:#172326" style-hover="background:#F5F7F4">
+        <span style="width:16px;height:16px;border-radius:4px;border:1.5px solid {{ t.boxBorder }};background:{{ t.boxBg }};display:flex;align-items:center;justify-content:center;flex:none;color:#fff">{{ t.check }}</span>
+        <span>{{ t.name }}</span>
+      </div>
+    </sc-for>
+  </div>
+</sc-if>
+
+<!-- author filter -->
+<sc-if value="{{ showAuthorFilter }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:{{ menuX }};top:{{ menuY }};z-index:50;width:196px;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:sfPop .13s ease">
+    <sc-for list="{{ authorItems }}" as="a" hint-placeholder-count="4">
+      <div onClick="{{ a.onClick }}" style="display:flex;align-items:center;gap:9px;height:34px;padding:0 9px;border-radius:7px;cursor:pointer;font-size:13px;color:#172326" style-hover="background:#F5F7F4">
+        <span style="width:22px;height:22px;border-radius:999px;background:{{ a.avBg }};color:{{ a.avFg }};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex:none">{{ a.initials }}</span>
+        <span>{{ a.name }}</span>
+        <span style="flex:1"></span>
+        <span style="display:flex;color:#0D6770">{{ a.check }}</span>
+      </div>
+    </sc-for>
+  </div>
+</sc-if>
+
+<!-- language switcher -->
+<sc-if value="{{ showLangMenu }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:16px;top:64px;z-index:50;width:216px;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:sfPop .13s ease">
+    <div style="padding:8px 10px 6px;font-size:11px;font-weight:600;color:#A5B0AD;text-transform:uppercase;letter-spacing:0.05em">Site language — own tree</div>
+    <sc-for list="{{ langItems }}" as="l" hint-placeholder-count="3">
+      <div onClick="{{ l.onClick }}" style="display:flex;align-items:center;gap:10px;height:38px;padding:0 9px;border-radius:7px;cursor:pointer;background:{{ l.bg }}" style-hover="filter:brightness(0.98)">
+        <span style="width:26px;height:20px;border-radius:4px;background:#EEF1ED;color:#526366;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex:none;font-family:'Geist Mono',monospace">{{ l.code }}</span>
+        <div style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:500;color:#172326">{{ l.name }}</span><span style="font-size:11px;color:#869693">{{ l.count }} pages</span></div>
+        <span style="flex:1"></span>
+        <span style="display:flex;color:#0D6770">{{ l.check }}</span>
+      </div>
+    </sc-for>
+  </div>
+</sc-if>
+
+<!-- ================= TEMPLATE PICKER MODAL ================= -->
+<sc-if value="{{ showPicker }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeMenu }}" style="position:fixed;inset:0;z-index:60;background:rgba(23,35,38,0.28);display:flex;align-items:center;justify-content:center;padding:24px;animation:sfFade .12s ease">
+    <div onClick="{{ stop }}" style="width:560px;max-width:100%;max-height:88vh;overflow:auto;background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(23,35,38,0.28);animation:sfPop .16s ease" class="sf-scroll">
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:20px 22px 14px;border-bottom:1px solid #EEF1ED">
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <span style="font-size:16px;font-weight:600">Add a page under “{{ pickerParent }}”</span>
+          <span style="font-size:12.5px;color:#526366">Templates copy an initial structure. The page is fully independent afterwards — you can change anything.</span>
+        </div>
+        <span style="flex:1"></span>
+        <span onClick="{{ closeMenu }}" style="display:flex;cursor:pointer;color:#869693;padding:2px" style-hover="color:#172326"><i class="ph ph-x" style="font-size:18px"></i></span>
+      </div>
+      <div style="padding:14px 16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <sc-for list="{{ pickerTemplates }}" as="t" hint-placeholder-count="6">
+          <div onClick="{{ t.onClick }}" style="display:flex;gap:11px;padding:13px;border:1px solid {{ t.border }};border-radius:10px;cursor:pointer;background:{{ t.bg }};transition:border-color .12s,background .12s" style-hover="border-color:#0D6770;background:#F7FAF9">
+            <span style="width:34px;height:34px;border-radius:8px;background:#DCEDEA;color:#0D6770;display:flex;align-items:center;justify-content:center;flex:none">{{ t.icon }}</span>
+            <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+              <div style="display:flex;align-items:center;gap:6px"><span style="font-size:13.5px;font-weight:600;color:#172326">{{ t.name }}</span><sc-if value="{{ t.preferred }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:700;color:#0D6770;background:#DCEDEA;padding:1px 6px;border-radius:999px">Preferred</span></sc-if></div>
+              <span style="font-size:11.5px;line-height:1.45;color:#869693">{{ t.desc }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ================= DELETE MODAL ================= -->
+<sc-if value="{{ showDelete }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeMenu }}" style="position:fixed;inset:0;z-index:60;background:rgba(23,35,38,0.28);display:flex;align-items:center;justify-content:center;padding:24px;animation:sfFade .12s ease">
+    <div onClick="{{ stop }}" style="width:440px;max-width:100%;background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(23,35,38,0.28);overflow:hidden;animation:sfPop .16s ease">
+      <div style="padding:22px 22px 6px;display:flex;gap:14px">
+        <div style="width:38px;height:38px;border-radius:9px;background:{{ delIconBg }};color:{{ delIconFg }};display:flex;align-items:center;justify-content:center;flex:none">{{ delIcon }}</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <span style="font-size:16px;font-weight:600">{{ delTitle }}</span>
+          <span style="font-size:13px;line-height:1.55;color:#526366">{{ delBody }}</span>
+          <sc-if value="{{ delRedirect }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:8px;margin-top:6px;padding:9px 11px;border:1px solid #E2E7E2;border-radius:8px;background:#FAFCFA">
+              <span style="display:flex;color:#0D6770"><i class="ph ph-arrow-bend-up-right" style="font-size:15px"></i></span>
+              <span style="font-size:12.5px;color:#33474A">Create a redirect from <span style="font-family:'Geist Mono',monospace;font-size:11.5px;color:#0D6770">{{ delPath }}</span></span>
+              <span style="flex:1"></span>
+              <span onClick="{{ toggleRedirect }}" style="width:34px;height:20px;border-radius:999px;background:{{ redirectTrackBg }};position:relative;cursor:pointer;transition:background .15s;flex:none"><span style="position:absolute;top:2px;left:{{ redirectKnob }};width:16px;height:16px;border-radius:999px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);transition:left .15s"></span></span>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:9px;padding:16px 22px 20px">
+        <button onClick="{{ closeMenu }}" style="height:36px;padding:0 15px;border:1px solid #CFD6D0;border-radius:8px;background:#fff;color:#172326;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#F5F7F4">Cancel</button>
+        <sc-if value="{{ delConfirmable }}" hint-placeholder-val="{{ true }}"><button onClick="{{ confirmDelete }}" style="height:36px;padding:0 15px;border:none;border-radius:8px;background:#B5382C;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9A2E23">{{ delConfirmLabel }}</button></sc-if>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ================= TOAST ================= -->
+<sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:12px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:sfToast .2s cubic-bezier(.2,.8,.2,1);max-width:520px">
+    <span style="display:flex;color:{{ toastIconColor }};flex:none">{{ toastIcon }}</span>
+    <div style="display:flex;flex-direction:column;gap:1px">
+      <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
+      <sc-if value="{{ toastSub }}" hint-placeholder-val="x"><span style="font-size:11.5px;color:#B7C4C1">{{ toastSub }}</span></sc-if>
+    </div>
+    <sc-if value="{{ toastAction }}" hint-placeholder-val="x"><span onClick="{{ toastUndo }}" style="margin-left:6px;font-size:12.5px;font-weight:600;color:#58C3C7;cursor:pointer;white-space:nowrap" style-hover="color:#8FDBDE">{{ toastAction }}</span></sc-if>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;comfortable&quot;,&quot;compact&quot;],&quot;default&quot;:&quot;comfortable&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;showTemplateTags&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+const AUTHORS = {
+  "Mara Jensen": { initials: "MJ", avBg: "#FBEBE1", avFg: "#B45F38" },
+  "Devin Park": { initials: "DP", avBg: "#DCEDEA", avFg: "#0D6770" },
+  "Sofia Ruiz": { initials: "SR", avBg: "#EAE6F5", avFg: "#5B4B8A" },
+};
+const STATUS = {
+  published: { label: "Published", bg: "#E3F3EA", fg: "#147A4A", dot: "#1F9D57" },
+  concept: { label: "Concept", bg: "#F7EDDA", fg: "#8A5A06", dot: "#D18F0C" },
+};
+const TEMPLATES = [
+  { name: "Standard page", type: "file", desc: "A blank page with the site's default structure." },
+  { name: "News article", type: "file", desc: "Headline, date, hero and body for a news post." },
+  { name: "Blog article", type: "file", desc: "Long-form article with author and tags." },
+  { name: "Landing page", type: "landing", desc: "Flexible marketing page with stacked sections." },
+  { name: "News overview", type: "news", desc: "Automatically lists its child news articles." },
+  { name: "Blog overview", type: "news", desc: "Automatically lists its child blog articles." },
+  { name: "FAQ", type: "faq", desc: "Grouped question-and-answer content." },
+];
+const FILTER_TEMPLATES = ["Standard page", "News overview", "News article", "Blog overview", "Blog article", "Landing page", "FAQ"];
+
+function node(id, title, slug, template, status, author, children, problems, preferred) {
+  return { id, title, slug, template, status, author, problems: problems || 0, preferred: preferred || null, children: children || [] };
+}
+function makeTrees() {
+  return {
+    en: [ node("p1", "Home", "", "Homepage", "published", "Mara Jensen", [
+      node("p2", "News", "news", "News overview", "published", "Devin Park", [
+        node("p3", "Product launch announcement", "product-launch", "News article", "concept", "Mara Jensen"),
+        node("p4", "Q2 hiring update", "q2-hiring", "News article", "published", "Sofia Ruiz"),
+        node("p5", "Series B funding", "series-b", "News article", "published", "Devin Park"),
+      ], 0, "News article"),
+      node("p6", "Blog", "blog", "Blog overview", "published", "Sofia Ruiz", [
+        node("p7", "Designing a headless page tree", "headless-page-tree", "Blog article", "published", "Mara Jensen"),
+        node("p8", "Content migration guide", "migration-guide", "Blog article", "concept", "Devin Park"),
+      ], 0, "Blog article"),
+      node("p9", "Products", "products", "Standard page", "published", "Devin Park", [
+        node("p10", "Platform", "platform", "Landing page", "published", "Sofia Ruiz"),
+        node("p11", "Pricing", "pricing", "Landing page", "published", "Mara Jensen", null, 1),
+      ]),
+      node("p12", "Solutions", "solutions", "Standard page", "concept", "Devin Park", [
+        node("p13", "For agencies", "agencies", "Landing page", "concept", "Sofia Ruiz"),
+        node("p14", "For in-house teams", "in-house", "Landing page", "concept", "Devin Park"),
+      ]),
+      node("p15", "Careers", "careers", "Standard page", "published", "Mara Jensen", [
+        node("p16", "Open roles", "open-roles", "Standard page", "published", "Sofia Ruiz"),
+      ]),
+      node("p17", "About", "about", "Standard page", "published", "Mara Jensen"),
+      node("p18", "Contact", "contact", "Standard page", "published", "Devin Park"),
+      node("p19", "Help center", "help", "Standard page", "published", "Sofia Ruiz", [
+        node("p20", "FAQ", "faq", "FAQ", "published", "Mara Jensen"),
+        node("p21", "Getting started", "getting-started", "FAQ", "published", "Devin Park"),
+      ]),
+    ]) ],
+    nl: [ node("n1", "Home", "", "Homepage", "published", "Mara Jensen", [
+      node("n2", "Nieuws", "nieuws", "News overview", "published", "Devin Park", [
+        node("n3", "Productlancering", "productlancering", "News article", "published", "Mara Jensen"),
+        node("n4", "Nieuwe vacatures", "vacatures", "News article", "concept", "Sofia Ruiz"),
+      ], 0, "News article"),
+      node("n5", "Over ons", "over-ons", "Standard page", "published", "Devin Park"),
+      node("n6", "Contact", "contact", "Standard page", "published", "Mara Jensen"),
+    ]) ],
+    fr: [ node("f1", "Accueil", "", "Homepage", "published", "Mara Jensen") ],
+  };
+}
+const LANGS = [
+  { code: "EN", key: "en", name: "English" },
+  { code: "NL", key: "nl", name: "Nederlands" },
+  { code: "FR", key: "fr", name: "Français" },
+];
+function locate(nodes, id, parent) {
+  for (let i = 0; i < nodes.length; i++) {
+    if (nodes[i].id === id) return { node: nodes[i], parent: parent || null, index: i, siblings: nodes };
+    const r = locate(nodes[i].children || [], id, nodes[i]);
+    if (r) return r;
+  }
+  return null;
+}
+function contains(n, id) {
+  for (const c of (n.children || [])) { if (c.id === id) return true; if (contains(c, id)) return true; }
+  return false;
+}
+function subtreeStats(n) {
+  let total = 1, pub = n.status === "published" ? 1 : 0;
+  for (const c of (n.children || [])) { const s = subtreeStats(c); total += s.total; pub += s.pub; }
+  return { total, pub };
+}
+function countTree(nodes) { let t = 0; for (const n of nodes) t += subtreeStats(n).total; return t; }
+
+class Component extends DCLogic {
+  state = {
+    trees: makeTrees(),
+    lang: "en",
+    expanded: { p1: true, p2: true, p6: true, p9: true, n1: true, n2: true, f1: true },
+    selected: "p3",
+    q: "",
+    searchFocus: false,
+    filterStatus: "all",
+    filterTemplates: [],
+    filterAuthor: "all",
+    filterProblems: false,
+    showFilters: false,
+    menu: null,           // {type, id, x, y}
+    picker: null,         // {parentId}
+    del: null,            // {id, redirect}
+    toast: null,          // {msg, sub, icon, action, undo}
+    dragId: null,
+    dropTarget: null,     // {id, pos}
+    flashId: null,
+    justCreated: null,
+  };
+  uid = 5000;
+  componentWillUnmount() { clearTimeout(this._toastT); clearTimeout(this._flashT); clearTimeout(this._expandT); }
+
+  tree() { return this.state.trees[this.state.lang]; }
+  setTree(nodes, extra) { this.setState({ trees: { ...this.state.trees, [this.state.lang]: nodes }, ...(extra || {}) }); }
+
+  filtering() {
+    const s = this.state;
+    return !!(s.q.trim() || s.filterStatus !== "all" || s.filterTemplates.length || s.filterAuthor !== "all" || s.filterProblems);
+  }
+  matchNode(n, path) {
+    const s = this.state, q = s.q.trim().toLowerCase();
+    if (q && !((n.title + " " + path).toLowerCase().includes(q))) return false;
+    if (s.filterStatus !== "all" && n.status !== s.filterStatus) return false;
+    if (s.filterTemplates.length && !s.filterTemplates.includes(n.template)) return false;
+    if (s.filterAuthor !== "all" && n.author !== s.filterAuthor) return false;
+    if (s.filterProblems && !n.problems) return false;
+    return true;
+  }
+
+  toast(t) { clearTimeout(this._toastT); this.setState({ toast: t }); this._toastT = setTimeout(() => this.setState({ toast: null }), 4200); }
+  flash(id) { clearTimeout(this._flashT); this.setState({ flashId: id }); this._flashT = setTimeout(() => this.setState({ flashId: null }), 1100); }
+  genId() { return "x" + (++this.uid); }
+  uniqueSlug(siblings, base, exceptId) {
+    let slug = base, i = 2;
+    const taken = () => siblings.some(s => s.id !== exceptId && s.slug === slug);
+    while (taken()) { slug = base + "-" + i; i++; }
+    return slug;
+  }
+
+  // ---- create ----
+  openPicker(parentId) { this.setState({ picker: { parentId }, menu: null }); }
+  createPage(parentId, template) {
+    const nodes = structuredClone(this.tree());
+    const loc = locate(nodes, parentId);
+    if (!loc) return;
+    const kids = loc.node.children = loc.node.children || [];
+    const base = template === "News article" ? "news-item" : template === "Blog article" ? "blog-post" : template === "Landing page" ? "landing" : template === "FAQ" ? "faq" : "new-page";
+    const slug = this.uniqueSlug(kids, base);
+    const id = this.genId();
+    kids.push(node(id, "Untitled " + template.toLowerCase(), slug, template, "concept", "Mara Jensen"));
+    this.setTree(nodes, { expanded: { ...this.state.expanded, [parentId]: true }, selected: id, picker: null, menu: null });
+    this.flash(id);
+    this.toast({ msg: "Page created", sub: "“Untitled " + template.toLowerCase() + "” saved as a concept under “" + loc.node.title + "”.", icon: "check", action: null });
+  }
+  duplicate(id) {
+    const nodes = structuredClone(this.tree());
+    const loc = locate(nodes, id);
+    if (!loc || !loc.parent) { this.toast({ msg: "The homepage can’t be duplicated", icon: "info" }); this.setState({ menu: null }); return; }
+    const clone = structuredClone(loc.node);
+    const reid = (n) => { n.id = this.genId(); n.status = "concept"; (n.children || []).forEach(reid); };
+    reid(clone);
+    clone.title = loc.node.title + " (copy)";
+    clone.slug = this.uniqueSlug(loc.siblings, loc.node.slug + "-copy");
+    loc.siblings.splice(loc.index + 1, 0, clone);
+    this.setTree(nodes, { selected: clone.id, menu: null });
+    this.flash(clone.id);
+    this.toast({ msg: "Page duplicated", sub: "Copy saved as a concept.", icon: "copy" });
+  }
+
+  // ---- delete ----
+  openDelete(id) {
+    const loc = locate(this.tree(), id);
+    this.setState({ del: { id, redirect: loc && loc.node.status === "published" }, menu: null });
+  }
+  confirmDelete() {
+    const d = this.state.del; if (!d) return;
+    const nodes = structuredClone(this.tree());
+    const loc = locate(nodes, d.id);
+    if (!loc) return;
+    const title = loc.node.title, wasPub = loc.node.status === "published", path = this.pathOf(d.id);
+    loc.siblings.splice(loc.index, 1);
+    this.setTree(nodes, { del: null, selected: null });
+    this.toast({ msg: "Deleted “" + title + "”", sub: (wasPub && d.redirect) ? "Redirect created from " + path : (wasPub ? "The published URL is now unavailable." : null), icon: "trash" });
+  }
+
+  // ---- move (drag & drop) ----
+  onDragOver(e, id) {
+    e.preventDefault();
+    const dragId = this.state.dragId;
+    if (!dragId || dragId === id) { if (this.state.dropTarget) this.setState({ dropTarget: null }); return; }
+    const dragLoc = locate(this.tree(), dragId);
+    if (dragLoc && contains(dragLoc.node, id)) { if (this.state.dropTarget) this.setState({ dropTarget: null }); return; }
+    const rect = e.currentTarget.getBoundingClientRect();
+    const y = e.clientY - rect.top, h = rect.height;
+    let pos = y < h * 0.3 ? "before" : y > h * 0.7 ? "after" : "inside";
+    const tgt = locate(this.tree(), id);
+    if (tgt && !tgt.parent && pos !== "inside") pos = "inside"; // homepage: only accept children
+    const cur = this.state.dropTarget;
+    if (!cur || cur.id !== id || cur.pos !== pos) this.setState({ dropTarget: { id, pos } });
+    // auto-expand collapsed parent when hovering inside
+    if (pos === "inside" && tgt && (tgt.node.children || []).length && !this.state.expanded[id]) {
+      clearTimeout(this._expandT);
+      this._expandT = setTimeout(() => {
+        if (this.state.dropTarget && this.state.dropTarget.id === id && this.state.dropTarget.pos === "inside")
+          this.setState({ expanded: { ...this.state.expanded, [id]: true } });
+      }, 550);
+    }
+  }
+  onDrop(e, id) {
+    e.preventDefault();
+    const dt = this.state.dropTarget, dragId = this.state.dragId;
+    this.setState({ dragId: null, dropTarget: null });
+    clearTimeout(this._expandT);
+    if (!dt || !dragId || dragId === dt.id) return;
+    const nodes = structuredClone(this.tree());
+    const src = locate(nodes, dragId);
+    if (!src || !src.parent) return; // homepage can't move
+    if (contains(src.node, dt.id)) return;
+    const moved = src.node, stats = subtreeStats(moved);
+    const oldParentTitle = src.parent.title;
+    src.siblings.splice(src.index, 1);
+    let newParentTitle;
+    if (dt.pos === "inside") {
+      const tgt = locate(nodes, dt.id);
+      tgt.node.children = tgt.node.children || [];
+      tgt.node.children.push(moved);
+      newParentTitle = tgt.node.title;
+      this.state.expanded[dt.id] = true;
+    } else {
+      const tgt = locate(nodes, dt.id);
+      if (!tgt.parent) { // dropped on homepage as sibling -> make child instead
+        tgt.node.children = tgt.node.children || [];
+        tgt.node.children.push(moved);
+        newParentTitle = tgt.node.title;
+        this.state.expanded[dt.id] = true;
+      } else {
+        tgt.siblings.splice(dt.pos === "after" ? tgt.index + 1 : tgt.index, 0, moved);
+        newParentTitle = tgt.parent.title;
+      }
+    }
+    const reparented = newParentTitle !== oldParentTitle;
+    this.setTree(nodes, { expanded: { ...this.state.expanded }, selected: moved.id });
+    this.flash(moved.id);
+    if (reparented) {
+      this.toast({ msg: "Moved “" + moved.title + "” under “" + newParentTitle + "”", sub: stats.total + " URL" + (stats.total > 1 ? "s" : "") + " updated · " + stats.pub + " redirect" + (stats.pub === 1 ? "" : "s") + " created", icon: "move" });
+    } else {
+      this.toast({ msg: "Reordered “" + moved.title + "”", sub: "Sibling order saved.", icon: "move" });
+    }
+  }
+
+  pathOf(id) {
+    const build = (nodes, prefix) => {
+      for (const n of nodes) {
+        const p = n.slug === "" ? "/" : (prefix === "/" ? "/" + n.slug : prefix + "/" + n.slug);
+        if (n.id === id) return p;
+        const r = build(n.children || [], p);
+        if (r) return r;
+      }
+      return null;
+    };
+    return build(this.tree(), "/") || "/";
+  }
+
+  renderVals() {
+    const s = this.state;
+    const p = this.props || {};
+    const filtering = this.filtering();
+    const density = p.density === "compact" ? "compact" : "comfortable";
+    const rowH = density === "compact" ? "32px" : "38px";
+    const showTags = p.showTemplateTags !== false;
+    const icon = (name, sz) => React.createElement("i", { className: "ph " + name, style: { fontSize: (sz && sz > 6 ? sz : 16) + "px", lineHeight: 1, display: "flex" } });
+    const ICONS = {
+      layers: "ph-tree-structure",
+      image: "ph-image",
+      redirect: "ph-arrow-bend-up-left",
+      panelTop: "ph-browser",
+      panelBottom: "ph-layout",
+      box: "ph-cube",
+      settings: "ph-gear",
+      open: "ph-arrow-square-out",
+      childAdd: "ph-arrow-elbow-down-right",
+      rename: "ph-pencil-simple",
+      move: "ph-arrows-out-cardinal",
+      copy: "ph-copy",
+      trash: "ph-trash",
+      check: "ph-check",
+      info: "ph-info",
+      alert: "ph-warning",
+      pageAdd: "ph-file-plus",
+      file: "ph-file-text",
+      landing: "ph-layout",
+      news: "ph-newspaper",
+      faq: "ph-question",
+    };
+
+    // ---- left nav ----
+    const total = countTree(this.tree());
+    const nav = [
+      { icon: icon(ICONS.layers), label: "Pages", bg: "#DCEDEA", fg: "#0D6770", count: "" + total },
+      { icon: icon(ICONS.image), label: "Media", bg: "transparent", fg: "#33474A", count: 0 },
+      { icon: icon(ICONS.redirect), label: "Redirects", bg: "transparent", fg: "#33474A", count: 0 },
+      { icon: icon(ICONS.panelTop), label: "Header navigation", bg: "transparent", fg: "#33474A", count: 0 },
+      { icon: icon(ICONS.panelBottom), label: "Footer", bg: "transparent", fg: "#33474A", count: 0 },
+      { icon: icon(ICONS.box), label: "Structured content", bg: "transparent", fg: "#33474A", count: 0 },
+      { icon: icon(ICONS.settings), label: "Settings", bg: "transparent", fg: "#33474A", count: 0 },
+    ];
+
+    // ---- flatten tree ----
+    const rows = [];
+    let matchCount = 0;
+    const typeOf = (n, hasChildren) => {
+      if (n.slug === "" && n.template === "Homepage") return "home";
+      if (/overview/i.test(n.template)) return "news";
+      if (n.template === "Landing page") return "landing";
+      if (n.template === "FAQ") return "faq";
+      if (hasChildren) return "folder";
+      return "file";
+    };
+    const flat = (nodes, depth, parentPath, acc) => {
+      let any = false;
+      for (const n of nodes) {
+        const path = n.slug === "" ? "/" : (parentPath === "/" ? "/" + n.slug : parentPath + "/" + n.slug);
+        const kids = n.children || [];
+        const self = filtering ? this.matchNode(n, path) : true;
+        const childAcc = [];
+        const childHas = flat(kids, depth + 1, path, childAcc);
+        const visible = filtering ? (self || childHas) : true;
+        if (!visible) continue;
+        any = true;
+        if (self && filtering) matchCount++;
+        const expanded = filtering ? childHas : !!s.expanded[n.id];
+        const muted = filtering && !self;
+        const selected = s.selected === n.id && !muted;
+        const inside = s.dropTarget && s.dropTarget.id === n.id && s.dropTarget.pos === "inside";
+        const isDragging = s.dragId === n.id;
+        const t = typeOf(n, kids.length > 0);
+        const st = STATUS[n.status];
+        let bg = "transparent"; if (inside || selected) bg = "#DCEDEA";
+        let shadow = "none"; if (inside) shadow = "inset 0 0 0 1.5px #0D6770"; else if (selected) shadow = "inset 2px 0 0 #0D6770";
+        acc.push({
+          id: n.id, pad: (10 + depth * 20) + "px", bg, shadow,
+          op: isDragging ? "0.4" : (muted ? "0.5" : "1"),
+          anim: s.flashId === n.id ? "sfFlash 1.1s ease" : "none",
+          chevRot: expanded ? "90deg" : "0deg",
+          chevVis: kids.length ? "visible" : "hidden",
+          iconColor: t === "home" ? "#0D6770" : "#7C8A88",
+          iconClass: ({ home: "ph-house", folder: "ph-folder", news: "ph-newspaper", landing: "ph-layout", faq: "ph-question", file: "ph-file-text" })[t],
+          icHome: t === "home", icFolder: t === "folder", icNews: t === "news",
+          icLanding: t === "landing", icFaq: t === "faq", icFile: t === "file",
+          title: n.title, slugOwn: n.slug === "" ? "/" : "/" + n.slug,
+          hasProblems: !!n.problems, problems: n.problems, showTag: showTags,
+          template: n.template, status: st.label, stBg: st.bg, stFg: st.fg, stDot: st.dot,
+          dropBefore: s.dropTarget && s.dropTarget.id === n.id && s.dropTarget.pos === "before",
+          dropAfter: s.dropTarget && s.dropTarget.id === n.id && s.dropTarget.pos === "after",
+          onClick: () => this.setState({ selected: n.id }),
+          onToggle: (e) => { e.stopPropagation(); this.setState({ expanded: { ...s.expanded, [n.id]: !s.expanded[n.id] } }); },
+          onPlus: (e) => { e.stopPropagation(); const r = e.currentTarget.getBoundingClientRect(); this.setState({ menu: { type: "plus", id: n.id, x: Math.min(r.left, window.innerWidth - 262), y: r.bottom + 6 } }); },
+          onMenu: (e) => { e.stopPropagation(); const r = e.currentTarget.getBoundingClientRect(); this.setState({ menu: { type: "row", id: n.id, x: Math.min(r.right - 216, window.innerWidth - 228), y: r.bottom + 6 } }); },
+          onDragStart: (e) => { const l = locate(this.tree(), n.id); if (!l || !l.parent) { e.preventDefault(); return; } e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/plain", n.id); } catch (x) {} this.setState({ dragId: n.id, selected: n.id }); },
+          onDragOver: (e) => this.onDragOver(e, n.id),
+          onDrop: (e) => this.onDrop(e, n.id),
+          onDragEnd: () => this.setState({ dragId: null, dropTarget: null }),
+        });
+        if (expanded) acc.push(...childAcc);
+      }
+      return any;
+    };
+    flat(this.tree(), 0, "/", rows);
+
+    // ---- header / search ----
+    const langObj = LANGS.find(l => l.key === s.lang);
+    const langLabel = langObj.name + " · " + langObj.code;
+
+    // ---- status segmented ----
+    const statusSeg = [
+      { label: "All", val: "all" }, { label: "Published", val: "published" }, { label: "Concept", val: "concept" },
+    ].map(o => ({
+      label: o.label,
+      bg: s.filterStatus === o.val ? "#fff" : "transparent",
+      fg: s.filterStatus === o.val ? "#0D6770" : "#526366",
+      shadow: s.filterStatus === o.val ? "0 1px 2px rgba(23,35,38,0.12)" : "none",
+      onClick: () => this.setState({ filterStatus: o.val }),
+    }));
+
+    // ---- filter menus content ----
+    const templateFilterItems = FILTER_TEMPLATES.map(name => {
+      const on = s.filterTemplates.includes(name);
+      return {
+        name, onClick: () => this.setState({ filterTemplates: on ? s.filterTemplates.filter(x => x !== name) : [...s.filterTemplates, name] }),
+        boxBorder: on ? "#0D6770" : "#CFD6D0", boxBg: on ? "#0D6770" : "#fff",
+        check: on ? icon(ICONS.check, 12) : "",
+      };
+    });
+    const authorItems = ["all", "Mara Jensen", "Devin Park", "Sofia Ruiz"].map(name => {
+      const a = name === "all" ? { initials: "All", avBg: "#EEF1ED", avFg: "#526366" } : AUTHORS[name];
+      const on = s.filterAuthor === name;
+      return { name: name === "all" ? "All authors" : name, initials: a.initials, avBg: a.avBg, avFg: a.avFg, onClick: () => this.setState({ filterAuthor: name, menu: null }), check: on ? icon(ICONS.check, 15) : "" };
+    });
+    const langItems = LANGS.map(l => ({
+      code: l.code, name: l.name, count: countTree(this.state.trees[l.key]),
+      bg: s.lang === l.key ? "#DCEDEA" : "transparent",
+      check: s.lang === l.key ? icon(ICONS.check, 15) : "",
+      onClick: () => this.setState({ lang: l.key, menu: null, selected: null, q: "", filterStatus: "all", filterTemplates: [], filterAuthor: "all", filterProblems: false }),
+    }));
+
+    const activeFilterCount = (s.filterStatus !== "all" ? 1 : 0) + (s.filterTemplates.length ? 1 : 0) + (s.filterAuthor !== "all" ? 1 : 0) + (s.filterProblems ? 1 : 0);
+
+    // ---- menus ----
+    const menu = s.menu;
+    let rowMenuItems = [];
+    if (menu && menu.type === "row") {
+      const loc = locate(this.tree(), menu.id);
+      const n = loc.node, isHome = !loc.parent, hasKids = (n.children || []).length > 0;
+      const mk = (label, ic, onClick, opts) => ({ isItem: true, divider: false, label, icon: icon(ic), onClick, color: (opts && opts.danger) ? "#B5382C" : "#172326", hoverBg: (opts && opts.danger) ? "#F8E6E3" : "#F5F7F4", cursor: (opts && opts.disabled) ? "not-allowed" : "pointer", opacity: (opts && opts.disabled) ? "0.45" : "1", hint: (opts && opts.hint) || "" });
+      rowMenuItems.push(mk("Open page", ICONS.open, () => { this.setState({ menu: null, selected: n.id }); this.toast({ msg: "Opening “" + n.title + "”", sub: "The detail & edit view is a separate screen.", icon: "open" }); }));
+      rowMenuItems.push(mk("Add child page", ICONS.childAdd, () => this.openPicker(n.id)));
+      rowMenuItems.push(mk("Rename & edit slug", ICONS.rename, () => { this.setState({ menu: null }); this.toast({ msg: "Rename “" + n.title + "”", sub: "Slug changes open the URL-impact review.", icon: "rename" }); }));
+      rowMenuItems.push(mk("Duplicate", ICONS.copy, () => this.duplicate(n.id), { disabled: isHome, hint: isHome ? "" : "" }));
+      rowMenuItems.push(mk("Move…", ICONS.move, () => { this.setState({ menu: null }); this.toast({ msg: "Move “" + n.title + "”", sub: isHome ? "The homepage is fixed to the tree root." : "Or just drag the row in the tree.", icon: "move" }); }, { disabled: isHome }));
+      rowMenuItems.push({ divider: true, isItem: false });
+      rowMenuItems.push(mk("View on site", ICONS.open, () => { this.setState({ menu: null }); this.toast({ msg: n.status === "published" ? "Opening published URL" : "Not published yet", sub: this.pathOf(n.id), icon: n.status === "published" ? "open" : "info" }); }));
+      rowMenuItems.push({ divider: true, isItem: false });
+      rowMenuItems.push(mk("Delete…", ICONS.trash, () => this.openDelete(n.id), { danger: true, disabled: isHome || hasKids, hint: isHome ? "homepage" : (hasKids ? "has children" : "") }));
+    }
+
+    // plus menu
+    let plusParent = "", plusPreferred = "Standard page", plusParentId = null;
+    if (menu && menu.type === "plus") {
+      const loc = locate(this.tree(), menu.id);
+      plusParent = loc.node.title; plusParentId = menu.id;
+      plusPreferred = loc.node.preferred || "Standard page";
+    }
+
+    // picker
+    const pickerParentId = s.picker ? s.picker.parentId : null;
+    let pickerParent = "", pickerTemplates = [];
+    if (s.picker) {
+      const loc = locate(this.tree(), pickerParentId);
+      pickerParent = loc ? loc.node.title : "";
+      const preferred = loc && loc.node.preferred;
+      pickerTemplates = TEMPLATES.map(tp => ({
+        name: tp.name, desc: tp.desc, icon: icon(ICONS[tp.type]),
+        preferred: preferred === tp.name,
+        border: preferred === tp.name ? "#0D6770" : "#E2E7E2",
+        bg: preferred === tp.name ? "#F7FAF9" : "#fff",
+        onClick: () => this.createPage(pickerParentId, tp.name),
+      }));
+    }
+
+    // delete
+    let delTitle = "", delBody = "", delRedirect = false, delConfirmable = true, delConfirmLabel = "Delete page", delPath = "", delIcon = icon(ICONS.trash, 20), delIconBg = "#F8E6E3", delIconFg = "#B5382C";
+    if (s.del) {
+      const loc = locate(this.tree(), s.del.id);
+      const n = loc.node, isHome = !loc.parent, hasKids = (n.children || []).length > 0;
+      delTitle = "Delete “" + n.title + "”?";
+      delPath = this.pathOf(n.id);
+      if (isHome) { delTitle = "The homepage can’t be deleted"; delBody = "Every language tree needs one homepage. Assign another page as the homepage first."; delConfirmable = false; delIcon = icon(ICONS.info, 20); delIconBg = "#EEF1ED"; delIconFg = "#526366"; }
+      else if (hasKids) { delTitle = "Move its child pages first"; delBody = "“" + n.title + "” has " + (n.children.length) + " child page" + (n.children.length > 1 ? "s" : "") + ". A page with children can't be deleted — move or reparent them, then try again."; delConfirmable = false; delIcon = icon(ICONS.info, 20); delIconBg = "#EEF1ED"; delIconFg = "#526366"; }
+      else { delBody = n.status === "published" ? "This page is published. You can leave a redirect so its URL keeps working." : "This page is a concept and isn't published, so no redirect is needed."; delRedirect = n.status === "published"; }
+    }
+
+    // toast
+    const toast = s.toast;
+    const toastIconMap = { check: [ICONS.check, "#58C3C7"], move: [ICONS.move, "#58C3C7"], copy: [ICONS.copy, "#58C3C7"], trash: [ICONS.trash, "#F09A73"], info: [ICONS.info, "#58C3C7"], open: [ICONS.open, "#58C3C7"], rename: [ICONS.rename, "#58C3C7"] };
+    let toastIcon = "", toastIconColor = "#58C3C7";
+    if (toast) { const m = toastIconMap[toast.icon] || toastIconMap.info; toastIcon = icon(m[0]); toastIconColor = m[1]; }
+
+    return {
+      // nav / lang
+      nav, langLabel, totalCount: total, footerLabel: filtering ? matchCount + " of " + total + " match" : total + " pages",
+      openLang: (e) => { const r = e.currentTarget.getBoundingClientRect(); this.setState({ menu: { type: "lang" } }); },
+      langItems,
+      // search
+      q: s.q,
+      onSearch: (e) => this.setState({ q: e.target.value }),
+      onSearchFocus: () => this.setState({ searchFocus: true }),
+      onSearchBlur: () => this.setState({ searchFocus: false }),
+      clearSearch: () => this.setState({ q: "" }),
+      searchBorder: s.searchFocus ? "#0D6770" : "#CFD6D0",
+      searchRing: s.searchFocus ? "0 0 0 3px rgba(13,103,112,0.16)" : "none",
+      searchIcon: s.searchFocus ? "#0D6770" : "#869693",
+      // filters
+      showFilters: s.showFilters,
+      toggleFilters: () => this.setState({ showFilters: !s.showFilters }),
+      filterBtnBg: (s.showFilters || activeFilterCount) ? "#DCEDEA" : "#fff",
+      filterBtnBorder: (s.showFilters || activeFilterCount) ? "#A7D4CE" : "#CFD6D0",
+      filterBtnFg: (s.showFilters || activeFilterCount) ? "#0D6770" : "#33474A",
+      activeFilterCount: activeFilterCount || 0,
+      statusSeg,
+      openTemplateFilter: (e) => { const r = e.currentTarget.getBoundingClientRect(); this.setState({ menu: { type: "tmpl", x: r.left, y: r.bottom + 6 } }); },
+      tmplBtnLabel: s.filterTemplates.length ? (s.filterTemplates.length + " templates") : "Template",
+      tmplBtnBg: s.filterTemplates.length ? "#DCEDEA" : "#fff",
+      tmplBtnBorder: s.filterTemplates.length ? "#A7D4CE" : "#CFD6D0",
+      tmplBtnFg: s.filterTemplates.length ? "#0D6770" : "#33474A",
+      openAuthorFilter: (e) => { const r = e.currentTarget.getBoundingClientRect(); this.setState({ menu: { type: "author", x: r.left, y: r.bottom + 6 } }); },
+      authBtnLabel: s.filterAuthor === "all" ? "Author" : s.filterAuthor.split(" ")[0],
+      authBtnBg: s.filterAuthor !== "all" ? "#DCEDEA" : "#fff",
+      authBtnBorder: s.filterAuthor !== "all" ? "#A7D4CE" : "#CFD6D0",
+      authBtnFg: s.filterAuthor !== "all" ? "#0D6770" : "#33474A",
+      toggleProblems: () => this.setState({ filterProblems: !s.filterProblems }),
+      probBg: s.filterProblems ? "#F8E6E3" : "#fff", probBorder: s.filterProblems ? "#EEC6BC" : "#CFD6D0", probFg: s.filterProblems ? "#B5382C" : "#33474A",
+      clearFilters: () => this.setState({ filterStatus: "all", filterTemplates: [], filterAuthor: "all", filterProblems: false, q: "" }),
+      resultLabel: filtering ? (matchCount + " match" + (matchCount === 1 ? "" : "es")) : (total + " pages"),
+      templateFilterItems, authorItems,
+      // rows
+      rows, rowH,
+      // empty
+      isEmpty: rows.length === 0,
+      emptyIcon: filtering ? icon(ICONS.faq, 30) : icon(ICONS.pageAdd, 30),
+      emptyTitle: filtering ? "No pages match your filters" : "This language has no pages yet",
+      emptyBody: filtering ? "Try clearing a filter or broadening your search — matches keep their ancestors visible for context." : "Each site language has its own independent page tree. Create the homepage to start building " + langObj.name + ".",
+      emptyCta: filtering ? "Clear filters" : "Create homepage",
+      emptyAction: filtering ? () => this.setState({ filterStatus: "all", filterTemplates: [], filterAuthor: "all", filterProblems: false, q: "" }) : () => this.toast({ msg: "Create homepage", sub: "Homepage creation is part of a later flow.", icon: "info" }),
+      // popovers
+      anyPopover: !!s.menu,
+      closeMenu: () => this.setState({ menu: null, picker: null, del: null }),
+      stop: (e) => e.stopPropagation(),
+      menuX: menu ? (menu.x + "px") : "0px",
+      menuY: menu ? (menu.y + "px") : "0px",
+      showRowMenu: !!(menu && menu.type === "row"),
+      rowMenuItems,
+      showPlusMenu: !!(menu && menu.type === "plus"),
+      plusParent, plusPreferred,
+      plusQuick: () => this.createPage(plusParentId, plusPreferred),
+      plusOther: () => this.openPicker(plusParentId),
+      showTemplateFilter: !!(menu && menu.type === "tmpl"),
+      showAuthorFilter: !!(menu && menu.type === "author"),
+      showLangMenu: !!(menu && menu.type === "lang"),
+      // picker
+      showPicker: !!s.picker, pickerParent, pickerTemplates,
+      // delete
+      showDelete: !!s.del, delTitle, delBody, delRedirect, delConfirmable, delConfirmLabel, delPath, delIcon, delIconBg, delIconFg,
+      toggleRedirect: () => this.setState({ del: { ...s.del, redirect: !s.del.redirect } }),
+      redirectTrackBg: (s.del && s.del.redirect) ? "#0D6770" : "#CFD6D0",
+      redirectKnob: (s.del && s.del.redirect) ? "16px" : "2px",
+      confirmDelete: () => this.confirmDelete(),
+      // add page
+      addTopLevel: () => this.openPicker(this.tree()[0].id),
+      // toast
+      showToast: !!toast, toastMsg: toast ? toast.msg : "", toastSub: toast ? (toast.sub || "") : "",
+      toastIcon, toastIconColor, toastAction: "", toastUndo: () => {},
+    };
+  }
+}
+</script>
+</body>
+</html>

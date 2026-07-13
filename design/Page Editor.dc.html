@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:#F5F7F4;color:#172326;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden}
+  a{color:#0D6770;text-decoration:none}a:hover{color:#0A545C}
+  ::selection{background:#CFE6E1}
+  input,textarea,select{font-family:inherit}
+  i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
+  .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
+  .sf-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .sf-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #F5F7F4}
+  .sf-in{width:100%;padding:8px 10px;border:1.5px solid #CFD6D0;border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none;transition:border-color .12s,box-shadow .12s}
+  .sf-in:focus{border-color:#0D6770;box-shadow:0 0 0 3px rgba(13,103,112,0.15)}
+  textarea.sf-in{resize:vertical;line-height:1.5}
+  @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+  @keyframes sfSpin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+
+<div data-screen-label="Page editor" style="display:flex;flex-direction:column;height:100vh;width:100vw;overflow:hidden">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="display:flex;align-items:center;gap:12px;padding:0 16px;height:56px;flex:none;border-bottom:1px solid #E2E7E2;background:#fff">
+    <a href="#" onClick="{{ noop }}" style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 11px;border:1px solid #CFD6D0;border-radius:8px;color:#33474A;font-size:13px;font-weight:600" style-hover="background:#F5F7F4"><i class="ph-bold ph-arrow-left" style="font-size:15px"></i>Tree</a>
+    <div style="display:flex;flex-direction:column;gap:1px;min-width:0">
+      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#869693">
+        <span>Home</span><i class="ph ph-caret-right" style="font-size:10px"></i><span>News</span><i class="ph ph-caret-right" style="font-size:10px"></i><span style="color:#33474A;font-weight:600">{{ pageTitle }}</span>
+      </div>
+      <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#0D6770;font-weight:500">{{ path }}</span>
+    </div>
+    <span style="display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:5px;font-size:11.5px;font-weight:600;background:{{ statusBg }};color:{{ statusFg }}"><span style="width:5px;height:5px;border-radius:999px;background:{{ statusDot }}"></span>{{ statusLabel }}</span>
+    <sc-if value="{{ hasProblems }}" hint-placeholder-val="{{ false }}"><span onClick="{{ gotoSeo }}" style="display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:5px;font-size:11.5px;font-weight:600;background:#F7EDDA;color:#8A5A06;cursor:pointer"><i class="ph-fill ph-warning" style="font-size:12px"></i>{{ problemCount }}</span></sc-if>
+    <span style="flex:1"></span>
+    <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#869693"><i class="ph {{ saveIcon }}" style="font-size:14px;color:{{ saveIconColor }}"></i>{{ savedLabel }}</span>
+    <button onClick="{{ saveConcept }}" style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;border:1px solid #CFD6D0;border-radius:8px;background:#fff;color:#172326;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#F5F7F4"><i class="ph ph-floppy-disk" style="font-size:15px"></i>Save concept</button>
+    <button onClick="{{ publish }}" style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border:none;border-radius:8px;background:#0D6770;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.12);white-space:nowrap" style-hover="background:#0A545C"><i class="ph-bold ph-rocket-launch" style="font-size:15px"></i>{{ publishLabel }}</button>
+  </div>
+
+  <div style="display:flex;flex:1;min-height:0">
+
+    <!-- ===== LEFT: PREVIEW ===== -->
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;background:#EEF1ED">
+      <div style="display:flex;align-items:center;gap:12px;padding:0 16px;height:48px;flex:none;border-bottom:1px solid #E2E7E2;background:#FAFCFA">
+        <div style="display:flex;background:#EAEEEA;border-radius:8px;padding:2px;gap:2px">
+          <span onClick="{{ dDesktop }}" title="Desktop" style="width:30px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;background:{{ deskBg }};color:{{ deskFg }};box-shadow:{{ deskSh }}"><i class="ph-bold ph-monitor" style="font-size:16px"></i></span>
+          <span onClick="{{ dTablet }}" title="Tablet" style="width:30px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;background:{{ tabBg }};color:{{ tabFg }};box-shadow:{{ tabSh }}"><i class="ph-bold ph-device-tablet" style="font-size:16px"></i></span>
+          <span onClick="{{ dMobile }}" title="Mobile" style="width:30px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;background:{{ mobBg }};color:{{ mobFg }};box-shadow:{{ mobSh }}"><i class="ph-bold ph-device-mobile" style="font-size:16px"></i></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex:1;max-width:440px;height:32px;padding:0 12px;border:1px solid #E2E7E2;border-radius:999px;background:#fff;min-width:0">
+          <i class="ph-fill ph-lock-simple" style="font-size:12px;color:#1F9D57"></i>
+          <span style="font-size:12px;color:#526366;font-family:'Geist Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">acme.com{{ path }}</span>
+          <span style="flex:1"></span>
+          <span style="font-size:10px;font-weight:600;color:#8A5A06;background:#F7EDDA;padding:1px 6px;border-radius:999px;white-space:nowrap">Preview</span>
+        </div>
+        <span onClick="{{ refresh }}" title="Refresh preview" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:#526366;cursor:pointer" style-hover="background:#EEF1ED;color:#172326"><i class="ph {{ refreshIcon }}" style="font-size:16px"></i></span>
+        <span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:#526366;cursor:pointer" style-hover="background:#EEF1ED;color:#172326"><i class="ph ph-arrow-square-out" style="font-size:16px"></i></span>
+      </div>
+      <div class="sf-scroll" style="flex:1;overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:24px">
+        <iframe ref="{{ iframeRef }}" srcdoc="{{ srcDoc }}" style="width:{{ deviceW }};max-width:100%;height:100%;min-height:100%;border:none;border-radius:{{ deviceRadius }};background:#fff;box-shadow:0 8px 30px rgba(23,35,38,0.12);transition:width .2s ease"></iframe>
+      </div>
+    </div>
+
+    <!-- ===== RIGHT: FIELDS ===== -->
+    <div style="width:404px;flex:none;border-left:1px solid #E2E7E2;background:#fff;display:flex;flex-direction:column;min-height:0">
+      <div style="display:flex;gap:2px;padding:8px 12px 0;flex:none;border-bottom:1px solid #EEF1ED">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+          <span onClick="{{ t.onClick }}" style="display:inline-flex;align-items:center;gap:6px;padding:8px 12px 10px;font-size:13px;font-weight:600;cursor:pointer;color:{{ t.color }};border-bottom:2px solid {{ t.border }};margin-bottom:-1px">{{ t.label }}<sc-if value="{{ t.badge }}" hint-placeholder-val="0"><span style="min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#F7EDDA;color:#8A5A06;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">{{ t.badge }}</span></sc-if></span>
+        </sc-for>
+      </div>
+
+      <div class="sf-scroll" style="flex:1;overflow:auto;padding:16px">
+
+        <!-- CONTENT TAB -->
+        <sc-if value="{{ isContent }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ blocks }}" as="b" hint-placeholder-count="4">
+            <div style="border:1.5px solid {{ b.border }};border-radius:10px;background:#fff;overflow:hidden;transition:border-color .12s">
+              <div onClick="{{ b.onSelect }}" style="display:flex;align-items:center;gap:9px;padding:9px 10px;cursor:pointer;background:{{ b.headBg }}">
+                <span style="width:26px;height:26px;border-radius:7px;background:{{ b.iconBg }};color:{{ b.iconFg }};display:flex;align-items:center;justify-content:center;flex:none"><i class="ph {{ b.icon }}" style="font-size:15px"></i></span>
+                <span style="font-size:13px;font-weight:600;color:#172326">{{ b.label }}</span>
+                <span style="flex:1"></span>
+                <span onClick="{{ b.onUp }}" title="Move up" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:{{ b.upColor }};cursor:{{ b.upCursor }}" style-hover="background:#EEF1ED"><i class="ph-bold ph-arrow-up" style="font-size:14px"></i></span>
+                <span onClick="{{ b.onDown }}" title="Move down" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:{{ b.downColor }};cursor:{{ b.downCursor }}" style-hover="background:#EEF1ED"><i class="ph-bold ph-arrow-down" style="font-size:14px"></i></span>
+                <span onClick="{{ b.onRemove }}" title="Remove block" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:pointer" style-hover="background:#F8E6E3;color:#B5382C"><i class="ph ph-trash" style="font-size:14px"></i></span>
+                <i class="ph ph-caret-down" style="font-size:14px;color:#869693;transition:transform .15s;transform:rotate({{ b.caret }})"></i>
+              </div>
+              <sc-if value="{{ b.expanded }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:12px;padding:12px;border-top:1px solid #EEF1ED">
+                  <sc-for list="{{ b.fields }}" as="f" hint-placeholder-count="2">
+                    <div style="display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">{{ f.label }}</label>
+                      <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><input class="sf-in" value="{{ f.value }}" onInput="{{ f.onInput }}" placeholder="{{ f.ph }}"/></sc-if>
+                      <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}"><textarea class="sf-in" value="{{ f.value }}" onInput="{{ f.onInput }}" placeholder="{{ f.ph }}" style="min-height:76px"></textarea></sc-if>
+                      <sc-if value="{{ f.warn }}" hint-placeholder-val="x"><span style="display:flex;align-items:center;gap:5px;font-size:11.5px;color:#8A5A06"><i class="ph-fill ph-warning" style="font-size:12px"></i>{{ f.warn }}</span></sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+
+          <div style="position:relative">
+            <button onClick="{{ toggleAddMenu }}" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:42px;border:1.5px dashed #C2CCC4;border-radius:10px;background:#FAFCFA;color:#0D6770;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#DCEDEA;border-color:#A7D4CE"><i class="ph-bold ph-plus" style="font-size:15px"></i>Add block</button>
+            <sc-if value="{{ addMenu }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;left:0;right:0;bottom:48px;z-index:20;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:sfPop .13s ease">
+                <sc-for list="{{ blockTypes }}" as="t" hint-placeholder-count="5">
+                  <div onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:7px;cursor:pointer" style-hover="background:#F5F7F4">
+                    <span style="width:30px;height:30px;border-radius:7px;background:{{ t.iconBg }};color:{{ t.iconFg }};display:flex;align-items:center;justify-content:center;flex:none"><i class="ph {{ t.icon }}" style="font-size:16px"></i></span>
+                    <div style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600;color:#172326">{{ t.label }}</span><span style="font-size:11.5px;color:#869693">{{ t.desc }}</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- SEO TAB -->
+        <sc-if value="{{ isSeo }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <sc-if value="{{ hasProblems }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:7px;padding:12px;border:1px solid #ECD9AE;border-radius:10px;background:#FCF6E8">
+              <span style="display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:#8A5A06"><i class="ph-fill ph-warning" style="font-size:15px"></i>{{ problemCount }} to resolve before publishing</span>
+              <sc-for list="{{ problems }}" as="p" hint-placeholder-count="1"><span style="font-size:12px;color:#7A5405;padding-left:22px">· {{ p }}</span></sc-for>
+            </div>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Meta title</label>
+            <input class="sf-in" value="{{ metaTitle }}" onInput="{{ onMetaTitle }}"/>
+            <span style="font-size:11px;color:#869693;text-align:right;font-family:'Geist Mono',monospace">{{ titleCount }}/60</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Meta description</label>
+            <textarea class="sf-in" value="{{ metaDesc }}" onInput="{{ onMetaDesc }}" placeholder="Summarize this page for search results" style="min-height:80px"></textarea>
+            <span style="font-size:11px;color:{{ descCountColor }};text-align:right;font-family:'Geist Mono',monospace">{{ descCount }}/160</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Social share image</label>
+            <div style="display:flex;align-items:center;gap:11px;padding:11px;border:1px solid #E2E7E2;border-radius:10px;background:#FAFCFA">
+              <span style="width:56px;height:36px;border-radius:6px;background:#E7EEF5;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph-fill ph-image" style="font-size:18px;color:#7F8FA9"></i></span>
+              <span style="flex:1;font-size:12.5px;color:#526366;font-family:'Geist Mono',monospace">og-default.png</span>
+              <button style="height:30px;padding:0 10px;border:1px solid #CFD6D0;border-radius:7px;background:#fff;color:#172326;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#F5F7F4">Replace</button>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Canonical URL</label>
+            <div style="display:flex;align-items:center;gap:8px;padding:9px 10px;border:1.5px solid #E2E7E2;border-radius:8px;background:#F0F2F5"><span style="font-family:'Geist Mono',monospace;font-size:12.5px;color:#526366;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">acme.com{{ path }}</span><i class="ph-fill ph-lock-simple" style="font-size:13px;color:#AEBAB6"></i></div>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- SETTINGS TAB -->
+        <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Slug</label>
+            <div style="display:flex;align-items:center;gap:0;border:1.5px solid {{ slugBorder }};border-radius:8px;background:#fff;overflow:hidden;box-shadow:{{ slugRing }}">
+              <span style="padding:0 4px 0 10px;font-family:'Geist Mono',monospace;font-size:13px;color:#AEBAB6">/news/</span>
+              <input value="{{ slug }}" onInput="{{ onSlug }}" onFocus="{{ focusSlug }}" onBlur="{{ blurSlug }}" style="flex:1;padding:9px 10px 9px 0;border:none;outline:none;background:transparent;font-family:'Geist Mono',monospace;font-size:13px;color:#172326"/>
+            </div>
+            <sc-if value="{{ slugChanged }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:5px;font-size:11.5px;color:#8A5A06"><i class="ph-fill ph-warning" style="font-size:12px"></i>Changing the slug updates this URL and creates a redirect from the old one.</span></sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;padding:13px;border:1px solid #E2E7E2;border-radius:10px;background:#FAFCFA">
+            <sc-for list="{{ settingsMeta }}" as="m" hint-placeholder-count="2"><div style="display:flex;align-items:center;gap:10px;font-size:12.5px"><span style="color:#869693;width:130px;flex:none">{{ m.k }}</span><span style="color:#172326;font-weight:500">{{ m.v }}</span></div></sc-for>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Preferred child template</label>
+            <select value="{{ prefChild }}" onChange="{{ onPrefChild }}" class="sf-in" style="cursor:pointer">
+              <sc-for list="{{ templateOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for>
+            </select>
+            <span style="font-size:11.5px;color:#869693">Suggested first when adding a child page here.</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Translations</label>
+            <sc-for list="{{ translations }}" as="t" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid #E2E7E2;border-radius:9px;background:#fff">
+                <span style="width:26px;height:20px;border-radius:4px;background:#EEF1ED;color:#526366;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'Geist Mono',monospace;flex:none">{{ t.code }}</span>
+                <span style="flex:1;font-size:13px;color:{{ t.color }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.label }}</span>
+                <sc-if value="{{ t.linked }}" hint-placeholder-val="{{ true }}"><i class="ph-fill ph-link-simple" style="font-size:14px;color:#1F9D57"></i></sc-if>
+                <sc-if value="{{ t.create }}" hint-placeholder-val="{{ false }}"><a href="#" onClick="{{ noop }}" style="font-size:12px;font-weight:600">Create</a></sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <div style="border-top:1px solid #EEF1ED;padding-top:16px;display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#B5382C">Danger zone</span>
+            <button style="display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;border:1px solid #EEC6BC;border-radius:8px;background:#F8E6E3;color:#B5382C;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#F2D6D0"><i class="ph ph-trash" style="font-size:16px"></i>Delete this page</button>
+          </div>
+        </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:sfToast .2s cubic-bezier(.2,.8,.2,1)">
+    <i class="{{ toastIcon }}" style="font-size:18px;color:#58C3C7"></i>
+    <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+const BLOCK_DEFS = {
+  hero: { label: "Hero", icon: "ph-identification-card", desc: "Eyebrow, headline & lead", fields: [{ k: "eyebrow", l: "Eyebrow", t: "text", ph: "Product news" }, { k: "headline", l: "Headline", t: "text", ph: "Headline" }, { k: "subheadline", l: "Subheadline", t: "area", ph: "Supporting sentence" }] },
+  richtext: { label: "Rich text", icon: "ph-text-align-left", desc: "Body copy paragraphs", fields: [{ k: "body", l: "Body", t: "area", ph: "Write the body…" }] },
+  quote: { label: "Pull quote", icon: "ph-quotes", desc: "Highlighted quotation", fields: [{ k: "text", l: "Quote", t: "area", ph: "A memorable line" }, { k: "cite", l: "Attribution", t: "text", ph: "— Name, role" }] },
+  image: { label: "Image", icon: "ph-image", desc: "Figure with caption", fields: [{ k: "alt", l: "Alt text", t: "text", ph: "Describe the image" }, { k: "caption", l: "Caption", t: "text", ph: "Optional caption" }] },
+  cta: { label: "Call to action", icon: "ph-cursor-click", desc: "Heading with button", fields: [{ k: "heading", l: "Heading", t: "text", ph: "Ready to start?" }, { k: "button", l: "Button label", t: "text", ph: "Get started" }] },
+};
+const BLOCK_COLORS = {
+  hero: { bg: "#DCEDEA", fg: "#0D6770" },
+  richtext: { bg: "#EEF1ED", fg: "#526366" },
+  quote: { bg: "#EDE7F5", fg: "#5B4B8A" },
+  image: { bg: "#E7EEF5", fg: "#3F5C8A" },
+  cta: { bg: "#FBEBE1", fg: "#B45F38" },
+};
+const TEMPLATE_OPTIONS = ["News article", "Standard page", "Blog article", "Landing page", "FAQ"];
+let BID = 0;
+const blk = (type, data) => ({ id: "b" + (++BID), type, data: data || {} });
+
+const S_TAG = "<" + "script>";
+const S_END = "<" + "/script>";
+const SRCDOC = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
++ '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
++ '<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">'
++ '<style>*{box-sizing:border-box}body{margin:0;font-family:Geist,system-ui,sans-serif;color:#1A1A1A;background:#fff;-webkit-font-smoothing:antialiased}'
++ 'article{max-width:680px;margin:0 auto;padding:56px 28px 96px}'
++ '.meta{display:flex;align-items:center;gap:12px;font-size:13px;color:#8A8A8A;margin-bottom:28px;flex-wrap:wrap}'
++ '.meta .cat{color:#2F5FE0;font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:11px}'
++ '.blk{position:relative;transition:outline-color .12s;outline:2px solid transparent;outline-offset:6px;border-radius:2px}'
++ '.blk.sel{outline-color:#0D6770}'
++ '.blk+.blk{margin-top:30px}'
++ '.eyebrow{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#2F5FE0;margin:0 0 12px}'
++ 'h1{font-family:Newsreader,Georgia,serif;font-weight:600;font-size:42px;line-height:1.12;letter-spacing:-.01em;margin:0 0 16px}'
++ '.sub{font-size:19px;line-height:1.5;color:#525252;margin:0 0 24px}'
++ '.ph{border-radius:10px;background:repeating-linear-gradient(135deg,#F1F2F4,#F1F2F4 11px,#E9EBEE 11px,#E9EBEE 22px);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:#9AA0AA;font-family:Geist,monospace;font-size:12px;font-weight:600;letter-spacing:.03em}'
++ 'p.body{font-family:Newsreader,Georgia,serif;font-size:18px;line-height:1.7;color:#2A2A2A;margin:0 0 18px}'
++ 'blockquote{margin:0;padding:6px 0 6px 22px;border-left:3px solid #2F5FE0;font-family:Newsreader,Georgia,serif;font-size:24px;line-height:1.4;color:#1A1A1A;font-weight:500}'
++ 'blockquote cite{display:block;margin-top:12px;font-family:Geist,sans-serif;font-size:13px;font-style:normal;font-weight:600;color:#8A8A8A}'
++ '.cap{font-size:13px;color:#8A8A8A;margin:10px 2px 0}'
++ '.cta{background:#0F1115;border-radius:14px;padding:32px;text-align:center;color:#fff}'
++ '.cta h3{font-family:Newsreader,serif;font-size:26px;margin:0 0 16px;font-weight:600}'
++ '.cta .btn{display:inline-block;background:#2F5FE0;color:#fff;font-size:14px;font-weight:600;padding:12px 22px;border-radius:8px}'
++ '.empty{color:#B0B0B0;text-align:center;padding:80px 0;font-size:14px}'
++ '</style></head><body><div id="root"></div>' + S_TAG
++ 'var R=document.getElementById("root");'
++ 'function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}'
++ 'function paras(t){var a=(t||"").split(/\\n\\n+/).filter(function(x){return x.trim();});if(!a.length)return "<p class=\\"body\\" style=\\"color:#B8B8B8\\">Empty text block</p>";return a.map(function(x){return "<p class=\\"body\\">"+esc(x).replace(/\\n/g,"<br>")+"</p>";}).join("");}'
++ 'function render(d){if(!d){return;}var m=d.meta||{};var sel=d.selectedId;var html="";'
++ 'html+="<div class=\\"meta\\"><span class=\\"cat\\">"+esc(m.category)+"</span><span>"+esc(m.date)+"</span><span>By "+esc(m.author)+"</span></div>";'
++ 'var bs=d.blocks||[];if(!bs.length){html+="<div class=\\"empty\\">No content blocks yet — add one from the panel.</div>";}'
++ 'bs.forEach(function(b){var da=b.data||{};var inner="";'
++ 'if(b.type==="hero"){inner=(da.eyebrow?"<p class=\\"eyebrow\\">"+esc(da.eyebrow)+"</p>":"")+"<h1>"+esc(da.headline||"Untitled")+"</h1>"+(da.subheadline?"<p class=\\"sub\\">"+esc(da.subheadline)+"</p>":"")+"<div class=\\"ph\\">HERO IMAGE 16:9</div>";}'
++ 'else if(b.type==="richtext"){inner=paras(da.body);}'
++ 'else if(b.type==="quote"){inner="<blockquote>\\u201C"+esc(da.text||"Quote")+"\\u201D<cite>"+esc(da.cite||"")+"</cite></blockquote>";}'
++ 'else if(b.type==="image"){inner="<div class=\\"ph\\">"+esc(da.alt||"IMAGE")+"</div>"+(da.caption?"<p class=\\"cap\\">"+esc(da.caption)+"</p>":"");}'
++ 'else if(b.type==="cta"){inner="<div class=\\"cta\\"><h3>"+esc(da.heading||"Ready?")+"</h3><span class=\\"btn\\">"+esc(da.button||"Get started")+"</span></div>";}'
++ 'html+="<section class=\\"blk"+(b.id===sel?" sel":"")+"\\" data-id=\\""+b.id+"\\">"+inner+"</section>";});'
++ 'R.innerHTML="<article>"+html+"</article>";'
++ 'Array.prototype.forEach.call(R.querySelectorAll("section"),function(s){s.addEventListener("click",function(){parent.postMessage({source:"sf-preview",type:"select",id:s.getAttribute("data-id")},"*");});});}'
++ 'window.addEventListener("message",function(e){if(e.data&&e.data.source==="sf-editor"){render(e.data.data);}});'
++ 'parent.postMessage({source:"sf-preview",type:"ready"},"*");'
++ S_END + '</body></html>';
+
+class Component extends DCLogic {
+  state = {
+    tab: "content",
+    meta: { category: "Product", date: "July 12, 2026", author: "Mara Jensen" },
+    blocks: [
+      blk("hero", { eyebrow: "Product news", headline: "Introducing SiteFoundry 1.0", subheadline: "The website-native, headless CMS is now generally available — open source and ready to self-host." }),
+      blk("richtext", { body: "Today we're making SiteFoundry generally available. It rethinks the headless CMS around a canonical page tree, so editors always understand where a page lives and what its URL is.\n\nEvery structural change — moving, renaming, deleting — shows its impact up front and keeps redirects intact." }),
+      blk("quote", { text: "Finally, a CMS our editors actually understand.", cite: "— Early-access customer" }),
+      blk("image", { alt: "The canonical page tree in the new admin", caption: "The page tree is the primary way editors navigate a site." }),
+      blk("cta", { heading: "Ready to build something?", button: "Start with SiteFoundry" }),
+    ],
+    selected: null,
+    expanded: {},
+    seo: { title: "Introducing SiteFoundry 1.0", desc: "" },
+    slug: "product-launch",
+    prefChild: "News article",
+    status: "concept",
+    device: "desktop",
+    addMenu: false,
+    slugFocus: false,
+    toast: null, savedLabel: "Autosaved just now", refreshing: false,
+  };
+
+  componentDidMount() {
+    this._ready = false;
+    this._onMsg = (e) => {
+      const d = e.data;
+      if (!d || d.source !== "sf-preview") return;
+      if (d.type === "ready") { this._ready = true; this.post(); }
+      else if (d.type === "select") { this.setState({ selected: d.id, tab: "content", expanded: { ...this.state.expanded, [d.id]: true } }); }
+    };
+    window.addEventListener("message", this._onMsg);
+    if (this.state.selected == null && this.state.blocks[0]) this.setState({ selected: this.state.blocks[0].id, expanded: { [this.state.blocks[0].id]: true } });
+  }
+  componentDidUpdate() { this.post(); }
+  componentWillUnmount() { window.removeEventListener("message", this._onMsg); clearTimeout(this._t); clearTimeout(this._r); clearTimeout(this._sv); }
+
+  setIframe = (el) => { this._iframe = el; };
+  post() { if (this._iframe && this._iframe.contentWindow && this._ready) this._iframe.contentWindow.postMessage({ source: "sf-editor", data: { meta: this.state.meta, blocks: this.state.blocks, selectedId: this.state.selected } }, "*"); }
+
+  toast(msg, icon) { clearTimeout(this._t); this.setState({ toast: { msg, icon: icon || "ph-fill ph-check-circle" } }); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
+  edit(id, key, val) { this.setState({ blocks: this.state.blocks.map(b => b.id === id ? { ...b, data: { ...b.data, [key]: val } } : b), savedLabel: "Saving…" }); this.markSaved(); }
+  markSaved() { clearTimeout(this._sv); this._sv = setTimeout(() => this.setState({ savedLabel: "Autosaved just now" }), 700); }
+  move(id, dir) {
+    const arr = this.state.blocks.slice(); const i = arr.findIndex(b => b.id === id); const j = i + dir;
+    if (j < 0 || j >= arr.length) return;
+    const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    this.setState({ blocks: arr });
+  }
+  remove(id) { const b = this.state.blocks.find(x => x.id === id); this.setState({ blocks: this.state.blocks.filter(x => x.id !== id) }); this.toast("Removed " + (BLOCK_DEFS[b.type].label) + " block", "ph ph-trash"); }
+  add(type) {
+    const defaults = { hero: { headline: "New headline" }, richtext: { body: "" }, quote: { text: "", cite: "" }, image: { alt: "", caption: "" }, cta: { heading: "Ready to start?", button: "Get started" } }[type];
+    const b = blk(type, defaults);
+    this.setState({ blocks: [...this.state.blocks, b], addMenu: false, selected: b.id, expanded: { ...this.state.expanded, [b.id]: true } });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const path = "/news/" + s.slug;
+    const problems = [];
+    if (!s.seo.desc.trim()) problems.push("Meta description is empty.");
+    const imgNoAlt = s.blocks.filter(b => b.type === "image" && !(b.data.alt || "").trim());
+    imgNoAlt.forEach(() => problems.push("An image block is missing alt text."));
+    const problemCount = problems.length;
+
+    const tabDef = [{ id: "content", label: "Content" }, { id: "seo", label: "SEO", badge: problemCount }, { id: "settings", label: "Page information" }];
+    const tabs = tabDef.map(t => ({ label: t.label, badge: t.badge || 0, onClick: () => this.setState({ tab: t.id }), color: s.tab === t.id ? "#0D6770" : "#526366", border: s.tab === t.id ? "#0D6770" : "transparent" }));
+
+    const blocks = s.blocks.map((b, idx) => {
+      const def = BLOCK_DEFS[b.type];
+      const expanded = !!s.expanded[b.id];
+      const selected = s.selected === b.id;
+      return {
+        id: b.id, label: def.label, icon: def.icon,
+        iconBg: (BLOCK_COLORS[b.type] || {}).bg || "#EEF1ED", iconFg: (BLOCK_COLORS[b.type] || {}).fg || "#526366",
+        border: selected ? "#A7D4CE" : "#E2E7E2", headBg: selected ? "#F1F7F6" : "#fff",
+        expanded, caret: expanded ? "180deg" : "0deg",
+        upColor: idx === 0 ? "#D3DAD5" : "#869693", upCursor: idx === 0 ? "default" : "pointer",
+        downColor: idx === s.blocks.length - 1 ? "#D3DAD5" : "#869693", downCursor: idx === s.blocks.length - 1 ? "default" : "pointer",
+        onSelect: () => this.setState({ selected: b.id, expanded: { ...s.expanded, [b.id]: !s.expanded[b.id] } }),
+        onUp: (e) => { e.stopPropagation(); this.move(b.id, -1); },
+        onDown: (e) => { e.stopPropagation(); this.move(b.id, 1); },
+        onRemove: (e) => { e.stopPropagation(); this.remove(b.id); },
+        fields: def.fields.map(f => ({
+          label: f.l, isText: f.t === "text", isArea: f.t === "area", value: b.data[f.k] || "", ph: f.ph || "",
+          warn: (b.type === "image" && f.k === "alt" && !(b.data.alt || "").trim()) ? "Alt text is required for accessibility." : "",
+          onInput: (e) => this.edit(b.id, f.k, e.target.value),
+        })),
+      };
+    });
+
+    const blockTypes = Object.keys(BLOCK_DEFS).map(k => ({ label: BLOCK_DEFS[k].label, icon: BLOCK_DEFS[k].icon, desc: BLOCK_DEFS[k].desc, iconBg: (BLOCK_COLORS[k] || {}).bg || "#EEF1ED", iconFg: (BLOCK_COLORS[k] || {}).fg || "#0D6770", onClick: () => this.add(k) }));
+
+    const dev = { desktop: "100%", tablet: "820px", mobile: "390px" }[s.device];
+    const seg = (id) => ({ bg: s.device === id ? "#fff" : "transparent", fg: s.device === id ? "#0D6770" : "#869693", sh: s.device === id ? "0 1px 2px rgba(23,35,38,0.14)" : "none" });
+    const dk = seg("desktop"), tb = seg("tablet"), mb = seg("mobile");
+
+    const descLen = s.seo.desc.length;
+    const published = s.status === "published";
+
+    return {
+      noop: (e) => e.preventDefault(),
+      pageTitle: "Product launch announcement", path,
+      srcDoc: SRCDOC, iframeRef: this.setIframe,
+      deviceW: dev, deviceRadius: s.device === "desktop" ? "6px" : "14px",
+      dDesktop: () => this.setState({ device: "desktop" }), dTablet: () => this.setState({ device: "tablet" }), dMobile: () => this.setState({ device: "mobile" }),
+      deskBg: dk.bg, deskFg: dk.fg, deskSh: dk.sh, tabBg: tb.bg, tabFg: tb.fg, tabSh: tb.sh, mobBg: mb.bg, mobFg: mb.fg, mobSh: mb.sh,
+      refresh: () => { clearTimeout(this._r); this.setState({ refreshing: true }); this.post(); this._r = setTimeout(() => this.setState({ refreshing: false }), 500); },
+      refreshIcon: s.refreshing ? "ph-spinner" : "ph-arrow-clockwise",
+
+      statusLabel: published ? "Published" : "Concept",
+      statusBg: published ? "#E3F3EA" : "#F7EDDA", statusFg: published ? "#147A4A" : "#8A5A06", statusDot: published ? "#1F9D57" : "#D18F0C",
+      hasProblems: problemCount > 0, problemCount: problemCount + (problemCount === 1 ? " problem" : " problems"), problems,
+      gotoSeo: () => this.setState({ tab: "seo" }),
+      savedLabel: s.savedLabel, saveIcon: s.savedLabel === "Saving…" ? "ph-spinner" : "ph-cloud-check", saveIconColor: s.savedLabel === "Saving…" ? "#869693" : "#1F9D57",
+      saveConcept: () => { this.toast("Saved as a new concept revision"); this.setState({ savedLabel: "Autosaved just now" }); },
+      publish: () => { this.setState({ status: "published" }); this.toast(published ? "Re-published" : "Page published — now live", "ph-fill ph-rocket-launch"); },
+      publishLabel: published ? "Publish changes" : "Publish",
+
+      tabs, isContent: s.tab === "content", isSeo: s.tab === "seo", isSettings: s.tab === "settings",
+      blocks, blockTypes,
+      addMenu: s.addMenu, toggleAddMenu: () => this.setState({ addMenu: !s.addMenu }),
+
+      metaTitle: s.seo.title, onMetaTitle: (e) => this.setState({ seo: { ...s.seo, title: e.target.value } }), titleCount: s.seo.title.length,
+      metaDesc: s.seo.desc, onMetaDesc: (e) => this.setState({ seo: { ...s.seo, desc: e.target.value } }), descCount: descLen,
+      descCountColor: descLen > 160 ? "#B5382C" : "#869693",
+
+      slug: s.slug, onSlug: (e) => this.setState({ slug: e.target.value.replace(/[^a-z0-9-]/gi, "-").toLowerCase() }),
+      focusSlug: () => this.setState({ slugFocus: true }), blurSlug: () => this.setState({ slugFocus: false }),
+      slugBorder: s.slugFocus ? "#0D6770" : "#CFD6D0", slugRing: s.slugFocus ? "0 0 0 3px rgba(13,103,112,0.15)" : "none",
+      slugChanged: s.slug !== "product-launch",
+      settingsMeta: [
+        { k: "Parent", v: "News (/news)" },
+        { k: "From template", v: "News article" },
+        { k: "Last published", v: "Not yet published" },
+        { k: "Created by", v: "Mara Jensen · Jul 8, 2026" },
+      ],
+      prefChild: s.prefChild, onPrefChild: (e) => this.setState({ prefChild: e.target.value }), templateOptions: TEMPLATE_OPTIONS,
+      translations: [
+        { code: "EN", label: "This page (English)", color: "#172326", linked: true, create: false },
+        { code: "NL", label: "Productlancering", color: "#172326", linked: true, create: false },
+        { code: "FR", label: "Not translated yet", color: "#869693", linked: false, create: true },
+      ],
+
+      showToast: !!s.toast, toastMsg: s.toast ? s.toast.msg : "", toastIcon: s.toast ? s.toast.icon : "ph-fill ph-check-circle",
+    };
+  }
+}
+</script>
+</body>
+</html>

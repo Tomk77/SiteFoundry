@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:#F5F7F4;color:#172326;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  a{color:#0D6770;text-decoration:none}
+  a:hover{color:#0A545C}
+  ::selection{background:#CFE6E1}
+  input{font-family:inherit}
+  i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
+  .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
+  @keyframes sfSpin{to{transform:rotate(360deg)}}
+  @keyframes sfUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes sfPop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+
+<div style="display:flex;height:100vh;width:100vw;overflow:hidden">
+
+  <!-- ============ BRAND PANEL ============ -->
+  <sc-if value="{{ showBrand }}" hint-placeholder-val="{{ true }}">
+  <div style="width:42%;max-width:560px;flex:none;background:#0A545C;color:#EDF4F2;position:relative;display:flex;flex-direction:column;padding:44px;overflow:hidden">
+    <div style="position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 0);background-size:22px 22px;pointer-events:none"></div>
+    <div style="position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:999px;background:radial-gradient(circle, rgba(224,122,79,0.22), transparent 70%);pointer-events:none"></div>
+
+    <div style="position:relative;display:flex;align-items:center;gap:11px">
+      <div style="width:34px;height:34px;border-radius:9px;background:#E07A4F;display:flex;align-items:center;justify-content:center;color:#172326"><i class="ph-bold ph-hammer" style="font-size:18px"></i></div>
+      <span style="font-size:16px;font-weight:600;letter-spacing:-0.01em">SiteFoundry</span>
+    </div>
+
+    <div style="position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;gap:26px;max-width:400px">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <span style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#7FC8C9">Website-native CMS</span>
+        <h1 style="margin:0;font-size:31px;line-height:1.18;font-weight:600;letter-spacing:-0.02em;color:#fff;text-wrap:pretty">Build, update and publish with the whole website in view.</h1>
+        <p style="margin:0;font-size:14.5px;line-height:1.62;color:#B7D4D3;text-wrap:pretty">SiteFoundry gives editors a clear page tree and one straightforward workflow for creating pages, composing content, previewing changes and publishing safely. Manage URLs, navigation, redirects, multiple languages and revisions alongside the content they belong to.</p>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:11px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.12)">
+        <span style="width:24px;height:24px;border-radius:7px;background:rgba(88,195,199,0.18);color:#7FC8C9;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph-bold ph-code" style="font-size:14px"></i></span>
+        <span style="font-size:13.5px;line-height:1.55;color:#B7D4D3"><strong style="color:#EDF4F2;font-weight:600">Open-source and headless</strong>, with <strong style="color:#EDF4F2;font-weight:600">REST</strong> and <strong style="color:#EDF4F2;font-weight:600">GraphQL</strong> APIs for any frontend.</span>
+      </div>
+    </div>
+
+    <div style="position:relative;display:flex;align-items:center;gap:8px;font-size:12px;color:#6FA6A6">
+      <span>© 2026 SiteFoundry</span><span style="opacity:0.5">·</span><span>Self-hosted &amp; MIT-licensed</span>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ============ AUTH PANEL ============ -->
+  <div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;padding:32px;overflow:auto" class="sf-scroll">
+    <div style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:22px">
+
+      <!-- ===== SUCCESS / TERMINAL SCREEN ===== -->
+      <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:20px 0;animation:sfUp .3s ease">
+          <div style="width:60px;height:60px;border-radius:16px;background:{{ doneIconBg }};color:{{ doneIconFg }};display:flex;align-items:center;justify-content:center;animation:sfPop .3s ease"><i class="{{ doneIcon }}" style="font-size:32px"></i></div>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <span style="font-size:20px;font-weight:600;letter-spacing:-0.01em">{{ doneTitle }}</span>
+            <span style="font-size:14px;line-height:1.55;color:#526366;text-wrap:pretty">{{ doneBody }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px">
+            <button onClick="{{ donePrimary }}" style="height:44px;border:none;border-radius:9px;background:#0D6770;color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#0A545C">{{ donePrimaryLabel }}</button>
+            <sc-if value="{{ doneSecondary }}" hint-placeholder-val="x">
+              <div style="font-size:13px;color:#526366">
+                <span>{{ doneSecondaryPrompt }}</span>
+                <a href="#" onClick="{{ doneSecondaryAction }}" style="font-weight:600">{{ doneSecondary }}</a>
+                <sc-if value="{{ resent }}" hint-placeholder-val="{{ false }}"><span style="color:#147A4A;font-weight:600;margin-left:6px"><i class="ph-fill ph-check-circle" style="font-size:12px;vertical-align:-1px"></i> Sent</span></sc-if>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== FORM / VIEW ===== -->
+      <sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:22px;animation:sfUp .22s ease">
+
+        <sc-if value="{{ showInlineLogo }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:32px;height:32px;border-radius:8px;background:#E07A4F;display:flex;align-items:center;justify-content:center;color:#172326"><i class="ph-bold ph-hammer" style="font-size:17px"></i></div>
+            <span style="font-size:15px;font-weight:600">SiteFoundry</span>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ backable }}" hint-placeholder-val="{{ false }}">
+          <a href="#" onClick="{{ goSignin }}" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#526366;width:fit-content" style-hover="color:#0D6770"><i class="ph-bold ph-arrow-left" style="font-size:15px"></i>Back to sign in</a>
+        </sc-if>
+
+        <!-- invite context -->
+        <sc-if value="{{ isInvite }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:11px;padding:12px 14px;border:1px solid #E2E7E2;border-radius:10px;background:#FAFCFA">
+            <span style="width:34px;height:34px;border-radius:999px;background:#FBEBE1;color:#B45F38;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:none">{{ inviterInitials }}</span>
+            <span style="font-size:13px;line-height:1.5;color:#33474A"><strong style="color:#172326">{{ inviter }}</strong> invited you to join <strong style="color:#172326">{{ org }}</strong> on SiteFoundry.</span>
+          </div>
+        </sc-if>
+
+        <!-- heading -->
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <h2 style="margin:0;font-size:23px;font-weight:600;letter-spacing:-0.02em">{{ title }}</h2>
+          <p style="margin:0;font-size:14px;line-height:1.5;color:#526366;text-wrap:pretty">{{ subtitle }}</p>
+        </div>
+
+        <!-- verify-email view -->
+        <sc-if value="{{ isVerify }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;align-items:center;gap:12px;padding:14px;border:1px solid #E2E7E2;border-radius:10px;background:#FAFCFA">
+              <span style="width:40px;height:40px;border-radius:10px;background:#DCEDEA;color:#0D6770;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-envelope-simple" style="font-size:20px"></i></span>
+              <div style="display:flex;flex-direction:column;gap:1px;min-width:0"><span style="font-size:12px;color:#869693">Verification sent to</span><span style="font-size:13.5px;font-weight:600;color:#172326;font-family:'Geist Mono',monospace;overflow:hidden;text-overflow:ellipsis">{{ email }}</span></div>
+            </div>
+            <p style="margin:0;font-size:13px;line-height:1.55;color:#526366">Click the link in the email to activate your account. It may take a minute to arrive — remember to check spam.</p>
+            <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:#526366">
+              <span>Didn't get it?</span>
+              <a href="#" onClick="{{ resend }}" style="font-weight:600">Resend email</a>
+              <sc-if value="{{ resent }}" hint-placeholder-val="{{ false }}"><span style="color:#147A4A;font-weight:600"><i class="ph-fill ph-check-circle" style="font-size:12px;vertical-align:-1px"></i> Sent</span></sc-if>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- everything except verify -->
+        <sc-if value="{{ isFormView }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:22px">
+
+          <!-- SSO -->
+          <sc-if value="{{ hasSso }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button onClick="{{ ssoMicrosoft }}" style="display:flex;align-items:center;justify-content:center;gap:10px;height:46px;border:1px solid #CFD6D0;border-radius:9px;background:#fff;color:#172326;font-family:inherit;font-size:14px;font-weight:600;cursor:{{ ssoCursor }}" style-hover="background:#F5F7F4;border-color:#B9C2BC">
+              <sc-if value="{{ msLoading }}" hint-placeholder-val="{{ false }}"><span style="width:17px;height:17px;border:2px solid #CFD6D0;border-top-color:#0D6770;border-radius:999px;animation:sfSpin .7s linear infinite"></span></sc-if>
+              <sc-if value="{{ msIdle }}" hint-placeholder-val="{{ true }}"><span style="display:flex"><svg width="17" height="17" viewBox="0 0 23 23" aria-hidden="true"><path fill="#F25022" d="M1 1h10v10H1z"/><path fill="#7FBA00" d="M12 1h10v10H12z"/><path fill="#00A4EF" d="M1 12h10v10H1z"/><path fill="#FFB900" d="M12 12h10v10H12z"/></svg></span></sc-if>
+              <span>{{ msLabel }}</span>
+            </button>
+            <button onClick="{{ ssoGoogle }}" style="display:flex;align-items:center;justify-content:center;gap:10px;height:46px;border:1px solid #CFD6D0;border-radius:9px;background:#fff;color:#172326;font-family:inherit;font-size:14px;font-weight:600;cursor:{{ ssoCursor }}" style-hover="background:#F5F7F4;border-color:#B9C2BC">
+              <sc-if value="{{ gLoading }}" hint-placeholder-val="{{ false }}"><span style="width:17px;height:17px;border:2px solid #CFD6D0;border-top-color:#0D6770;border-radius:999px;animation:sfSpin .7s linear infinite"></span></sc-if>
+              <sc-if value="{{ gIdle }}" hint-placeholder-val="{{ true }}"><span style="display:flex"><svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span></sc-if>
+              <span>{{ gLabel }}</span>
+            </button>
+            <sc-if value="{{ ssoOnly }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:9px;margin-top:2px;padding:11px 13px;border:1px solid #D7E7E4;border-radius:9px;background:#F1F7F6">
+                <i class="ph-fill ph-shield-check" style="font-size:18px;color:#0D6770"></i>
+                <span style="font-size:12.5px;line-height:1.5;color:#33474A">Your organization requires single sign-on. Email &amp; password login is disabled.</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ showDivider }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;gap:10px;font-size:11.5px;color:#869693;padding:2px 0"><span style="height:1px;flex:1;background:#E2E7E2"></span><span style="font-weight:500">{{ dividerLabel }}</span><span style="height:1px;flex:1;background:#E2E7E2"></span></div>
+            </sc-if>
+          </div>
+          </sc-if>
+
+          <!-- MANUAL FIELDS -->
+          <sc-if value="{{ hasManual }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:14px">
+
+            <sc-if value="{{ showName }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label style="font-size:12.5px;font-weight:600;color:#33474A">Full name</label>
+                <div style="display:flex;align-items:center;gap:9px;height:44px;padding:0 12px;border-radius:9px;background:#fff;border:1.5px solid {{ nameBorder }};box-shadow:{{ nameRing }};transition:border-color .12s,box-shadow .12s">
+                  <i class="ph ph-user" style="font-size:16px;color:{{ nameIcon }}"></i>
+                  <input value="{{ name }}" onInput="{{ onName }}" onFocus="{{ focusName }}" onBlur="{{ blur }}" placeholder="Mara Jensen" style="border:none;outline:none;background:transparent;font-size:14px;color:#172326;width:100%;padding:0"/>
+                </div>
+                <sc-if value="{{ nameErr }}" hint-placeholder-val="x"><span style="display:flex;align-items:center;gap:5px;font-size:12px;color:#B5382C"><i class="ph-fill ph-warning-circle" style="font-size:13px"></i>{{ nameErr }}</span></sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showEmailRO }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label style="font-size:12.5px;font-weight:600;color:#33474A">Email</label>
+                <div style="display:flex;align-items:center;gap:9px;height:44px;padding:0 12px;border-radius:9px;background:#F0F2F5;border:1.5px solid #E2E7E2">
+                  <i class="ph ph-envelope-simple" style="font-size:16px;color:#869693"></i>
+                  <span style="font-size:14px;color:#526366;font-family:'Geist Mono',monospace;flex:1;overflow:hidden;text-overflow:ellipsis">{{ inviteEmail }}</span>
+                  <i class="ph-fill ph-lock-simple" style="font-size:14px;color:#AEBAB6"></i>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showEmail }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label style="font-size:12.5px;font-weight:600;color:#33474A">Email</label>
+                <div style="display:flex;align-items:center;gap:9px;height:44px;padding:0 12px;border-radius:9px;background:#fff;border:1.5px solid {{ emailBorder }};box-shadow:{{ emailRing }};transition:border-color .12s,box-shadow .12s">
+                  <i class="ph ph-envelope-simple" style="font-size:16px;color:{{ emailIcon }}"></i>
+                  <input value="{{ email }}" onInput="{{ onEmail }}" onFocus="{{ focusEmail }}" onBlur="{{ blur }}" type="email" placeholder="you@company.com" style="border:none;outline:none;background:transparent;font-size:14px;color:#172326;width:100%;padding:0"/>
+                </div>
+                <sc-if value="{{ emailErr }}" hint-placeholder-val="x"><span style="display:flex;align-items:center;gap:5px;font-size:12px;color:#B5382C"><i class="ph-fill ph-warning-circle" style="font-size:13px"></i>{{ emailErr }}</span></sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showPassword }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;align-items:center">
+                  <label style="font-size:12.5px;font-weight:600;color:#33474A">{{ pwLabel }}</label>
+                  <span style="flex:1"></span>
+                  <sc-if value="{{ showForgotLink }}" hint-placeholder-val="{{ false }}"><a href="#" onClick="{{ goForgot }}" style="font-size:12px;font-weight:500">Forgot password?</a></sc-if>
+                </div>
+                <div style="display:flex;align-items:center;gap:9px;height:44px;padding:0 12px;border-radius:9px;background:#fff;border:1.5px solid {{ pwBorder }};box-shadow:{{ pwRing }};transition:border-color .12s,box-shadow .12s">
+                  <i class="ph ph-lock-simple" style="font-size:16px;color:{{ pwIcon }}"></i>
+                  <input value="{{ password }}" onInput="{{ onPassword }}" onFocus="{{ focusPw }}" onBlur="{{ blur }}" type="{{ pwType }}" placeholder="{{ pwPlaceholder }}" style="border:none;outline:none;background:transparent;font-size:14px;color:#172326;width:100%;padding:0"/>
+                  <span onClick="{{ togglePw }}" style="display:flex;cursor:pointer;color:#869693" style-hover="color:#172326"><i class="ph {{ pwEye }}" style="font-size:17px"></i></span>
+                </div>
+                <sc-if value="{{ pwErr }}" hint-placeholder-val="x"><span style="display:flex;align-items:center;gap:5px;font-size:12px;color:#B5382C"><i class="ph-fill ph-warning-circle" style="font-size:13px"></i>{{ pwErr }}</span></sc-if>
+                <sc-if value="{{ showStrength }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+                    <div style="flex:1;display:flex;gap:4px">
+                      <span style="flex:1;height:3px;border-radius:2px;background:{{ bar1 }}"></span>
+                      <span style="flex:1;height:3px;border-radius:2px;background:{{ bar2 }}"></span>
+                      <span style="flex:1;height:3px;border-radius:2px;background:{{ bar3 }}"></span>
+                    </div>
+                    <span style="font-size:11px;font-weight:600;color:{{ strengthColor }};min-width:52px;text-align:right">{{ strengthLabel }}</span>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showConfirm }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label style="font-size:12.5px;font-weight:600;color:#33474A">Confirm new password</label>
+                <div style="display:flex;align-items:center;gap:9px;height:44px;padding:0 12px;border-radius:9px;background:#fff;border:1.5px solid {{ confBorder }};box-shadow:{{ confRing }};transition:border-color .12s,box-shadow .12s">
+                  <i class="ph ph-lock-simple" style="font-size:16px;color:{{ confIcon }}"></i>
+                  <input value="{{ confirm }}" onInput="{{ onConfirm }}" onFocus="{{ focusConf }}" onBlur="{{ blur }}" type="{{ pwType }}" placeholder="Re-enter password" style="border:none;outline:none;background:transparent;font-size:14px;color:#172326;width:100%;padding:0"/>
+                  <sc-if value="{{ confMatch }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check-circle" style="font-size:17px;color:#1F9D57"></i></sc-if>
+                </div>
+                <sc-if value="{{ confErr }}" hint-placeholder-val="x"><span style="display:flex;align-items:center;gap:5px;font-size:12px;color:#B5382C"><i class="ph-fill ph-warning-circle" style="font-size:13px"></i>{{ confErr }}</span></sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showRemember }}" hint-placeholder-val="{{ false }}">
+              <label style="display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none">
+                <span onClick="{{ toggleRemember }}" style="width:18px;height:18px;border-radius:5px;border:1.5px solid {{ rememberBorder }};background:{{ rememberBg }};display:flex;align-items:center;justify-content:center;color:#fff;flex:none"><sc-if value="{{ remember }}" hint-placeholder-val="{{ false }}"><i class="ph-bold ph-check" style="font-size:11px"></i></sc-if></span>
+                <span onClick="{{ toggleRemember }}" style="font-size:13px;color:#33474A">Keep me signed in on this device</span>
+              </label>
+            </sc-if>
+
+            <sc-if value="{{ showTerms }}" hint-placeholder-val="{{ false }}">
+              <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer;user-select:none">
+                <span onClick="{{ toggleAgree }}" style="width:18px;height:18px;margin-top:1px;border-radius:5px;border:1.5px solid {{ agreeBorder }};background:{{ agreeBg }};display:flex;align-items:center;justify-content:center;color:#fff;flex:none"><sc-if value="{{ agree }}" hint-placeholder-val="{{ false }}"><i class="ph-bold ph-check" style="font-size:11px"></i></sc-if></span>
+                <span onClick="{{ toggleAgree }}" style="font-size:12.5px;line-height:1.5;color:#33474A">I agree to the <a href="#" onClick="{{ noop }}">Terms of Service</a> and <a href="#" onClick="{{ noop }}">Privacy Policy</a>.</span>
+              </label>
+              <sc-if value="{{ agreeErr }}" hint-placeholder-val="x"><span style="display:flex;align-items:center;gap:5px;font-size:12px;color:#B5382C;margin-top:-6px"><i class="ph-fill ph-warning-circle" style="font-size:13px"></i>{{ agreeErr }}</span></sc-if>
+            </sc-if>
+          </div>
+          </sc-if>
+
+          <!-- submit -->
+          <sc-if value="{{ showSubmit }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ submit }}" style="display:flex;align-items:center;justify-content:center;gap:8px;height:46px;border:none;border-radius:9px;background:#0D6770;color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:{{ submitCursor }};box-shadow:0 1px 2px rgba(23,35,38,0.12)" style-hover="background:#0A545C">
+            <sc-if value="{{ submitting }}" hint-placeholder-val="{{ false }}"><span style="width:17px;height:17px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:999px;animation:sfSpin .7s linear infinite"></span></sc-if>
+            <span>{{ submitLabel }}</span>
+            <sc-if value="{{ showArrow }}" hint-placeholder-val="{{ true }}"><i class="ph-bold ph-arrow-right" style="font-size:16px"></i></sc-if>
+          </button>
+          </sc-if>
+
+          <!-- switch mode -->
+          <sc-if value="{{ switchable }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;color:#526366">
+            <span>{{ switchPrompt }}</span>
+            <a href="#" onClick="{{ switchMode }}" style="font-weight:600">{{ switchCta }}</a>
+          </div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+      </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;},&quot;defaultMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;signin&quot;,&quot;register&quot;,&quot;forgot&quot;,&quot;reset&quot;,&quot;verify&quot;,&quot;invite&quot;],&quot;default&quot;:&quot;signin&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Auth&quot;},&quot;manualLogin&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Auth&quot;},&quot;showBrandPanel&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Auth&quot;},&quot;orgName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Acme Marketing&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;inviterName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Mara Jensen&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;inviteEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;devin@acme.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+class Component extends DCLogic {
+  state = {
+    view: null,
+    name: "", email: "", password: "", confirm: "", remember: true, agree: false,
+    showPw: false, focus: null, errors: {},
+    submitting: false, done: false, doneKind: null, resent: false,
+    sso: null,
+  };
+  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._s); clearTimeout(this._r); }
+
+  view() { return this.state.view || (this.props && this.props.defaultMode) || "signin"; }
+  org() { return (this.props && this.props.orgName) || "Acme Marketing"; }
+  inviter() { return (this.props && this.props.inviterName) || "Mara Jensen"; }
+  inviteEmail() { return (this.props && this.props.inviteEmail) || "you@company.com"; }
+  go(v, extra) { this.setState({ view: v, errors: {}, done: false, submitting: false, sso: null, resent: false, ...(extra || {}) }); }
+
+  validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  strength() {
+    const p = this.state.password; let s = 0;
+    if (p.length >= 8) s++;
+    if (/[A-Z]/.test(p) && /[a-z]/.test(p)) s++;
+    if (/\d/.test(p) || /[^A-Za-z0-9]/.test(p)) s++;
+    return p.length === 0 ? 0 : Math.max(1, s);
+  }
+  runSso(which) {
+    if (this.state.sso) return;
+    this.setState({ sso: which, errors: {} });
+    clearTimeout(this._s);
+    this._s = setTimeout(() => this.setState({ sso: null, done: true, doneKind: which }), 1700);
+  }
+  resend() { clearTimeout(this._r); this.setState({ resent: true }); this._r = setTimeout(() => this.setState({ resent: false }), 2600); }
+  submit() {
+    if (this.state.submitting || this.state.sso) return;
+    const v = this.view(), s = this.state, e = {};
+    if ((v === "register" || v === "invite") && !s.name.trim()) e.name = "Enter your name.";
+    if ((v === "signin" || v === "register" || v === "forgot")) {
+      if (!s.email.trim()) e.email = "Enter your email address.";
+      else if (!this.validEmail(s.email)) e.email = "That doesn't look like a valid email.";
+    }
+    if (v === "signin" || v === "register" || v === "reset" || v === "invite") {
+      if (!s.password) e.password = "Enter your password.";
+      else if ((v === "register" || v === "reset" || v === "invite") && s.password.length < 8) e.password = "Use at least 8 characters.";
+    }
+    if (v === "reset") {
+      if (!s.confirm) e.confirm = "Re-enter your password.";
+      else if (s.confirm !== s.password) e.confirm = "Passwords don't match.";
+    }
+    if ((v === "register" || v === "invite") && !s.agree) e.agree = "Please accept the terms to continue.";
+    if (Object.keys(e).length) { this.setState({ errors: e }); return; }
+    this.setState({ submitting: true, errors: {} });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => {
+      if (v === "register") this.setState({ submitting: false, view: "verify" });
+      else this.setState({ submitting: false, done: true, doneKind: v });
+    }, 1400);
+  }
+
+  renderVals() {
+    const s = this.state, v = this.view(), p = this.props || {};
+    const isSignin = v === "signin", isRegister = v === "register", isForgot = v === "forgot",
+      isReset = v === "reset", isVerify = v === "verify", isInvite = v === "invite";
+    const manual = p.manualLogin !== false;
+    const showBrand = p.showBrandPanel !== false;
+    const err = s.errors;
+    const busy = s.submitting || !!s.sso;
+
+    const fs = (name, hasErr) => {
+      const f = s.focus === name;
+      return { border: hasErr ? "#DC4436" : (f ? "#0D6770" : "#CFD6D0"), ring: hasErr ? "0 0 0 3px rgba(220,68,54,0.14)" : (f ? "0 0 0 3px rgba(13,103,112,0.15)" : "none"), icon: hasErr ? "#DC4436" : (f ? "#0D6770" : "#869693") };
+    };
+    const nf = fs("name", err.name), ef = fs("email", err.email), pf = fs("pw", err.password), cf = fs("conf", err.confirm);
+
+    const hasSso = isSignin || isRegister || isInvite;
+    const ssoOnly = hasSso && !manual;
+    const hasManual = (isForgot || isReset) || ((isSignin || isRegister || isInvite) && manual);
+    const showEmail = (isSignin || isRegister || isForgot);
+    const showEmailRO = isInvite && manual;
+    const showName = (isRegister || isInvite) && manual;
+    const showPassword = (isSignin || isRegister || isReset || isInvite) && (isReset || manual);
+    const showConfirm = isReset;
+    const showTerms = (isRegister || isInvite) && manual;
+    const showRemember = isSignin && manual;
+    const showForgotLink = isSignin && manual;
+    const showStrength = (isRegister || isReset || isInvite) && s.password.length > 0;
+    const showSubmit = isForgot || isReset || ((isSignin || isRegister || isInvite) && manual);
+    const switchable = isSignin || isRegister;
+    const backable = isForgot || isReset || isVerify || isInvite;
+    const isFormView = !isVerify;
+
+    const str = this.strength();
+    const sm = [{ label: "", c: "#E2E7E2" }, { label: "Weak", c: "#DC4436" }, { label: "Fair", c: "#D18F0C" }, { label: "Strong", c: "#1F9D57" }][str];
+    const barColor = (i) => str >= i ? sm.c : "#E2E7E2";
+
+    const titles = {
+      signin: ["Sign in to SiteFoundry", manual ? "Use your work account or email to continue." : "Use your organization account to continue."],
+      register: ["Create your account", "Start building websites your editors will actually understand."],
+      forgot: ["Reset your password", "Enter your email and we'll send you a link to set a new password."],
+      reset: ["Set a new password", "Choose a strong password you don't use anywhere else."],
+      verify: ["Verify your email", "You're almost there — one step to activate your account."],
+      invite: ["Join " + this.org(), "Set up your account to start collaborating."],
+    }[v];
+
+    // terminal screen config
+    const dk = s.doneKind;
+    const doneCfg = {
+      signin: { icon: "ph-fill ph-check-circle", bg: "#E3F3EA", fg: "#147A4A", title: "You're signed in", body: "Taking you to your sites and page trees…", primary: "Continue", onPrimary: () => this.go("signin") },
+      ms: { icon: "ph-fill ph-check-circle", bg: "#E3F3EA", fg: "#147A4A", title: "Signed in with Microsoft", body: "Completing the secure hand-off and loading your workspace…", primary: "Continue", onPrimary: () => this.go("signin") },
+      g: { icon: "ph-fill ph-check-circle", bg: "#E3F3EA", fg: "#147A4A", title: "Signed in with Google", body: "Completing the secure hand-off and loading your workspace…", primary: "Continue", onPrimary: () => this.go("signin") },
+      forgot: { icon: "ph ph-envelope-simple", bg: "#DCEDEA", fg: "#0D6770", title: "Check your email", body: "If an account exists for " + (s.email || "that address") + ", we've sent a reset link. It expires in 30 minutes.", primary: "Back to sign in", onPrimary: () => this.go("signin"), sec: "Resend link", secPrompt: "Didn't get it?", onSec: () => this.resend() },
+      reset: { icon: "ph-fill ph-check-circle", bg: "#E3F3EA", fg: "#147A4A", title: "Password updated", body: "Your password has been changed. You can now sign in with your new credentials.", primary: "Back to sign in", onPrimary: () => this.go("signin") },
+      invite: { icon: "ph-fill ph-check-circle", bg: "#E3F3EA", fg: "#147A4A", title: "Welcome to " + this.org(), body: "Your account is ready. Taking you into the workspace…", primary: "Enter workspace", onPrimary: () => this.go("signin") },
+    }[dk] || { icon: "ph-fill ph-check-circle", bg: "#E3F3EA", fg: "#147A4A", title: "Done", body: "", primary: "Continue", onPrimary: () => this.go("signin") };
+
+    const inv = this.inviter();
+    const initials = inv.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+
+    return {
+      showBrand, showInlineLogo: !showBrand,
+      props: ["Canonical page tree, not disconnected records", "Concepts, revisions & safe publishing", "REST + GraphQL — bring any front-end"],
+
+      // terminal
+      done: s.done, showForm: !s.done,
+      doneIcon: doneCfg.icon, doneIconBg: doneCfg.bg, doneIconFg: doneCfg.fg,
+      doneTitle: doneCfg.title, doneBody: doneCfg.body,
+      donePrimaryLabel: doneCfg.primary, donePrimary: doneCfg.onPrimary,
+      doneSecondary: doneCfg.sec || "", doneSecondaryPrompt: doneCfg.secPrompt || "", doneSecondaryAction: (e) => { e.preventDefault(); doneCfg.onSec && doneCfg.onSec(); },
+      resent: s.resent,
+
+      // view flags
+      isSignin, isRegister, isForgot, isReset, isVerify, isInvite, isFormView,
+      backable, switchable, hasSso, ssoOnly, hasManual,
+      showEmail, showEmailRO, showName, showPassword, showConfirm, showTerms, showRemember, showForgotLink, showStrength, showSubmit,
+      showDivider: hasSso && manual, dividerLabel: "or continue with email",
+
+      title: titles[0], subtitle: titles[1],
+      inviter: inv, inviterInitials: initials, org: this.org(), inviteEmail: this.inviteEmail(),
+
+      goSignin: (e) => { e.preventDefault(); this.go("signin"); },
+      goForgot: (e) => { e.preventDefault(); this.go("forgot"); },
+      switchPrompt: isSignin ? "New to SiteFoundry?" : "Already have an account?",
+      switchCta: isSignin ? "Create an account" : "Sign in",
+      switchMode: (e) => { e.preventDefault(); this.go(isSignin ? "register" : "signin"); },
+
+      // SSO
+      ssoCursor: s.sso ? "default" : "pointer",
+      msLoading: s.sso === "ms", msIdle: s.sso !== "ms", gLoading: s.sso === "g", gIdle: s.sso !== "g",
+      msLabel: s.sso === "ms" ? "Connecting…" : "Continue with Microsoft",
+      gLabel: s.sso === "g" ? "Connecting…" : "Continue with Google",
+      ssoMicrosoft: () => this.runSso("ms"), ssoGoogle: () => this.runSso("g"),
+
+      // fields
+      name: s.name, onName: (e) => this.setState({ name: e.target.value, errors: { ...err, name: null } }),
+      focusName: () => this.setState({ focus: "name" }), blur: () => this.setState({ focus: null }),
+      nameBorder: nf.border, nameRing: nf.ring, nameIcon: nf.icon, nameErr: err.name || "",
+
+      email: s.email, onEmail: (e) => this.setState({ email: e.target.value, errors: { ...err, email: null } }),
+      focusEmail: () => this.setState({ focus: "email" }),
+      emailBorder: ef.border, emailRing: ef.ring, emailIcon: ef.icon, emailErr: err.email || "",
+
+      password: s.password, onPassword: (e) => this.setState({ password: e.target.value, errors: { ...err, password: null } }),
+      focusPw: () => this.setState({ focus: "pw" }),
+      pwBorder: pf.border, pwRing: pf.ring, pwIcon: pf.icon, pwErr: err.password || "",
+      pwType: s.showPw ? "text" : "password", pwEye: s.showPw ? "ph-eye-slash" : "ph-eye",
+      pwLabel: (isReset ? "New password" : "Password"),
+      pwPlaceholder: (isRegister || isReset || isInvite) ? "At least 8 characters" : "Your password",
+      togglePw: () => this.setState({ showPw: !s.showPw }),
+
+      confirm: s.confirm, onConfirm: (e) => this.setState({ confirm: e.target.value, errors: { ...err, confirm: null } }),
+      focusConf: () => this.setState({ focus: "conf" }),
+      confBorder: cf.border, confRing: cf.ring, confIcon: cf.icon, confErr: err.confirm || "",
+      confMatch: isReset && s.confirm.length > 0 && s.confirm === s.password,
+
+      showStrengthVals: showStrength, bar1: barColor(1), bar2: barColor(2), bar3: barColor(3), strengthLabel: sm.label, strengthColor: sm.c,
+
+      remember: s.remember, toggleRemember: () => this.setState({ remember: !s.remember }),
+      rememberBorder: s.remember ? "#0D6770" : "#CFD6D0", rememberBg: s.remember ? "#0D6770" : "#fff",
+      agree: s.agree, toggleAgree: () => this.setState({ agree: !s.agree, errors: { ...err, agree: null } }),
+      agreeBorder: s.agree ? "#0D6770" : (err.agree ? "#DC4436" : "#CFD6D0"), agreeBg: s.agree ? "#0D6770" : "#fff", agreeErr: err.agree || "",
+      forgot: (e) => e.preventDefault(), noop: (e) => e.preventDefault(),
+      resend: (e) => { e.preventDefault(); this.resend(); },
+
+      // submit
+      submit: () => this.submit(), submitting: s.submitting, showArrow: !busy, submitCursor: busy ? "default" : "pointer",
+      submitLabel: s.submitting
+        ? ({ signin: "Signing in…", register: "Creating account…", forgot: "Sending link…", reset: "Updating…", invite: "Joining…" }[v] || "Please wait…")
+        : ({ signin: "Sign in", register: "Create account", forgot: "Send reset link", reset: "Update password", invite: "Accept & join" }[v] || "Continue"),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:#F5F7F4;color:#172326;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden}
+  a{color:#0D6770;text-decoration:none}a:hover{color:#0A545C}
+  ::selection{background:#CFE6E1}
+  input,textarea,select{font-family:inherit}
+  i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
+  .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
+  .sf-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .sf-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #F5F7F4}
+  .sf-in{width:100%;padding:8px 10px;border:1.5px solid #CFD6D0;border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none;transition:border-color .12s,box-shadow .12s}
+  .sf-in:focus{border-color:#0D6770;box-shadow:0 0 0 3px rgba(13,103,112,0.15)}
+  @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes sfFade{from{opacity:0}to{opacity:1}}
+  @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+  @keyframes sfDrop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  @keyframes sfSpin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+
+<div data-screen-label="Header navigation" style="display:flex;flex-direction:column;height:100vh;width:100vw;overflow:hidden">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="display:flex;align-items:center;gap:12px;padding:0 16px;height:56px;flex:none;border-bottom:1px solid #E2E7E2;background:#fff">
+    <a href="#" onClick="{{ noop }}" style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 11px;border:1px solid #CFD6D0;border-radius:8px;color:#33474A;font-size:13px;font-weight:600" style-hover="background:#F5F7F4"><i class="ph-bold ph-arrow-left" style="font-size:15px"></i>Back</a>
+    <div style="display:flex;flex-direction:column;gap:1px;min-width:0">
+      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#869693">
+        <span>Navigation</span><i class="ph ph-caret-right" style="font-size:10px"></i><span style="color:#33474A;font-weight:600">Header</span>
+      </div>
+      <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#0D6770;font-weight:500">Primary menu · EN</span>
+    </div>
+    <span style="display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:5px;font-size:11.5px;font-weight:600;background:{{ statusBg }};color:{{ statusFg }}"><span style="width:5px;height:5px;border-radius:999px;background:{{ statusDot }}"></span>{{ statusLabel }}</span>
+    <sc-if value="{{ hasBroken }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:5px;font-size:11.5px;font-weight:600;background:#F8E6E3;color:#B5382C"><i class="ph-fill ph-warning" style="font-size:12px"></i>{{ brokenLabel }}</span></sc-if>
+    <span style="flex:1"></span>
+    <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#869693"><i class="ph {{ saveIcon }}" style="font-size:14px;color:{{ saveIconColor }}"></i>{{ savedLabel }}</span>
+    <button onClick="{{ saveConcept }}" style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;border:1px solid #CFD6D0;border-radius:8px;background:#fff;color:#172326;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#F5F7F4"><i class="ph ph-floppy-disk" style="font-size:15px"></i>Save draft</button>
+    <button onClick="{{ publish }}" style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border:none;border-radius:8px;background:#0D6770;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.12);white-space:nowrap" style-hover="background:#0A545C"><i class="ph-bold ph-rocket-launch" style="font-size:15px"></i>{{ publishLabel }}</button>
+  </div>
+
+  <div style="display:flex;flex:1;min-height:0">
+
+    <!-- ===== LEFT: PREVIEW ===== -->
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;background:#EEF1ED">
+      <div style="display:flex;align-items:center;gap:12px;padding:0 16px;height:48px;flex:none;border-bottom:1px solid #E2E7E2;background:#FAFCFA">
+        <div style="display:flex;background:#EAEEEA;border-radius:8px;padding:2px;gap:2px">
+          <span onClick="{{ dDesktop }}" title="Desktop" style="width:30px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;background:{{ deskBg }};color:{{ deskFg }};box-shadow:{{ deskSh }}"><i class="ph-bold ph-monitor" style="font-size:16px"></i></span>
+          <span onClick="{{ dTablet }}" title="Tablet" style="width:30px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;background:{{ tabBg }};color:{{ tabFg }};box-shadow:{{ tabSh }}"><i class="ph-bold ph-device-tablet" style="font-size:16px"></i></span>
+          <span onClick="{{ dMobile }}" title="Mobile" style="width:30px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;background:{{ mobBg }};color:{{ mobFg }};box-shadow:{{ mobSh }}"><i class="ph-bold ph-device-mobile" style="font-size:16px"></i></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex:1 1 auto;max-width:440px;height:32px;padding:0 12px;border:1px solid #E2E7E2;border-radius:999px;background:#fff;min-width:0">
+          <i class="ph-fill ph-lock-simple" style="font-size:12px;color:#1F9D57;flex:none"></i>
+          <span style="font-size:12px;color:#526366;font-family:'Geist Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">acme.com</span>
+          <span style="flex:1"></span>
+          <span style="font-size:10px;font-weight:600;color:#8A5A06;background:#F7EDDA;padding:1px 6px;border-radius:999px;white-space:nowrap;flex:none">Preview</span>
+        </div>
+        <span style="flex:1"></span>
+        <span onClick="{{ refresh }}" title="Refresh preview" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:#526366;cursor:pointer;flex:none" style-hover="background:#EEF1ED;color:#172326"><i class="ph {{ refreshIcon }}" style="font-size:16px;animation:{{ refreshAnim }}"></i></span>
+        <span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:#526366;cursor:pointer;flex:none" style-hover="background:#EEF1ED;color:#172326"><i class="ph ph-arrow-square-out" style="font-size:16px"></i></span>
+      </div>
+
+      <div class="sf-scroll" style="flex:1;overflow:auto;display:flex;justify-content:flex-start;align-items:flex-start;padding:24px">
+        <div style="width:{{ deviceW }};flex:none;margin:0 auto;background:#fff;border-radius:{{ deviceRadius }};box-shadow:0 8px 30px rgba(23,35,38,0.12);overflow:hidden;transition:width .2s ease">
+
+          <!-- DESKTOP / TABLET HEADER -->
+          <sc-if value="{{ isWide }}" hint-placeholder-val="{{ true }}">
+            <div style="position:relative">
+              <div style="display:flex;align-items:center;gap:28px;padding:0 28px;height:66px;background:#fff;border-bottom:1px solid #EDEFF2">
+                <div style="display:flex;align-items:center;gap:9px;flex:none">
+                  <span style="width:28px;height:28px;border-radius:7px;background:#E07A4F;color:#fff;display:flex;align-items:center;justify-content:center"><i class="ph-bold ph-hammer" style="font-size:16px"></i></span>
+                  <span style="font-size:16px;font-weight:700;color:#141A2E;letter-spacing:-0.01em">Acme</span>
+                </div>
+                <div class="sf-scroll" style="flex:1;display:flex;align-items:center;min-width:0;overflow-x:auto">
+                  <div style="display:flex;align-items:center;gap:4px;margin-left:{{ navMarginLeft }};margin-right:{{ navMarginRight }}">
+                  <sc-for list="{{ deskNav }}" as="d" hint-placeholder-count="5">
+                    <sc-if value="{{ d.isButton }}" hint-placeholder-val="{{ false }}">
+                      <span onClick="{{ d.onClick }}" style="margin-left:10px;display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 17px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;flex:none;background:{{ d.btnBg }};color:{{ d.btnFg }};border:1.5px solid {{ d.btnBorder }};box-shadow:{{ d.selRing }}">{{ d.label }}</span>
+                    </sc-if>
+                    <sc-if value="{{ d.isNavLink }}" hint-placeholder-val="{{ true }}">
+                      <span onClick="{{ d.onClick }}" style="display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 13px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;flex:none;color:{{ d.fg }};background:{{ d.bg }};box-shadow:{{ d.selRing }}">{{ d.label }}<sc-if value="{{ d.isGroup }}" hint-placeholder-val="{{ false }}"><i class="ph-bold ph-caret-down" style="font-size:12px;transition:transform .15s;transform:rotate({{ d.caret }})"></i></sc-if></span>
+                    </sc-if>
+                  </sc-for>
+                  </div>
+                </div>
+              </div>
+              <sc-if value="{{ deskDropdownOpen }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute;left:0;right:0;top:66px;z-index:5;background:#fff;border-bottom:1px solid #EDEFF2;box-shadow:0 16px 30px rgba(20,26,46,0.10);padding:16px 28px 20px;animation:sfDrop .14s ease">
+                  <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#9AA0AA">{{ deskDropdownTitle }}</span>
+                  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:10px">
+                    <sc-for list="{{ deskDropdownItems }}" as="c" hint-placeholder-count="2">
+                      <span onClick="{{ c.onClick }}" style="display:flex;flex-direction:column;gap:2px;padding:9px 11px;border-radius:9px;cursor:pointer;background:{{ c.bg }};box-shadow:{{ c.selRing }}" style-hover="background:#F3F5F7">
+                        <span style="font-size:13.5px;font-weight:600;color:#141A2E">{{ c.label }}</span>
+                        <span style="font-size:11.5px;color:#8A90A0;font-family:'Geist Mono',monospace">{{ c.target }}</span>
+                      </span>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+              <div style="padding:40px 28px 60px;background:#fff">
+                <div style="height:12px;width:44%;border-radius:999px;background:#EEF0F3;margin-bottom:16px"></div>
+                <div style="height:12px;width:74%;border-radius:999px;background:#F1F3F6;margin-bottom:11px"></div>
+                <div style="height:12px;width:66%;border-radius:999px;background:#F1F3F6;margin-bottom:11px"></div>
+                <div style="height:12px;width:52%;border-radius:999px;background:#F1F3F6"></div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- MOBILE HEADER -->
+          <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="display:flex;align-items:center;padding:0 18px;height:58px;border-bottom:1px solid #EDEFF2">
+                <div style="display:flex;align-items:center;gap:8px;flex:1">
+                  <span style="width:26px;height:26px;border-radius:7px;background:#E07A4F;color:#fff;display:flex;align-items:center;justify-content:center"><i class="ph-bold ph-hammer" style="font-size:14px"></i></span>
+                  <span style="font-size:16px;font-weight:700;color:#141A2E">Acme</span>
+                </div>
+                <span onClick="{{ toggleMobileOpen }}" style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:9px;color:#141A2E;cursor:pointer" style-hover="background:#F3F5F7"><i class="ph-bold {{ mobileToggleIcon }}" style="font-size:22px"></i></span>
+              </div>
+              <sc-if value="{{ mobileOpen }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:12px 14px;display:flex;flex-direction:column;gap:2px;border-bottom:1px solid #EDEFF2;animation:sfDrop .14s ease">
+                  <sc-for list="{{ mobNav }}" as="m" hint-placeholder-count="5">
+                    <sc-if value="{{ m.isButton }}" hint-placeholder-val="{{ false }}">
+                      <span onClick="{{ m.onClick }}" style="margin-top:8px;display:flex;align-items:center;justify-content:center;height:46px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;background:{{ m.btnBg }};color:{{ m.btnFg }};border:1.5px solid {{ m.btnBorder }};box-shadow:{{ m.selRing }}">{{ m.label }}</span>
+                    </sc-if>
+                    <sc-if value="{{ m.isRow }}" hint-placeholder-val="{{ true }}">
+                      <span onClick="{{ m.onClick }}" style="display:flex;align-items:center;gap:8px;padding:0 13px;height:48px;border-radius:9px;cursor:pointer;background:{{ m.bg }};box-shadow:{{ m.selRing }}">
+                        <span style="flex:1;font-size:15.5px;font-weight:{{ m.weight }};color:{{ m.fg }}">{{ m.label }}</span>
+                        <sc-if value="{{ m.isGroup }}" hint-placeholder-val="{{ false }}"><i class="ph-bold ph-caret-down" style="font-size:14px;color:#9AA0AA;transition:transform .15s;transform:rotate({{ m.caret }})"></i></sc-if>
+                      </span>
+                    </sc-if>
+                    <sc-if value="{{ m.isChild }}" hint-placeholder-val="{{ false }}">
+                      <span onClick="{{ m.onClick }}" style="display:flex;align-items:center;gap:8px;padding:0 13px 0 24px;height:42px;border-radius:9px;cursor:pointer;background:{{ m.bg }};box-shadow:{{ m.selRing }}">
+                        <i class="ph ph-corner-down-right" style="font-size:14px;color:#B4BAC6"></i>
+                        <span style="flex:1;font-size:14.5px;color:{{ m.fg }}">{{ m.label }}</span>
+                      </span>
+                    </sc-if>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <div style="padding:30px 20px 48px;background:#fff">
+                <div style="height:12px;width:70%;border-radius:999px;background:#EEF0F3;margin-bottom:14px"></div>
+                <div style="height:12px;width:90%;border-radius:999px;background:#F1F3F6;margin-bottom:10px"></div>
+                <div style="height:12px;width:80%;border-radius:999px;background:#F1F3F6"></div>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== RIGHT: MENU BUILDER ===== -->
+    <div style="width:404px;flex:none;border-left:1px solid #E2E7E2;background:#fff;display:flex;flex-direction:column;min-height:0">
+      <div style="display:flex;align-items:center;gap:9px;padding:14px 16px 12px;flex:none;border-bottom:1px solid #EEF1ED">
+        <span style="font-size:13.5px;font-weight:600">Menu structure</span>
+        <span style="font-size:11.5px;color:#B7C0BD;font-family:'Geist Mono',monospace">{{ itemCount }} items</span>
+        <span style="flex:1"></span>
+        <span style="font-size:11.5px;color:#869693;display:inline-flex;align-items:center;gap:5px"><i class="ph ph-arrows-out-cardinal" style="font-size:13px;color:#AEBAB6"></i>Drag to reorder</span>
+      </div>
+
+      <div class="sf-scroll" style="flex:1;overflow:auto;padding:14px 16px">
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <sc-for list="{{ items }}" as="it" hint-placeholder-count="6">
+            <div draggable="true" onDragStart="{{ it.onDragStart }}" onDragOver="{{ it.onDragOver }}" onDragEnter="{{ it.onDragOver }}" onDrop="{{ it.onDrop }}" onDragEnd="{{ it.onDragEnd }}" style="border:1.5px solid {{ it.border }};border-radius:10px;background:#fff;overflow:hidden;opacity:{{ it.op }};box-shadow:{{ it.dropShadow }};transition:border-color .12s,box-shadow .12s">
+              <div onClick="{{ it.onSelect }}" style="display:flex;align-items:center;gap:9px;padding:9px 10px 9px 8px;cursor:pointer;background:{{ it.headBg }}">
+                <span style="display:flex;color:#C2CCC4;cursor:grab" style-hover="color:#869693"><i class="ph-bold ph-dots-six-vertical" style="font-size:16px"></i></span>
+                <span style="width:26px;height:26px;border-radius:7px;background:{{ it.iconBg }};color:{{ it.iconFg }};display:flex;align-items:center;justify-content:center;flex:none"><i class="ph {{ it.icon }}" style="font-size:15px"></i></span>
+                <div style="display:flex;flex-direction:column;gap:1px;min-width:0">
+                  <span style="font-size:13.5px;font-weight:600;color:#172326;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.label }}</span>
+                  <span style="font-size:11.5px;color:{{ it.subFg }};font-family:'Geist Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.sub }}</span>
+                </div>
+                <span style="flex:1"></span>
+                <sc-if value="{{ it.broken }}" hint-placeholder-val="{{ false }}"><span title="This link's target page doesn't exist" style="display:inline-flex;align-items:center;color:#B5382C"><i class="ph-fill ph-warning" style="font-size:14px"></i></span></sc-if>
+                <span onClick="{{ it.onUp }}" title="Move up" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:{{ it.upColor }};cursor:{{ it.upCursor }}" style-hover="background:#EEF1ED"><i class="ph-bold ph-arrow-up" style="font-size:13px"></i></span>
+                <span onClick="{{ it.onDown }}" title="Move down" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:{{ it.downColor }};cursor:{{ it.downCursor }}" style-hover="background:#EEF1ED"><i class="ph-bold ph-arrow-down" style="font-size:13px"></i></span>
+                <i class="ph ph-caret-down" style="font-size:14px;color:#869693;transition:transform .15s;transform:rotate({{ it.caret }})"></i>
+              </div>
+
+              <sc-if value="{{ it.expanded }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:13px;padding:13px 12px 14px;border-top:1px solid #EEF1ED;background:#FCFDFC">
+                  <div style="display:flex;flex-direction:column;gap:5px">
+                    <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Label</label>
+                    <input class="sf-in" value="{{ it.fLabel }}" onInput="{{ it.onLabel }}" placeholder="Menu label"/>
+                  </div>
+
+                  <sc-if value="{{ it.hasTarget }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:6px">
+                      <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Links to</label>
+                      <div style="display:flex;background:#EEF1ED;border-radius:8px;padding:2px;gap:2px;width:fit-content">
+                        <button onClick="{{ it.setPage }}" style="height:26px;padding:0 12px;border:none;border-radius:6px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;background:{{ it.pageSegBg }};color:{{ it.pageSegFg }};box-shadow:{{ it.pageSegSh }}">Page</button>
+                        <button onClick="{{ it.setUrl }}" style="height:26px;padding:0 12px;border:none;border-radius:6px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;background:{{ it.urlSegBg }};color:{{ it.urlSegFg }};box-shadow:{{ it.urlSegSh }}">Custom URL</button>
+                      </div>
+                      <sc-if value="{{ it.isPage }}" hint-placeholder-val="{{ true }}">
+                        <select value="{{ it.target }}" onChange="{{ it.onPage }}" class="sf-in" style="cursor:pointer">
+                          <sc-for list="{{ pageOptions }}" as="o" hint-placeholder-count="6"><option value="{{ o.path }}">{{ o.label }}</option></sc-for>
+                        </select>
+                      </sc-if>
+                      <sc-if value="{{ it.isUrl }}" hint-placeholder-val="{{ false }}">
+                        <input class="sf-in" value="{{ it.target }}" onInput="{{ it.onUrl }}" placeholder="https://example.com" style="font-family:'Geist Mono',monospace;font-size:12.5px"/>
+                      </sc-if>
+                    </div>
+                    <label style="display:flex;align-items:center;gap:9px;cursor:pointer">
+                      <span onClick="{{ it.toggleNewTab }}" style="width:34px;height:20px;border-radius:999px;background:{{ it.newTabTrack }};position:relative;transition:background .15s;flex:none"><span style="position:absolute;top:2px;left:{{ it.newTabKnob }};width:16px;height:16px;border-radius:999px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);transition:left .15s"></span></span>
+                      <span style="font-size:12.5px;color:#33474A">Open in a new tab</span>
+                    </label>
+                  </sc-if>
+
+                  <sc-if value="{{ it.isGroup }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:8px">
+                      <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Dropdown links</label>
+                      <sc-for list="{{ it.children }}" as="c" hint-placeholder-count="2">
+                        <div style="display:flex;align-items:center;gap:7px;padding:7px 8px;border:1px solid #E7ECE8;border-radius:9px;background:#fff">
+                          <span style="display:flex;color:#C2CCC4"><i class="ph-bold ph-dots-six-vertical" style="font-size:14px"></i></span>
+                          <div style="display:flex;flex-direction:column;gap:5px;flex:1;min-width:0">
+                            <input class="sf-in" value="{{ c.label }}" onInput="{{ c.onLabel }}" placeholder="Label" style="padding:6px 9px;font-size:12.5px"/>
+                            <select value="{{ c.target }}" onChange="{{ c.onPage }}" class="sf-in" style="cursor:pointer;padding:6px 9px;font-size:12px">
+                              <sc-for list="{{ pageOptions }}" as="o" hint-placeholder-count="6"><option value="{{ o.path }}">{{ o.label }}</option></sc-for>
+                            </select>
+                          </div>
+                          <div style="display:flex;flex-direction:column;gap:2px">
+                            <span onClick="{{ c.onUp }}" style="width:22px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:5px;color:{{ c.upColor }};cursor:{{ c.upCursor }}" style-hover="background:#EEF1ED"><i class="ph-bold ph-arrow-up" style="font-size:12px"></i></span>
+                            <span onClick="{{ c.onDown }}" style="width:22px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:5px;color:{{ c.downColor }};cursor:{{ c.downCursor }}" style-hover="background:#EEF1ED"><i class="ph-bold ph-arrow-down" style="font-size:12px"></i></span>
+                          </div>
+                          <span onClick="{{ c.onRemove }}" title="Remove" style="width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:pointer" style-hover="background:#F8E6E3;color:#B5382C"><i class="ph ph-x" style="font-size:14px"></i></span>
+                        </div>
+                      </sc-for>
+                      <button onClick="{{ it.addChild }}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;height:34px;border:1.5px dashed #C2CCC4;border-radius:9px;background:#fff;color:#0D6770;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#DCEDEA;border-color:#A7D4CE"><i class="ph-bold ph-plus" style="font-size:14px"></i>Add link to dropdown</button>
+                    </div>
+                  </sc-if>
+
+                  <div style="display:flex;align-items:center;padding-top:3px">
+                    <sc-if value="{{ it.isButton }}" hint-placeholder-val="{{ false }}"><span style="font-size:11.5px;color:#869693;display:inline-flex;align-items:center;gap:5px"><i class="ph-fill ph-cursor-click" style="font-size:13px;color:#0D6770"></i>Shown as a button</span></sc-if>
+                    <span style="flex:1"></span>
+                    <button onClick="{{ it.onRemove }}" style="display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border:1px solid #EEC6BC;border-radius:7px;background:#fff;color:#B5382C;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#F8E6E3"><i class="ph ph-trash" style="font-size:14px"></i>Remove item</button>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+
+          <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:30px 20px;border:1.5px dashed #DCE3DE;border-radius:12px;background:#FAFCFA;text-align:center">
+              <div style="width:44px;height:44px;border-radius:11px;background:#DCEDEA;color:#0D6770;display:flex;align-items:center;justify-content:center"><i class="ph ph-list-plus" style="font-size:22px"></i></div>
+              <span style="font-size:13.5px;font-weight:600">No menu items yet</span>
+              <span style="font-size:12.5px;color:#526366;max-width:240px;line-height:1.5">Add pages, custom links, dropdowns and buttons — they appear in the preview instantly.</span>
+            </div>
+          </sc-if>
+
+          <div style="position:relative">
+            <button onClick="{{ toggleAddMenu }}" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:44px;border:1.5px dashed #C2CCC4;border-radius:10px;background:#FAFCFA;color:#0D6770;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#DCEDEA;border-color:#A7D4CE"><i class="ph-bold ph-plus" style="font-size:15px"></i>Add menu item</button>
+            <sc-if value="{{ addMenu }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;left:0;right:0;bottom:52px;z-index:20;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:sfPop .13s ease">
+                <sc-for list="{{ addTypes }}" as="a" hint-placeholder-count="4">
+                  <div onClick="{{ a.onClick }}" style="display:flex;align-items:center;gap:11px;padding:9px;border-radius:7px;cursor:pointer" style-hover="background:#F5F7F4">
+                    <span style="width:32px;height:32px;border-radius:8px;background:{{ a.iconBg }};color:{{ a.iconFg }};display:flex;align-items:center;justify-content:center;flex:none"><i class="ph {{ a.icon }}" style="font-size:17px"></i></span>
+                    <div style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:600;color:#172326">{{ a.label }}</span><span style="font-size:11.5px;color:#869693">{{ a.desc }}</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:sfToast .2s cubic-bezier(.2,.8,.2,1)">
+    <i class="ph {{ toastIcon }}" style="font-size:18px;color:#58C3C7"></i>
+    <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;},&quot;navAlignment&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;start&quot;,&quot;center&quot;,&quot;end&quot;],&quot;default&quot;:&quot;end&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Desktop header&quot;},&quot;ctaVariant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;solid&quot;,&quot;outline&quot;],&quot;default&quot;:&quot;solid&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Desktop header&quot;}}">
+const PAGES = [
+  { path: "/", label: "Home" },
+  { path: "/products", label: "Products" },
+  { path: "/products/platform", label: "Platform" },
+  { path: "/products/pricing", label: "Pricing" },
+  { path: "/solutions", label: "Solutions" },
+  { path: "/solutions/agencies", label: "For agencies" },
+  { path: "/solutions/in-house", label: "For in-house teams" },
+  { path: "/blog", label: "Blog" },
+  { path: "/about", label: "About" },
+  { path: "/contact", label: "Contact" },
+  { path: "/careers", label: "Careers" },
+  { path: "/help", label: "Help center" },
+];
+const LIVE = PAGES.map(p => p.path);
+let NID = 0;
+const nid = () => "i" + (++NID);
+const link = (label, target, tt) => ({ id: nid(), kind: "link", label, target, targetType: tt || "page", newTab: false, children: [] });
+const group = (label, children) => ({ id: nid(), kind: "group", label, target: "", targetType: "page", newTab: false, children });
+const button = (label, target) => ({ id: nid(), kind: "button", label, target, targetType: "page", newTab: false, children: [] });
+
+class Component extends DCLogic {
+  state = {
+    items: [
+      link("Home", "/", "page"),
+      group("Products", [link("Platform", "/products/platform"), link("Pricing", "/products/pricing"), link("Overview", "/products")]),
+      group("Solutions", [link("For agencies", "/solutions/agencies"), link("For in-house teams", "/solutions/in-house")]),
+      link("Blog", "/blog", "page"),
+      link("About", "/about", "page"),
+      button("Get started", "/contact"),
+    ],
+    selected: null,
+    expanded: {},
+    addMenu: false,
+    device: "desktop",     // desktop | tablet | mobile
+    deskOpen: null,
+    mobileOpen: true,
+    mobileGroups: {},
+    dragId: null,
+    dropId: null,
+    status: "published",
+    savedLabel: "All changes saved",
+    refreshing: false,
+    toast: null,
+  };
+  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._sv); clearTimeout(this._r); }
+
+  toast(msg, icon) { clearTimeout(this._t); this.setState({ toast: { msg, icon: icon || "ph-check-circle" } }); this._t = setTimeout(() => this.setState({ toast: null }), 3000); }
+  markSaved() { this.setState({ savedLabel: "Saving…" }); clearTimeout(this._sv); this._sv = setTimeout(() => this.setState({ savedLabel: "All changes saved" }), 650); }
+
+  update(items, extra) { this.setState({ items, ...(extra || {}) }); this.markSaved(); }
+  setTop(id, patch) { this.update(this.state.items.map(it => it.id === id ? { ...it, ...patch } : it)); }
+  setChild(gid, cid, patch) { this.update(this.state.items.map(it => it.id === gid ? { ...it, children: it.children.map(c => c.id === cid ? { ...c, ...patch } : c) } : it)); }
+  moveTop(id, dir) {
+    const arr = this.state.items.slice(); const i = arr.findIndex(x => x.id === id); const j = i + dir;
+    if (j < 0 || j >= arr.length) return;
+    const t = arr[i]; arr[i] = arr[j]; arr[j] = t; this.update(arr);
+  }
+  moveChild(gid, cid, dir) {
+    this.update(this.state.items.map(it => {
+      if (it.id !== gid) return it;
+      const arr = it.children.slice(); const i = arr.findIndex(c => c.id === cid); const j = i + dir;
+      if (j < 0 || j >= arr.length) return it;
+      const t = arr[i]; arr[i] = arr[j]; arr[j] = t; return { ...it, children: arr };
+    }));
+  }
+  removeTop(id) {
+    const it = this.state.items.find(x => x.id === id);
+    this.update(this.state.items.filter(x => x.id !== id), { selected: null });
+    this.toast("Removed “" + (it ? it.label : "item") + "”", "ph-trash");
+  }
+  removeChild(gid, cid) { this.update(this.state.items.map(it => it.id === gid ? { ...it, children: it.children.filter(c => c.id !== cid) } : it)); }
+  addChild(gid) {
+    const c = link("New link", "/about");
+    this.update(this.state.items.map(it => it.id === gid ? { ...it, children: [...it.children, c] } : it), { deskOpen: gid });
+  }
+  addItem(kind) {
+    let it;
+    if (kind === "group") it = group("New dropdown", [link("First link", "/about")]);
+    else if (kind === "button") it = button("New button", "/contact");
+    else if (kind === "url") it = link("New link", "https://", "url");
+    else it = link("New link", "/about", "page");
+    this.update([...this.state.items, it], { addMenu: false, selected: it.id, expanded: { ...this.state.expanded, [it.id]: true } });
+  }
+
+  onDragOver(e, id) {
+    e.preventDefault();
+    if (!this.state.dragId || this.state.dragId === id) return;
+    if (this.state.dropId !== id) this.setState({ dropId: id });
+  }
+  onDrop(id) {
+    const { dragId } = this.state;
+    if (!dragId || dragId === id) { this.setState({ dragId: null, dropId: null }); return; }
+    const arr = this.state.items.slice();
+    const from = arr.findIndex(x => x.id === dragId);
+    const moved = arr.splice(from, 1)[0];
+    const to = arr.findIndex(x => x.id === id);
+    arr.splice(to, 0, moved);
+    this.update(arr, { dragId: null, dropId: null });
+  }
+
+  selectItem(id, isGroup) {
+    this.setState({
+      selected: id,
+      expanded: { ...this.state.expanded, [id]: true },
+      deskOpen: isGroup ? id : null,
+      mobileGroups: isGroup ? { ...this.state.mobileGroups, [id]: true } : this.state.mobileGroups,
+    });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const p = this.props || {};
+    const navAlign = p.navAlignment === "center" ? "center" : p.navAlignment === "start" ? "flex-start" : "flex-end";
+    const solidCta = p.ctaVariant !== "outline";
+    const brokenOf = (it) => it.kind !== "group" && it.targetType === "page" && !LIVE.includes(it.target);
+
+    const KIND = {
+      link: { icon: "ph-link-simple", iconBg: "#DCEDEA", iconFg: "#0D6770" },
+      url: { icon: "ph-arrow-square-out", iconBg: "#E7EEF5", iconFg: "#3F5C8A" },
+      group: { icon: "ph-caret-circle-down", iconBg: "#EDE7F5", iconFg: "#5B4B8A" },
+      button: { icon: "ph-cursor-click", iconBg: "#FBEBE1", iconFg: "#B45F38" },
+    };
+
+    const items = s.items.map((it, idx) => {
+      const isGroup = it.kind === "group";
+      const isButton = it.kind === "button";
+      const isUrl = it.targetType === "url" && !isGroup;
+      const isPage = !isUrl && !isGroup;
+      const kindKey = isGroup ? "group" : isButton ? "button" : isUrl ? "url" : "link";
+      const k = KIND[kindKey];
+      const selected = s.selected === it.id;
+      const broken = brokenOf(it);
+      const targetLabel = isGroup ? (it.children.length + " links") : it.target;
+      const seg = (on) => ({ bg: on ? "#fff" : "transparent", fg: on ? "#0D6770" : "#526366", sh: on ? "0 1px 2px rgba(23,35,38,0.12)" : "none" });
+      const pageSeg = seg(isPage), urlSeg = seg(isUrl);
+      return {
+        id: it.id, label: it.label,
+        icon: k.icon, iconBg: k.iconBg, iconFg: k.iconFg,
+        sub: isGroup ? "Dropdown menu" : (isButton ? "Button · " + targetLabel : targetLabel),
+        subFg: broken ? "#B5382C" : "#9AA8A4", broken,
+        border: selected ? "#A7D4CE" : "#E2E7E2", headBg: selected ? "#F1F7F6" : "#fff",
+        expanded: !!s.expanded[it.id], caret: s.expanded[it.id] ? "180deg" : "0deg",
+        op: s.dragId === it.id ? "0.4" : "1",
+        dropShadow: s.dropId === it.id && s.dragId ? "inset 0 0 0 2px #0D6770" : "none",
+        upColor: idx === 0 ? "#D3DAD5" : "#869693", upCursor: idx === 0 ? "default" : "pointer",
+        downColor: idx === s.items.length - 1 ? "#D3DAD5" : "#869693", downCursor: idx === s.items.length - 1 ? "default" : "pointer",
+        isGroup, isButton, isUrl, isPage, hasTarget: !isGroup, target: it.target,
+        pageSegBg: pageSeg.bg, pageSegFg: pageSeg.fg, pageSegSh: pageSeg.sh,
+        urlSegBg: urlSeg.bg, urlSegFg: urlSeg.fg, urlSegSh: urlSeg.sh,
+        fLabel: it.label,
+        newTabTrack: it.newTab ? "#0D6770" : "#CFD6D0", newTabKnob: it.newTab ? "16px" : "2px",
+        onSelect: () => this.setState({ selected: it.id, expanded: { ...s.expanded, [it.id]: !s.expanded[it.id] }, deskOpen: isGroup && !s.expanded[it.id] ? it.id : s.deskOpen }),
+        onUp: (e) => { e.stopPropagation(); this.moveTop(it.id, -1); },
+        onDown: (e) => { e.stopPropagation(); this.moveTop(it.id, 1); },
+        onRemove: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.removeTop(it.id); },
+        onLabel: (e) => this.setTop(it.id, { label: e.target.value }),
+        setPage: () => this.setTop(it.id, { targetType: "page", target: LIVE.includes(it.target) ? it.target : "/about" }),
+        setUrl: () => this.setTop(it.id, { targetType: "url", target: /^https?:/.test(it.target) ? it.target : "https://" }),
+        onPage: (e) => this.setTop(it.id, { target: e.target.value }),
+        onUrl: (e) => this.setTop(it.id, { target: e.target.value }),
+        toggleNewTab: () => this.setTop(it.id, { newTab: !it.newTab }),
+        addChild: () => this.addChild(it.id),
+        children: it.children.map((c, ci) => ({
+          id: c.id, label: c.label, target: c.target,
+          upColor: ci === 0 ? "#D3DAD5" : "#869693", upCursor: ci === 0 ? "default" : "pointer",
+          downColor: ci === it.children.length - 1 ? "#D3DAD5" : "#869693", downCursor: ci === it.children.length - 1 ? "default" : "pointer",
+          onLabel: (e) => this.setChild(it.id, c.id, { label: e.target.value }),
+          onPage: (e) => this.setChild(it.id, c.id, { target: e.target.value }),
+          onUp: () => this.moveChild(it.id, c.id, -1),
+          onDown: () => this.moveChild(it.id, c.id, 1),
+          onRemove: () => this.removeChild(it.id, c.id),
+        })),
+        onDragStart: () => this.setState({ dragId: it.id }),
+        onDragOver: (e) => this.onDragOver(e, it.id),
+        onDrop: () => this.onDrop(it.id),
+        onDragEnd: () => this.setState({ dragId: null, dropId: null }),
+      };
+    });
+
+    // desktop preview nav
+    const deskNav = s.items.map(it => {
+      const isGroup = it.kind === "group", isButton = it.kind === "button";
+      const selected = s.selected === it.id;
+      const open = s.deskOpen === it.id;
+      return {
+        label: it.label, isGroup, isButton, isNavLink: !isButton,
+        caret: open ? "180deg" : "0deg",
+        fg: selected || open ? "#2F5FE0" : "#3A4055",
+        bg: selected || open ? "#EEF2FE" : "transparent",
+        selRing: selected ? "inset 0 0 0 1.5px #2F5FE0" : "none",
+        btnBg: solidCta ? "#2F5FE0" : "#fff", btnFg: solidCta ? "#fff" : "#2F5FE0", btnBorder: "#2F5FE0",
+        onClick: () => { if (isGroup) { this.setState({ deskOpen: open ? null : it.id }); this.selectItem(it.id, true); } else { this.selectItem(it.id, false); } },
+      };
+    });
+    const openGroup = s.items.find(it => it.id === s.deskOpen && it.kind === "group");
+    const deskDropdownItems = openGroup ? openGroup.children.map(c => ({
+      label: c.label, target: c.target,
+      bg: s.selected === c.id ? "#EEF2FE" : "transparent",
+      selRing: s.selected === c.id ? "inset 0 0 0 1.5px #2F5FE0" : "none",
+      onClick: () => this.setState({ selected: c.id }),
+    })) : [];
+
+    // mobile preview nav
+    const mobNav = [];
+    s.items.forEach(it => {
+      const isGroup = it.kind === "group", isButton = it.kind === "button";
+      const selected = s.selected === it.id;
+      const gopen = !!s.mobileGroups[it.id];
+      if (isButton) {
+        mobNav.push({ isButton: true, label: it.label,
+          btnBg: solidCta ? "#2F5FE0" : "#fff", btnFg: solidCta ? "#fff" : "#2F5FE0", btnBorder: "#2F5FE0",
+          selRing: selected ? "inset 0 0 0 2px #2F5FE0" : "none",
+          onClick: () => this.selectItem(it.id, false) });
+        return;
+      }
+      mobNav.push({ isRow: true, isGroup, label: it.label,
+        weight: isGroup ? "600" : "500", caret: gopen ? "180deg" : "0deg",
+        fg: selected ? "#2F5FE0" : "#141A2E", bg: selected ? "#EEF2FE" : "transparent",
+        selRing: selected ? "inset 0 0 0 1.5px #2F5FE0" : "none",
+        onClick: () => { if (isGroup) { this.setState({ mobileGroups: { ...s.mobileGroups, [it.id]: !gopen } }); this.selectItem(it.id, true); } else { this.selectItem(it.id, false); } } });
+      if (isGroup && gopen) it.children.forEach(c => {
+        mobNav.push({ isChild: true, label: c.label,
+          fg: s.selected === c.id ? "#2F5FE0" : "#4A5064",
+          bg: s.selected === c.id ? "#EEF2FE" : "transparent",
+          selRing: s.selected === c.id ? "inset 0 0 0 1.5px #2F5FE0" : "none",
+          onClick: () => this.setState({ selected: c.id }) });
+      });
+    });
+
+    // device
+    const deviceW = { desktop: "100%", tablet: "800px", mobile: "390px" }[s.device];
+    const seg = (id) => ({ bg: s.device === id ? "#fff" : "transparent", fg: s.device === id ? "#0D6770" : "#869693", sh: s.device === id ? "0 1px 2px rgba(23,35,38,0.14)" : "none" });
+    const dk = seg("desktop"), tb = seg("tablet"), mb = seg("mobile");
+
+    const published = s.status === "published";
+    const brokenCount = s.items.reduce((n, it) => n + (brokenOf(it) ? 1 : 0) + it.children.filter(c => !LIVE.includes(c.target)).length, 0);
+
+    return {
+      noop: (e) => e.preventDefault(),
+      itemCount: s.items.length, isEmpty: s.items.length === 0,
+      items, pageOptions: PAGES,
+      addMenu: s.addMenu, toggleAddMenu: () => this.setState({ addMenu: !s.addMenu }),
+      addTypes: [
+        { label: "Link to a page", desc: "Point to a page in this site", icon: "ph-link-simple", iconBg: "#DCEDEA", iconFg: "#0D6770", onClick: () => this.addItem("page") },
+        { label: "Custom URL", desc: "Link to any external address", icon: "ph-arrow-square-out", iconBg: "#E7EEF5", iconFg: "#3F5C8A", onClick: () => this.addItem("url") },
+        { label: "Dropdown", desc: "A group with nested links", icon: "ph-caret-circle-down", iconBg: "#EDE7F5", iconFg: "#5B4B8A", onClick: () => this.addItem("group") },
+        { label: "Button", desc: "A highlighted call-to-action", icon: "ph-cursor-click", iconBg: "#FBEBE1", iconFg: "#B45F38", onClick: () => this.addItem("button") },
+      ],
+
+      // device / preview
+      deviceW, deviceRadius: s.device === "desktop" ? "8px" : "16px",
+      isWide: s.device !== "mobile", isMobile: s.device === "mobile",
+      dDesktop: () => this.setState({ device: "desktop" }), dTablet: () => this.setState({ device: "tablet" }), dMobile: () => this.setState({ device: "mobile" }),
+      deskBg: dk.bg, deskFg: dk.fg, deskSh: dk.sh, tabBg: tb.bg, tabFg: tb.fg, tabSh: tb.sh, mobBg: mb.bg, mobFg: mb.fg, mobSh: mb.sh,
+      refresh: () => { clearTimeout(this._r); this.setState({ refreshing: true }); this._r = setTimeout(() => this.setState({ refreshing: false }), 500); },
+      refreshIcon: s.refreshing ? "ph-spinner" : "ph-arrow-clockwise", refreshAnim: s.refreshing ? "sfSpin .6s linear infinite" : "none",
+      navMarginLeft: p.navAlignment === "start" ? "0" : "auto", navMarginRight: p.navAlignment === "center" ? "auto" : "0",
+      deskNav, deskDropdownOpen: !!openGroup, deskDropdownTitle: openGroup ? openGroup.label : "", deskDropdownItems,
+      mobNav, mobileOpen: s.mobileOpen, mobileToggleIcon: s.mobileOpen ? "ph-x" : "ph-list",
+      toggleMobileOpen: () => this.setState({ mobileOpen: !s.mobileOpen }),
+
+      // top bar
+      statusLabel: published ? "Published" : "Draft",
+      statusBg: published ? "#E3F3EA" : "#F7EDDA", statusFg: published ? "#147A4A" : "#8A5A06", statusDot: published ? "#1F9D57" : "#D18F0C",
+      hasBroken: brokenCount > 0, brokenLabel: brokenCount + (brokenCount === 1 ? " broken link" : " broken links"),
+      savedLabel: s.savedLabel, saveIcon: s.savedLabel === "Saving…" ? "ph-spinner" : "ph-cloud-check", saveIconColor: s.savedLabel === "Saving…" ? "#869693" : "#1F9D57",
+      saveConcept: () => { this.setState({ savedLabel: "All changes saved" }); this.toast("Saved as a draft"); },
+      publish: () => { this.setState({ status: "published" }); this.toast(brokenCount ? "Published — " + brokenCount + " link(s) point nowhere" : "Header navigation published", "ph-rocket-launch"); },
+      publishLabel: published ? "Publish changes" : "Publish",
+
+      showToast: !!s.toast, toastMsg: s.toast ? s.toast.msg : "", toastIcon: s.toast ? s.toast.icon : "ph-check-circle",
+    };
+  }
+}
+</script>
+</body>
+</html>
