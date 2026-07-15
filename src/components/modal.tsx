@@ -1,5 +1,14 @@
-import { Dialog } from "@base-ui/react/dialog";
 import { type ReactNode, useRef } from "react";
+import {
+  Dialog,
+  DialogClose,
+  DialogDescription,
+  DialogOverlay,
+  DialogPopup,
+  DialogPortal,
+  DialogTitle,
+  DialogViewport,
+} from "./ui/dialog";
 
 type ModalProps = {
   open: boolean;
@@ -18,21 +27,21 @@ export function Modal({
   if (children) retainedContent.current = children;
 
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      <Dialog.Portal>
-        <Dialog.Backdrop className="sf-modal-backdrop" />
-        <Dialog.Viewport className="sf-modal-viewport">
-          <Dialog.Popup
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogPortal>
+        <DialogOverlay className="sf-modal-backdrop" />
+        <DialogViewport className="sf-modal-viewport">
+          <DialogPopup
             className={`sf-overview-modal-panel${className ? ` ${className}` : ""}`}
           >
             {retainedContent.current}
-          </Dialog.Popup>
-        </Dialog.Viewport>
-      </Dialog.Portal>
-    </Dialog.Root>
+          </DialogPopup>
+        </DialogViewport>
+      </DialogPortal>
+    </Dialog>
   );
 }
 
-export const ModalTitle = Dialog.Title;
-export const ModalDescription = Dialog.Description;
-export const ModalClose = Dialog.Close;
+export const ModalTitle = DialogTitle;
+export const ModalDescription = DialogDescription;
+export const ModalClose = DialogClose;

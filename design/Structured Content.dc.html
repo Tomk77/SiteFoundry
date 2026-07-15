@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:#F5F7F4;color:#172326;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden}
+  a{color:#763FBA;text-decoration:none}a:hover{color:#5E299C}
+  ::selection{background:#DFE3E8}
+  input,textarea,select{font-family:inherit}
+  i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
+  .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
+  .sf-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .sf-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #fff}
+  .sf-in{width:100%;padding:9px 11px;border:1.5px solid #CFD6D0;border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none;transition:border-color .12s,box-shadow .12s}
+  .sf-in:focus{border-color:#763FBA;box-shadow:0 0 0 3px rgba(118,63,186,0.16)}
+  @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes sfFade{from{opacity:0}to{opacity:1}}
+  @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+  @keyframes sfFlash{0%{background:#ECEEF1}100%{background:transparent}}
+  @keyframes sfDrawer{from{transform:translateX(100%)}to{transform:none}}
+</style>
+</helmet>
+
+<div style="display:flex;height:100vh;width:100vw;overflow:hidden">
+
+  <!-- ================= APP NAV ================= -->
+  <aside style="width:244px;flex:none;background:#FAFCFA;border-right:1px solid #E2E7E2;display:flex;flex-direction:column">
+    <div style="padding:14px 14px 8px">
+      <div style="display:flex;align-items:center;gap:10px;height:46px;padding:0 10px;border:1px solid #E2E7E2;border-radius:10px;background:#fff;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.04)" style-hover="border-color:#CFD6D0">
+        <div style="width:28px;height:28px;border-radius:7px;background:#E07A4F;display:flex;align-items:center;justify-content:center;color:#172326;flex:none"><i class="ph ph-globe-hemisphere-west" style="font-size:17px"></i></div>
+        <div style="display:flex;flex-direction:column;min-width:0;flex:1">
+          <span style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Acme Marketing</span>
+          <span style="font-size:11px;color:#869693;font-weight:500">English · EN</span>
+        </div>
+        <i class="ph ph-caret-up-down" style="font-size:15px;color:#869693"></i>
+      </div>
+    </div>
+    <div style="padding:8px 10px;display:flex;flex-direction:column;gap:1px">
+      <div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#A5B0AD;padding:8px 10px 4px">Content</div>
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="7">
+        <div style="display:flex;align-items:center;gap:11px;height:34px;padding:0 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;background:{{ n.bg }};color:{{ n.fg }}" style-hover="filter:brightness(0.98)">
+          <span style="display:flex;width:17px;flex:none"><i class="ph {{ n.icon }}" style="font-size:16px"></i></span>
+          <span>{{ n.label }}</span>
+          <span style="flex:1"></span>
+          <sc-if value="{{ n.count }}" hint-placeholder-val="0"><span style="font-size:11px;font-weight:600;color:{{ n.countFg }};font-family:'Geist Mono',monospace">{{ n.count }}</span></sc-if>
+        </div>
+      </sc-for>
+    </div>
+    <div style="flex:1"></div>
+    <div style="padding:10px 12px;border-top:1px solid #E2E7E2;display:flex;align-items:center;gap:10px">
+      <span style="width:28px;height:28px;border-radius:999px;background:#FBEBE1;color:#B45F38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none">MJ</span>
+      <div style="display:flex;flex-direction:column;min-width:0"><span style="font-size:12.5px;font-weight:500">Mara Jensen</span><span style="font-size:11px;color:#869693">Editor</span></div>
+      <span style="flex:1"></span>
+      <span style="display:flex;color:#AEBAB6;cursor:pointer" style-hover="color:#172326"><i class="ph ph-sliders-horizontal" style="font-size:16px"></i></span>
+    </div>
+  </aside>
+
+  <!-- ================= TYPE RAIL (second bar) ================= -->
+  <div style="width:240px;flex:none;background:#fff;border-right:1px solid #E2E7E2;display:flex;flex-direction:column;min-height:0">
+    <div style="display:flex;align-items:center;gap:8px;padding:15px 16px 11px;flex:none">
+      <span style="font-size:13px;font-weight:600">Content types</span>
+      <span style="font-size:11.5px;color:#B7C0BD;font-family:'Geist Mono',monospace">{{ typeCount }}</span>
+    </div>
+    <div class="sf-scroll" style="flex:1;overflow:auto;padding:0 10px 10px;display:flex;flex-direction:column;gap:2px">
+      <sc-for list="{{ types }}" as="t" hint-placeholder-count="6">
+        <div onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:9px;cursor:pointer;background:{{ t.bg }};box-shadow:{{ t.rail }}" style-hover="background:{{ t.hoverBg }}">
+          <span style="width:30px;height:30px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;background:{{ t.chipBg }};color:{{ t.chipFg }}"><i class="ph {{ t.icon }}" style="font-size:16px"></i></span>
+          <div style="display:flex;flex-direction:column;min-width:0;gap:1px">
+            <span style="font-size:13px;font-weight:{{ t.weight }};color:{{ t.nameFg }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.name }}</span>
+            <span style="font-size:11px;color:#9AA8A4">{{ t.metaLabel }}</span>
+          </div>
+          <span style="flex:1"></span>
+          <span style="font-size:11px;font-weight:600;color:{{ t.countFg }};font-family:'Geist Mono',monospace">{{ t.count }}</span>
+        </div>
+      </sc-for>
+      <button onClick="{{ openNewType }}" style="display:inline-flex;align-items:center;gap:8px;margin-top:8px;padding:9px 10px;border:1.5px dashed #C7CFC8;border-radius:9px;background:transparent;color:#5E299C;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#ECEEF1;border-color:#CBD3DB">
+        <span style="width:30px;height:30px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;background:#ECEEF1;color:#763FBA"><i class="ph-bold ph-plus" style="font-size:15px"></i></span>
+        New content type
+      </button>
+    </div>
+    <div style="padding:11px 14px;border-top:1px solid #EEF1ED;flex:none;display:flex;align-items:center;gap:8px;font-size:11px;color:#9AA8A4;line-height:1.45">
+      <i class="ph ph-info" style="font-size:14px;color:#B7C0BD;flex:none"></i>
+      Reusable data referenced by pages — not pages themselves.
+    </div>
+  </div>
+
+  <!-- ================= MAIN ================= -->
+  <main data-screen-label="Structured content" style="flex:1;display:flex;flex-direction:column;min-width:0;background:#fff">
+
+    <!-- header -->
+    <div style="display:flex;align-items:center;gap:13px;padding:15px 22px 14px;border-bottom:1px solid #EEF1ED">
+      <span style="width:38px;height:38px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;background:{{ curChipBg }};color:{{ curChipFg }}"><i class="ph {{ curIcon }}" style="font-size:20px"></i></span>
+      <div style="display:flex;flex-direction:column;gap:1px;min-width:0">
+        <div style="display:flex;align-items:center;gap:9px">
+          <h1 style="margin:0;font-size:19px;font-weight:600;letter-spacing:-0.015em">{{ curName }}</h1>
+          <span style="font-size:12px;color:#869693;font-weight:500;font-family:'Geist Mono',monospace;white-space:nowrap">{{ curCountLabel }}</span>
+        </div>
+        <span style="font-size:12px;color:#869693">{{ curDesc }}</span>
+      </div>
+      <span style="flex:1"></span>
+      <div style="display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;border-radius:8px;background:#fff;width:236px;flex:none;border:1.5px solid {{ searchBorder }};box-shadow:{{ searchRing }};transition:border-color .12s,box-shadow .12s">
+        <i class="ph ph-magnifying-glass" style="font-size:15px;color:{{ searchIcon }}"></i>
+        <input value="{{ q }}" onInput="{{ onSearch }}" onFocus="{{ onSearchFocus }}" onBlur="{{ onSearchBlur }}" placeholder="Search {{ curNameLower }}…" style="border:none;outline:none;background:transparent;font-size:13px;color:#172326;width:100%;padding:0"/>
+        <sc-if value="{{ q }}" hint-placeholder-val="x"><span onClick="{{ clearSearch }}" style="display:flex;cursor:pointer;color:#AEBAB6" style-hover="color:#172326"><i class="ph ph-x" style="font-size:14px"></i></span></sc-if>
+      </div>
+      <button onClick="{{ editSchema }}" title="Configure fields" style="display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 12px;border:1px solid #DCE2DD;border-radius:8px;background:#fff;color:#33474A;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#F5F7F4">
+        <i class="ph ph-sliders" style="font-size:15px"></i>Fields
+      </button>
+      <button onClick="{{ newRecord }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:none;border-radius:8px;background:#763FBA;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.1);white-space:nowrap;flex:none" style-hover="background:#5E299C">
+        <i class="ph-bold ph-plus" style="font-size:15px"></i>New {{ curSingular }}
+      </button>
+    </div>
+
+    <!-- status filter bar -->
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 22px;border-bottom:1px solid #EEF1ED;background:#FAFCFA">
+      <div style="display:flex;background:#EEF1ED;border-radius:8px;padding:2px;gap:2px">
+        <sc-for list="{{ statusSeg }}" as="s" hint-placeholder-count="3">
+          <button onClick="{{ s.onClick }}" style="height:27px;padding:0 12px;border:none;border-radius:6px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};box-shadow:{{ s.shadow }}">{{ s.label }}</button>
+        </sc-for>
+      </div>
+      <span style="flex:1"></span>
+      <span style="font-size:12px;color:#869693;font-family:'Geist Mono',monospace">{{ resultLabel }}</span>
+    </div>
+
+    <!-- table -->
+    <div class="sf-scroll" style="flex:1;overflow:auto">
+      <div style="min-width:{{ tableMinW }}">
+        <!-- header -->
+        <div style="position:sticky;top:0;z-index:2;display:grid;grid-template-columns:{{ gridCols }};align-items:center;gap:14px;padding:9px 22px;border-bottom:1px solid #E2E7E2;background:#fff;font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#A5B0AD;white-space:nowrap">
+          <sc-for list="{{ columns }}" as="c" hint-placeholder-count="4"><span>{{ c.label }}</span></sc-for>
+          <span>Status</span>
+          <span>Updated</span>
+          <span></span>
+        </div>
+
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:16px;padding:40px;text-align:center;animation:sfFade .2s ease">
+            <div style="width:60px;height:60px;border-radius:15px;background:{{ emptyBg }};display:flex;align-items:center;justify-content:center;color:{{ emptyFg }}"><i class="ph {{ emptyIcon }}" style="font-size:28px"></i></div>
+            <div style="display:flex;flex-direction:column;gap:6px;max-width:380px">
+              <span style="font-size:16px;font-weight:600">{{ emptyTitle }}</span>
+              <span style="font-size:13.5px;line-height:1.55;color:#526366">{{ emptyBody }}</span>
+            </div>
+            <button onClick="{{ emptyAction }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 15px;border:none;border-radius:8px;background:#763FBA;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#5E299C">{{ emptyCta }}</button>
+          </div>
+        </sc-if>
+
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+          <div onClick="{{ r.onEdit }}" style="display:grid;grid-template-columns:{{ gridCols }};align-items:center;gap:14px;padding:0 22px;height:52px;border-bottom:1px solid #F5F7F4;cursor:pointer;animation:{{ r.anim }};transition:background .12s" style-hover="background:#FAFCFA">
+            <!-- primary cell with avatar -->
+            <span style="display:flex;align-items:center;gap:11px;min-width:0">
+              <span style="width:30px;height:30px;border-radius:{{ r.avatarRadius }};flex:none;display:flex;align-items:center;justify-content:center;background:{{ r.avatarBg }};color:{{ r.avatarFg }};font-size:11px;font-weight:700;overflow:hidden;background-image:{{ r.avatarImg }};background-size:cover;background-position:center">{{ r.avatarText }}</span>
+              <span style="font-size:13.5px;font-weight:600;color:#172326;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.primary }}</span>
+            </span>
+            <!-- extra cells -->
+            <sc-for list="{{ r.cells }}" as="cell" hint-placeholder-count="3">
+              <span style="font-size:13px;color:{{ cell.fg }};font-family:{{ cell.font }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ cell.text }}</span>
+            </sc-for>
+            <!-- status -->
+            <span style="display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:5px;font-size:11.5px;font-weight:600;width:fit-content;background:{{ r.stBg }};color:{{ r.stFg }}"><span style="width:5px;height:5px;border-radius:999px;background:{{ r.stDot }}"></span>{{ r.status }}</span>
+            <!-- updated -->
+            <span style="font-size:12px;color:#869693;white-space:nowrap">{{ r.updated }}</span>
+            <!-- actions -->
+            <span style="display:flex;align-items:center;gap:2px;justify-content:flex-end">
+              <span onClick="{{ r.onEdit }}" title="Edit" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:pointer" style-hover="background:#ECEEF1;color:#763FBA"><i class="ph ph-pencil-simple" style="font-size:15px"></i></span>
+              <span onClick="{{ r.onDelete }}" title="Delete" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:pointer" style-hover="background:#F8E6E3;color:#B5382C"><i class="ph ph-trash" style="font-size:15px"></i></span>
+            </span>
+          </div>
+        </sc-for>
+        <div style="height:22px"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:14px;padding:9px 22px;border-top:1px solid #EEF1ED;background:#FAFCFA;font-size:12px;color:#869693">
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ph ph-link-simple" style="font-size:14px;color:#763FBA"></i>{{ referencedLabel }}</span>
+      <span style="flex:1"></span>
+      <span style="font-family:'Geist Mono',monospace">{{ footerLabel }}</span>
+    </div>
+  </main>
+</div>
+
+<!-- ================= RECORD DRAWER ================= -->
+<sc-if value="{{ showRecord }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeAll }}" style="position:fixed;inset:0;z-index:60;background:rgba(23,35,38,0.28);display:flex;justify-content:flex-end;animation:sfFade .12s ease">
+    <div onClick="{{ stop }}" style="width:640px;max-width:100%;height:100%;background:#fff;box-shadow:-16px 0 44px rgba(23,35,38,0.20);display:flex;flex-direction:column;animation:sfDrawer .2s cubic-bezier(.2,.8,.2,1)">
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:18px 20px 15px;border-bottom:1px solid #EEF1ED">
+        <span style="width:34px;height:34px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center;background:{{ curChipBg }};color:{{ curChipFg }}"><i class="ph {{ curIcon }}" style="font-size:18px"></i></span>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:15.5px;font-weight:600">{{ recordTitle }}</span>
+          <span style="font-size:12px;color:#869693">{{ recordSubtitle }}</span>
+        </div>
+        <span style="flex:1"></span>
+        <span onClick="{{ closeAll }}" style="display:flex;cursor:pointer;color:#869693;padding:2px" style-hover="color:#172326"><i class="ph ph-x" style="font-size:18px"></i></span>
+      </div>
+      <div class="sf-scroll" style="flex:1;overflow:auto;padding:18px 20px;display:flex;flex-direction:column;gap:15px">
+        <sc-for list="{{ recordFields }}" as="f" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD;display:flex;align-items:center;gap:6px">{{ f.label }}<sc-if value="{{ f.required }}" hint-placeholder-val="{{ false }}"><span style="color:#763FBA">*</span></sc-if><span style="flex:1"></span><span style="font-size:10px;font-weight:600;color:#B7C0BD;text-transform:none;letter-spacing:0;display:inline-flex;align-items:center;gap:4px"><i class="ph {{ f.typeIcon }}" style="font-size:12px"></i>{{ f.typeName }}</span></label>
+            <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><input class="sf-in" value="{{ f.value }}" onInput="{{ f.onInput }}" placeholder="{{ f.placeholder }}" style="font-family:{{ f.font }}"/></sc-if>
+            <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}"><textarea class="sf-in" value="{{ f.value }}" onInput="{{ f.onInput }}" placeholder="{{ f.placeholder }}" rows="3" style="resize:vertical;line-height:1.5"></textarea></sc-if>
+            <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
+              <select class="sf-in" value="{{ f.value }}" onChange="{{ f.onInput }}" style="cursor:pointer"><sc-for list="{{ f.options }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+            </sc-if>
+            <sc-if value="{{ f.isImage }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:12px;padding:12px;border:1.5px dashed #CFD6D0;border-radius:9px;background:#FAFCFA">
+                <span style="width:46px;height:46px;border-radius:8px;flex:none;background:{{ curChipBg }};background-image:{{ f.previewImg }};background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:{{ curChipFg }}"><i class="ph ph-image" style="font-size:20px"></i></span>
+                <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:12.5px;font-weight:600;color:#33474A">{{ f.imageName }}</span><span style="font-size:11.5px;color:#9AA8A4">Drop an image or pick from Media</span></div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ f.isDate }}" hint-placeholder-val="{{ false }}"><input type="date" class="sf-in" value="{{ f.value }}" onInput="{{ f.onInput }}" style="cursor:pointer;max-width:200px"/></sc-if>
+            <sc-if value="{{ f.isToggle }}" hint-placeholder-val="{{ false }}">
+              <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+                <span onClick="{{ f.onToggle }}" style="width:38px;height:22px;border-radius:999px;background:{{ f.toggleTrack }};position:relative;transition:background .15s;flex:none"><span style="position:absolute;top:2px;left:{{ f.toggleKnob }};width:18px;height:18px;border-radius:999px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);transition:left .15s"></span></span>
+                <span style="font-size:13px;color:#526366">{{ f.toggleLabel }}</span>
+              </label>
+            </sc-if>
+            <sc-if value="{{ f.isTags }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px;border:1.5px solid #CFD6D0;border-radius:9px;background:#fff">
+                <sc-for list="{{ f.tags }}" as="tg" hint-placeholder-count="2">
+                  <span style="display:inline-flex;align-items:center;gap:5px;height:25px;padding:0 5px 0 9px;border-radius:6px;background:#ECEEF1;color:#33474A;font-size:12px;font-weight:500">{{ tg.label }}<span onClick="{{ tg.onRemove }}" style="display:flex;cursor:pointer;color:#94A0AE" style-hover="color:#B5382C"><i class="ph ph-x" style="font-size:12px"></i></span></span>
+                </sc-for>
+                <input value="{{ f.tagDraft }}" onInput="{{ f.onTagInput }}" onKeyDown="{{ f.onTagKey }}" placeholder="Add…" style="border:none;outline:none;font-size:13px;padding:4px 6px;min-width:70px;flex:1;background:transparent"/>
+              </div>
+            </sc-if>
+            <sc-if value="{{ f.isRich }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1.5px solid {{ f.richBorder }};border-radius:9px;overflow:hidden;background:#fff;box-shadow:{{ f.richRing }};transition:border-color .12s,box-shadow .12s">
+                <div style="display:flex;align-items:center;gap:1px;padding:5px 6px;border-bottom:1px solid #EEF1ED;background:#FAFCFA;flex-wrap:wrap">
+                  <sc-for list="{{ f.tools }}" as="tb" hint-placeholder-count="6">
+                    <sc-if value="{{ tb.divider }}" hint-placeholder-val="{{ false }}"><span style="width:1px;height:18px;background:#E2E7E2;margin:0 4px"></span></sc-if>
+                    <sc-if value="{{ tb.isBtn }}" hint-placeholder-val="{{ true }}"><span onMouseDown="{{ tb.onDown }}" onClick="{{ tb.onClick }}" title="{{ tb.title }}" style="min-width:29px;height:29px;padding:0 7px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;color:#33474A" style-hover="background:#ECEEF1"><i class="ph {{ tb.icon }}" style="font-size:16px"></i></span></sc-if>
+                  </sc-for>
+                </div>
+                <div contentEditable="true" suppressContentEditableWarning="true" ref="{{ f.setEditable }}" onInput="{{ f.onRich }}" onFocus="{{ f.onRichFocus }}" onBlur="{{ f.onRichBlur }}" style="min-height:132px;padding:12px 13px;font-size:13.5px;line-height:1.65;color:#172326;outline:none"></div>
+              </div>
+              <span style="font-size:11px;color:#B7C0BD">Rich text — bold, headings, lists and links are stored as markup.</span>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:center;gap:9px;padding:14px 20px;border-top:1px solid #EEF1ED">
+        <div style="display:flex;background:#EEF1ED;border-radius:8px;padding:2px;gap:2px">
+          <sc-for list="{{ recStatusSeg }}" as="rs" hint-placeholder-count="2">
+            <button onClick="{{ rs.onClick }}" style="display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 11px;border:none;border-radius:6px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;background:{{ rs.bg }};color:{{ rs.fg }};box-shadow:{{ rs.shadow }}"><span style="width:5px;height:5px;border-radius:999px;background:{{ rs.dot }}"></span>{{ rs.label }}</button>
+          </sc-for>
+        </div>
+        <span style="flex:1"></span>
+        <button onClick="{{ closeAll }}" style="height:36px;padding:0 14px;border:1px solid #CFD6D0;border-radius:8px;background:#fff;color:#172326;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#F5F7F4">Cancel</button>
+        <button onClick="{{ saveRecord }}" style="height:36px;padding:0 16px;border:none;border-radius:8px;background:#763FBA;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#5E299C">{{ recordSaveLabel }}</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ================= NEW / EDIT TYPE MODAL ================= -->
+<sc-if value="{{ showType }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeAll }}" style="position:fixed;inset:0;z-index:60;background:rgba(23,35,38,0.28);display:flex;align-items:center;justify-content:center;padding:24px;animation:sfFade .12s ease">
+    <div onClick="{{ stop }}" style="width:560px;max-width:100%;max-height:88vh;background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(23,35,38,0.28);display:flex;flex-direction:column;overflow:hidden;animation:sfPop .16s ease">
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:20px 22px 16px;border-bottom:1px solid #EEF1ED">
+        <div style="width:36px;height:36px;border-radius:9px;background:#ECEEF1;color:#763FBA;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph {{ typeModalIcon }}" style="font-size:19px"></i></div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:16px;font-weight:600">{{ typeModalTitle }}</span>
+          <span style="font-size:12.5px;color:#526366">{{ typeModalSubtitle }}</span>
+        </div>
+        <span style="flex:1"></span>
+        <span onClick="{{ closeAll }}" style="display:flex;cursor:pointer;color:#869693;padding:2px" style-hover="color:#172326"><i class="ph ph-x" style="font-size:18px"></i></span>
+      </div>
+      <div class="sf-scroll" style="flex:1;overflow:auto;padding:18px 22px;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;gap:14px">
+          <div style="display:flex;flex-direction:column;gap:6px;flex:1">
+            <label style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Name (plural)</label>
+            <input class="sf-in" value="{{ tfName }}" onInput="{{ onTfName }}" placeholder="e.g. Colleagues"/>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;width:150px">
+            <label style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Singular</label>
+            <input class="sf-in" value="{{ tfSingular }}" onInput="{{ onTfSingular }}" placeholder="Colleague"/>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Icon</label>
+          <div style="display:flex;flex-wrap:wrap;gap:7px">
+            <sc-for list="{{ iconChoices }}" as="ic" hint-placeholder-count="8">
+              <span onClick="{{ ic.onClick }}" style="width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1.5px solid {{ ic.border }};background:{{ ic.bg }};color:{{ ic.fg }}"><i class="ph {{ ic.icon }}" style="font-size:18px"></i></span>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <label style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Fields</label>
+            <span style="font-size:11.5px;color:#B7C0BD;font-family:'Geist Mono',monospace">{{ tfFieldCount }}</span>
+          </div>
+          <sc-for list="{{ tfFields }}" as="f" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 9px;border:1px solid #E7ECE8;border-radius:9px;background:{{ f.rowBg }}">
+              <span style="display:flex;color:#C2CCC4;cursor:grab"><i class="ph-bold ph-dots-six-vertical" style="font-size:15px"></i></span>
+              <span style="width:28px;height:28px;border-radius:7px;flex:none;display:flex;align-items:center;justify-content:center;background:#F1F3F0;color:#526366"><i class="ph {{ f.typeIcon }}" style="font-size:14px"></i></span>
+              <input class="sf-in" value="{{ f.label }}" onInput="{{ f.onLabel }}" placeholder="Field label" style="padding:6px 9px;font-size:12.5px;flex:1"/>
+              <select value="{{ f.type }}" onChange="{{ f.onType }}" class="sf-in" style="width:130px;padding:6px 9px;font-size:12px;cursor:pointer;flex:none"><sc-for list="{{ fieldTypeOpts }}" as="o" hint-placeholder-count="6"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select>
+              <span onClick="{{ f.onPrimary }}" title="Use as title field" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;color:{{ f.primaryFg }};background:{{ f.primaryBg }}"><i class="ph{{ f.primaryFill }} ph-star" style="font-size:14px"></i></span>
+              <span onClick="{{ f.onRemove }}" title="Remove" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:{{ f.removeCursor }}" style-hover="background:#F8E6E3;color:#B5382C"><i class="ph ph-x" style="font-size:14px"></i></span>
+            </div>
+          </sc-for>
+          <button onClick="{{ addTfField }}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;border:1.5px dashed #C7CFC8;border-radius:9px;background:#fff;color:#5E299C;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#ECEEF1;border-color:#CBD3DB"><i class="ph-bold ph-plus" style="font-size:14px"></i>Add field</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:9px;padding:14px 22px;border-top:1px solid #EEF1ED">
+        <sc-if value="{{ typeCanDelete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ deleteType }}" style="height:36px;padding:0 13px;border:1px solid #EEC6BC;border-radius:8px;background:#fff;color:#B5382C;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#F8E6E3">Delete type</button></sc-if>
+        <span style="flex:1"></span>
+        <button onClick="{{ closeAll }}" style="height:36px;padding:0 14px;border:1px solid #CFD6D0;border-radius:8px;background:#fff;color:#172326;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#F5F7F4">Cancel</button>
+        <button onClick="{{ saveType }}" style="height:36px;padding:0 16px;border:none;border-radius:8px;background:{{ typeSaveBg }};color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:{{ typeSaveCursor }};opacity:{{ typeSaveOpacity }}" style-hover="background:#5E299C">{{ typeSaveLabel }}</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ================= DELETE RECORD ================= -->
+<sc-if value="{{ showDelete }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeAll }}" style="position:fixed;inset:0;z-index:65;background:rgba(23,35,38,0.28);display:flex;align-items:center;justify-content:center;padding:24px;animation:sfFade .12s ease">
+    <div onClick="{{ stop }}" style="width:420px;max-width:100%;background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(23,35,38,0.28);overflow:hidden;animation:sfPop .16s ease">
+      <div style="padding:22px 22px 6px;display:flex;gap:14px">
+        <div style="width:38px;height:38px;border-radius:9px;background:#F8E6E3;color:#B5382C;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-trash" style="font-size:20px"></i></div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:16px;font-weight:600">Delete “{{ delName }}”?</span>
+          <span style="font-size:13px;line-height:1.55;color:#526366">This {{ curSingularLower }} will be removed. Pages that reference it will show a missing-reference warning until updated.</span>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:9px;padding:16px 22px 20px">
+        <button onClick="{{ closeAll }}" style="height:36px;padding:0 15px;border:1px solid #CFD6D0;border-radius:8px;background:#fff;color:#172326;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#F5F7F4">Cancel</button>
+        <button onClick="{{ confirmDelete }}" style="height:36px;padding:0 15px;border:none;border-radius:8px;background:#B5382C;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9A2E23">Delete</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ================= TOAST ================= -->
+<sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:sfToast .2s cubic-bezier(.2,.8,.2,1);max-width:520px">
+    <i class="ph {{ toastIcon }}" style="font-size:18px;color:#C9ADFD"></i>
+    <div style="display:flex;flex-direction:column;gap:1px">
+      <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
+      <sc-if value="{{ toastSub }}" hint-placeholder-val="x"><span style="font-size:11.5px;color:#B7C4C1">{{ toastSub }}</span></sc-if>
+    </div>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+let UID = 0;
+const uid = (p) => (p || "x") + (++UID);
+const FIELD_TYPES = {
+  text:   { name: "Text",      icon: "ph-text-aa" },
+  long:   { name: "Long text", icon: "ph-text-align-left" },
+  rich:   { name: "Rich text", icon: "ph-article" },
+  email:  { name: "Email",     icon: "ph-envelope-simple" },
+  phone:  { name: "Phone",     icon: "ph-phone" },
+  url:    { name: "URL",       icon: "ph-link" },
+  number: { name: "Number",    icon: "ph-hash" },
+  date:   { name: "Date",      icon: "ph-calendar-blank" },
+  toggle: { name: "Toggle",    icon: "ph-toggle-left" },
+  tags:   { name: "Tags",      icon: "ph-tag" },
+  image:  { name: "Image",     icon: "ph-image" },
+  choice: { name: "Choice",    icon: "ph-list-checks" },
+  ref:    { name: "Reference", icon: "ph-link-simple" },
+};
+const f = (key, label, type, opts) => Object.assign({ key, label, type, primary: false, required: false, options: null }, opts || {});
+
+function seedTypes() {
+  return [
+    { id: "colleagues", name: "Colleagues", singular: "colleague", icon: "ph-users", chipBg: "#EDE7F5", chipFg: "#5B4B8A", system: false,
+      desc: "People shown in team sections and author bylines.",
+      fields: [ f("name","Full name","text",{primary:true,required:true}), f("role","Role","text"), f("email","Email","email"), f("phone","Phone","phone"), f("dept","Department","choice",{options:["Engineering","Design","Marketing","Sales","Operations"]}), f("photo","Photo","image"), f("startDate","Start date","date"), f("website","Personal site","url"), f("skills","Skills","tags"), f("featured","Featured on team page","toggle"), f("bio","Biography","rich") ],
+      records: [
+        { id: uid("r"), status: "published", updated: "2 days ago", values: { name: "Mara Jensen", role: "Head of Content", email: "mara@acme.com", phone: "+31 20 555 0110", dept: "Marketing", startDate: "2021-03-01", website: "https://marajensen.com", skills: ["Editorial","SEO","Localization"], featured: true, bio: "<p>Mara leads content strategy across every site, with a focus on <strong>editorial quality</strong> and clean, durable URLs.</p>" } },
+        { id: uid("r"), status: "published", updated: "5 days ago", values: { name: "Deniz Kaya", role: "Senior Engineer", email: "deniz@acme.com", phone: "+31 20 555 0112", dept: "Engineering", startDate: "2020-09-14", website: "", skills: ["TypeScript","React","Infra"], featured: true, bio: "<p>Deniz builds the rendering pipeline and keeps deploys boring.</p>" } },
+        { id: uid("r"), status: "published", updated: "1 week ago", values: { name: "Lotte Visser", role: "Product Designer", email: "lotte@acme.com", phone: "", dept: "Design", startDate: "2022-01-10", website: "https://lotte.design", skills: ["UI","Prototyping"], featured: false, bio: "<p>Lotte owns the design system and the admin's visual language.</p>" } },
+        { id: uid("r"), status: "concept", updated: "Just now", values: { name: "Sam Okafor", role: "Account Executive", email: "sam@acme.com", phone: "", dept: "Sales", startDate: "", website: "", skills: [], featured: false, bio: "" } },
+      ] },
+    { id: "locations", name: "Locations", singular: "location", icon: "ph-map-pin", chipBg: "#E1EEF0", chipFg: "#2C6E78", system: false,
+      desc: "Offices and venues referenced on contact pages.",
+      fields: [ f("name","Name","text",{primary:true,required:true}), f("city","City","text"), f("address","Address","text"), f("phone","Phone","phone") ],
+      records: [
+        { id: uid("r"), status: "published", updated: "3 weeks ago", values: { name: "Amsterdam HQ", city: "Amsterdam", address: "Herengracht 210", phone: "+31 20 555 0110" } },
+        { id: uid("r"), status: "published", updated: "3 weeks ago", values: { name: "Berlin Studio", city: "Berlin", address: "Torstraße 44", phone: "+49 30 555 220" } },
+        { id: uid("r"), status: "concept", updated: "Yesterday", values: { name: "London Loft", city: "London", address: "Shoreditch High St 9", phone: "+44 20 5550 990" } },
+      ] },
+    { id: "jobs", name: "Job openings", singular: "opening", icon: "ph-briefcase", chipBg: "#E7EAF5", chipFg: "#3F4C8A", system: false,
+      desc: "Vacancies rendered on the careers page.",
+      fields: [ f("title","Title","text",{primary:true,required:true}), f("team","Team","choice",{options:["Engineering","Design","Marketing","Sales","Operations"]}), f("location","Location","text"), f("mode","Type","choice",{options:["Full-time","Part-time","Contract"]}) ],
+      records: [
+        { id: uid("r"), status: "published", updated: "4 days ago", values: { title: "Frontend Engineer", team: "Engineering", location: "Amsterdam / Remote", mode: "Full-time" } },
+        { id: uid("r"), status: "published", updated: "1 week ago", values: { title: "Content Strategist", team: "Marketing", location: "Berlin", mode: "Full-time" } },
+        { id: uid("r"), status: "concept", updated: "2 days ago", values: { title: "Design Intern", team: "Design", location: "Amsterdam", mode: "Part-time" } },
+      ] },
+    { id: "faqs", name: "FAQ items", singular: "question", icon: "ph-question", chipBg: "#F5E7EF", chipFg: "#5E299C", system: false,
+      desc: "Question / answer pairs reused across help pages.",
+      fields: [ f("q","Question","text",{primary:true,required:true}), f("a","Answer","rich",{required:true}), f("topic","Topic","choice",{options:["Billing","Account","Product","Privacy"]}) ],
+      records: [
+        { id: uid("r"), status: "published", updated: "6 days ago", values: { q: "How do I reset my password?", a: "<p>Use the <strong>reset link</strong> on the sign-in screen. The email arrives within a minute.</p>", topic: "Account" } },
+        { id: uid("r"), status: "published", updated: "6 days ago", values: { q: "Can I change my plan later?", a: "<p>Yes — from <strong>Billing</strong> at any time. Upgrades apply immediately; downgrades at the next cycle.</p>", topic: "Billing" } },
+        { id: uid("r"), status: "concept", updated: "Today", values: { q: "Where is my data stored?", a: "<p>In EU-based data centres.</p>", topic: "Privacy" } },
+      ] },
+    { id: "testimonials", name: "Testimonials", singular: "testimonial", icon: "ph-quotes", chipBg: "#EAECEF", chipFg: "#4A5064", system: false,
+      desc: "Customer quotes used on landing pages.",
+      fields: [ f("quote","Quote","long",{primary:true,required:true}), f("author","Author","text"), f("role","Author role","text"), f("company","Company","text"), f("rating","Rating (1–5)","number"), f("photo","Photo","image") ],
+      records: [
+        { id: uid("r"), status: "published", updated: "2 weeks ago", values: { quote: "SiteFoundry cut our launch time in half.", author: "Priya Nair", role: "CTO", company: "Northwind", rating: "5" } },
+        { id: uid("r"), status: "concept", updated: "3 days ago", values: { quote: "The URL handling alone is worth it.", author: "Tom De Vries", role: "Head of Web", company: "Kestrel", rating: "4" } },
+      ] },
+  ];
+}
+
+class Component extends DCLogic {
+  state = {
+    types: seedTypes(),
+    activeType: "colleagues",
+    q: "",
+    searchFocus: false,
+    statusFilter: "all",
+    record: null,      // { mode:'new'|'edit', id?, values, status }
+    del: null,         // record id
+    typeModal: null,   // { mode:'new'|'edit', id?, name, singular, icon, fields:[] }
+    flashId: null,
+    richFocus: null,
+    tagDraft: {},
+    toast: null,
+  };
+  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._f); }
+
+  cur() { return this.state.types.find(t => t.id === this.state.activeType) || this.state.types[0]; }
+  toast(t) { clearTimeout(this._t); this.setState({ toast: t }); this._t = setTimeout(() => this.setState({ toast: null }), 3400); }
+  flash(id) { clearTimeout(this._f); this.setState({ flashId: id }); this._f = setTimeout(() => this.setState({ flashId: null }), 1100); }
+  patchType(id, patch) { this.setState({ types: this.state.types.map(t => t.id === id ? { ...t, ...patch } : t) }); }
+
+  // ---- records ----
+  newRecord() {
+    const t = this.cur();
+    const values = {}; t.fields.forEach(fd => { values[fd.key] = fd.type === "toggle" ? false : (fd.type === "tags" ? [] : ""); });
+    this.setState({ record: { mode: "new", values, status: "concept" } });
+  }
+  editRecord(id) {
+    const t = this.cur(); const rec = t.records.find(r => r.id === id); if (!rec) return;
+    this.setState({ record: { mode: "edit", id, values: { ...rec.values }, status: rec.status } });
+  }
+  saveRecord() {
+    const t = this.cur(); const rc = this.state.record; if (!rc) return;
+    const prim = t.fields.find(fd => fd.primary) || t.fields[0];
+    if (!(rc.values[prim.key] || "").trim()) { this.toast({ msg: prim.label + " is required", icon: "ph-warning-circle" }); return; }
+    let records, id;
+    if (rc.mode === "new") {
+      id = uid("r");
+      records = [{ id, status: rc.status, updated: "Just now", values: rc.values }, ...t.records];
+    } else {
+      id = rc.id;
+      records = t.records.map(r => r.id === id ? { ...r, values: rc.values, status: rc.status, updated: "Just now" } : r);
+    }
+    this.patchType(t.id, { records });
+    this.setState({ record: null });
+    this.flash(id);
+    this.toast({ msg: rc.mode === "new" ? "Created" : "Saved", sub: (rc.values[prim.key] || "").trim(), icon: "ph-check" });
+  }
+  confirmDelete() {
+    const t = this.cur(); const id = this.state.del; if (!id) return;
+    const rec = t.records.find(r => r.id === id);
+    const prim = t.fields.find(fd => fd.primary) || t.fields[0];
+    this.patchType(t.id, { records: t.records.filter(r => r.id !== id) });
+    this.setState({ del: null, record: null });
+    this.toast({ msg: "Deleted", sub: rec ? rec.values[prim.key] : "", icon: "ph-trash" });
+  }
+
+  // ---- type schema ----
+  openNewType() {
+    this.setState({ typeModal: { mode: "new", name: "", singular: "", icon: "ph-cube",
+      fields: [ { fid: uid("f"), key: "title", label: "Title", type: "text", primary: true } ] } });
+  }
+  editSchema() {
+    const t = this.cur();
+    this.setState({ typeModal: { mode: "edit", id: t.id, name: t.name, singular: t.singular, icon: t.icon,
+      fields: t.fields.map(fd => ({ fid: uid("f"), key: fd.key, label: fd.label, type: fd.type, primary: !!fd.primary, options: fd.options })) } });
+  }
+  tfPatch(patch) { this.setState({ typeModal: { ...this.state.typeModal, ...patch } }); }
+  tfSetField(fid, patch) { const tm = this.state.typeModal; this.tfPatch({ fields: tm.fields.map(x => x.fid === fid ? { ...x, ...patch } : x) }); }
+  addTfField() { const tm = this.state.typeModal; this.tfPatch({ fields: [...tm.fields, { fid: uid("f"), key: uid("k"), label: "", type: "text", primary: false }] }); }
+  removeTfField(fid) { const tm = this.state.typeModal; if (tm.fields.length <= 1) return; this.tfPatch({ fields: tm.fields.filter(x => x.fid !== fid) }); }
+  setPrimary(fid) { const tm = this.state.typeModal; this.tfPatch({ fields: tm.fields.map(x => ({ ...x, primary: x.fid === fid })) }); }
+  saveType() {
+    const tm = this.state.typeModal; if (!tm) return;
+    const name = tm.name.trim(); if (!name) { this.toast({ msg: "Give the type a name", icon: "ph-warning-circle" }); return; }
+    const singular = (tm.singular.trim() || name.replace(/s$/, "")).toLowerCase();
+    const hasPrimary = tm.fields.some(x => x.primary);
+    const fields = tm.fields.map((x, i) => f(x.key || ("f" + i), x.label.trim() || ("Field " + (i + 1)), x.type, { primary: hasPrimary ? x.primary : i === 0, options: x.options || (x.type === "choice" ? ["Option A", "Option B"] : null) }));
+    if (tm.mode === "new") {
+      const id = uid("t");
+      const nt = { id, name, singular, icon: tm.icon, chipBg: "#F5E7EF", chipFg: "#5E299C", system: false, desc: "Custom content type.", fields, records: [] };
+      this.setState({ types: [...this.state.types, nt], activeType: id, typeModal: null });
+      this.toast({ msg: "Content type created", sub: name + " · " + fields.length + " fields", icon: "ph-check" });
+    } else {
+      this.patchType(tm.id, { name, singular, icon: tm.icon, fields });
+      this.setState({ typeModal: null });
+      this.toast({ msg: "Fields updated", sub: name, icon: "ph-check" });
+    }
+  }
+  deleteType() {
+    const tm = this.state.typeModal; if (!tm || tm.mode !== "edit") return;
+    const remaining = this.state.types.filter(t => t.id !== tm.id);
+    if (!remaining.length) { this.toast({ msg: "Keep at least one type", icon: "ph-info" }); return; }
+    this.setState({ types: remaining, activeType: remaining[0].id, typeModal: null });
+    this.toast({ msg: "Type deleted", sub: tm.name, icon: "ph-trash" });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const t = this.cur();
+    const q = s.q.trim().toLowerCase();
+    const ACCENT = "#763FBA";
+    const STATUS = { published: { bg: "#E3F3EA", fg: "#147A4A", dot: "#1F9D57", label: "Published" }, concept: { bg: "#F7EDDA", fg: "#8A5A06", dot: "#D18F0C", label: "Concept" } };
+
+    // ---- app nav ----
+    const nav = [
+      { icon: "ph-tree-structure", label: "Pages", bg: "transparent", fg: "#33474A", count: "31", countFg: "#A5B0AD" },
+      { icon: "ph-image", label: "Media", bg: "transparent", fg: "#33474A", count: 0, countFg: "#A5B0AD" },
+      { icon: "ph-arrow-bend-up-left", label: "Redirects", bg: "transparent", fg: "#33474A", count: 0, countFg: "#A5B0AD" },
+      { icon: "ph-browser", label: "Header navigation", bg: "transparent", fg: "#33474A", count: 0, countFg: "#A5B0AD" },
+      { icon: "ph-layout", label: "Footer", bg: "transparent", fg: "#33474A", count: 0, countFg: "#A5B0AD" },
+      { icon: "ph-cube", label: "Structured content", bg: "#ECEEF1", fg: ACCENT, count: "" + s.types.length, countFg: ACCENT },
+      { icon: "ph-gear", label: "Settings", bg: "transparent", fg: "#33474A", count: 0, countFg: "#A5B0AD" },
+    ];
+
+    // ---- type rail ----
+    const types = s.types.map(ty => {
+      const active = ty.id === s.activeType;
+      return { name: ty.name, icon: ty.icon, count: "" + ty.records.length,
+        metaLabel: ty.fields.length + " fields",
+        chipBg: ty.chipBg, chipFg: ty.chipFg,
+        bg: active ? "#ECEEF1" : "transparent", hoverBg: active ? "#ECEEF1" : "#F5F7F4",
+        rail: active ? "inset 2px 0 0 #96A0AC" : "none",
+        nameFg: active ? "#5E299C" : "#172326", weight: active ? "600" : "500",
+        countFg: active ? ACCENT : "#A5B0AD",
+        onClick: () => this.setState({ activeType: ty.id, q: "", statusFilter: "all" }) };
+    });
+
+    // ---- columns (up to 4 non-image fields, primary first) ----
+    const prim = t.fields.find(fd => fd.primary) || t.fields[0];
+    const imgField = t.fields.find(fd => fd.type === "image");
+    const listFields = t.fields.filter(fd => fd.key !== prim.key && fd.type !== "image" && fd.type !== "long" && fd.type !== "rich").slice(0, 3);
+    const columns = [{ label: prim.label }].concat(listFields.map(fd => ({ label: fd.label })));
+    const colTemplate = ["minmax(200px,1.6fr)"].concat(listFields.map(() => "minmax(120px,1fr)")).join(" ");
+    const gridCols = colTemplate + " 118px 110px 78px";
+    const tableMinW = (200 + listFields.length * 130 + 118 + 110 + 78 + 120) + "px";
+
+    // ---- rows ----
+    let recs = t.records.filter(r => {
+      if (s.statusFilter !== "all" && r.status !== s.statusFilter) return false;
+      if (!q) return true;
+      return Object.values(r.values).some(v => ("" + v).toLowerCase().includes(q));
+    });
+    const initials = (str) => (str || "?").split(/\s+/).slice(0, 2).map(w => w[0] || "").join("").toUpperCase() || "?";
+    const rows = recs.map(r => {
+      const primVal = r.values[prim.key] || "(untitled)";
+      const st = STATUS[r.status] || STATUS.concept;
+      const hasImg = !!imgField;
+      return {
+        id: r.id, primary: primVal,
+        avatarText: hasImg ? "" : initials(primVal),
+        avatarBg: t.chipBg, avatarFg: t.chipFg,
+        avatarRadius: t.id === "colleagues" ? "999px" : "8px",
+        avatarImg: "none",
+        cells: listFields.map(fd => {
+          let v = r.values[fd.key];
+          if (Array.isArray(v)) v = v.join(", ");
+          else if (v === true) v = "Yes"; else if (v === false) v = "No";
+          const empty = (v === undefined || v === "");
+          return { text: empty ? "—" : v, fg: (empty ? "#C2CCC4" : "#33474A"), font: (fd.type === "email" || fd.type === "phone" || fd.type === "url") ? "'Geist Mono',monospace" : "inherit" };
+        }),
+        status: st.label, stBg: st.bg, stFg: st.fg, stDot: st.dot,
+        updated: r.updated,
+        anim: s.flashId === r.id ? "sfFlash 1.1s ease" : "none",
+        onEdit: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.editRecord(r.id); },
+        onDelete: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ del: r.id }); },
+      };
+    });
+
+    // ---- status segments ----
+    const counts = { all: t.records.length, published: t.records.filter(r => r.status === "published").length, concept: t.records.filter(r => r.status === "concept").length };
+    const seg = (val, label) => ({ label: label + " " + counts[val], bg: s.statusFilter === val ? "#fff" : "transparent", fg: s.statusFilter === val ? ACCENT : "#526366", shadow: s.statusFilter === val ? "0 1px 2px rgba(23,35,38,0.12)" : "none", onClick: () => this.setState({ statusFilter: val }) });
+    const statusSeg = [seg("all", "All"), seg("published", "Published"), seg("concept", "Concept")];
+
+    // ---- record drawer ----
+    const rc = s.record;
+    let recordFields = [], recStatusSeg = [];
+    if (rc) {
+      recordFields = t.fields.map(fd => {
+        const ft = FIELD_TYPES[fd.type] || FIELD_TYPES.text;
+        const raw = rc.values[fd.key];
+        const val = (raw === undefined || raw === null || typeof raw !== "string") ? (typeof raw === "string" ? raw : "") : raw;
+        const set = (v) => this.setState({ record: { ...rc, values: { ...rc.values, [fd.key]: v } } });
+        const exec = (cmd, arg) => { try { document.execCommand(cmd, false, arg || null); } catch (e) {} };
+        const tags = Array.isArray(raw) ? raw : [];
+        const tools = [
+          { isBtn: true, icon: "ph-text-b", title: "Bold", cmd: "bold" },
+          { isBtn: true, icon: "ph-text-italic", title: "Italic", cmd: "italic" },
+          { isBtn: true, icon: "ph-text-h-two", title: "Heading", cmd: "formatBlock", arg: "H3" },
+          { divider: true },
+          { isBtn: true, icon: "ph-list-bullets", title: "Bulleted list", cmd: "insertUnorderedList" },
+          { isBtn: true, icon: "ph-list-numbers", title: "Numbered list", cmd: "insertOrderedList" },
+          { divider: true },
+          { isBtn: true, icon: "ph-link-simple", title: "Insert link", link: true },
+        ].map(tb => tb.divider ? tb : ({ ...tb, onDown: (e) => e.preventDefault(), onClick: () => { if (tb.link) { const u = window.prompt("Link URL", "https://"); if (u) exec("createLink", u); } else exec(tb.cmd, tb.arg); } }));
+        return {
+          label: fd.label, required: !!fd.required, typeIcon: ft.icon, typeName: ft.name,
+          isText: ["text","email","phone","number","url"].includes(fd.type),
+          isArea: fd.type === "long", isSelect: fd.type === "choice" || fd.type === "ref", isImage: fd.type === "image",
+          isDate: fd.type === "date", isRich: fd.type === "rich", isToggle: fd.type === "toggle", isTags: fd.type === "tags",
+          value: (fd.type === "toggle" || fd.type === "tags") ? "" : val, options: fd.options || [],
+          font: (fd.type === "email" || fd.type === "phone" || fd.type === "url") ? "'Geist Mono',monospace" : "inherit",
+          placeholder: fd.type === "email" ? "name@acme.com" : (fd.type === "phone" ? "+31 …" : (fd.type === "url" ? "https://…" : fd.label)),
+          previewImg: "none", imageName: "No image yet",
+          onInput: (e) => set(e.target.value),
+          tools, richBorder: s.richFocus === fd.key ? ACCENT : "#CFD6D0", richRing: s.richFocus === fd.key ? "0 0 0 3px rgba(118,63,186,0.16)" : "none",
+          setEditable: (el) => { if (el && !el.__sfInit) { el.__sfInit = true; el.innerHTML = typeof raw === "string" ? raw : ""; } },
+          onRich: (e) => { rc.values[fd.key] = e.target.innerHTML; },
+          onRichFocus: () => this.setState({ richFocus: fd.key }), onRichBlur: () => this.setState({ richFocus: null }),
+          toggleTrack: raw === true ? ACCENT : "#CFD6D0", toggleKnob: raw === true ? "18px" : "2px", toggleLabel: raw === true ? "Enabled" : "Disabled",
+          onToggle: () => set(raw === true ? false : true),
+          tags: tags.map((tg, i) => ({ label: tg, onRemove: () => set(tags.filter((_, j) => j !== i)) })),
+          tagDraft: (s.tagDraft && s.tagDraft[fd.key]) || "",
+          onTagInput: (e) => this.setState({ tagDraft: { ...s.tagDraft, [fd.key]: e.target.value } }),
+          onTagKey: (e) => { if (e.key === "Enter") { e.preventDefault(); const v = (e.target.value || "").trim(); if (v) { set([...tags, v]); this.setState({ tagDraft: { ...s.tagDraft, [fd.key]: "" } }); } } else if (e.key === "Backspace" && !e.target.value && tags.length) { set(tags.slice(0, -1)); } },
+        };
+      });
+      const rseg = (val, label, dot) => ({ label, dot, bg: rc.status === val ? "#fff" : "transparent", fg: rc.status === val ? "#172326" : "#869693", shadow: rc.status === val ? "0 1px 2px rgba(23,35,38,0.12)" : "none", onClick: () => this.setState({ record: { ...rc, status: val } }) });
+      recStatusSeg = [rseg("concept", "Concept", "#D18F0C"), rseg("published", "Published", "#1F9D57")];
+    }
+
+    // ---- type modal ----
+    const tm = s.typeModal;
+    let iconChoices = [], tfFields = [];
+    const ICON_SET = ["ph-cube","ph-users","ph-map-pin","ph-briefcase","ph-question","ph-quotes","ph-calendar-dots","ph-package","ph-handshake","ph-tag","ph-star","ph-newspaper"];
+    if (tm) {
+      iconChoices = ICON_SET.map(ic => ({ icon: ic, onClick: () => this.tfPatch({ icon: ic }),
+        border: tm.icon === ic ? ACCENT : "#E2E7E2", bg: tm.icon === ic ? "#ECEEF1" : "#fff", fg: tm.icon === ic ? ACCENT : "#526366" }));
+      tfFields = tm.fields.map(x => {
+        const ft = FIELD_TYPES[x.type] || FIELD_TYPES.text;
+        return { label: x.label, type: x.type, typeIcon: ft.icon,
+          rowBg: x.primary ? "#F4F6F8" : "#fff",
+          primaryFg: x.primary ? ACCENT : "#C2CCC4", primaryBg: x.primary ? "#ECEEF1" : "transparent", primaryFill: x.primary ? "-fill" : "",
+          removeCursor: tm.fields.length <= 1 ? "default" : "pointer",
+          onLabel: (e) => this.tfSetField(x.fid, { label: e.target.value }),
+          onType: (e) => this.tfSetField(x.fid, { type: e.target.value }),
+          onPrimary: () => this.setPrimary(x.fid),
+          onRemove: () => this.removeTfField(x.fid) };
+      });
+    }
+    const fieldTypeOpts = Object.keys(FIELD_TYPES).map(k => ({ value: k, label: FIELD_TYPES[k].name }));
+    const typeNameValid = tm && tm.name.trim().length > 0;
+
+    const referencedByHint = { colleagues: "Referenced by Team & Author blocks", locations: "Referenced by Contact pages", jobs: "Referenced by the Careers page", faqs: "Referenced by Help & FAQ blocks", testimonials: "Referenced by landing-page blocks" };
+
+    return {
+      nav, types, typeCount: s.types.length + (s.types.length === 1 ? " type" : " types"),
+      openNewType: () => this.openNewType(),
+
+      // current header
+      curName: t.name, curSingular: t.singular, curSingularLower: t.singular.toLowerCase(),
+      curNameLower: t.name.toLowerCase(),
+      curIcon: t.icon, curChipBg: t.chipBg, curChipFg: t.chipFg,
+      curDesc: t.desc,
+      curCountLabel: t.records.length + (t.records.length === 1 ? " item" : " items"),
+      editSchema: () => this.editSchema(),
+      newRecord: () => this.newRecord(),
+
+      // search
+      q: s.q, onSearch: (e) => this.setState({ q: e.target.value }),
+      onSearchFocus: () => this.setState({ searchFocus: true }), onSearchBlur: () => this.setState({ searchFocus: false }),
+      clearSearch: () => this.setState({ q: "" }),
+      searchBorder: s.searchFocus ? ACCENT : "#CFD6D0", searchRing: s.searchFocus ? "0 0 0 3px rgba(118,63,186,0.16)" : "none", searchIcon: s.searchFocus ? ACCENT : "#869693",
+
+      statusSeg,
+      resultLabel: (q || s.statusFilter !== "all") ? (rows.length + " of " + t.records.length + " shown") : (t.records.length + " total"),
+
+      // table
+      columns, gridCols, tableMinW, rows,
+      isEmpty: rows.length === 0,
+      emptyBg: t.chipBg, emptyFg: t.chipFg,
+      emptyIcon: (q || s.statusFilter !== "all") ? "ph-magnifying-glass" : t.icon,
+      emptyTitle: (q || s.statusFilter !== "all") ? "No matching " + t.name.toLowerCase() : "No " + t.name.toLowerCase() + " yet",
+      emptyBody: (q || s.statusFilter !== "all") ? "Try a different search or clear the status filter." : "Add your first " + t.singular + ", or adjust the fields this type stores.",
+      emptyCta: (q || s.statusFilter !== "all") ? "Clear filters" : "New " + t.singular,
+      emptyAction: (q || s.statusFilter !== "all") ? () => this.setState({ q: "", statusFilter: "all" }) : () => this.newRecord(),
+
+      referencedLabel: referencedByHint[t.id] || "Referenced by page blocks",
+      footerLabel: t.fields.length + " fields · " + t.records.length + " records",
+
+      // record drawer
+      showRecord: !!rc,
+      recordTitle: rc ? (rc.mode === "new" ? "New " + t.singular : "Edit " + t.singular) : "",
+      recordSubtitle: rc ? (t.name + " · " + t.fields.length + " fields") : "",
+      recordSaveLabel: rc && rc.mode === "new" ? "Create" : "Save changes",
+      recordFields, recStatusSeg,
+      saveRecord: () => this.saveRecord(),
+
+      // delete
+      showDelete: !!s.del,
+      delName: s.del ? (t.records.find(r => r.id === s.del) ? (t.records.find(r => r.id === s.del).values[prim.key] || "(untitled)") : "") : "",
+      confirmDelete: () => this.confirmDelete(),
+
+      // type modal
+      showType: !!tm,
+      typeModalTitle: tm ? (tm.mode === "new" ? "New content type" : "Configure “" + tm.name + "”") : "",
+      typeModalSubtitle: tm ? (tm.mode === "new" ? "Define a reusable collection and its fields." : "Edit the fields this type stores.") : "",
+      typeModalIcon: tm ? tm.icon : "ph-cube",
+      tfName: tm ? tm.name : "", onTfName: (e) => this.tfPatch({ name: e.target.value }),
+      tfSingular: tm ? tm.singular : "", onTfSingular: (e) => this.tfPatch({ singular: e.target.value }),
+      iconChoices, tfFields, fieldTypeOpts,
+      tfFieldCount: tm ? (tm.fields.length + (tm.fields.length === 1 ? " field" : " fields")) : "",
+      addTfField: () => this.addTfField(),
+      typeCanDelete: tm && tm.mode === "edit",
+      typeSaveLabel: tm && tm.mode === "new" ? "Create type" : "Save fields",
+      typeSaveBg: typeNameValid ? ACCENT : "#A693CC", typeSaveCursor: typeNameValid ? "pointer" : "not-allowed", typeSaveOpacity: typeNameValid ? "1" : "0.75",
+      saveType: () => this.saveType(), deleteType: () => this.deleteType(),
+
+      // shared
+      closeAll: () => this.setState({ record: null, typeModal: null, del: null }),
+      stop: (e) => e.stopPropagation(),
+
+      // toast
+      showToast: !!s.toast, toastMsg: s.toast ? s.toast.msg : "", toastSub: s.toast ? (s.toast.sub || "") : "", toastIcon: s.toast ? s.toast.icon : "ph-check",
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
+  ::selection{background:var(--accentSoft)}
+  input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radius:999px;outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:999px;background:var(--surface);border:2px solid var(--accent);box-shadow:0 1px 4px rgba(0,0,0,0.3);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:999px;background:var(--surface);border:2px solid var(--accent);box-shadow:0 1px 4px rgba(0,0,0,0.3);cursor:pointer}
+</style>
+</helmet>
+<div style="{{ pageStyle }}">
+<div style="max-width:1120px;margin:0 auto;padding:44px 40px 90px">
+
+  <header style="display:flex;flex-direction:column;gap:10px;margin-bottom:30px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:32px;height:32px;border-radius:8px;background:#E07A4F;display:flex;align-items:center;justify-content:center;color:#fff"><i class="ph-bold ph-hammer" style="font-size:17px"></i></div>
+      <span style="font-size:15px;font-weight:600;letter-spacing:-0.01em;color:var(--ink)">SiteFoundry</span>
+      <span style="font-size:12px;font-weight:500;color:var(--ink2);padding:3px 8px;background:var(--chip);border-radius:999px">Accent explorer</span>
+      <span style="flex:1"></span>
+      <div style="display:flex;background:var(--chip);border-radius:8px;padding:2px;gap:2px">
+        <sc-for list="{{ modeSegs }}" as="ms" hint-placeholder-count="2">
+          <span onClick="{{ ms.onClick }}" style="display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:6px;cursor:pointer;font-size:12.5px;font-weight:600;background:{{ ms.bg }};color:{{ ms.fg }};box-shadow:{{ ms.sh }}"><i class="ph-bold {{ ms.icon }}" style="font-size:14px"></i>{{ ms.label }}</span>
+        </sc-for>
+      </div>
+    </div>
+    <h1 style="margin:8px 0 0;font-size:29px;font-weight:600;letter-spacing:-0.02em;line-height:1.15;color:var(--ink)">Choosing the interactive accent</h1>
+    <p style="margin:0;max-width:660px;font-size:14.5px;line-height:1.6;color:var(--ink2)">One accent carries every action, active state, selection and focus ring. Pick a direction, nudge the hue, and flip between light and dark — the accent brightens on dark surfaces while Clay and the status colors stay fixed so the accent never competes with brand or meaning.</p>
+  </header>
+
+  <!-- ======= CONTROLS ======= -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:22px;box-shadow:0 6px 16px rgba(0,0,0,0.06)">
+    <div style="display:flex;flex-wrap:wrap;gap:9px;margin-bottom:18px">
+      <sc-for list="{{ presets }}" as="p" hint-placeholder-count="5">
+        <div onClick="{{ p.onClick }}" style="display:flex;align-items:center;gap:9px;height:40px;padding:0 14px 0 10px;border-radius:9px;cursor:pointer;border:1.5px solid {{ p.border }};background:{{ p.bg }}">
+          <span style="width:22px;height:22px;border-radius:999px;flex:none;background:{{ p.swatch }};border:1px solid rgba(0,0,0,0.12)"></span>
+          <div style="display:flex;flex-direction:column;line-height:1.15">
+            <span style="font-size:13px;font-weight:600;color:var(--ink)">{{ p.name }}</span>
+            <span style="font-size:10.5px;color:var(--ink3)">{{ p.note }}</span>
+          </div>
+          <sc-if value="{{ p.active }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-check-circle" style="font-size:16px;color:var(--accent);margin-left:2px"></i></sc-if>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;gap:26px;flex-wrap:wrap;align-items:center">
+      <div style="flex:1;min-width:260px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;font-weight:600;color:var(--ink2)">Hue</span><span style="font-family:'Geist Mono',monospace;font-size:12px;color:var(--ink3)">{{ hue }}°</span></div>
+        <input type="range" min="0" max="360" step="1" value="{{ hue }}" onInput="{{ onHue }}" style="width:100%;background:linear-gradient(90deg,oklch(0.6 0.15 0),oklch(0.6 0.15 60),oklch(0.6 0.15 120),oklch(0.6 0.15 180),oklch(0.6 0.15 240),oklch(0.6 0.15 300),oklch(0.6 0.15 360))"/>
+      </div>
+      <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;font-weight:600;color:var(--ink2)">Chroma (saturation)</span><span style="font-family:'Geist Mono',monospace;font-size:12px;color:var(--ink3)">{{ chroma }}</span></div>
+        <input type="range" min="0.04" max="0.22" step="0.005" value="{{ chroma }}" onInput="{{ onChroma }}" style="width:100%;background:linear-gradient(90deg,#8E938F,var(--accent))"/>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:3px;min-width:150px">
+        <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink3)">Accent 600 · {{ modeLabel }}</span>
+        <span style="font-family:'Geist Mono',monospace;font-size:12.5px;color:var(--ink);background:var(--sunken);padding:6px 9px;border-radius:6px;border:1px solid var(--border)">{{ tAccent }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= PREVIEW GRID ======= -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:14px;color:var(--ink)">Accent scale</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <sc-for list="{{ scale }}" as="c" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="width:38px;height:38px;border-radius:7px;border:1px solid rgba(0,0,0,0.12);flex:none;background:{{ c.val }}"></span>
+            <div style="display:flex;flex-direction:column;gap:1px;min-width:0">
+              <span style="font-size:13px;font-weight:500;color:var(--ink)">{{ c.name }}</span>
+              <span style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.val }} · {{ c.role }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:16px">
+      <div style="font-size:13px;font-weight:600;color:var(--ink)">Actions &amp; focus</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+        <button style="display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border:none;border-radius:7px;background:var(--accent);color:var(--onAccent);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.15)"><i class="ph-bold ph-plus"></i>Add page</button>
+        <button style="display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border:1px solid var(--accent);border-radius:7px;background:var(--accentSoft);color:var(--accentH);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer">Publish</button>
+        <button style="height:34px;padding:0 12px;border:none;border-radius:7px;background:transparent;color:var(--ink2);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer">Cancel</button>
+        <button style="display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border:1px solid var(--dangerBorder);border-radius:7px;background:var(--dangerSoft);color:var(--danger);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer"><i class="ph ph-trash"></i>Delete</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;height:38px;padding:0 12px;border:1.5px solid var(--accent);border-radius:8px;background:var(--surface);box-shadow:0 0 0 3px var(--ring)">
+        <i class="ph ph-magnifying-glass" style="color:var(--accent)"></i>
+        <span style="font-size:13px;color:var(--ink)">product launch</span>
+        <span style="width:1px;height:15px;background:var(--accent)"></span>
+        <span style="flex:1"></span>
+        <span style="font-size:11px;font-weight:600;color:var(--ink2);background:var(--chip);padding:2px 7px;border-radius:999px">focused</span>
+      </div>
+      <div style="font-size:13px;color:var(--ink2)">A body sentence with an <a href="#" onClick="{{ noop }}" style="color:var(--accent);font-weight:600;text-decoration:none">inline link</a> and a <span style="color:var(--accent);font-weight:600">highlighted value</span>.</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:236px 1fr;gap:20px;margin-bottom:20px">
+    <div style="background:var(--rail);border:1px solid var(--border);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:2px">
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="5">
+        <div style="display:flex;align-items:center;gap:11px;height:34px;padding:0 10px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;background:{{ n.bg }};color:{{ n.fg }}">
+          <i class="ph {{ n.icon }}" style="font-size:16px"></i><span>{{ n.label }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <div style="font-size:13px;font-weight:600;padding:14px 16px 8px;color:var(--ink)">Tree rows — default · hover · selected · muted</div>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+        <div style="display:flex;align-items:center;gap:10px;height:40px;padding:0 16px;border-top:1px solid var(--rowBorder);background:{{ r.bg }};opacity:{{ r.op }};box-shadow:{{ r.ring }}">
+          <i class="ph {{ r.chev }}" style="color:var(--ink3);font-size:14px;width:14px"></i>
+          <i class="ph {{ r.icon }}" style="font-size:15px;color:{{ r.iconColor }}"></i>
+          <span style="font-size:13.5px;font-weight:500;color:var(--ink)">{{ r.title }}</span>
+          <span style="font-family:'Geist Mono',monospace;font-size:12px;color:var(--slug)">{{ r.slug }}</span>
+          <span style="flex:1"></span>
+          <span style="display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:5px;font-size:11.5px;font-weight:600;background:{{ r.stBg }};color:{{ r.stFg }}"><span style="width:5px;height:5px;border-radius:999px;background:{{ r.stDot }}"></span>{{ r.status }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:4px;color:var(--ink)">Status stays independent</div>
+      <div style="font-size:12px;color:var(--ink2);margin-bottom:14px">These never change with the accent or the mode — meaning must stay stable.</div>
+      <div style="display:flex;flex-wrap:wrap;gap:9px">
+        <span style="display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:6px;background:var(--pubBg);color:var(--pubFg);font-size:12px;font-weight:600"><span style="width:6px;height:6px;border-radius:999px;background:var(--pubDot)"></span>Published</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:6px;background:var(--conBg);color:var(--conFg);font-size:12px;font-weight:600"><span style="width:6px;height:6px;border-radius:999px;background:var(--conDot)"></span>Concept</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:6px;background:var(--dangerSoft);color:var(--danger);font-size:12px;font-weight:600"><i class="ph ph-warning"></i>2 problems</span>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:4px;color:var(--ink)">Sits beside Clay (brand)</div>
+      <div style="font-size:12px;color:var(--ink2);margin-bottom:14px">Accent = actions; Clay = brand marks. They should feel related but never be confused.</div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <span style="width:30px;height:30px;border-radius:8px;background:#E07A4F;display:flex;align-items:center;justify-content:center;color:#fff"><i class="ph-bold ph-hammer" style="font-size:16px"></i></span>
+          <span style="font-size:12.5px;color:var(--ink2)">Clay mark</span>
+        </div>
+        <span style="width:1px;height:34px;background:var(--border)"></span>
+        <button style="display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border:none;border-radius:7px;background:var(--accent);color:var(--onAccent);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer">Accent action</button>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin:22px 0 0;font-size:13px;line-height:1.6;color:var(--ink2)">Values use <strong style="color:var(--ink)">oklch</strong> so lightness and chroma stay perceptually even as you rotate hue or switch mode — hand them to your developer as-is, or I can freeze your pick into named light + dark tokens and roll it through every screen.</p>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;},&quot;preset&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;fuchsia&quot;,&quot;plum&quot;,&quot;amethyst&quot;,&quot;salmon&quot;,&quot;jade&quot;,&quot;mulberry&quot;,&quot;ochre&quot;,&quot;chartreuse&quot;,&quot;cobalt&quot;,&quot;azure&quot;,&quot;copper&quot;,&quot;petrol&quot;],&quot;default&quot;:&quot;plum&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Accent&quot;}}">
+const PRESETS = {
+  fuchsia: { name: "Fuchsia", note: "vivid pink",      hue: 344, chroma: 0.17 },
+  plum:    { name: "Plum",    note: "berry-purple",    hue: 320, chroma: 0.145 },
+  amethyst:{ name: "Amethyst",note: "vivid violet · rarely used", hue: 300, chroma: 0.15 },
+  salmon:  { name: "Salmon",  note: "warm coral · Claude-like", hue: 32, chroma: 0.11 },
+  jade:    { name: "Jade",    note: "teal-green · near Published", hue: 165, chroma: 0.115 },
+  mulberry:{ name: "Mulberry",note: "deep wine-magenta", hue: 358, chroma: 0.14 },
+  ochre:   { name: "Ochre",   note: "amber-gold · near Concept", hue: 75, chroma: 0.12 },
+  chartreuse:{ name: "Chartreuse", note: "electric lime · rare", hue: 128, chroma: 0.15 },
+  cobalt:  { name: "Cobalt",  note: "deep blue",        hue: 258, chroma: 0.145 },
+  azure:   { name: "Azure",   note: "bright sky blue",  hue: 230, chroma: 0.13 },
+  copper:  { name: "Copper",  note: "burnt bronze · warm", hue: 48, chroma: 0.11 },
+  petrol:  { name: "Petrol",  note: "current teal",    hue: 195, chroma: 0.075 },
+};
+const HEXSET = {
+  petrol: {
+    light: { a: "#0D6770", h: "#0A545C", a2: "#A7D4CE", soft: "#DCEDEA", ring: "rgba(13,103,112,0.20)", on: "#FFFFFF" },
+    dark:  { a: "#58C3C7", h: "#7FD3D6", a2: "#2E5D60", soft: "#173033", ring: "rgba(88,195,199,0.26)", on: "#0A2224" },
+  },
+  salmon: {
+    light: { a: "#C4623F", h: "#A44B2C", a2: "#F1C4B0", soft: "#FBEBE2", ring: "rgba(196,98,63,0.20)", on: "#FFFFFF" },
+    dark:  { a: "#E4906A", h: "#EDA888", a2: "#6A4433", soft: "#2A1C15", ring: "rgba(228,144,106,0.26)", on: "#241009" },
+  },
+};
+const NEUT = {
+  light: {
+    "--bg": "#F5F7F4", "--surface": "#FFFFFF", "--sunken": "#EEF1ED", "--border": "#E2E7E2",
+    "--ink": "#172326", "--ink2": "#526366", "--ink3": "#869693",
+    "--rail": "#FAFCFA", "--rowHover": "#F5F7F4", "--rowBorder": "#F1F3F0", "--slug": "#9AA8A4", "--chip": "#EEF1ED",
+    "--danger": "#B5382C", "--dangerSoft": "#F8E6E3", "--dangerBorder": "#EEC6BC",
+    "--pubBg": "#E3F3EA", "--pubFg": "#147A4A", "--pubDot": "#1F9D57",
+    "--conBg": "#F7EDDA", "--conFg": "#8A5A06", "--conDot": "#D18F0C",
+  },
+  dark: {
+    "--bg": "#15181C", "--surface": "#1D2126", "--sunken": "#242930", "--border": "#323841",
+    "--ink": "#E9ECF1", "--ink2": "#A7AEB8", "--ink3": "#79808B",
+    "--rail": "#181B20", "--rowHover": "#22272D", "--rowBorder": "#272D34", "--slug": "#79808B", "--chip": "#242930",
+    "--danger": "#F0857A", "--dangerSoft": "#3A2320", "--dangerBorder": "#5A2F2A",
+    "--pubBg": "#18302A", "--pubFg": "#54BE88", "--pubDot": "#31A06B",
+    "--conBg": "#312813", "--conFg": "#E1B444", "--conDot": "#C8930F",
+  },
+};
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const key = PRESETS[props && props.preset] ? props.preset : "plum";
+    this.state = { preset: key, hue: PRESETS[key].hue, chroma: PRESETS[key].chroma, mode: "light" };
+  }
+  pick(key) { this.setState({ preset: key, hue: PRESETS[key].hue, chroma: PRESETS[key].chroma }); }
+  setHue(v) { this.setState({ hue: +v, preset: "custom" }); }
+  setChroma(v) { this.setState({ chroma: +v, preset: "custom" }); }
+
+  colors() {
+    const s = this.state, mode = s.mode;
+    if (HEXSET[s.preset]) return HEXSET[s.preset][mode];
+    const h = s.hue, c = s.chroma;
+    if (mode === "dark") return {
+      a: "oklch(0.72 " + c + " " + h + ")",
+      h: "oklch(0.80 " + (c * 0.9).toFixed(3) + " " + h + ")",
+      a2: "oklch(0.52 " + (c * 0.7).toFixed(3) + " " + h + ")",
+      soft: "oklch(0.33 " + (c * 0.5).toFixed(3) + " " + h + ")",
+      ring: "oklch(0.72 " + c + " " + h + " / 0.30)",
+      on: "oklch(0.20 " + (c * 0.6).toFixed(3) + " " + h + ")",
+    };
+    return {
+      a: "oklch(0.55 " + c + " " + h + ")",
+      h: "oklch(0.47 " + c.toFixed(3) + " " + h + ")",
+      a2: "oklch(0.86 " + (c * 0.55).toFixed(3) + " " + h + ")",
+      soft: "oklch(0.955 " + (c * 0.22).toFixed(3) + " " + h + ")",
+      ring: "oklch(0.55 " + c + " " + h + " / 0.22)",
+      on: "#FFFFFF",
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const C = this.colors();
+    const pageStyle = Object.assign({}, NEUT[s.mode], {
+      "--accent": C.a, "--accentH": C.h, "--accent200": C.a2, "--accentSoft": C.soft, "--ring": C.ring, "--onAccent": C.on,
+      minHeight: "100vh", background: "var(--bg)", transition: "background .2s",
+    });
+
+    const presets = Object.keys(PRESETS).map(k => {
+      const pr = PRESETS[k];
+      const active = s.preset === k;
+      const sw = HEXSET[k] ? HEXSET[k].light.a : ("oklch(0.55 " + pr.chroma + " " + pr.hue + ")");
+      return { name: pr.name, note: pr.note, swatch: sw, active,
+        border: active ? "var(--accent)" : "var(--border)", bg: active ? "var(--accentSoft)" : "var(--surface)",
+        onClick: () => this.pick(k) };
+    });
+
+    const mseg = (id, label, icon) => ({ label, icon, bg: s.mode === id ? "var(--surface)" : "transparent", fg: s.mode === id ? "var(--accent)" : "var(--ink2)", sh: s.mode === id ? "0 1px 2px rgba(0,0,0,0.18)" : "none", onClick: () => this.setState({ mode: id }) });
+    const modeSegs = [mseg("light", "Light", "ph-sun"), mseg("dark", "Dark", "ph-moon-stars")];
+
+    const scale = [
+      { name: "Accent 600", val: C.a, role: "primary action, active" },
+      { name: "Accent 700", val: C.h, role: "hover / pressed" },
+      { name: "Accent 200", val: C.a2, role: "focus ring, bars" },
+      { name: "Accent soft", val: C.soft, role: "selected row bg" },
+      { name: "Focus ring", val: C.ring, role: "3px outer glow" },
+    ];
+
+    const nav = [
+      { icon: "ph-tree-structure", label: "Pages", bg: "var(--accentSoft)", fg: "var(--accentH)" },
+      { icon: "ph-image", label: "Media", bg: "transparent", fg: "var(--ink2)" },
+      { icon: "ph-arrow-bend-up-left", label: "Redirects", bg: "transparent", fg: "var(--ink2)" },
+      { icon: "ph-browser", label: "Header navigation", bg: "transparent", fg: "var(--ink2)" },
+      { icon: "ph-gear", label: "Settings", bg: "transparent", fg: "var(--ink2)" },
+    ];
+
+    const rows = [
+      { chev: "ph-caret-down", icon: "ph-house", iconColor: "var(--accent)", title: "Home", slug: "/", status: "Published", stBg: "var(--pubBg)", stFg: "var(--pubFg)", stDot: "var(--pubDot)", bg: "var(--surface)", op: "1", ring: "none" },
+      { chev: "ph-caret-right", icon: "ph-folder", iconColor: "var(--ink3)", title: "News", slug: "/news", status: "Published", stBg: "var(--pubBg)", stFg: "var(--pubFg)", stDot: "var(--pubDot)", bg: "var(--rowHover)", op: "1", ring: "none" },
+      { chev: "ph-caret-right", icon: "ph-file-text", iconColor: "var(--ink3)", title: "Product launch", slug: "/launch", status: "Concept", stBg: "var(--conBg)", stFg: "var(--conFg)", stDot: "var(--conDot)", bg: "var(--accentSoft)", op: "1", ring: "inset 2px 0 0 var(--accent)" },
+      { chev: "ph-caret-right", icon: "ph-file-text", iconColor: "var(--ink3)", title: "Careers", slug: "/careers", status: "Published", stBg: "var(--pubBg)", stFg: "var(--pubFg)", stDot: "var(--pubDot)", bg: "var(--surface)", op: "0.45", ring: "none" },
+    ];
+
+    return {
+      pageStyle, noop: (e) => e.preventDefault(),
+      presets, modeSegs, modeLabel: s.mode === "dark" ? "dark" : "light",
+      hue: s.hue, chroma: (+s.chroma).toFixed(3),
+      onHue: (e) => this.setHue(e.target.value), onChroma: (e) => this.setChroma(e.target.value),
+      tAccent: C.a, scale, nav, rows,
+    };
+  }
+}
+</script>
+</body>
+</html>

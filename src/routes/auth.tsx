@@ -1,3 +1,5 @@
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { useAuth } from "../lib/auth";
@@ -100,26 +102,26 @@ function Auth() {
                   your account.
                 </p>
               </div>
-              <button
+              <Button unstyled
                 className="sf-auth-primary"
                 onClick={() => setMode("signin")}
                 style={{ width: 280 }}
                 type="button"
               >
                 Back to sign in
-              </button>
+              </Button>
             </div>
           ) : (
             <>
               {mode !== "signin" ? (
-                <button
+                <Button unstyled
                   className="sf-auth-back"
                   onClick={() => setMode("signin")}
                   type="button"
                 >
                   <i className="ph-bold ph-arrow-left" />
                   Back to sign in
-                </button>
+                </Button>
               ) : null}
               <div className="sf-auth-heading">
                 <h2>
@@ -140,7 +142,7 @@ function Auth() {
               <form className="sf-auth-form" onSubmit={submit}>
                 {mode === "signin" ? (
                   <div className="sf-auth-sso">
-                    <button
+                    <Button unstyled
                       className="sf-auth-secondary"
                       disabled={busy}
                       onClick={() =>
@@ -150,7 +152,7 @@ function Auth() {
                     >
                       <Google />
                       Continue with Google
-                    </button>
+                    </Button>
                     <div className="sf-auth-divider">
                       or continue with email
                     </div>
@@ -193,7 +195,7 @@ function Auth() {
                       </div>
                       <div className="sf-auth-input">
                         <i className="ph ph-lock-simple" />
-                        <input
+                        <Input unstyled
                           minLength={8}
                           name="password"
                           placeholder={
@@ -204,24 +206,24 @@ function Auth() {
                           required
                           type={show ? "text" : "password"}
                         />
-                        <button
+                        <Button unstyled
                           aria-label="Toggle password"
                           onClick={() => setShow((v) => !v)}
                           type="button"
                         >
                           <i className={`ph ph-eye${show ? "-slash" : ""}`} />
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   ) : null}
                   {mode === "register" ? (
                     <label className="sf-auth-check">
-                      <input required type="checkbox" />I agree to the Terms of
+                      <Input unstyled required type="checkbox" />I agree to the Terms of
                       Service and Privacy Policy.
                     </label>
                   ) : null}
                 </div>
-                <button
+                <Button unstyled
                   className="sf-auth-primary"
                   disabled={busy}
                   type="submit"
@@ -234,14 +236,14 @@ function Auth() {
                         ? "Create account"
                         : "Send reset link"}
                   <i className="ph-bold ph-arrow-right" />
-                </button>
+                </Button>
               </form>
               {mode === "signin" ? (
                 <p className="sf-auth-switch">
                   New to SiteFoundry?{" "}
-                  <button onClick={() => setMode("register")} type="button">
+                  <Button unstyled onClick={() => setMode("register")} type="button">
                     Create an account
-                  </button>
+                  </Button>
                 </p>
               ) : null}
             </>
@@ -269,7 +271,7 @@ function Field({
       <label>{label}</label>
       <div className="sf-auth-input">
         <i className={`ph ${icon}`} />
-        <input name={name} placeholder={placeholder} required type={type} />
+        <Input unstyled name={name} placeholder={placeholder} required type={type} />
       </div>
     </div>
   );

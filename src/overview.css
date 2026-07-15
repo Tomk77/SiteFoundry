@@ -1,7 +1,7 @@
 .sf-action.active {
-  border-color: #a7d4ce;
-  background: #f1f7f6;
-  color: #0d6770;
+  border-color: #cbd3db;
+  background: #eceef1;
+  color: #763fba;
 }
 .sf-filter-count {
   display: grid;
@@ -9,7 +9,7 @@
   height: 17px;
   place-items: center;
   border-radius: 999px;
-  background: #0d6770;
+  background: #763fba;
   color: #fff;
   font-size: 10px;
 }
@@ -56,7 +56,7 @@
   margin-left: auto;
   border-color: transparent;
   background: transparent;
-  color: #0d6770;
+  color: #763fba;
   font-weight: 650;
 }
 .sf-filter-bar {
@@ -94,7 +94,7 @@
   padding: 0 10px;
   border: 0;
   background: transparent;
-  color: #0d6770;
+  color: #763fba;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -127,8 +127,8 @@
 }
 .sf-tree-row.drop-inside {
   z-index: 2;
-  background: #dcedea;
-  box-shadow: inset 3px 0 #0d6770;
+  background: #eceef1;
+  box-shadow: inset 3px 0 #763fba;
 }
 .sf-tree-row.drop-before::before,
 .sf-tree-row.drop-after::after {
@@ -139,7 +139,7 @@
   width: calc(100% - var(--drop-indent, 14px) - 14px);
   height: 2px;
   border-radius: 2px;
-  background: #0d6770;
+  background: #763fba;
   content: "";
 }
 .sf-tree-row.drop-before::before {
@@ -170,8 +170,8 @@
   flex: none;
   place-items: center;
   border-radius: 7px;
-  background: #dcedea;
-  color: #0d6770;
+  background: #eceef1;
+  color: #763fba;
   font-size: 15px;
 }
 .sf-tree-toast > div {
@@ -200,8 +200,8 @@
   cursor: pointer;
 }
 .sf-row-icon.active {
-  background: #e8f2f0;
-  color: #0d6770;
+  background: #eceef1;
+  color: #763fba;
 }
 .sf-row-menu {
   position: absolute;
@@ -288,7 +288,7 @@
   margin-top: 12px;
   border: 0;
   background: transparent;
-  color: #0d6770;
+  color: #763fba;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -319,10 +319,10 @@
 }
 .sf-workspace-menu > button:hover,
 .sf-workspace-menu > button.active {
-  background: #f1f7f6;
+  background: #f4f6f8;
 }
 .sf-workspace-menu > button > i:first-child {
-  color: #0d6770;
+  color: #763fba;
   font-size: 16px;
 }
 .sf-workspace-menu > button > span {
@@ -461,7 +461,7 @@
   text-align: center;
 }
 .sf-impact-row code:last-child {
-  color: #0d6770;
+  color: #763fba;
 }
 .sf-redirect-choice {
   display: flex !important;
@@ -484,7 +484,7 @@
   border: 0;
   border-radius: 3px;
   box-shadow: none;
-  accent-color: #0d6770;
+  accent-color: #763fba;
 }
 .sf-redirect-choice > span {
   display: flex;
@@ -556,8 +556,8 @@
 .sf-overview-modal-body input:focus,
 .sf-overview-modal-body select:focus,
 .sf-add-slug:focus-within {
-  border-color: #0d6770;
-  box-shadow: 0 0 0 3px rgba(13, 103, 112, 0.15);
+  border-color: #763fba;
+  box-shadow: 0 0 0 3px rgba(118, 63, 186, 0.15);
 }
 .sf-overview-modal-body small {
   color: #869693;
@@ -599,63 +599,63 @@
 }
 
 html[data-sf-theme="dark"] .sf-action.active {
-  border-color: #347b80;
-  background: #173033;
-  color: #58c3c7;
+  border-color: #515a65;
+  background: #2c333b;
+  color: #b994f8;
 }
 
 html[data-sf-theme="dark"] .sf-active-filters,
 html[data-sf-theme="dark"] .sf-filter-bar {
-  border-color: #2a3739;
-  background: #172123;
+  border-color: #323841;
+  background: #1d2126;
 }
 
 html[data-sf-theme="dark"] .sf-active-filters > span,
 html[data-sf-theme="dark"] .sf-filter-bar label > span {
-  color: #7c8c8a;
+  color: #79808b;
 }
 
 html[data-sf-theme="dark"] .sf-active-filters > button {
-  border-color: #35474a;
-  background: #173033;
+  border-color: #3d444e;
+  background: #2c333b;
   color: #a9d7d5;
 }
 
 html[data-sf-theme="dark"] .sf-active-filters > button:hover {
-  border-color: #347b80;
-  background: #1d3a3d;
+  border-color: #515a65;
+  background: #2c333b;
 }
 
 html[data-sf-theme="dark"] .sf-active-filters > button i {
-  color: #58c3c7;
+  color: #b994f8;
 }
 
 html[data-sf-theme="dark"] .sf-active-filters > .sf-reset-filters,
 html[data-sf-theme="dark"] .sf-filter-bar > button {
   border-color: transparent;
   background: transparent;
-  color: #58c3c7;
+  color: #b994f8;
 }
 
 html[data-sf-theme="dark"] .sf-active-filters > .sf-reset-filters:hover,
 html[data-sf-theme="dark"] .sf-filter-bar > button:hover {
-  background: #173033;
+  background: #2c333b;
 }
 
 html[data-sf-theme="dark"] .sf-filter-bar select {
-  border-color: #35474a;
-  background: #101718;
-  color: #edf4f2;
+  border-color: #3d444e;
+  background: #15181c;
+  color: #e9ecf1;
 }
 
 html[data-sf-theme="dark"] .sf-filter-bar select:focus {
-  border-color: #58c3c7;
-  outline: 3px solid rgb(88 195 199 / 16%);
+  border-color: #b994f8;
+  outline: 3px solid rgb(185 148 248 / 16%);
 }
 
 html[data-sf-theme="dark"] .sf-template {
   background: #263336;
-  color: #a9b7b5;
+  color: #a7aeb8;
 }
 
 html[data-sf-theme="dark"] .sf-status.published {

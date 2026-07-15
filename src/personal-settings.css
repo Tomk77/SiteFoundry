@@ -7,30 +7,30 @@
   --ps-ink-2: #526366;
   --ps-ink-3: #869693;
   --ps-field: #cfd6d0;
-  --ps-accent: #0d6770;
-  --ps-accent-hover: #0a545c;
-  --ps-accent-soft: #dcedea;
+  --ps-accent: #763fba;
+  --ps-accent-hover: #5e299c;
+  --ps-accent-soft: #eceef1;
   --ps-on-accent: #fff;
-  --ps-focus: rgb(13 103 112 / 16%);
+  --ps-focus: rgb(118 63 186 / 16%);
   --ps-success: #147a4a;
   --ps-danger: #b5382c;
   --ps-warning: #b8860b;
 }
 
 html[data-sf-theme="dark"] {
-  --ps-bg: #101718;
-  --ps-surface: #172123;
-  --ps-sunken: #1e2a2b;
-  --ps-border: #2a3739;
-  --ps-ink: #edf4f2;
-  --ps-ink-2: #a9b7b5;
-  --ps-ink-3: #7c8c8a;
-  --ps-field: #35474a;
-  --ps-accent: #58c3c7;
-  --ps-accent-hover: #7fd3d6;
-  --ps-accent-soft: #173033;
-  --ps-on-accent: #0a2224;
-  --ps-focus: rgb(88 195 199 / 22%);
+  --ps-bg: #15181c;
+  --ps-surface: #1d2126;
+  --ps-sunken: #242930;
+  --ps-border: #323841;
+  --ps-ink: #e9ecf1;
+  --ps-ink-2: #a7aeb8;
+  --ps-ink-3: #79808b;
+  --ps-field: #3d444e;
+  --ps-accent: #b994f8;
+  --ps-accent-hover: #cfb3ff;
+  --ps-accent-soft: #2c333b;
+  --ps-on-accent: #150c22;
+  --ps-focus: rgb(185 148 248 / 22%);
   --ps-success: #4fbe86;
   --ps-danger: #f0857a;
   --ps-warning: #e0b341;

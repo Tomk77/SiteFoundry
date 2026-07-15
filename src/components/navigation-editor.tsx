@@ -1,3 +1,6 @@
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { NativeSelect } from "./ui/native-select";
 import { useNavigate } from "@tanstack/react-router";
 import { type DragEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "../lib/auth";
@@ -18,7 +21,7 @@ import "../navigation.css";
 type Device = "desktop" | "tablet" | "mobile";
 
 const itemTheme = {
-  link: { icon: "ph-link-simple", bg: "#DCEDEA", fg: "#0D6770" },
+  link: { icon: "ph-link-simple", bg: "#eceef1", fg: "#763fba" },
   group: { icon: "ph-columns", bg: "#EDE7F5", fg: "#5B4B8A" },
   button: { icon: "ph-cursor-click", bg: "#FBEBE1", fg: "#B45F38" },
 } as const;
@@ -278,9 +281,9 @@ export function NavigationEditor({
     return (
       <main className="sf-navigation-editor sf-navigation-loading">
         <header className="sf-navigation-top">
-          <button className="sf-back-button" disabled type="button">
+          <Button unstyled className="sf-back-button" disabled type="button">
             <i className="ph-bold ph-arrow-left" /> Back
-          </button>
+          </Button>
           <div className="sf-navigation-title">
             <span>Navigation</span>
             <strong>{isFooter ? "Footer" : "Header"}</strong>
@@ -304,13 +307,13 @@ export function NavigationEditor({
   return (
     <main className="sf-navigation-editor">
       <header className="sf-navigation-top">
-        <button
+        <Button unstyled
           className="sf-back-button"
           onClick={() => void navigate({ to: "/" })}
           type="button"
         >
           <i className="ph-bold ph-arrow-left" /> Back
-        </button>
+        </Button>
         <div className="sf-navigation-title">
           <span>Navigation</span>
           <strong>{isFooter ? "Footer" : "Header"}</strong>
@@ -341,15 +344,15 @@ export function NavigationEditor({
               ? "Unsaved changes"
               : "All changes saved"}
         </span>
-        <button
+        <Button unstyled
           className="sf-action"
           disabled={!dirty || saving}
           onClick={() => void save()}
           type="button"
         >
           <i className="ph ph-floppy-disk" /> Save draft
-        </button>
-        <button
+        </Button>
+        <Button unstyled
           className="sf-action primary"
           disabled={saving}
           onClick={() =>
@@ -358,7 +361,7 @@ export function NavigationEditor({
           type="button"
         >
           <i className="ph-bold ph-rocket-launch" /> Publish changes
-        </button>
+        </Button>
       </header>
 
       <div className="sf-navigation-workspace">
@@ -372,7 +375,7 @@ export function NavigationEditor({
                   ["mobile", "ph-device-mobile", "Mobile"],
                 ] as const
               ).map(([value, icon, label]) => (
-                <button
+                <Button unstyled
                   className={device === value ? "active" : ""}
                   key={value}
                   onClick={() => setDevice(value)}
@@ -380,7 +383,7 @@ export function NavigationEditor({
                   type="button"
                 >
                   <i className={`ph-bold ${icon}`} />
-                </button>
+                </Button>
               ))}
             </div>
             <div className="sf-preview-url">
@@ -388,17 +391,17 @@ export function NavigationEditor({
               <span className="sf-mono">{workspace.site.slug}.com</span>
               <b>Preview</b>
             </div>
-            <button
+            <Button unstyled
               className={refreshing ? "spin" : ""}
               onClick={refresh}
               title="Refresh preview"
               type="button"
             >
               <i className="ph ph-arrow-clockwise" />
-            </button>
-            <button title="Open preview" type="button">
+            </Button>
+            <Button unstyled title="Open preview" type="button">
               <i className="ph ph-arrow-square-out" />
-            </button>
+            </Button>
           </div>
           <div className="sf-navigation-stage sf-scroll">
             <div className={`sf-site-preview ${device}`}>
@@ -522,13 +525,13 @@ export function NavigationEditor({
               </div>
             )}
             <div className="sf-add-navigation">
-              <button
+              <Button unstyled
                 onClick={() => setAddOpen((value) => !value)}
                 type="button"
               >
                 <i className="ph-bold ph-plus" />{" "}
                 {isFooter ? "Add to footer" : "Add menu item"}
-              </button>
+              </Button>
               {addOpen ? (
                 <div className="sf-add-navigation-menu">
                   {(
@@ -596,7 +599,7 @@ export function NavigationEditor({
                       [NavigationKind, boolean, string, string, string]
                     >
                   ).map(([kind, external, label, description, icon]) => (
-                    <button
+                    <Button unstyled
                       key={label}
                       onClick={() => addItem(kind, external)}
                       type="button"
@@ -608,7 +611,7 @@ export function NavigationEditor({
                         <strong>{label}</strong>
                         <small>{description}</small>
                       </span>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               ) : null}
@@ -646,14 +649,14 @@ export function NavigationEditor({
         </div>
         <div className="sf-modal-actions">
           <ModalClose className="sf-action">Keep editing</ModalClose>
-          <button
+          <Button unstyled
             className="sf-action primary"
             disabled={saving}
             onClick={() => void publish()}
             type="button"
           >
             Publish anyway
-          </button>
+          </Button>
         </div>
       </Modal>
 
@@ -742,7 +745,7 @@ function MenuCard({
             title="One or more target pages do not exist"
           />
         ) : null}
-        <button
+        <Button unstyled
           disabled={index === 0}
           onClick={(event) => {
             event.stopPropagation();
@@ -752,8 +755,8 @@ function MenuCard({
           type="button"
         >
           <i className="ph-bold ph-arrow-up" />
-        </button>
-        <button
+        </Button>
+        <Button unstyled
           disabled={index === total - 1}
           onClick={(event) => {
             event.stopPropagation();
@@ -763,8 +766,8 @@ function MenuCard({
           type="button"
         >
           <i className="ph-bold ph-arrow-down" />
-        </button>
-        <button
+        </Button>
+        <Button unstyled
           onClick={(event) => {
             event.stopPropagation();
             onToggle();
@@ -773,13 +776,13 @@ function MenuCard({
           type="button"
         >
           <i className={`ph ph-caret-down${expanded ? " open" : ""}`} />
-        </button>
+        </Button>
       </div>
       {expanded ? (
         <div className="sf-menu-card-fields">
           <label className="sf-builder-field">
             <span>Label</span>
-            <input
+            <Input unstyled
               value={item.label}
               onChange={(event) =>
                 onUpdate(item.id, { label: event.target.value })
@@ -799,14 +802,14 @@ function MenuCard({
                     <i className="ph ph-link-simple" />
                   </span>
                   <div>
-                    <input
+                    <Input unstyled
                       aria-label="Link label"
                       value={child.label}
                       onChange={(event) =>
                         onUpdate(child.id, { label: event.target.value })
                       }
                     />
-                    <select
+                    <NativeSelect unstyled
                       aria-label="Link target"
                       value={child.target}
                       onChange={(event) =>
@@ -828,48 +831,48 @@ function MenuCard({
                           {page.title} · {page.path}
                         </option>
                       ))}
-                    </select>
+                    </NativeSelect>
                   </div>
-                  <button
+                  <Button unstyled
                     disabled={childIndex === 0}
                     onClick={() => onChildMove(child.id, -1)}
                     title="Move up"
                     type="button"
                   >
                     <i className="ph-bold ph-arrow-up" />
-                  </button>
-                  <button
+                  </Button>
+                  <Button unstyled
                     disabled={childIndex === item.children.length - 1}
                     onClick={() => onChildMove(child.id, 1)}
                     title="Move down"
                     type="button"
                   >
                     <i className="ph-bold ph-arrow-down" />
-                  </button>
-                  <button
+                  </Button>
+                  <Button unstyled
                     onClick={() => onRemove(child.id)}
                     title="Remove link"
                     type="button"
                   >
                     <i className="ph ph-x" />
-                  </button>
+                  </Button>
                 </div>
               ))}
-              <button
+              <Button unstyled
                 className="sf-add-child"
                 onClick={onAddChild}
                 type="button"
               >
                 <i className="ph-bold ph-plus" /> Add link to{" "}
                 {location === "footer" ? "column" : "dropdown"}
-              </button>
+              </Button>
             </div>
           ) : (
             <>
               <div className="sf-link-type">
                 <span>Links to</span>
                 <div>
-                  <button
+                  <Button unstyled
                     className={item.targetType === "page" ? "active" : ""}
                     onClick={() =>
                       onUpdate(item.id, {
@@ -880,8 +883,8 @@ function MenuCard({
                     type="button"
                   >
                     Page
-                  </button>
-                  <button
+                  </Button>
+                  <Button unstyled
                     className={item.targetType === "url" ? "active" : ""}
                     onClick={() =>
                       onUpdate(item.id, {
@@ -892,13 +895,13 @@ function MenuCard({
                     type="button"
                   >
                     Custom URL
-                  </button>
+                  </Button>
                 </div>
               </div>
               <label className="sf-builder-field">
                 <span>{item.targetType === "page" ? "Page" : "URL"}</span>
                 {item.targetType === "page" ? (
-                  <select
+                  <NativeSelect unstyled
                     value={item.target}
                     onChange={(event) =>
                       onUpdate(item.id, { target: event.target.value })
@@ -914,9 +917,9 @@ function MenuCard({
                         {page.title} · {page.path}
                       </option>
                     ))}
-                  </select>
+                  </NativeSelect>
                 ) : (
-                  <input
+                  <Input unstyled
                     className="sf-mono"
                     value={item.target}
                     onChange={(event) =>
@@ -926,7 +929,7 @@ function MenuCard({
                 )}
               </label>
               <label className="sf-new-tab">
-                <input
+                <Input unstyled
                   checked={item.newTab}
                   onChange={(event) =>
                     onUpdate(item.id, { newTab: event.target.checked })
@@ -944,14 +947,14 @@ function MenuCard({
               </span>
             ) : null}
             <span className="sf-spacer" />
-            <button
+            <Button unstyled
               className="sf-remove-item"
               onClick={() => onRemove(item.id)}
               type="button"
             >
               <i className="ph ph-trash" /> Remove{" "}
               {location === "footer" ? "item" : "menu item"}
-            </button>
+            </Button>
           </div>
         </div>
       ) : null}
@@ -988,16 +991,16 @@ function HeaderPreview({
         <div className="sf-preview-brand">
           <Logo /> <strong>Acme</strong>
           <span className="sf-spacer" />
-          <button onClick={onMobileToggle} type="button">
+          <Button unstyled onClick={onMobileToggle} type="button">
             <i className={`ph-bold ${mobileOpen ? "ph-x" : "ph-list"}`} />
-          </button>
+          </Button>
         </div>
         {mobileOpen ? (
           <nav>
             {items.map((item) =>
               item.kind === "group" ? (
                 <div key={item.id}>
-                  <button
+                  <Button unstyled
                     className={selected === item.id ? "selected" : ""}
                     onClick={() => {
                       onSelect(item.id);
@@ -1009,29 +1012,29 @@ function HeaderPreview({
                     <i
                       className={`ph-bold ph-caret-down${mobileGroups.has(item.id) ? " open" : ""}`}
                     />
-                  </button>
+                  </Button>
                   {mobileGroups.has(item.id)
                     ? item.children.map((child) => (
-                        <button
+                        <Button unstyled
                           className={`child${selected === child.id ? " selected" : ""}`}
                           key={child.id}
                           onClick={() => onSelect(child.id)}
                           type="button"
                         >
                           {child.label}
-                        </button>
+                        </Button>
                       ))
                     : null}
                 </div>
               ) : (
-                <button
+                <Button unstyled
                   className={`${item.kind === "button" ? "cta" : ""}${selected === item.id ? " selected" : ""}`}
                   key={item.id}
                   onClick={() => onSelect(item.id)}
                   type="button"
                 >
                   {item.label}
-                </button>
+                </Button>
               ),
             )}
           </nav>
@@ -1048,7 +1051,7 @@ function HeaderPreview({
         </div>
         <nav className="sf-scroll">
           {items.map((item) => (
-            <button
+            <Button unstyled
               className={`${item.kind === "button" ? "cta" : ""}${selected === item.id ? " selected" : ""}`}
               key={item.id}
               onClick={() => {
@@ -1062,7 +1065,7 @@ function HeaderPreview({
               {item.kind === "group" ? (
                 <i className="ph-bold ph-caret-down" />
               ) : null}
-            </button>
+            </Button>
           ))}
         </nav>
       </header>
@@ -1071,7 +1074,7 @@ function HeaderPreview({
           {items
             .find((item) => item.id === previewGroup)
             ?.children.map((child) => (
-              <button
+              <Button unstyled
                 className={selected === child.id ? "selected" : ""}
                 key={child.id}
                 onClick={() => onSelect(child.id)}
@@ -1079,7 +1082,7 @@ function HeaderPreview({
               >
                 {child.label}
                 <span className="sf-mono">{child.target}</span>
-              </button>
+              </Button>
             ))}
         </div>
       ) : null}
@@ -1122,14 +1125,14 @@ function FooterPreview({
               <i className="ph ph-linkedin-logo" />
             </div>
             {buttons.map((item) => (
-              <button
+              <Button unstyled
                 className={selected === item.id ? "selected" : ""}
                 key={item.id}
                 onClick={() => onSelect(item.id)}
                 type="button"
               >
                 {item.label}
-              </button>
+              </Button>
             ))}
           </div>
           {groups.map((group) => (
@@ -1140,7 +1143,7 @@ function FooterPreview({
             >
               <strong>{group.label}</strong>
               {group.children.map((child) => (
-                <button
+                <Button unstyled
                   className={selected === child.id ? "selected" : ""}
                   key={child.id}
                   onClick={(event) => {
@@ -1150,7 +1153,7 @@ function FooterPreview({
                   type="button"
                 >
                   {child.label}
-                </button>
+                </Button>
               ))}
             </div>
           ))}
@@ -1159,14 +1162,14 @@ function FooterPreview({
           <span>© 2026 Acme Marketing. All rights reserved.</span>
           <nav>
             {links.map((item) => (
-              <button
+              <Button unstyled
                 className={selected === item.id ? "selected" : ""}
                 key={item.id}
                 onClick={() => onSelect(item.id)}
                 type="button"
               >
                 {item.label}
-              </button>
+              </Button>
             ))}
           </nav>
         </div>

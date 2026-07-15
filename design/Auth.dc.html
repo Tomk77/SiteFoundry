@@ -18,9 +18,9 @@
   *{box-sizing:border-box}
   html,body{height:100%}
   body{margin:0;background:#F5F7F4;color:#172326;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-  a{color:#0D6770;text-decoration:none}
-  a:hover{color:#0A545C}
-  ::selection{background:#CFE6E1}
+  a{color:#763FBA;text-decoration:none}
+  a:hover{color:#5E299C}
+  ::selection{background:#DFE3E8}
   input{font-family:inherit}
   i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
   .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
@@ -34,7 +34,7 @@
 
   <!-- ============ BRAND PANEL ============ -->
   <sc-if value="{{ showBrand }}" hint-placeholder-val="{{ true }}">
-  <div style="width:42%;max-width:560px;flex:none;background:#0A545C;color:#EDF4F2;position:relative;display:flex;flex-direction:column;padding:44px;overflow:hidden">
+  <div style="width:42%;max-width:560px;flex:none;background:#5E299C;color:#EDF4F2;position:relative;display:flex;flex-direction:column;padding:44px;overflow:hidden">
     <div style="position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 0);background-size:22px 22px;pointer-events:none"></div>
     <div style="position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:999px;background:radial-gradient(circle, rgba(224,122,79,0.22), transparent 70%);pointer-events:none"></div>
 
@@ -50,7 +50,7 @@
         <p style="margin:0;font-size:14.5px;line-height:1.62;color:#B7D4D3;text-wrap:pretty">SiteFoundry gives editors a clear page tree and one straightforward workflow for creating pages, composing content, previewing changes and publishing safely. Manage URLs, navigation, redirects, multiple languages and revisions alongside the content they belong to.</p>
       </div>
       <div style="display:flex;align-items:flex-start;gap:11px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.12)">
-        <span style="width:24px;height:24px;border-radius:7px;background:rgba(88,195,199,0.18);color:#7FC8C9;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph-bold ph-code" style="font-size:14px"></i></span>
+        <span style="width:24px;height:24px;border-radius:7px;background:rgba(185,148,248,0.18);color:#7FC8C9;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph-bold ph-code" style="font-size:14px"></i></span>
         <span style="font-size:13.5px;line-height:1.55;color:#B7D4D3"><strong style="color:#EDF4F2;font-weight:600">Open-source and headless</strong>, with <strong style="color:#EDF4F2;font-weight:600">REST</strong> and <strong style="color:#EDF4F2;font-weight:600">GraphQL</strong> APIs for any frontend.</span>
       </div>
     </div>
@@ -74,7 +74,7 @@
             <span style="font-size:14px;line-height:1.55;color:#526366;text-wrap:pretty">{{ doneBody }}</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px">
-            <button onClick="{{ donePrimary }}" style="height:44px;border:none;border-radius:9px;background:#0D6770;color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#0A545C">{{ donePrimaryLabel }}</button>
+            <button onClick="{{ donePrimary }}" style="height:44px;border:none;border-radius:9px;background:#763FBA;color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#5E299C">{{ donePrimaryLabel }}</button>
             <sc-if value="{{ doneSecondary }}" hint-placeholder-val="x">
               <div style="font-size:13px;color:#526366">
                 <span>{{ doneSecondaryPrompt }}</span>
@@ -98,7 +98,7 @@
         </sc-if>
 
         <sc-if value="{{ backable }}" hint-placeholder-val="{{ false }}">
-          <a href="#" onClick="{{ goSignin }}" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#526366;width:fit-content" style-hover="color:#0D6770"><i class="ph-bold ph-arrow-left" style="font-size:15px"></i>Back to sign in</a>
+          <a href="#" onClick="{{ goSignin }}" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#526366;width:fit-content" style-hover="color:#763FBA"><i class="ph-bold ph-arrow-left" style="font-size:15px"></i>Back to sign in</a>
         </sc-if>
 
         <!-- invite context -->
@@ -119,7 +119,7 @@
         <sc-if value="{{ isVerify }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-direction:column;gap:16px">
             <div style="display:flex;align-items:center;gap:12px;padding:14px;border:1px solid #E2E7E2;border-radius:10px;background:#FAFCFA">
-              <span style="width:40px;height:40px;border-radius:10px;background:#DCEDEA;color:#0D6770;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-envelope-simple" style="font-size:20px"></i></span>
+              <span style="width:40px;height:40px;border-radius:10px;background:#ECEEF1;color:#763FBA;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-envelope-simple" style="font-size:20px"></i></span>
               <div style="display:flex;flex-direction:column;gap:1px;min-width:0"><span style="font-size:12px;color:#869693">Verification sent to</span><span style="font-size:13.5px;font-weight:600;color:#172326;font-family:'Geist Mono',monospace;overflow:hidden;text-overflow:ellipsis">{{ email }}</span></div>
             </div>
             <p style="margin:0;font-size:13px;line-height:1.55;color:#526366">Click the link in the email to activate your account. It may take a minute to arrive — remember to check spam.</p>
@@ -139,18 +139,18 @@
           <sc-if value="{{ hasSso }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-direction:column;gap:10px">
             <button onClick="{{ ssoMicrosoft }}" style="display:flex;align-items:center;justify-content:center;gap:10px;height:46px;border:1px solid #CFD6D0;border-radius:9px;background:#fff;color:#172326;font-family:inherit;font-size:14px;font-weight:600;cursor:{{ ssoCursor }}" style-hover="background:#F5F7F4;border-color:#B9C2BC">
-              <sc-if value="{{ msLoading }}" hint-placeholder-val="{{ false }}"><span style="width:17px;height:17px;border:2px solid #CFD6D0;border-top-color:#0D6770;border-radius:999px;animation:sfSpin .7s linear infinite"></span></sc-if>
+              <sc-if value="{{ msLoading }}" hint-placeholder-val="{{ false }}"><span style="width:17px;height:17px;border:2px solid #CFD6D0;border-top-color:#763FBA;border-radius:999px;animation:sfSpin .7s linear infinite"></span></sc-if>
               <sc-if value="{{ msIdle }}" hint-placeholder-val="{{ true }}"><span style="display:flex"><svg width="17" height="17" viewBox="0 0 23 23" aria-hidden="true"><path fill="#F25022" d="M1 1h10v10H1z"/><path fill="#7FBA00" d="M12 1h10v10H12z"/><path fill="#00A4EF" d="M1 12h10v10H1z"/><path fill="#FFB900" d="M12 12h10v10H12z"/></svg></span></sc-if>
               <span>{{ msLabel }}</span>
             </button>
             <button onClick="{{ ssoGoogle }}" style="display:flex;align-items:center;justify-content:center;gap:10px;height:46px;border:1px solid #CFD6D0;border-radius:9px;background:#fff;color:#172326;font-family:inherit;font-size:14px;font-weight:600;cursor:{{ ssoCursor }}" style-hover="background:#F5F7F4;border-color:#B9C2BC">
-              <sc-if value="{{ gLoading }}" hint-placeholder-val="{{ false }}"><span style="width:17px;height:17px;border:2px solid #CFD6D0;border-top-color:#0D6770;border-radius:999px;animation:sfSpin .7s linear infinite"></span></sc-if>
+              <sc-if value="{{ gLoading }}" hint-placeholder-val="{{ false }}"><span style="width:17px;height:17px;border:2px solid #CFD6D0;border-top-color:#763FBA;border-radius:999px;animation:sfSpin .7s linear infinite"></span></sc-if>
               <sc-if value="{{ gIdle }}" hint-placeholder-val="{{ true }}"><span style="display:flex"><svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span></sc-if>
               <span>{{ gLabel }}</span>
             </button>
             <sc-if value="{{ ssoOnly }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;align-items:center;gap:9px;margin-top:2px;padding:11px 13px;border:1px solid #D7E7E4;border-radius:9px;background:#F1F7F6">
-                <i class="ph-fill ph-shield-check" style="font-size:18px;color:#0D6770"></i>
+              <div style="display:flex;align-items:center;gap:9px;margin-top:2px;padding:11px 13px;border:1px solid #D7E7E4;border-radius:9px;background:#F4F6F8">
+                <i class="ph-fill ph-shield-check" style="font-size:18px;color:#763FBA"></i>
                 <span style="font-size:12.5px;line-height:1.5;color:#33474A">Your organization requires single sign-on. Email &amp; password login is disabled.</span>
               </div>
             </sc-if>
@@ -254,7 +254,7 @@
 
           <!-- submit -->
           <sc-if value="{{ showSubmit }}" hint-placeholder-val="{{ true }}">
-          <button onClick="{{ submit }}" style="display:flex;align-items:center;justify-content:center;gap:8px;height:46px;border:none;border-radius:9px;background:#0D6770;color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:{{ submitCursor }};box-shadow:0 1px 2px rgba(23,35,38,0.12)" style-hover="background:#0A545C">
+          <button onClick="{{ submit }}" style="display:flex;align-items:center;justify-content:center;gap:8px;height:46px;border:none;border-radius:9px;background:#763FBA;color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:{{ submitCursor }};box-shadow:0 1px 2px rgba(23,35,38,0.12)" style-hover="background:#5E299C">
             <sc-if value="{{ submitting }}" hint-placeholder-val="{{ false }}"><span style="width:17px;height:17px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:999px;animation:sfSpin .7s linear infinite"></span></sc-if>
             <span>{{ submitLabel }}</span>
             <sc-if value="{{ showArrow }}" hint-placeholder-val="{{ true }}"><i class="ph-bold ph-arrow-right" style="font-size:16px"></i></sc-if>
@@ -347,7 +347,7 @@ class Component extends DCLogic {
 
     const fs = (name, hasErr) => {
       const f = s.focus === name;
-      return { border: hasErr ? "#DC4436" : (f ? "#0D6770" : "#CFD6D0"), ring: hasErr ? "0 0 0 3px rgba(220,68,54,0.14)" : (f ? "0 0 0 3px rgba(13,103,112,0.15)" : "none"), icon: hasErr ? "#DC4436" : (f ? "#0D6770" : "#869693") };
+      return { border: hasErr ? "#DC4436" : (f ? "#763FBA" : "#CFD6D0"), ring: hasErr ? "0 0 0 3px rgba(220,68,54,0.14)" : (f ? "0 0 0 3px rgba(118,63,186,0.15)" : "none"), icon: hasErr ? "#DC4436" : (f ? "#763FBA" : "#869693") };
     };
     const nf = fs("name", err.name), ef = fs("email", err.email), pf = fs("pw", err.password), cf = fs("conf", err.confirm);
 
@@ -387,7 +387,7 @@ class Component extends DCLogic {
       signin: { icon: "ph-fill ph-check-circle", bg: "#E3F3EA", fg: "#147A4A", title: "You're signed in", body: "Taking you to your sites and page trees…", primary: "Continue", onPrimary: () => this.go("signin") },
       ms: { icon: "ph-fill ph-check-circle", bg: "#E3F3EA", fg: "#147A4A", title: "Signed in with Microsoft", body: "Completing the secure hand-off and loading your workspace…", primary: "Continue", onPrimary: () => this.go("signin") },
       g: { icon: "ph-fill ph-check-circle", bg: "#E3F3EA", fg: "#147A4A", title: "Signed in with Google", body: "Completing the secure hand-off and loading your workspace…", primary: "Continue", onPrimary: () => this.go("signin") },
-      forgot: { icon: "ph ph-envelope-simple", bg: "#DCEDEA", fg: "#0D6770", title: "Check your email", body: "If an account exists for " + (s.email || "that address") + ", we've sent a reset link. It expires in 30 minutes.", primary: "Back to sign in", onPrimary: () => this.go("signin"), sec: "Resend link", secPrompt: "Didn't get it?", onSec: () => this.resend() },
+      forgot: { icon: "ph ph-envelope-simple", bg: "#ECEEF1", fg: "#763FBA", title: "Check your email", body: "If an account exists for " + (s.email || "that address") + ", we've sent a reset link. It expires in 30 minutes.", primary: "Back to sign in", onPrimary: () => this.go("signin"), sec: "Resend link", secPrompt: "Didn't get it?", onSec: () => this.resend() },
       reset: { icon: "ph-fill ph-check-circle", bg: "#E3F3EA", fg: "#147A4A", title: "Password updated", body: "Your password has been changed. You can now sign in with your new credentials.", primary: "Back to sign in", onPrimary: () => this.go("signin") },
       invite: { icon: "ph-fill ph-check-circle", bg: "#E3F3EA", fg: "#147A4A", title: "Welcome to " + this.org(), body: "Your account is ready. Taking you into the workspace…", primary: "Enter workspace", onPrimary: () => this.go("signin") },
     }[dk] || { icon: "ph-fill ph-check-circle", bg: "#E3F3EA", fg: "#147A4A", title: "Done", body: "", primary: "Continue", onPrimary: () => this.go("signin") };
@@ -454,9 +454,9 @@ class Component extends DCLogic {
       showStrengthVals: showStrength, bar1: barColor(1), bar2: barColor(2), bar3: barColor(3), strengthLabel: sm.label, strengthColor: sm.c,
 
       remember: s.remember, toggleRemember: () => this.setState({ remember: !s.remember }),
-      rememberBorder: s.remember ? "#0D6770" : "#CFD6D0", rememberBg: s.remember ? "#0D6770" : "#fff",
+      rememberBorder: s.remember ? "#763FBA" : "#CFD6D0", rememberBg: s.remember ? "#763FBA" : "#fff",
       agree: s.agree, toggleAgree: () => this.setState({ agree: !s.agree, errors: { ...err, agree: null } }),
-      agreeBorder: s.agree ? "#0D6770" : (err.agree ? "#DC4436" : "#CFD6D0"), agreeBg: s.agree ? "#0D6770" : "#fff", agreeErr: err.agree || "",
+      agreeBorder: s.agree ? "#763FBA" : (err.agree ? "#DC4436" : "#CFD6D0"), agreeBg: s.agree ? "#763FBA" : "#fff", agreeErr: err.agree || "",
       forgot: (e) => e.preventDefault(), noop: (e) => e.preventDefault(),
       resend: (e) => { e.preventDefault(); this.resend(); },
 

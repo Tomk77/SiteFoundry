@@ -18,8 +18,8 @@
   *{box-sizing:border-box}
   html,body{height:100%}
   body{margin:0;background:#F5F7F4;color:#172326;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden}
-  a{color:#0D6770;text-decoration:none}a:hover{color:#0A545C}
-  ::selection{background:#CFE6E1}
+  a{color:#763FBA;text-decoration:none}a:hover{color:#5E299C}
+  ::selection{background:#DFE3E8}
   input{font-family:inherit}
   i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
   .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
@@ -28,7 +28,7 @@
   @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
   @keyframes sfFade{from{opacity:0}to{opacity:1}}
   @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
-  @keyframes sfFlash{0%{background:#DCEDEA}100%{background:transparent}}
+  @keyframes sfFlash{0%{background:#ECEEF1}100%{background:transparent}}
   @keyframes sfMenu{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 </style>
 </helmet>
@@ -85,7 +85,7 @@
         <input value="{{ q }}" onInput="{{ onSearch }}" onFocus="{{ onSearchFocus }}" onBlur="{{ onSearchBlur }}" placeholder="Search source or target…" style="border:none;outline:none;background:transparent;font-size:13px;color:#172326;width:100%;padding:0"/>
         <sc-if value="{{ q }}" hint-placeholder-val="x"><span onClick="{{ clearSearch }}" style="display:flex;cursor:pointer;color:#AEBAB6" style-hover="color:#172326"><i class="ph ph-x" style="font-size:14px"></i></span></sc-if>
       </div>
-      <button onClick="{{ openCreate }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:none;border-radius:8px;background:#0D6770;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.1);white-space:nowrap;flex:none" style-hover="background:#0A545C">
+      <button onClick="{{ openCreate }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:none;border-radius:8px;background:#763FBA;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.1);white-space:nowrap;flex:none" style-hover="background:#5E299C">
         <i class="ph-bold ph-plus" style="font-size:15px"></i>
         Add redirect
       </button>
@@ -136,7 +136,7 @@
             <span style="font-size:16px;font-weight:600;color:#172326">{{ emptyTitle }}</span>
             <span style="font-size:13.5px;line-height:1.55;color:#526366">{{ emptyBody }}</span>
           </div>
-          <button onClick="{{ emptyAction }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 15px;border:none;border-radius:8px;background:#0D6770;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#0A545C">{{ emptyCta }}</button>
+          <button onClick="{{ emptyAction }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 15px;border:none;border-radius:8px;background:#763FBA;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#5E299C">{{ emptyCta }}</button>
         </div>
       </sc-if>
 
@@ -176,7 +176,7 @@
             <span style="font-size:12px;color:#869693;white-space:nowrap">{{ r.date }}</span>
             <!-- actions -->
             <span style="display:flex;align-items:center;gap:2px;justify-content:flex-end">
-              <span onClick="{{ r.onEdit }}" title="Edit" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:pointer" style-hover="background:#DCEDEA;color:#0D6770"><i class="ph ph-pencil-simple" style="font-size:15px"></i></span>
+              <span onClick="{{ r.onEdit }}" title="Edit" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:pointer" style-hover="background:#ECEEF1;color:#763FBA"><i class="ph ph-pencil-simple" style="font-size:15px"></i></span>
               <span onClick="{{ r.onDelete }}" title="Delete" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:pointer" style-hover="background:#F8E6E3;color:#B5382C"><i class="ph ph-trash" style="font-size:15px"></i></span>
             </span>
           </div>
@@ -188,7 +188,7 @@
 
     <!-- status bar -->
     <div style="display:flex;align-items:center;gap:14px;padding:9px 22px;border-top:1px solid #EEF1ED;background:#FAFCFA;font-size:12px;color:#869693">
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ph ph-info" style="font-size:15px;color:#0D6770"></i>Redirects are added automatically when a published page moves, changes slug, or is deleted</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ph ph-info" style="font-size:15px;color:#763FBA"></i>Redirects are added automatically when a published page moves, changes slug, or is deleted</span>
       <span style="flex:1"></span>
       <span style="font-family:'Geist Mono',monospace">{{ footerLabel }}</span>
     </div>
@@ -200,7 +200,7 @@
   <div onClick="{{ closeAll }}" style="position:fixed;inset:0;z-index:60;background:rgba(23,35,38,0.28);display:flex;align-items:center;justify-content:center;padding:24px;animation:sfFade .12s ease">
     <div onClick="{{ stop }}" style="width:520px;max-width:100%;background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(23,35,38,0.28);overflow:hidden;animation:sfPop .16s ease">
       <div style="display:flex;align-items:flex-start;gap:12px;padding:20px 22px 16px;border-bottom:1px solid #EEF1ED">
-        <div style="width:36px;height:36px;border-radius:9px;background:#DCEDEA;color:#0D6770;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph {{ editIcon }}" style="font-size:19px"></i></div>
+        <div style="width:36px;height:36px;border-radius:9px;background:#ECEEF1;color:#763FBA;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph {{ editIcon }}" style="font-size:19px"></i></div>
         <div style="display:flex;flex-direction:column;gap:2px">
           <span style="font-size:16px;font-weight:600">{{ editTitle }}</span>
           <span style="font-size:12.5px;color:#526366">{{ editSubtitle }}</span>
@@ -282,7 +282,7 @@
       <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
       <sc-if value="{{ toastSub }}" hint-placeholder-val="x"><span style="font-size:11.5px;color:#B7C4C1;font-family:'Geist Mono',monospace">{{ toastSub }}</span></sc-if>
     </div>
-    <sc-if value="{{ toastAction }}" hint-placeholder-val="x"><span onClick="{{ toastUndo }}" style="margin-left:6px;font-size:12.5px;font-weight:600;color:#58C3C7;cursor:pointer;white-space:nowrap" style-hover="color:#8FDBDE">{{ toastAction }}</span></sc-if>
+    <sc-if value="{{ toastAction }}" hint-placeholder-val="x"><span onClick="{{ toastUndo }}" style="margin-left:6px;font-size:12.5px;font-weight:600;color:#B994F8;cursor:pointer;white-space:nowrap" style-hover="color:#8FDBDE">{{ toastAction }}</span></sc-if>
   </div>
 </sc-if>
 </x-dc>
@@ -403,12 +403,12 @@ class Component extends DCLogic {
       const list = [rd(id, src, dst, e.type, "manual", null, null, "Just now", Math.floor(Date.now() / 1000)), ...this.state.redirects];
       this.setState({ redirects: list, edit: null });
       this.flash(id);
-      this.toast({ msg: "Redirect created", sub: src + "  →  " + dst, icon: "ph-arrow-bend-up-left", color: "#58C3C7" });
+      this.toast({ msg: "Redirect created", sub: src + "  →  " + dst, icon: "ph-arrow-bend-up-left", color: "#B994F8" });
     } else {
       const list = this.state.redirects.map(r => r.id === e.id ? { ...r, source: src, dest: dst, type: e.type } : r);
       this.setState({ redirects: list, edit: null });
       this.flash(e.id);
-      this.toast({ msg: "Redirect updated", sub: src + "  →  " + dst, icon: "ph-check", color: "#58C3C7" });
+      this.toast({ msg: "Redirect updated", sub: src + "  →  " + dst, icon: "ph-check", color: "#B994F8" });
     }
   }
   confirmDelete() {
@@ -437,7 +437,7 @@ class Component extends DCLogic {
     const nav = [
       { icon: "ph-tree-structure", label: "Pages", bg: "transparent", fg: "#33474A", count: "31", countFg: "#A5B0AD" },
       { icon: "ph-image", label: "Media", bg: "transparent", fg: "#33474A", count: 0, countFg: "#A5B0AD" },
-      { icon: "ph-arrow-bend-up-left", label: "Redirects", bg: "#DCEDEA", fg: "#0D6770", count: "" + total, countFg: "#0D6770" },
+      { icon: "ph-arrow-bend-up-left", label: "Redirects", bg: "#ECEEF1", fg: "#763FBA", count: "" + total, countFg: "#763FBA" },
       { icon: "ph-browser", label: "Header navigation", bg: "transparent", fg: "#33474A", count: 0, countFg: "#A5B0AD" },
       { icon: "ph-layout", label: "Footer", bg: "transparent", fg: "#33474A", count: 0, countFg: "#A5B0AD" },
       { icon: "ph-cube", label: "Structured content", bg: "transparent", fg: "#33474A", count: 0, countFg: "#A5B0AD" },
@@ -448,10 +448,10 @@ class Component extends DCLogic {
     const mkSeg = (val, label, icon, badge, danger) => ({
       label, icon: icon || "",
       badge: badge != null ? ("" + badge) : "",
-      badgeBg: s.filter === val ? (danger ? "#B5382C" : "#0D6770") : (danger ? "#F0D2CC" : "#DFE4E0"),
+      badgeBg: s.filter === val ? (danger ? "#B5382C" : "#763FBA") : (danger ? "#F0D2CC" : "#DFE4E0"),
       badgeFg: s.filter === val ? "#fff" : (danger ? "#B5382C" : "#7C8A88"),
       bg: s.filter === val ? "#fff" : "transparent",
-      fg: s.filter === val ? (danger ? "#B5382C" : "#0D6770") : "#526366",
+      fg: s.filter === val ? (danger ? "#B5382C" : "#763FBA") : "#526366",
       shadow: s.filter === val ? "0 1px 2px rgba(23,35,38,0.12)" : "none",
       onClick: () => this.setState({ filter: val }),
     });
@@ -470,7 +470,7 @@ class Component extends DCLogic {
 
     const ORIGIN = {
       automatic: { icon: "ph-arrows-out-cardinal", bg: "#EEF1ED", fg: "#526366", label: "Automatic" },
-      manual: { icon: "ph-hand-pointing", bg: "#DCEDEA", fg: "#0A545C", label: "Manual" },
+      manual: { icon: "ph-hand-pointing", bg: "#ECEEF1", fg: "#5E299C", label: "Manual" },
     };
     const WARN = {
       broken: { bg: "#F8E6E3", fg: "#B5382C" },
@@ -502,7 +502,7 @@ class Component extends DCLogic {
       const manual = list.filter(x => x.r.origin === "manual");
       const auto = list.filter(x => x.r.origin === "automatic");
       if (manual.length) {
-        rows.push({ isHeader: true, isRow: false, hLabel: "Manual redirects", hCount: manual.length, hIcon: "ph-hand-pointing", hIconFg: "#0A545C" });
+        rows.push({ isHeader: true, isRow: false, hLabel: "Manual redirects", hCount: manual.length, hIcon: "ph-hand-pointing", hIconFg: "#5E299C" });
         manual.forEach(x => rows.push(rowOf(x)));
       }
       if (auto.length) {
@@ -515,7 +515,7 @@ class Component extends DCLogic {
 
     // ---- empty ----
     const isEmpty = rows.length === 0;
-    let emptyIcon = "ph-signpost", emptyIconBg = "#DCEDEA", emptyIconFg = "#0D6770",
+    let emptyIcon = "ph-signpost", emptyIconBg = "#ECEEF1", emptyIconFg = "#763FBA",
         emptyTitle = "No redirects yet", emptyBody = "", emptyCta = "Add redirect",
         emptyAction = () => this.openCreate();
     if (isEmpty) {
@@ -542,13 +542,13 @@ class Component extends DCLogic {
         code, on,
         name: code === "301" ? "Permanent" : "Temporary",
         desc: code === "301" ? "The move is final. Search engines transfer ranking to the new URL." : "The move is temporary. The original URL keeps its ranking.",
-        border: on ? "#0D6770" : "#E2E7E2", bg: on ? "#F7FAF9" : "#fff",
-        dotBorder: on ? "#0D6770" : "#CFD6D0", dotBg: on ? "#0D6770" : "#fff",
+        border: on ? "#763FBA" : "#E2E7E2", bg: on ? "#F7FAF9" : "#fff",
+        dotBorder: on ? "#763FBA" : "#CFD6D0", dotBg: on ? "#763FBA" : "#fff",
         onClick: () => this.setState({ edit: { ...e, type: code } }),
       };
     });
-    const fieldRing = (name) => s.focusField === name ? "0 0 0 3px rgba(13,103,112,0.16)" : "none";
-    const fieldBorder = (name, err) => err ? "#DC4436" : (s.focusField === name ? "#0D6770" : "#CFD6D0");
+    const fieldRing = (name) => s.focusField === name ? "0 0 0 3px rgba(118,63,186,0.16)" : "none";
+    const fieldBorder = (name, err) => err ? "#DC4436" : (s.focusField === name ? "#763FBA" : "#CFD6D0");
 
     // ---- delete modal ----
     const delR = s.del ? s.redirects.find(x => x.id === s.del) : null;
@@ -565,9 +565,9 @@ class Component extends DCLogic {
       onSearchFocus: () => this.setState({ searchFocus: true }),
       onSearchBlur: () => this.setState({ searchFocus: false }),
       clearSearch: () => this.setState({ q: "" }),
-      searchBorder: s.searchFocus ? "#0D6770" : "#CFD6D0",
-      searchRing: s.searchFocus ? "0 0 0 3px rgba(13,103,112,0.16)" : "none",
-      searchIcon: s.searchFocus ? "#0D6770" : "#869693",
+      searchBorder: s.searchFocus ? "#763FBA" : "#CFD6D0",
+      searchRing: s.searchFocus ? "0 0 0 3px rgba(118,63,186,0.16)" : "none",
+      searchIcon: s.searchFocus ? "#763FBA" : "#869693",
       // segments
       segs,
       resultLabel: searching ? (list.length + " of " + total + " shown") : (total + " redirects"),
@@ -602,7 +602,7 @@ class Component extends DCLogic {
       dstHint: v.dstHint, dstHintFg: v.dstKind === "err" ? "#B5382C" : "#8A5A06", dstHintIcon: v.dstKind === "err" ? "ph-warning-circle" : "ph-warning",
       typeOpts,
       saveLabel: e && e.mode === "edit" ? "Save changes" : "Create redirect",
-      saveBg: v.valid ? "#0D6770" : "#9FB6B4", saveCursor: v.valid ? "pointer" : "not-allowed", saveOpacity: v.valid ? "1" : "0.7",
+      saveBg: v.valid ? "#763FBA" : "#9FB6B4", saveCursor: v.valid ? "pointer" : "not-allowed", saveOpacity: v.valid ? "1" : "0.7",
       saveEdit: () => this.saveEdit(),
       // delete
       showDelete: !!delR,
@@ -614,7 +614,7 @@ class Component extends DCLogic {
       stop: (ev) => ev.stopPropagation(),
       // toast
       showToast: !!toast, toastMsg: toast ? toast.msg : "", toastSub: toast ? (toast.sub || "") : "",
-      toastIcon: toast ? toast.icon : "ph-check", toastIconColor: toast ? toast.color : "#58C3C7",
+      toastIcon: toast ? toast.icon : "ph-check", toastIconColor: toast ? toast.color : "#B994F8",
       toastAction: "", toastUndo: () => {},
     };
   }

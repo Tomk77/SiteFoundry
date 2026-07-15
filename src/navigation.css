@@ -53,7 +53,7 @@
 }
 .sf-navigation-title > small {
   grid-column: 1 / -1;
-  color: #0d6770;
+  color: #763fba;
   font-size: 11px;
 }
 
@@ -231,8 +231,8 @@
 
 .sf-desktop-header-preview > header nav button.selected,
 .sf-mobile-header-preview nav button.selected {
-  box-shadow: inset 0 0 0 1.5px #0d6770;
-  background: #eaf4f2;
+  box-shadow: inset 0 0 0 1.5px #96a0ac;
+  background: #eceef1;
 }
 
 .sf-preview-dropdown {
@@ -264,7 +264,7 @@
 
 .sf-preview-dropdown button:hover,
 .sf-preview-dropdown button.selected {
-  background: #dcedea;
+  background: #eceef1;
 }
 .sf-preview-dropdown span {
   color: #869693;
@@ -514,11 +514,11 @@
     box-shadow 120ms;
 }
 .sf-menu-card.selected {
-  border-color: #a7d4ce;
-  box-shadow: 0 0 0 1px #a7d4ce;
+  border-color: #cbd3db;
+  box-shadow: 0 0 0 1px #cbd3db;
 }
 .sf-menu-card.drop {
-  border-top: 3px solid #0d6770;
+  border-top: 3px solid #763fba;
 }
 .sf-menu-card-head {
   display: flex;
@@ -539,8 +539,8 @@
   flex: none;
   place-items: center;
   border-radius: 7px;
-  background: #dcedea;
-  color: #0d6770;
+  background: #eceef1;
+  color: #763fba;
 }
 .sf-menu-card-copy {
   display: flex;
@@ -633,8 +633,8 @@
 .sf-builder-field select:focus,
 .sf-child-link input:focus,
 .sf-child-link select:focus {
-  border-color: #0d6770;
-  box-shadow: 0 0 0 3px rgb(13 103 112 / 12%);
+  border-color: #763fba;
+  box-shadow: 0 0 0 3px rgb(118 63 186 / 12%);
 }
 .sf-link-type {
   display: flex;
@@ -659,7 +659,7 @@
 }
 .sf-link-type button.active {
   background: #fff;
-  color: #0d6770;
+  color: #763fba;
   box-shadow: 0 1px 2px rgb(23 35 38 / 10%);
 }
 .sf-new-tab {
@@ -673,7 +673,7 @@
 .sf-new-tab input {
   width: 16px;
   height: 16px;
-  accent-color: #0d6770;
+  accent-color: #763fba;
 }
 
 .sf-child-links {
@@ -711,14 +711,14 @@
   border: 1.5px dashed #c2ccc4;
   border-radius: 9px;
   background: #fff;
-  color: #0d6770;
+  color: #763fba;
   font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
 }
 .sf-add-child:hover {
-  border-color: #a7d4ce;
-  background: #dcedea;
+  border-color: #cbd3db;
+  background: #eceef1;
 }
 .sf-card-bottom {
   display: flex;
@@ -733,7 +733,7 @@
   font-size: 11.5px;
 }
 .sf-card-bottom > span i {
-  color: #0d6770;
+  color: #763fba;
 }
 .sf-remove-item {
   display: inline-flex;
@@ -767,14 +767,14 @@
   border: 1.5px dashed #c2ccc4;
   border-radius: 10px;
   background: #fafcfa;
-  color: #0d6770;
+  color: #763fba;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 }
 .sf-add-navigation > button:hover {
-  border-color: #a7d4ce;
-  background: #dcedea;
+  border-color: #cbd3db;
+  background: #eceef1;
 }
 .sf-add-navigation-menu {
   position: absolute;
@@ -811,8 +811,8 @@
   flex: none;
   place-items: center;
   border-radius: 8px;
-  background: #dcedea;
-  color: #0d6770;
+  background: #eceef1;
+  color: #763fba;
 }
 .sf-add-navigation-menu > button > span.group {
   background: #ede7f5;
@@ -851,8 +851,8 @@
   height: 44px;
   place-items: center;
   border-radius: 11px;
-  background: #dcedea;
-  color: #0d6770;
+  background: #eceef1;
+  color: #763fba;
   font-size: 22px;
 }
 .sf-builder-empty strong {
@@ -943,15 +943,15 @@
 }
 
 html[data-sf-theme="dark"] .sf-navigation-editor {
-  background: #101718;
-  color: #edf4f2;
+  background: #15181c;
+  color: #e9ecf1;
 }
 
 html[data-sf-theme="dark"] .sf-navigation-top,
 html[data-sf-theme="dark"] .sf-navigation-builder,
 html[data-sf-theme="dark"] .sf-navigation-preview .sf-preview-tools {
-  border-color: #2a3739;
-  background: #172123;
+  border-color: #323841;
+  background: #1d2126;
 }
 
 html[data-sf-theme="dark"] .sf-back-button,
@@ -962,71 +962,71 @@ html[data-sf-theme="dark"] .sf-add-navigation > button,
 html[data-sf-theme="dark"] .sf-add-navigation-menu,
 html[data-sf-theme="dark"] .sf-builder-empty,
 html[data-sf-theme="dark"] .sf-remove-item {
-  border-color: #35474a;
-  background: #172123;
-  color: #edf4f2;
+  border-color: #3d444e;
+  background: #1d2126;
+  color: #e9ecf1;
 }
 
 html[data-sf-theme="dark"] .sf-back-button:hover,
 html[data-sf-theme="dark"] .sf-menu-card-head > button:hover,
 html[data-sf-theme="dark"] .sf-child-link > button:hover,
 html[data-sf-theme="dark"] .sf-add-navigation-menu > button:hover {
-  background: #1e2a2b;
+  background: #242930;
 }
 
 html[data-sf-theme="dark"] .sf-navigation-preview,
 html[data-sf-theme="dark"] .sf-navigation-stage {
-  border-color: #2a3739;
-  background: #101718;
+  border-color: #323841;
+  background: #15181c;
 }
 
 html[data-sf-theme="dark"] .sf-site-preview {
   color: #141a2e;
-  outline: 1px solid #2a3739;
+  outline: 1px solid #323841;
   box-shadow: 0 16px 42px rgb(0 0 0 / 32%);
 }
 
 html[data-sf-theme="dark"] .sf-builder-head,
 html[data-sf-theme="dark"] .sf-menu-card-fields {
-  border-color: #2a3739;
+  border-color: #323841;
 }
 
 html[data-sf-theme="dark"] .sf-menu-card-fields {
-  background: #1e2a2b;
+  background: #242930;
 }
 
 html[data-sf-theme="dark"] .sf-menu-card.selected {
-  border-color: #347b80;
-  box-shadow: 0 0 0 1px #347b80;
+  border-color: #515a65;
+  box-shadow: 0 0 0 1px #515a65;
 }
 
 html[data-sf-theme="dark"] .sf-builder-field > span,
 html[data-sf-theme="dark"] .sf-child-links > span,
 html[data-sf-theme="dark"] .sf-link-type > span,
 html[data-sf-theme="dark"] .sf-new-tab {
-  color: #a9b7b5;
+  color: #a7aeb8;
 }
 
 html[data-sf-theme="dark"] .sf-builder-field input,
 html[data-sf-theme="dark"] .sf-builder-field select,
 html[data-sf-theme="dark"] .sf-child-link input,
 html[data-sf-theme="dark"] .sf-child-link select {
-  border-color: #35474a;
-  background: #101718;
-  color: #edf4f2;
+  border-color: #3d444e;
+  background: #15181c;
+  color: #e9ecf1;
 }
 
 html[data-sf-theme="dark"] .sf-link-type > div {
-  background: #101718;
+  background: #15181c;
 }
 
 html[data-sf-theme="dark"] .sf-link-type button {
-  color: #a9b7b5;
+  color: #a7aeb8;
 }
 
 html[data-sf-theme="dark"] .sf-link-type button.active {
-  background: #173033;
-  color: #58c3c7;
+  background: #2c333b;
+  color: #b994f8;
   box-shadow: none;
 }
 
@@ -1036,8 +1036,8 @@ html[data-sf-theme="dark"]
   > button:hover,
 html[data-sf-theme="dark"] .sf-add-child:hover,
 html[data-sf-theme="dark"] .sf-add-navigation > button:hover {
-  background: #173033;
-  color: #58c3c7;
+  background: #2c333b;
+  color: #b994f8;
 }
 
 html[data-sf-theme="dark"] .sf-navigation-saved,
@@ -1047,5 +1047,5 @@ html[data-sf-theme="dark"] .sf-menu-card-copy small,
 html[data-sf-theme="dark"] .sf-card-bottom > span:not(.sf-spacer),
 html[data-sf-theme="dark"] .sf-add-navigation-menu small,
 html[data-sf-theme="dark"] .sf-builder-empty p {
-  color: #7c8c8a;
+  color: #79808b;
 }

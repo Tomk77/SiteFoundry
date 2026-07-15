@@ -1,3 +1,7 @@
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
+import { NativeSelect } from "../components/ui/native-select";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppShell } from "../components/app-shell";
@@ -70,7 +74,7 @@ const filesSeed: MediaFile[] = [
     "Mara Jensen",
     "Jul 8, 2026",
     "root",
-    "#DCEDEA",
+    "#eceef1",
   ),
   makeFile(
     "og",
@@ -131,7 +135,7 @@ const filesSeed: MediaFile[] = [
     "Mara Jensen",
     "Apr 26, 2026",
     "brand",
-    "#DCEDEA",
+    "#eceef1",
     "svg",
   ),
   makeFile(
@@ -193,7 +197,7 @@ const filesSeed: MediaFile[] = [
     "Mara Jensen",
     "May 29, 2026",
     "blog",
-    "#DCEDEA",
+    "#eceef1",
   ),
   makeFile(
     "mara",
@@ -355,48 +359,48 @@ function Media() {
         <span className="sf-spacer" />
         <label className="sf-search sf-media-search">
           <i className="ph ph-magnifying-glass" />
-          <input
+          <Input unstyled
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search files..."
           />
         </label>
         <div className="sf-view-toggle">
-          <button
+          <Button unstyled
             className={view === "grid" ? "active" : ""}
             onClick={() => setView("grid")}
           >
             <i className="ph ph-squares-four" />
-          </button>
-          <button
+          </Button>
+          <Button unstyled
             className={view === "list" ? "active" : ""}
             onClick={() => setView("list")}
           >
             <i className="ph ph-list" />
-          </button>
+          </Button>
         </div>
-        <button className="sf-action" onClick={addFolder}>
+        <Button unstyled className="sf-action" onClick={addFolder}>
           <i className="ph ph-folder-plus" />
           New folder
-        </button>
-        <button
+        </Button>
+        <Button unstyled
           className="sf-action primary"
           onClick={() => setUploadOpen(true)}
         >
           <i className="ph-bold ph-upload-simple" />
           Upload
-        </button>
+        </Button>
       </header>
       <nav className="sf-media-crumbs">
         {breadcrumbs.map((crumb, index) => (
           <span key={crumb.id}>
             {index > 0 && <i className="ph ph-caret-right" />}
-            <button
+            <Button unstyled
               className={index === breadcrumbs.length - 1 ? "current" : ""}
               onClick={() => openFolder(crumb.id)}
             >
               {crumb.name}
-            </button>
+            </Button>
           </span>
         ))}
       </nav>
@@ -408,14 +412,14 @@ function Media() {
               <div className="sf-folder-grid">
                 {visibleFolders.map((folder) => (
                   <div className="sf-folder-card" key={folder.id}>
-                    <button
+                    <Button unstyled
                       className="sf-folder-main"
                       onClick={() => openFolder(folder.id)}
                     >
                       <i className="ph-fill ph-folder" />
                       <span>
                         {renaming === folder.id ? (
-                          <input
+                          <Input unstyled
                             autoFocus
                             value={folder.name}
                             onClick={(e) => e.stopPropagation()}
@@ -447,13 +451,13 @@ function Media() {
                           </>
                         )}
                       </span>
-                    </button>
-                    <button
+                    </Button>
+                    <Button unstyled
                       className="sf-icon-button"
                       onClick={() => setRenaming(folder.id)}
                     >
                       <i className="ph ph-dots-three" />
-                    </button>
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -465,7 +469,7 @@ function Media() {
               {view === "grid" ? (
                 <div className="sf-file-grid">
                   {visibleFiles.map((item) => (
-                    <button
+                    <Button unstyled
                       className={`sf-file-card ${selected === item.id ? "selected" : ""}`}
                       key={item.id}
                       onClick={() => setSelected(item.id)}
@@ -475,7 +479,7 @@ function Media() {
                       <span className="sf-file-meta">
                         {item.ext} · {item.size}
                       </span>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               ) : (
@@ -489,7 +493,7 @@ function Media() {
                     <span>Uploaded</span>
                   </div>
                   {visibleFiles.map((item) => (
-                    <button
+                    <Button unstyled
                       className={selected === item.id ? "selected" : ""}
                       key={item.id}
                       onClick={() => setSelected(item.id)}
@@ -509,7 +513,7 @@ function Media() {
                       </span>
                       <span>{item.size}</span>
                       <span>{item.date}</span>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               )}
@@ -526,13 +530,13 @@ function Media() {
                   ? "Try a different search, or clear it to see everything here."
                   : "Drag images in, or use Upload to add your first assets to this folder."}
               </p>
-              <button
+              <Button unstyled
                 className="sf-action primary"
                 onClick={() => setUploadOpen(true)}
               >
                 <i className="ph-bold ph-upload-simple" />
                 Upload images
-              </button>
+              </Button>
             </div>
           )}
         </section>
@@ -540,16 +544,16 @@ function Media() {
           <aside className="sf-media-details">
             <div className="sf-details-head">
               <strong>File details</strong>
-              <button onClick={() => setSelected(null)}>
+              <Button unstyled onClick={() => setSelected(null)}>
                 <i className="ph ph-x" />
-              </button>
+              </Button>
             </div>
             <div className="sf-details-body sf-scroll">
               <Preview item={selectedFile} />
               <label className="sf-detail-field">
                 <span>File name</span>
                 <div>
-                  <input
+                  <Input unstyled
                     value={selectedFile.name}
                     onChange={(e) => updateFile({ name: e.target.value })}
                   />
@@ -558,7 +562,7 @@ function Media() {
               </label>
               <label className="sf-detail-field">
                 <span>Alternative text</span>
-                <textarea
+                <Textarea unstyled
                   value={selectedFile.alt}
                   onChange={(e) => updateFile({ alt: e.target.value })}
                   placeholder="Describe this image for accessibility"
@@ -601,7 +605,7 @@ function Media() {
               </dl>
               <label className="sf-detail-field">
                 <span>Folder</span>
-                <select
+                <NativeSelect unstyled
                   value={selectedFile.parentId}
                   onChange={(e) => {
                     updateFile({ parentId: e.target.value });
@@ -614,24 +618,24 @@ function Media() {
                       {folder.name}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </label>
               <div className="sf-details-actions">
-                <button onClick={() => showToast("URL copied")}>
+                <Button unstyled onClick={() => showToast("URL copied")}>
                   <i className="ph ph-link" />
                   Copy URL
-                </button>
-                <button
+                </Button>
+                <Button unstyled
                   onClick={() => showToast("Download will be connected later")}
                 >
                   <i className="ph ph-download-simple" />
                   Download
-                </button>
+                </Button>
               </div>
-              <button className="sf-delete-file" onClick={deleteFile}>
+              <Button unstyled className="sf-delete-file" onClick={deleteFile}>
                 <i className="ph ph-trash" />
                 Delete file
-              </button>
+              </Button>
             </div>
           </aside>
         )}
@@ -649,33 +653,33 @@ function Media() {
                 <h2>Upload files</h2>
                 <p>Add images and documents to this folder.</p>
               </div>
-              <button onClick={() => setUploadOpen(false)}>
+              <Button unstyled onClick={() => setUploadOpen(false)}>
                 <i className="ph ph-x" />
-              </button>
+              </Button>
             </header>
             <div className="sf-upload-drop">
               <i className="ph ph-cloud-arrow-up" />
               <strong>Drop files here</strong>
               <span>or choose files from your computer</span>
-              <button
+              <Button unstyled
                 onClick={() =>
                   showToast("File selection will be connected with uploading")
                 }
               >
                 Choose files
-              </button>
+              </Button>
               <small>JPG, PNG, SVG, GIF or PDF · up to 10 MB</small>
             </div>
             <footer>
-              <button
+              <Button unstyled
                 className="sf-action"
                 onClick={() => setUploadOpen(false)}
               >
                 Cancel
-              </button>
-              <button className="sf-action primary" disabled>
+              </Button>
+              <Button unstyled className="sf-action primary" disabled>
                 Upload
-              </button>
+              </Button>
             </footer>
           </section>
         </div>

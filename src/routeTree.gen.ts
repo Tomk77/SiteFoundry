@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StructuredContentRouteImport } from './routes/structured-content'
 import { Route as RedirectsRouteImport } from './routes/redirects'
 import { Route as PersonalSettingsRouteImport } from './routes/personal-settings'
 import { Route as MediaRouteImport } from './routes/media'
@@ -18,6 +19,11 @@ import { Route as EditorRouteImport } from './routes/editor'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 
+const StructuredContentRoute = StructuredContentRouteImport.update({
+  id: '/structured-content',
+  path: '/structured-content',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RedirectsRoute = RedirectsRouteImport.update({
   id: '/redirects',
   path: '/redirects',
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/media': typeof MediaRoute
   '/personal-settings': typeof PersonalSettingsRoute
   '/redirects': typeof RedirectsRoute
+  '/structured-content': typeof StructuredContentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/media': typeof MediaRoute
   '/personal-settings': typeof PersonalSettingsRoute
   '/redirects': typeof RedirectsRoute
+  '/structured-content': typeof StructuredContentRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/media': typeof MediaRoute
   '/personal-settings': typeof PersonalSettingsRoute
   '/redirects': typeof RedirectsRoute
+  '/structured-content': typeof StructuredContentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/media'
     | '/personal-settings'
     | '/redirects'
+    | '/structured-content'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/media'
     | '/personal-settings'
     | '/redirects'
+    | '/structured-content'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/media'
     | '/personal-settings'
     | '/redirects'
+    | '/structured-content'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,10 +144,18 @@ export interface RootRouteChildren {
   MediaRoute: typeof MediaRoute
   PersonalSettingsRoute: typeof PersonalSettingsRoute
   RedirectsRoute: typeof RedirectsRoute
+  StructuredContentRoute: typeof StructuredContentRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/structured-content': {
+      id: '/structured-content'
+      path: '/structured-content'
+      fullPath: '/structured-content'
+      preLoaderRoute: typeof StructuredContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/redirects': {
       id: '/redirects'
       path: '/redirects'
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   MediaRoute: MediaRoute,
   PersonalSettingsRoute: PersonalSettingsRoute,
   RedirectsRoute: RedirectsRoute,
+  StructuredContentRoute: StructuredContentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

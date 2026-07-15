@@ -1,0 +1,62 @@
+import { Button as ButtonPrimitive } from "@base-ui/react/button"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const buttonVariants = cva(
+  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border text-[12.5px] font-semibold whitespace-nowrap transition-[background-color,border-color,color,box-shadow,transform] outline-none select-none focus-visible:border-[var(--sf-accent)] focus-visible:ring-[3px] focus-visible:ring-[var(--sf-focus-ring)] active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 [&_i]:pointer-events-none [&_i]:shrink-0",
+  {
+    variants: {
+      variant: {
+        default:
+          "border-[var(--sf-accent)] bg-[var(--sf-accent)] text-white shadow-[0_1px_2px_rgb(23_35_38_/_10%)] hover:border-[var(--sf-accent-hover)] hover:bg-[var(--sf-accent-hover)]",
+        outline:
+          "border-[var(--sf-border)] bg-[var(--sf-surface)] text-[var(--sf-ink)] shadow-[0_1px_2px_rgb(23_35_38_/_6%)] hover:bg-[var(--sf-sunken)] aria-expanded:bg-[var(--sf-sunken)]",
+        secondary:
+          "border-transparent bg-[var(--sf-sunken)] text-[var(--sf-ink)] hover:bg-[var(--sf-selection)] aria-expanded:bg-[var(--sf-selection)]",
+        ghost:
+          "border-transparent bg-transparent text-[var(--sf-ink-2)] hover:bg-[var(--sf-selection)] hover:text-[var(--sf-ink)] aria-expanded:bg-[var(--sf-selection)]",
+        destructive:
+          "border-[#b5382c] bg-[#b5382c] text-white hover:border-[#922e25] hover:bg-[#922e25] focus-visible:border-[#b5382c] focus-visible:ring-[rgba(181,56,44,0.18)]",
+        link: "border-transparent bg-transparent text-[var(--sf-accent)] underline-offset-4 hover:underline",
+      },
+      size: {
+        default: "h-9 gap-2 px-3.5",
+        xs: "h-7 gap-1.5 rounded-md px-2 text-[11px]",
+        sm: "h-8 gap-1.5 px-2.5 text-xs",
+        lg: "h-10 gap-2 px-4 text-sm",
+        icon: "size-9 p-0",
+        "icon-xs": "size-7 rounded-md p-0 text-xs",
+        "icon-sm": "size-8 p-0 text-sm",
+        "icon-lg": "size-10 p-0 text-base",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+
+function Button({
+  className,
+  variant = "default",
+  size = "default",
+  unstyled = false,
+  ...props
+}: ButtonPrimitive.Props &
+  VariantProps<typeof buttonVariants> & {
+    unstyled?: boolean
+  }) {
+  return (
+    <ButtonPrimitive
+      data-slot="button"
+      className={
+        unstyled ? className : cn(buttonVariants({ variant, size, className }))
+      }
+      {...props}
+    />
+  )
+}
+
+export { Button, buttonVariants }

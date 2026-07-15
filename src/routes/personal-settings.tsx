@@ -1,3 +1,6 @@
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { NativeSelect } from "../components/ui/native-select";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useAuth } from "../lib/auth";
@@ -188,9 +191,9 @@ function PersonalSettings() {
   return (
     <main className="sf-personal-settings">
       <header className="sf-personal-top">
-        <button onClick={leave} type="button">
+        <Button unstyled onClick={leave} type="button">
           <i className="ph-bold ph-arrow-left" /> Back to app
-        </button>
+        </Button>
         <span className="sf-personal-mark">
           <i className="ph-bold ph-hammer" />
         </span>
@@ -207,7 +210,7 @@ function PersonalSettings() {
               : "All changes saved"}
         </span>
         {dirty ? (
-          <button
+          <Button unstyled
             className="sf-personal-discard"
             onClick={() => {
               setForm(saved);
@@ -216,16 +219,16 @@ function PersonalSettings() {
             type="button"
           >
             Discard
-          </button>
+          </Button>
         ) : null}
-        <button
+        <Button unstyled
           className="sf-personal-save"
           disabled={!dirty || !valid || saving}
           onClick={() => void save()}
           type="button"
         >
           {saving ? "Saving..." : "Save changes"}
-        </button>
+        </Button>
       </header>
 
       <div className="sf-personal-scroll sf-scroll">
@@ -251,7 +254,7 @@ function PersonalSettings() {
                 required
                 dirty={form.firstName !== saved.firstName}
               >
-                <input
+                <Input unstyled
                   aria-invalid={!form.firstName.trim()}
                   value={form.firstName}
                   onChange={(event) => update("firstName", event.target.value)}
@@ -264,7 +267,7 @@ function PersonalSettings() {
                 label="Last name"
                 dirty={form.lastName !== saved.lastName}
               >
-                <input
+                <Input unstyled
                   value={form.lastName}
                   onChange={(event) => update("lastName", event.target.value)}
                 />
@@ -275,7 +278,7 @@ function PersonalSettings() {
                 required
                 dirty={form.email !== saved.email}
               >
-                <input
+                <Input unstyled
                   aria-invalid={!emailValid}
                   type="email"
                   value={form.email}
@@ -296,7 +299,7 @@ function PersonalSettings() {
                 label="Display name"
                 dirty={form.displayName !== saved.displayName}
               >
-                <input
+                <Input unstyled
                   value={form.displayName}
                   onChange={(event) =>
                     update("displayName", event.target.value)
@@ -385,13 +388,13 @@ function PersonalSettings() {
                     </span>
                   ) : null}
                   <span className="sf-spacer" />
-                  <button
+                  <Button unstyled
                     disabled={!passwordValid || passwordSaving}
                     onClick={() => void updatePassword()}
                     type="button"
                   >
                     {passwordSaving ? "Updating..." : "Update password"}
-                  </button>
+                  </Button>
                 </div>
                 {passwordError ? (
                   <p className="sf-personal-error wide">{passwordError}</p>
@@ -424,7 +427,7 @@ function PersonalSettings() {
                 label="Interface language"
                 dirty={form.interfaceLanguage !== saved.interfaceLanguage}
               >
-                <select
+                <NativeSelect unstyled
                   value={form.interfaceLanguage}
                   onChange={(event) =>
                     update("interfaceLanguage", event.target.value)
@@ -435,7 +438,7 @@ function PersonalSettings() {
                       {language.name}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
                 <small>
                   Changes only your SiteFoundry interface, never website content
                   language.
@@ -453,7 +456,7 @@ function PersonalSettings() {
                       ["dark", "Dark", "ph-moon-stars"],
                     ] as const
                   ).map(([value, label, icon]) => (
-                    <button
+                    <Button unstyled
                       className={form.interfaceMode === value ? "active" : ""}
                       key={value}
                       onClick={() =>
@@ -463,7 +466,7 @@ function PersonalSettings() {
                     >
                       <i className={`ph ${icon}`} />
                       {label}
-                    </button>
+                    </Button>
                   ))}
                 </div>
                 <small>
@@ -571,7 +574,7 @@ function PasswordField({
     <label className={`sf-setting-field ${className}`}>
       <span>{label}</span>
       <div className="sf-password-input">
-        <input
+        <Input unstyled
           autoComplete={
             name === "current" ? "current-password" : "new-password"
           }
@@ -586,13 +589,13 @@ function PasswordField({
                 : "New password"
           }
         />
-        <button
+        <Button unstyled
           aria-label={`${visible ? "Hide" : "Show"} ${label.toLowerCase()}`}
           onClick={onToggle}
           type="button"
         >
           <i className={`ph ph-eye${visible ? "-slash" : ""}`} />
-        </button>
+        </Button>
       </div>
     </label>
   );

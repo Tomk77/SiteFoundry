@@ -19,7 +19,7 @@
   html,body{height:100%}
   body{margin:0;background:#F5F7F4;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden}
   a{text-decoration:none}
-  ::selection{background:#CFE6E1}
+  ::selection{background:#DFE3E8}
   input,select{font-family:inherit}
   i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
   .sf-scroll{scrollbar-width:thin;scrollbar-color:#9AA8A4 transparent}
@@ -202,7 +202,7 @@
 
 <sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
   <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:sfToast .2s cubic-bezier(.2,.8,.2,1)">
-    <i class="ph {{ toastIcon }}" style="font-size:18px;color:#58C3C7"></i>
+    <i class="ph {{ toastIcon }}" style="font-size:18px;color:#B994F8"></i>
     <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
   </div>
 </sc-if>
@@ -219,15 +219,15 @@ const THEME = {
   light: {
     "--bg": "#F5F7F4", "--surface": "#FFFFFF", "--sunken": "#EEF1ED", "--border": "#E2E7E2",
     "--ink": "#172326", "--ink2": "#526366", "--ink3": "#869693",
-    "--field": "#CFD6D0", "--accent": "#0D6770", "--accentH": "#0A545C", "--accentSoft": "#DCEDEA",
-    "--onAccent": "#FFFFFF", "--ring": "rgba(13,103,112,0.16)",
+    "--field": "#CFD6D0", "--accent": "#763FBA", "--accentH": "#5E299C", "--accentSoft": "#ECEEF1",
+    "--onAccent": "#FFFFFF", "--ring": "rgba(118,63,186,0.16)",
     "--warn": "#B8860B", "--danger": "#B5382C", "--ok": "#147A4A", "--infoSoft": "#EAF3F1",
   },
   dark: {
-    "--bg": "#101718", "--surface": "#172123", "--sunken": "#1E2A2B", "--border": "#2A3739",
-    "--ink": "#EDF4F2", "--ink2": "#A9B7B5", "--ink3": "#7C8C8A",
-    "--field": "#35474A", "--accent": "#58C3C7", "--accentH": "#7FD3D6", "--accentSoft": "#173033",
-    "--onAccent": "#0A2224", "--ring": "rgba(88,195,199,0.22)",
+    "--bg": "#15181C", "--surface": "#1D2126", "--sunken": "#242930", "--border": "#323841",
+    "--ink": "#E9ECF1", "--ink2": "#A7AEB8", "--ink3": "#79808B",
+    "--field": "#3D444E", "--accent": "#B994F8", "--accentH": "#CFB3FF", "--accentSoft": "#2C333B",
+    "--onAccent": "#150C22", "--ring": "rgba(185,148,248,0.22)",
     "--warn": "#E0B341", "--danger": "#F0857A", "--ok": "#4FBE86", "--infoSoft": "#15292B",
   },
 };
@@ -326,7 +326,7 @@ class Component extends DCLogic {
     const SW = {
       system: { side: "#D5DCD7", main: "#F5F7F4", line: "#C2CBC4", border: "#DDE3DE" },
       light: { side: "#E7EBE7", main: "#FFFFFF", line: "#DCE2DD", border: "#E2E7E2" },
-      dark: { side: "#101718", main: "#172123", line: "#33454A", border: "#2A3739" },
+      dark: { side: "#15181C", main: "#1D2126", line: "#33454A", border: "#323841" },
     };
     const modes = modeDef.map(m => {
       const on = f.mode === m.id;

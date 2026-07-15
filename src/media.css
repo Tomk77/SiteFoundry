@@ -28,7 +28,7 @@
 }
 .sf-view-toggle button.active {
   background: #fff;
-  color: #0d6770;
+  color: #763fba;
   box-shadow: 0 1px 2px rgba(23, 35, 38, 0.1);
 }
 .sf-media-crumbs {
@@ -52,7 +52,7 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: #0d6770;
+  color: #763fba;
   font-size: 12.5px;
   font-weight: 500;
   cursor: pointer;
@@ -123,8 +123,8 @@
   height: 38px;
   flex: none;
   border-radius: 8px;
-  background: #dcedea;
-  color: #0d6770;
+  background: #eceef1;
+  color: #763fba;
   font-size: 20px;
 }
 .sf-folder-main > span {
@@ -149,7 +149,7 @@
   width: 100%;
   height: 27px;
   padding: 0 7px;
-  border: 1.5px solid #0d6770;
+  border: 1.5px solid #763fba;
   border-radius: 5px;
   outline: 0;
   font-size: 12.5px;
@@ -217,8 +217,8 @@
   box-shadow: 0 1px 2px rgba(23, 35, 38, 0.08);
 }
 .sf-file-card.selected .sf-media-preview {
-  border: 2px solid #0d6770;
-  box-shadow: 0 0 0 3px rgba(13, 103, 112, 0.12);
+  border: 2px solid #763fba;
+  box-shadow: 0 0 0 3px rgba(118, 63, 186, 0.12);
 }
 .sf-file-name {
   overflow: hidden;
@@ -274,7 +274,7 @@
 }
 .sf-file-list > button:hover,
 .sf-file-list > button.selected {
-  background: #f1f7f6;
+  background: #eceef1;
 }
 .sf-file-list .sf-media-preview.compact {
   width: 34px;
@@ -538,8 +538,8 @@
   height: 50px;
   margin-bottom: 13px;
   border-radius: 13px;
-  background: #dcedea;
-  color: #0d6770;
+  background: #eceef1;
+  color: #763fba;
   font-size: 25px;
 }
 .sf-upload-drop strong {
@@ -592,6 +592,64 @@
   font-size: 12px;
   font-weight: 600;
   box-shadow: 0 8px 25px rgba(23, 35, 38, 0.2);
+}
+
+html[data-sf-theme="dark"] .sf-media-head,
+html[data-sf-theme="dark"] .sf-media-crumbs,
+html[data-sf-theme="dark"] .sf-file-list-head,
+html[data-sf-theme="dark"] .sf-details-head,
+html[data-sf-theme="dark"] .sf-upload-modal header,
+html[data-sf-theme="dark"] .sf-upload-modal footer {
+  border-color: #323841;
+}
+
+html[data-sf-theme="dark"] .sf-view-toggle,
+html[data-sf-theme="dark"] .sf-media-empty > span,
+html[data-sf-theme="dark"] .sf-upload-modal footer {
+  background: #242930;
+}
+
+html[data-sf-theme="dark"] .sf-view-toggle button.active,
+html[data-sf-theme="dark"] .sf-folder-card,
+html[data-sf-theme="dark"] .sf-file-list > button,
+html[data-sf-theme="dark"] .sf-detail-field input,
+html[data-sf-theme="dark"] .sf-detail-field textarea,
+html[data-sf-theme="dark"] .sf-media-metadata,
+html[data-sf-theme="dark"] .sf-details-actions button,
+html[data-sf-theme="dark"] .sf-upload-modal {
+  border-color: #3d444e;
+  background: #1d2126;
+  color: #e9ecf1;
+}
+
+html[data-sf-theme="dark"] .sf-file-list-head,
+html[data-sf-theme="dark"] .sf-media-details,
+html[data-sf-theme="dark"] .sf-upload-drop {
+  border-color: #323841;
+  background: #181b20;
+}
+
+html[data-sf-theme="dark"] .sf-file-list > button:hover,
+html[data-sf-theme="dark"] .sf-file-list > button.selected,
+html[data-sf-theme="dark"] .sf-folder-card:hover {
+  background: #2c333b;
+}
+
+html[data-sf-theme="dark"] .sf-file-name,
+html[data-sf-theme="dark"] .sf-media-empty h3,
+html[data-sf-theme="dark"] .sf-media-metadata dd,
+html[data-sf-theme="dark"] .sf-detail-field input,
+html[data-sf-theme="dark"] .sf-detail-field textarea {
+  color: #e9ecf1;
+}
+
+html[data-sf-theme="dark"] .sf-media-section > h2,
+html[data-sf-theme="dark"] .sf-folder-main small,
+html[data-sf-theme="dark"] .sf-file-meta,
+html[data-sf-theme="dark"] .sf-detail-field > span,
+html[data-sf-theme="dark"] .sf-media-metadata dt,
+html[data-sf-theme="dark"] .sf-upload-modal header p {
+  color: #79808b;
 }
 .sf-media-toast i {
   color: #75d3aa;

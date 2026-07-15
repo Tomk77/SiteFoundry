@@ -44,29 +44,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     let active = true;
 
+    const stored = window.localStorage.getItem("sf-interface-mode");
+    applyInterfaceMode(
+      stored === "light" || stored === "dark" ? stored : "system",
+    );
+
     void client.auth
       .getSession()
-      .then(async ({ data }: { data: { session: Session | null } }) => {
+      .then(({ data }: { data: { session: Session | null } }) => {
         if (!active) return;
-        if (data.session) {
-          const { data: profile } = await client
-            .from("profiles")
-            .select("interface_mode")
-            .eq("id", data.session.user.id)
-            .maybeSingle();
-          if (!active) return;
-          const mode = profile?.interface_mode;
-          applyInterfaceMode(
-            mode === "light" || mode === "dark" ? mode : "system",
-          );
-        } else {
-          const stored = window.localStorage.getItem("sf-interface-mode");
-          applyInterfaceMode(
-            stored === "light" || stored === "dark" ? stored : "system",
-          );
-        }
         setSession(data.session);
-        setLoading(false);
+      })
+      .catch(() => {
+        if (!active) return;
+        setSession(null);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
       });
 
     const { data } = client.auth.onAuthStateChange(
@@ -87,6 +81,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       data.subscription.unsubscribe();
     };
   }, [client]);
+
+  useEffect(() => {
+    if (!client || !session?.user.id) return;
+
+    let active = true;
+    void Promise.resolve(
+      client
+        .from("profiles")
+        .select("interface_mode")
+        .eq("id", session.user.id)
+        .maybeSingle(),
+    )
+      .then(({ data: profile }) => {
+        if (!active) return;
+        const mode = profile?.interface_mode;
+        if (mode === "light" || mode === "dark") applyInterfaceMode(mode);
+      })
+      .catch(() => {
+        // Account preferences are optional and must never block authentication.
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [client, session?.user.id]);
 
   const value = useMemo<AuthContextValue>(
     () => ({

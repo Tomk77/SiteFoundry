@@ -1,3 +1,5 @@
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppShell } from "../components/app-shell";
@@ -314,22 +316,22 @@ function Redirects() {
         <span className="sf-spacer" />
         <label className="sf-search sf-redirect-search">
           <i className="ph ph-magnifying-glass" />
-          <input
+          <Input unstyled
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search source or target..."
             value={query}
           />
           {query ? (
-            <button
+            <Button unstyled
               onClick={() => setQuery("")}
               title="Clear search"
               type="button"
             >
               <i className="ph ph-x" />
-            </button>
+            </Button>
           ) : null}
         </label>
-        <button
+        <Button unstyled
           className="sf-action primary"
           onClick={() => {
             setModalError("");
@@ -338,7 +340,7 @@ function Redirects() {
           type="button"
         >
           <i className="ph-bold ph-plus" /> Add redirect
-        </button>
+        </Button>
       </header>
 
       <div className="sf-redirect-toolbar">
@@ -351,7 +353,7 @@ function Redirects() {
               ["attention", "Needs attention"],
             ] as const
           ).map(([value, label]) => (
-            <button
+            <Button unstyled
               className={filter === value ? "active" : ""}
               key={value}
               onClick={() => setFilter(value)}
@@ -361,7 +363,7 @@ function Redirects() {
               <span className={value === "attention" ? "danger" : ""}>
                 {counts[value]}
               </span>
-            </button>
+            </Button>
           ))}
         </div>
         <span className="sf-spacer" />
@@ -378,9 +380,9 @@ function Redirects() {
             looping.
           </strong>
           <span className="sf-spacer" />
-          <button onClick={() => setFilter("attention")} type="button">
+          <Button unstyled onClick={() => setFilter("attention")} type="button">
             Review {counts.attention}
-          </button>
+          </Button>
         </div>
       ) : null}
 
@@ -412,13 +414,13 @@ function Redirects() {
                   : "Create a forwarding rule when an old URL should lead somewhere new."}
               </p>
               {!workspace.redirects.length ? (
-                <button
+                <Button unstyled
                   className="sf-action primary"
                   onClick={() => setForm({ ...emptyForm })}
                   type="button"
                 >
                   Add redirect
-                </button>
+                </Button>
               ) : null}
             </div>
           ) : (
@@ -487,7 +489,7 @@ function Redirects() {
                         {formatDate(redirect.createdAt)}
                       </span>
                       <span className="sf-redirect-actions">
-                        <button
+                        <Button unstyled
                           onClick={(event) => {
                             event.stopPropagation();
                             openEdit(redirect);
@@ -496,8 +498,8 @@ function Redirects() {
                           type="button"
                         >
                           <i className="ph ph-pencil-simple" />
-                        </button>
-                        <button
+                        </Button>
+                        <Button unstyled
                           onClick={(event) => {
                             event.stopPropagation();
                             setModalError("");
@@ -507,7 +509,7 @@ function Redirects() {
                           type="button"
                         >
                           <i className="ph ph-trash" />
-                        </button>
+                        </Button>
                       </span>
                     </div>
                   );
@@ -554,7 +556,7 @@ function Redirects() {
             <div className="sf-redirect-modal-body">
               <label>
                 <span>Source path</span>
-                <input
+                <Input unstyled
                   disabled={form.automatic}
                   onChange={(event) =>
                     setForm({ ...form, sourcePath: event.target.value })
@@ -572,7 +574,7 @@ function Redirects() {
               </label>
               <label>
                 <span>Redirects to</span>
-                <input
+                <Input unstyled
                   onChange={(event) =>
                     setForm({ ...form, destinationPath: event.target.value })
                   }
@@ -601,7 +603,7 @@ function Redirects() {
               <fieldset>
                 <legend>Redirect type</legend>
                 {[301, 302].map((code) => (
-                  <button
+                  <Button unstyled
                     className={form.statusCode === code ? "active" : ""}
                     key={code}
                     onClick={() =>
@@ -611,7 +613,7 @@ function Redirects() {
                   >
                     <b>{code}</b>
                     <span>{code === 301 ? "Permanent" : "Temporary"}</span>
-                  </button>
+                  </Button>
                 ))}
               </fieldset>
               {form.automatic ? (
@@ -628,7 +630,7 @@ function Redirects() {
               <ModalClose className="sf-action" disabled={saving}>
                 Cancel
               </ModalClose>
-              <button
+              <Button unstyled
                 className="sf-action primary"
                 disabled={!formState.valid || saving}
                 onClick={() => void submit()}
@@ -639,7 +641,7 @@ function Redirects() {
                   : form.id
                     ? "Save redirect"
                     : "Add redirect"}
-              </button>
+              </Button>
             </div>
           </>
         ) : null}
@@ -675,14 +677,14 @@ function Redirects() {
               <ModalClose className="sf-action" disabled={saving}>
                 Cancel
               </ModalClose>
-              <button
+              <Button unstyled
                 className="sf-action danger"
                 disabled={saving}
                 onClick={() => void remove()}
                 type="button"
               >
                 {saving ? "Deleting..." : "Delete redirect"}
-              </button>
+              </Button>
             </div>
           </>
         ) : null}

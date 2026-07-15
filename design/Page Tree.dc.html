@@ -18,9 +18,9 @@
   *{box-sizing:border-box}
   html,body{height:100%}
   body{margin:0;background:#F5F7F4;color:#172326;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden}
-  a{color:#0D6770;text-decoration:none}
-  a:hover{color:#0A545C}
-  ::selection{background:#CFE6E1}
+  a{color:#763FBA;text-decoration:none}
+  a:hover{color:#5E299C}
+  ::selection{background:#DFE3E8}
   .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
   .sf-scroll::-webkit-scrollbar{width:10px;height:10px}
   .sf-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #fff}
@@ -29,7 +29,7 @@
   @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
   @keyframes sfFade{from{opacity:0}to{opacity:1}}
   @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
-  @keyframes sfFlash{0%{background:#DCEDEA}100%{background:transparent}}
+  @keyframes sfFlash{0%{background:#ECEEF1}100%{background:transparent}}
   @keyframes sfMenu{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 </style>
 </helmet>
@@ -91,9 +91,9 @@
       <button onClick="{{ toggleFilters }}" style="display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 12px;border:1px solid {{ filterBtnBorder }};border-radius:8px;background:{{ filterBtnBg }};color:{{ filterBtnFg }};font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex:none" style-hover="filter:brightness(0.98)">
         <i class="ph ph-funnel" style="font-size:15px"></i>
         Filters
-        <sc-if value="{{ activeFilterCount }}" hint-placeholder-val="0"><span style="min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#0D6770;color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">{{ activeFilterCount }}</span></sc-if>
+        <sc-if value="{{ activeFilterCount }}" hint-placeholder-val="0"><span style="min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#763FBA;color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">{{ activeFilterCount }}</span></sc-if>
       </button>
-      <button onClick="{{ addTopLevel }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:none;border-radius:8px;background:#0D6770;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.1);white-space:nowrap;flex:none" style-hover="background:#0A545C">
+      <button onClick="{{ addTopLevel }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:none;border-radius:8px;background:#763FBA;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.1);white-space:nowrap;flex:none" style-hover="background:#5E299C">
         <i class="ph-bold ph-plus" style="font-size:15px"></i>
         Add page
       </button>
@@ -126,7 +126,7 @@
         </button>
         <span style="flex:1"></span>
         <span style="font-size:12px;color:#869693;font-family:'Geist Mono',monospace">{{ resultLabel }}</span>
-        <sc-if value="{{ activeFilterCount }}" hint-placeholder-val="0"><button onClick="{{ clearFilters }}" style="display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 10px;border:none;border-radius:8px;background:transparent;color:#0D6770;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#DCEDEA">Clear all</button></sc-if>
+        <sc-if value="{{ activeFilterCount }}" hint-placeholder-val="0"><button onClick="{{ clearFilters }}" style="display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 10px;border:none;border-radius:8px;background:transparent;color:#763FBA;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#ECEEF1">Clear all</button></sc-if>
       </div>
     </sc-if>
 
@@ -141,14 +141,14 @@
             <span style="font-size:16px;font-weight:600;color:#172326">{{ emptyTitle }}</span>
             <span style="font-size:13.5px;line-height:1.55;color:#526366">{{ emptyBody }}</span>
           </div>
-          <button onClick="{{ emptyAction }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 15px;border:none;border-radius:8px;background:#0D6770;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#0A545C">{{ emptyCta }}</button>
+          <button onClick="{{ emptyAction }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 15px;border:none;border-radius:8px;background:#763FBA;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#5E299C">{{ emptyCta }}</button>
         </div>
       </sc-if>
 
       <sc-for list="{{ rows }}" as="r" hint-placeholder-count="12">
         <div draggable="true" onClick="{{ r.onClick }}" onDragStart="{{ r.onDragStart }}" onDragOver="{{ r.onDragOver }}" onDragEnter="{{ r.onDragOver }}" onDrop="{{ r.onDrop }}" onDragEnd="{{ r.onDragEnd }}" style="position:relative;display:flex;align-items:center;gap:8px;height:{{ rowH }};padding-right:14px;padding-left:{{ r.pad }};background:{{ r.bg }};opacity:{{ r.op }};box-shadow:{{ r.shadow }};cursor:pointer;transition:background .12s,box-shadow .12s;animation:{{ r.anim }};border-bottom:1px solid #F5F7F4" style-hover="filter:brightness(0.975)">
-          <sc-if value="{{ r.dropBefore }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:{{ r.pad }};right:14px;top:-1px;height:2px;background:#0D6770;border-radius:2px;z-index:2"><span style="position:absolute;left:-3px;top:-2px;width:6px;height:6px;border-radius:999px;background:#0D6770"></span></div></sc-if>
-          <sc-if value="{{ r.dropAfter }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:{{ r.pad }};right:14px;bottom:-1px;height:2px;background:#0D6770;border-radius:2px;z-index:2"><span style="position:absolute;left:-3px;top:-2px;width:6px;height:6px;border-radius:999px;background:#0D6770"></span></div></sc-if>
+          <sc-if value="{{ r.dropBefore }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:{{ r.pad }};right:14px;top:-1px;height:2px;background:#763FBA;border-radius:2px;z-index:2"><span style="position:absolute;left:-3px;top:-2px;width:6px;height:6px;border-radius:999px;background:#763FBA"></span></div></sc-if>
+          <sc-if value="{{ r.dropAfter }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:{{ r.pad }};right:14px;bottom:-1px;height:2px;background:#763FBA;border-radius:2px;z-index:2"><span style="position:absolute;left:-3px;top:-2px;width:6px;height:6px;border-radius:999px;background:#763FBA"></span></div></sc-if>
 
           <span onClick="{{ r.onToggle }}" style="width:17px;height:17px;flex:none;display:flex;align-items:center;justify-content:center;color:#8A9895;transition:transform .15s;transform:rotate({{ r.chevRot }});visibility:{{ r.chevVis }};border-radius:4px" style-hover="background:#E2E7E2;color:#172326">
             <i class="ph-bold ph-caret-right" style="font-size:13px"></i>
@@ -165,7 +165,7 @@
           <sc-if value="{{ r.showTag }}" hint-placeholder-val="{{ false }}"><span style="font-size:11.5px;color:#526366;background:#EEF1ED;padding:2px 8px;border-radius:5px;white-space:nowrap">{{ r.template }}</span></sc-if>
           <span style="display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:5px;font-size:11.5px;font-weight:600;background:{{ r.stBg }};color:{{ r.stFg }};white-space:nowrap"><span style="width:5px;height:5px;border-radius:999px;background:{{ r.stDot }}"></span>{{ r.status }}</span>
 
-          <span onClick="{{ r.onPlus }}" title="Add child page" style="width:26px;height:26px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:pointer" style-hover="background:#DCEDEA;color:#0D6770"><i class="ph-bold ph-plus" style="font-size:15px"></i></span>
+          <span onClick="{{ r.onPlus }}" title="Add child page" style="width:26px;height:26px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:pointer" style-hover="background:#ECEEF1;color:#763FBA"><i class="ph-bold ph-plus" style="font-size:15px"></i></span>
           <span onClick="{{ r.onMenu }}" title="More actions" style="width:26px;height:26px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#AEBAB6;cursor:pointer" style-hover="background:#EEF1ED;color:#172326"><i class="ph-bold ph-dots-three" style="font-size:18px"></i></span>
         </div>
       </sc-for>
@@ -173,7 +173,7 @@
 
     <!-- status bar -->
     <div style="display:flex;align-items:center;gap:14px;padding:9px 22px;border-top:1px solid #EEF1ED;background:#FAFCFA;font-size:12px;color:#869693">
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ph ph-arrows-out-cardinal" style="font-size:15px;color:#0D6770"></i>Drag a row to reorder, or onto another page to reparent</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ph ph-arrows-out-cardinal" style="font-size:15px;color:#763FBA"></i>Drag a row to reorder, or onto another page to reparent</span>
       <span style="flex:1"></span>
       <span style="font-family:'Geist Mono',monospace">{{ footerLabel }}</span>
     </div>
@@ -205,8 +205,8 @@
 <sc-if value="{{ showPlusMenu }}" hint-placeholder-val="{{ false }}">
   <div style="position:fixed;left:{{ menuX }};top:{{ menuY }};z-index:50;width:250px;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:sfPop .13s ease">
     <div style="padding:8px 10px 4px;font-size:11px;font-weight:600;color:#A5B0AD;text-transform:uppercase;letter-spacing:0.05em">Add under “{{ plusParent }}”</div>
-    <div onClick="{{ plusQuick }}" style="display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:7px;cursor:pointer" style-hover="background:#DCEDEA">
-      <span style="width:30px;height:30px;border-radius:7px;background:#DCEDEA;color:#0D6770;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-arrow-elbow-down-right" style="font-size:17px"></i></span>
+    <div onClick="{{ plusQuick }}" style="display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:7px;cursor:pointer" style-hover="background:#ECEEF1">
+      <span style="width:30px;height:30px;border-radius:7px;background:#ECEEF1;color:#763FBA;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-arrow-elbow-down-right" style="font-size:17px"></i></span>
       <div style="display:flex;flex-direction:column;min-width:0"><span style="font-size:13px;font-weight:600;color:#172326">Add {{ plusPreferred }}</span><span style="font-size:11.5px;color:#869693">Preferred template here</span></div>
     </div>
     <div onClick="{{ plusOther }}" style="display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:7px;cursor:pointer" style-hover="background:#F5F7F4">
@@ -237,7 +237,7 @@
         <span style="width:22px;height:22px;border-radius:999px;background:{{ a.avBg }};color:{{ a.avFg }};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex:none">{{ a.initials }}</span>
         <span>{{ a.name }}</span>
         <span style="flex:1"></span>
-        <span style="display:flex;color:#0D6770">{{ a.check }}</span>
+        <span style="display:flex;color:#763FBA">{{ a.check }}</span>
       </div>
     </sc-for>
   </div>
@@ -252,7 +252,7 @@
         <span style="width:26px;height:20px;border-radius:4px;background:#EEF1ED;color:#526366;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex:none;font-family:'Geist Mono',monospace">{{ l.code }}</span>
         <div style="display:flex;flex-direction:column"><span style="font-size:13px;font-weight:500;color:#172326">{{ l.name }}</span><span style="font-size:11px;color:#869693">{{ l.count }} pages</span></div>
         <span style="flex:1"></span>
-        <span style="display:flex;color:#0D6770">{{ l.check }}</span>
+        <span style="display:flex;color:#763FBA">{{ l.check }}</span>
       </div>
     </sc-for>
   </div>
@@ -272,10 +272,10 @@
       </div>
       <div style="padding:14px 16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <sc-for list="{{ pickerTemplates }}" as="t" hint-placeholder-count="6">
-          <div onClick="{{ t.onClick }}" style="display:flex;gap:11px;padding:13px;border:1px solid {{ t.border }};border-radius:10px;cursor:pointer;background:{{ t.bg }};transition:border-color .12s,background .12s" style-hover="border-color:#0D6770;background:#F7FAF9">
-            <span style="width:34px;height:34px;border-radius:8px;background:#DCEDEA;color:#0D6770;display:flex;align-items:center;justify-content:center;flex:none">{{ t.icon }}</span>
+          <div onClick="{{ t.onClick }}" style="display:flex;gap:11px;padding:13px;border:1px solid {{ t.border }};border-radius:10px;cursor:pointer;background:{{ t.bg }};transition:border-color .12s,background .12s" style-hover="border-color:#763FBA;background:#FCF5FA">
+            <span style="width:34px;height:34px;border-radius:8px;background:#ECEEF1;color:#763FBA;display:flex;align-items:center;justify-content:center;flex:none">{{ t.icon }}</span>
             <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
-              <div style="display:flex;align-items:center;gap:6px"><span style="font-size:13.5px;font-weight:600;color:#172326">{{ t.name }}</span><sc-if value="{{ t.preferred }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:700;color:#0D6770;background:#DCEDEA;padding:1px 6px;border-radius:999px">Preferred</span></sc-if></div>
+              <div style="display:flex;align-items:center;gap:6px"><span style="font-size:13.5px;font-weight:600;color:#172326">{{ t.name }}</span><sc-if value="{{ t.preferred }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:700;color:#763FBA;background:#ECEEF1;padding:1px 6px;border-radius:999px">Preferred</span></sc-if></div>
               <span style="font-size:11.5px;line-height:1.45;color:#869693">{{ t.desc }}</span>
             </div>
           </div>
@@ -296,8 +296,8 @@
           <span style="font-size:13px;line-height:1.55;color:#526366">{{ delBody }}</span>
           <sc-if value="{{ delRedirect }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;align-items:center;gap:8px;margin-top:6px;padding:9px 11px;border:1px solid #E2E7E2;border-radius:8px;background:#FAFCFA">
-              <span style="display:flex;color:#0D6770"><i class="ph ph-arrow-bend-up-right" style="font-size:15px"></i></span>
-              <span style="font-size:12.5px;color:#33474A">Create a redirect from <span style="font-family:'Geist Mono',monospace;font-size:11.5px;color:#0D6770">{{ delPath }}</span></span>
+              <span style="display:flex;color:#763FBA"><i class="ph ph-arrow-bend-up-right" style="font-size:15px"></i></span>
+              <span style="font-size:12.5px;color:#33474A">Create a redirect from <span style="font-family:'Geist Mono',monospace;font-size:11.5px;color:#763FBA">{{ delPath }}</span></span>
               <span style="flex:1"></span>
               <span onClick="{{ toggleRedirect }}" style="width:34px;height:20px;border-radius:999px;background:{{ redirectTrackBg }};position:relative;cursor:pointer;transition:background .15s;flex:none"><span style="position:absolute;top:2px;left:{{ redirectKnob }};width:16px;height:16px;border-radius:999px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);transition:left .15s"></span></span>
             </div>
@@ -320,14 +320,14 @@
       <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
       <sc-if value="{{ toastSub }}" hint-placeholder-val="x"><span style="font-size:11.5px;color:#B7C4C1">{{ toastSub }}</span></sc-if>
     </div>
-    <sc-if value="{{ toastAction }}" hint-placeholder-val="x"><span onClick="{{ toastUndo }}" style="margin-left:6px;font-size:12.5px;font-weight:600;color:#58C3C7;cursor:pointer;white-space:nowrap" style-hover="color:#8FDBDE">{{ toastAction }}</span></sc-if>
+    <sc-if value="{{ toastAction }}" hint-placeholder-val="x"><span onClick="{{ toastUndo }}" style="margin-left:6px;font-size:12.5px;font-weight:600;color:#B994F8;cursor:pointer;white-space:nowrap" style-hover="color:#8FDBDE">{{ toastAction }}</span></sc-if>
   </div>
 </sc-if>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;comfortable&quot;,&quot;compact&quot;],&quot;default&quot;:&quot;comfortable&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;showTemplateTags&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
 const AUTHORS = {
   "Mara Jensen": { initials: "MJ", avBg: "#FBEBE1", avFg: "#B45F38" },
-  "Devin Park": { initials: "DP", avBg: "#DCEDEA", avFg: "#0D6770" },
+  "Devin Park": { initials: "DP", avBg: "#ECEEF1", avFg: "#763FBA" },
   "Sofia Ruiz": { initials: "SR", avBg: "#EAE6F5", avFg: "#5B4B8A" },
 };
 const STATUS = {
@@ -624,7 +624,7 @@ class Component extends DCLogic {
     // ---- left nav ----
     const total = countTree(this.tree());
     const nav = [
-      { icon: icon(ICONS.layers), label: "Pages", bg: "#DCEDEA", fg: "#0D6770", count: "" + total },
+      { icon: icon(ICONS.layers), label: "Pages", bg: "#ECEEF1", fg: "#763FBA", count: "" + total },
       { icon: icon(ICONS.image), label: "Media", bg: "transparent", fg: "#33474A", count: 0 },
       { icon: icon(ICONS.redirect), label: "Redirects", bg: "transparent", fg: "#33474A", count: 0 },
       { icon: icon(ICONS.panelTop), label: "Header navigation", bg: "transparent", fg: "#33474A", count: 0 },
@@ -663,15 +663,15 @@ class Component extends DCLogic {
         const isDragging = s.dragId === n.id;
         const t = typeOf(n, kids.length > 0);
         const st = STATUS[n.status];
-        let bg = "transparent"; if (inside || selected) bg = "#DCEDEA";
-        let shadow = "none"; if (inside) shadow = "inset 0 0 0 1.5px #0D6770"; else if (selected) shadow = "inset 2px 0 0 #0D6770";
+        let bg = "transparent"; if (inside || selected) bg = "#ECEEF1";
+        let shadow = "none"; if (inside) shadow = "inset 0 0 0 1.5px #763FBA"; else if (selected) shadow = "inset 2px 0 0 #96A0AC";
         acc.push({
           id: n.id, pad: (10 + depth * 20) + "px", bg, shadow,
           op: isDragging ? "0.4" : (muted ? "0.5" : "1"),
           anim: s.flashId === n.id ? "sfFlash 1.1s ease" : "none",
           chevRot: expanded ? "90deg" : "0deg",
           chevVis: kids.length ? "visible" : "hidden",
-          iconColor: t === "home" ? "#0D6770" : "#7C8A88",
+          iconColor: t === "home" ? "#763FBA" : "#7C8A88",
           iconClass: ({ home: "ph-house", folder: "ph-folder", news: "ph-newspaper", landing: "ph-layout", faq: "ph-question", file: "ph-file-text" })[t],
           icHome: t === "home", icFolder: t === "folder", icNews: t === "news",
           icLanding: t === "landing", icFaq: t === "faq", icFile: t === "file",
@@ -705,7 +705,7 @@ class Component extends DCLogic {
     ].map(o => ({
       label: o.label,
       bg: s.filterStatus === o.val ? "#fff" : "transparent",
-      fg: s.filterStatus === o.val ? "#0D6770" : "#526366",
+      fg: s.filterStatus === o.val ? "#763FBA" : "#526366",
       shadow: s.filterStatus === o.val ? "0 1px 2px rgba(23,35,38,0.12)" : "none",
       onClick: () => this.setState({ filterStatus: o.val }),
     }));
@@ -715,7 +715,7 @@ class Component extends DCLogic {
       const on = s.filterTemplates.includes(name);
       return {
         name, onClick: () => this.setState({ filterTemplates: on ? s.filterTemplates.filter(x => x !== name) : [...s.filterTemplates, name] }),
-        boxBorder: on ? "#0D6770" : "#CFD6D0", boxBg: on ? "#0D6770" : "#fff",
+        boxBorder: on ? "#763FBA" : "#CFD6D0", boxBg: on ? "#763FBA" : "#fff",
         check: on ? icon(ICONS.check, 12) : "",
       };
     });
@@ -726,7 +726,7 @@ class Component extends DCLogic {
     });
     const langItems = LANGS.map(l => ({
       code: l.code, name: l.name, count: countTree(this.state.trees[l.key]),
-      bg: s.lang === l.key ? "#DCEDEA" : "transparent",
+      bg: s.lang === l.key ? "#ECEEF1" : "transparent",
       check: s.lang === l.key ? icon(ICONS.check, 15) : "",
       onClick: () => this.setState({ lang: l.key, menu: null, selected: null, q: "", filterStatus: "all", filterTemplates: [], filterAuthor: "all", filterProblems: false }),
     }));
@@ -769,8 +769,8 @@ class Component extends DCLogic {
       pickerTemplates = TEMPLATES.map(tp => ({
         name: tp.name, desc: tp.desc, icon: icon(ICONS[tp.type]),
         preferred: preferred === tp.name,
-        border: preferred === tp.name ? "#0D6770" : "#E2E7E2",
-        bg: preferred === tp.name ? "#F7FAF9" : "#fff",
+        border: preferred === tp.name ? "#763FBA" : "#E2E7E2",
+        bg: preferred === tp.name ? "#FCF5FA" : "#fff",
         onClick: () => this.createPage(pickerParentId, tp.name),
       }));
     }
@@ -789,8 +789,8 @@ class Component extends DCLogic {
 
     // toast
     const toast = s.toast;
-    const toastIconMap = { check: [ICONS.check, "#58C3C7"], move: [ICONS.move, "#58C3C7"], copy: [ICONS.copy, "#58C3C7"], trash: [ICONS.trash, "#F09A73"], info: [ICONS.info, "#58C3C7"], open: [ICONS.open, "#58C3C7"], rename: [ICONS.rename, "#58C3C7"] };
-    let toastIcon = "", toastIconColor = "#58C3C7";
+    const toastIconMap = { check: [ICONS.check, "#B994F8"], move: [ICONS.move, "#B994F8"], copy: [ICONS.copy, "#B994F8"], trash: [ICONS.trash, "#F09A73"], info: [ICONS.info, "#B994F8"], open: [ICONS.open, "#B994F8"], rename: [ICONS.rename, "#B994F8"] };
+    let toastIcon = "", toastIconColor = "#B994F8";
     if (toast) { const m = toastIconMap[toast.icon] || toastIconMap.info; toastIcon = icon(m[0]); toastIconColor = m[1]; }
 
     return {
@@ -804,27 +804,27 @@ class Component extends DCLogic {
       onSearchFocus: () => this.setState({ searchFocus: true }),
       onSearchBlur: () => this.setState({ searchFocus: false }),
       clearSearch: () => this.setState({ q: "" }),
-      searchBorder: s.searchFocus ? "#0D6770" : "#CFD6D0",
-      searchRing: s.searchFocus ? "0 0 0 3px rgba(13,103,112,0.16)" : "none",
-      searchIcon: s.searchFocus ? "#0D6770" : "#869693",
+      searchBorder: s.searchFocus ? "#763FBA" : "#CFD6D0",
+      searchRing: s.searchFocus ? "0 0 0 3px rgba(118,63,186,0.16)" : "none",
+      searchIcon: s.searchFocus ? "#763FBA" : "#869693",
       // filters
       showFilters: s.showFilters,
       toggleFilters: () => this.setState({ showFilters: !s.showFilters }),
-      filterBtnBg: (s.showFilters || activeFilterCount) ? "#DCEDEA" : "#fff",
-      filterBtnBorder: (s.showFilters || activeFilterCount) ? "#A7D4CE" : "#CFD6D0",
-      filterBtnFg: (s.showFilters || activeFilterCount) ? "#0D6770" : "#33474A",
+      filterBtnBg: (s.showFilters || activeFilterCount) ? "#ECEEF1" : "#fff",
+      filterBtnBorder: (s.showFilters || activeFilterCount) ? "#CBD3DB" : "#CFD6D0",
+      filterBtnFg: (s.showFilters || activeFilterCount) ? "#763FBA" : "#33474A",
       activeFilterCount: activeFilterCount || 0,
       statusSeg,
       openTemplateFilter: (e) => { const r = e.currentTarget.getBoundingClientRect(); this.setState({ menu: { type: "tmpl", x: r.left, y: r.bottom + 6 } }); },
       tmplBtnLabel: s.filterTemplates.length ? (s.filterTemplates.length + " templates") : "Template",
-      tmplBtnBg: s.filterTemplates.length ? "#DCEDEA" : "#fff",
-      tmplBtnBorder: s.filterTemplates.length ? "#A7D4CE" : "#CFD6D0",
-      tmplBtnFg: s.filterTemplates.length ? "#0D6770" : "#33474A",
+      tmplBtnBg: s.filterTemplates.length ? "#ECEEF1" : "#fff",
+      tmplBtnBorder: s.filterTemplates.length ? "#CBD3DB" : "#CFD6D0",
+      tmplBtnFg: s.filterTemplates.length ? "#763FBA" : "#33474A",
       openAuthorFilter: (e) => { const r = e.currentTarget.getBoundingClientRect(); this.setState({ menu: { type: "author", x: r.left, y: r.bottom + 6 } }); },
       authBtnLabel: s.filterAuthor === "all" ? "Author" : s.filterAuthor.split(" ")[0],
-      authBtnBg: s.filterAuthor !== "all" ? "#DCEDEA" : "#fff",
-      authBtnBorder: s.filterAuthor !== "all" ? "#A7D4CE" : "#CFD6D0",
-      authBtnFg: s.filterAuthor !== "all" ? "#0D6770" : "#33474A",
+      authBtnBg: s.filterAuthor !== "all" ? "#ECEEF1" : "#fff",
+      authBtnBorder: s.filterAuthor !== "all" ? "#CBD3DB" : "#CFD6D0",
+      authBtnFg: s.filterAuthor !== "all" ? "#763FBA" : "#33474A",
       toggleProblems: () => this.setState({ filterProblems: !s.filterProblems }),
       probBg: s.filterProblems ? "#F8E6E3" : "#fff", probBorder: s.filterProblems ? "#EEC6BC" : "#CFD6D0", probFg: s.filterProblems ? "#B5382C" : "#33474A",
       clearFilters: () => this.setState({ filterStatus: "all", filterTemplates: [], filterAuthor: "all", filterProblems: false, q: "" }),
@@ -859,7 +859,7 @@ class Component extends DCLogic {
       // delete
       showDelete: !!s.del, delTitle, delBody, delRedirect, delConfirmable, delConfirmLabel, delPath, delIcon, delIconBg, delIconFg,
       toggleRedirect: () => this.setState({ del: { ...s.del, redirect: !s.del.redirect } }),
-      redirectTrackBg: (s.del && s.del.redirect) ? "#0D6770" : "#CFD6D0",
+      redirectTrackBg: (s.del && s.del.redirect) ? "#763FBA" : "#CFD6D0",
       redirectKnob: (s.del && s.del.redirect) ? "16px" : "2px",
       confirmDelete: () => this.confirmDelete(),
       // add page

@@ -1,3 +1,7 @@
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
+import { NativeSelect } from "../components/ui/native-select";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "../lib/auth";
@@ -184,7 +188,7 @@ function previewDocument(blocks: ContentBlock[]) {
       })
       .join("") ||
     '<div class="empty">No content blocks yet · add one from the panel.</div>';
-  const documentHtml = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Geist,system-ui,sans-serif;color:#1a1a1a;background:#fff;-webkit-font-smoothing:antialiased}article{max-width:680px;margin:0 auto;padding:56px 28px 96px}.meta{display:flex;align-items:center;gap:12px;font-size:13px;color:#8a8a8a;margin-bottom:28px;flex-wrap:wrap}.cat{color:#2f5fe0;font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:11px}.blk{position:relative;outline:2px solid transparent;outline-offset:6px;border-radius:2px;cursor:pointer}.blk.sel{outline-color:#0d6770}.blk+.blk{margin-top:30px}.eyebrow{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#2f5fe0;margin:0 0 12px}h1{font-family:Newsreader,Georgia,serif;font-weight:600;font-size:42px;line-height:1.12;letter-spacing:-.01em;margin:0 0 16px}.sub{font-size:19px;line-height:1.5;color:#525252;margin:0 0 24px}.ph{border-radius:10px;background:repeating-linear-gradient(135deg,#f1f2f4,#f1f2f4 11px,#e9ebee 11px,#e9ebee 22px);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:#9aa0aa;font-size:12px;font-weight:600;letter-spacing:.03em}.body{font-family:Newsreader,Georgia,serif;font-size:18px;line-height:1.7;color:#2a2a2a;margin:0 0 18px}.empty-text{color:#b8b8b8}blockquote{margin:0;padding:6px 0 6px 22px;border-left:3px solid #2f5fe0;font-family:Newsreader,Georgia,serif;font-size:24px;line-height:1.4;font-weight:500}blockquote cite{display:block;margin-top:12px;font-family:Geist,sans-serif;font-size:13px;font-style:normal;font-weight:600;color:#8a8a8a}.cap{font-size:13px;color:#8a8a8a;margin:10px 2px 0}.cta{background:#0f1115;border-radius:14px;padding:32px;text-align:center;color:#fff}.cta h3{font-family:Newsreader,serif;font-size:26px;margin:0 0 16px}.btn{display:inline-block;background:#2f5fe0;padding:12px 22px;border-radius:8px;font-size:14px;font-weight:600}.empty{color:#b0b0b0;text-align:center;padding:80px 0;font-size:14px}</style></head><body><article><div class="meta"><span class="cat">Product</span><span>July 12, 2026</span><span>By Mara Jensen</span></div>${content}</article><script>function selectBlock(id,scroll){document.querySelectorAll('[data-id]').forEach(function(el){el.classList.toggle('sel',el.dataset.id===id)});var target=document.querySelector('[data-id="'+CSS.escape(id)+'"]');if(target&&scroll)target.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'})}document.querySelectorAll('[data-id]').forEach(function(el){el.addEventListener('click',function(){selectBlock(el.dataset.id,false);parent.postMessage({source:'sf-preview',type:'select',id:el.dataset.id},'*')})});window.addEventListener('message',function(event){if(event.data&&event.data.source==='sf-editor'&&event.data.type==='select')selectBlock(event.data.id,event.data.scroll)});parent.postMessage({source:'sf-preview',type:'ready'},'*')<\/script></body></html>`;
+const documentHtml = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Geist,system-ui,sans-serif;color:#1a1a1a;background:#fff;-webkit-font-smoothing:antialiased}article{max-width:680px;margin:0 auto;padding:56px 28px 96px}.meta{display:flex;align-items:center;gap:12px;font-size:13px;color:#8a8a8a;margin-bottom:28px;flex-wrap:wrap}.cat{color:#2f5fe0;font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:11px}.blk{position:relative;outline:2px solid transparent;outline-offset:6px;border-radius:2px;cursor:pointer}.blk.sel{outline-color:#8a95a1}.blk+.blk{margin-top:30px}.eyebrow{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#2f5fe0;margin:0 0 12px}h1{font-family:Newsreader,Georgia,serif;font-weight:600;font-size:42px;line-height:1.12;letter-spacing:-.01em;margin:0 0 16px}.sub{font-size:19px;line-height:1.5;color:#525252;margin:0 0 24px}.ph{border-radius:10px;background:repeating-linear-gradient(135deg,#f1f2f4,#f1f2f4 11px,#e9ebee 11px,#e9ebee 22px);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:#9aa0aa;font-size:12px;font-weight:600;letter-spacing:.03em}.body{font-family:Newsreader,Georgia,serif;font-size:18px;line-height:1.7;color:#2a2a2a;margin:0 0 18px}.empty-text{color:#b8b8b8}blockquote{margin:0;padding:6px 0 6px 22px;border-left:3px solid #2f5fe0;font-family:Newsreader,Georgia,serif;font-size:24px;line-height:1.4;font-weight:500}blockquote cite{display:block;margin-top:12px;font-family:Geist,sans-serif;font-size:13px;font-style:normal;font-weight:600;color:#8a8a8a}.cap{font-size:13px;color:#8a8a8a;margin:10px 2px 0}.cta{background:#0f1115;border-radius:14px;padding:32px;text-align:center;color:#fff}.cta h3{font-family:Newsreader,serif;font-size:26px;margin:0 0 16px}.btn{display:inline-block;background:#2f5fe0;padding:12px 22px;border-radius:8px;font-size:14px;font-weight:600}.empty{color:#b0b0b0;text-align:center;padding:80px 0;font-size:14px}</style></head><body><article><div class="meta"><span class="cat">Product</span><span>July 12, 2026</span><span>By Mara Jensen</span></div>${content}</article><script>function selectBlock(id,scroll){document.querySelectorAll('[data-id]').forEach(function(el){el.classList.toggle('sel',el.dataset.id===id)});var target=document.querySelector('[data-id="'+CSS.escape(id)+'"]');if(target&&scroll)target.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'})}document.querySelectorAll('[data-id]').forEach(function(el){el.addEventListener('click',function(){selectBlock(el.dataset.id,false);parent.postMessage({source:'sf-preview',type:'select',id:el.dataset.id},'*')})});window.addEventListener('message',function(event){if(event.data&&event.data.source==='sf-editor'&&event.data.type==='select')selectBlock(event.data.id,event.data.scroll)});parent.postMessage({source:'sf-preview',type:'ready'},'*')<\/script></body></html>`;
   return documentHtml
     .replace(
       "document.querySelectorAll('[data-id]').forEach(function(el){el.addEventListener('click',function(){selectBlock(el.dataset.id,false);parent.postMessage({source:'sf-preview',type:'select',id:el.dataset.id},'*')})});",
@@ -431,12 +435,12 @@ function Editor() {
           <i className="ph ph-warning-circle" />
           <strong>Couldn’t open this page</strong>
           <span>{loadError || "The page was not found."}</span>
-          <button
+          <Button unstyled
             className="sf-action"
             onClick={() => void navigate({ to: "/" })}
           >
             Back to pages
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -445,13 +449,13 @@ function Editor() {
   return (
     <main className="sf-editor">
       <header className="sf-editor-top">
-        <button
+        <Button unstyled
           className="sf-editor-tree"
           onClick={() => void navigate({ to: "/" })}
         >
           <i className="ph-bold ph-arrow-left" />
           Tree
-        </button>
+        </Button>
         <div className="sf-editor-location">
           <div>
             {page.breadcrumbs.map((crumb, index) => (
@@ -474,10 +478,10 @@ function Editor() {
           {page.status === "published" ? "Published" : "Concept"}
         </span>
         {problems.length > 0 && (
-          <button className="sf-editor-problems" onClick={() => setTab("seo")}>
+          <Button unstyled className="sf-editor-problems" onClick={() => setTab("seo")}>
             <i className="ph-fill ph-warning" />
             {problems.length} {problems.length === 1 ? "problem" : "problems"}
-          </button>
+          </Button>
         )}
         <span className="sf-spacer" />
         <span className="sf-editor-saved">
@@ -486,22 +490,22 @@ function Editor() {
           />
           {savedLabel}
         </span>
-        <button
+        <Button unstyled
           className="sf-action"
           disabled={saving}
           onClick={() => void save(false)}
         >
           <i className="ph ph-floppy-disk" />
           Save concept
-        </button>
-        <button
+        </Button>
+        <Button unstyled
           className="sf-action primary"
           disabled={saving}
           onClick={() => void save(true)}
         >
           <i className="ph-bold ph-rocket-launch" />
           {page.status === "published" ? "Publish changes" : "Publish"}
-        </button>
+        </Button>
       </header>
       <div className="sf-editor-workspace">
         <section className="sf-preview-pane">
@@ -514,14 +518,14 @@ function Editor() {
                   ["mobile", "ph-device-mobile", "Mobile"],
                 ] as const
               ).map(([id, icon, label]) => (
-                <button
+                <Button unstyled
                   className={device === id ? "active" : ""}
                   title={label}
                   onClick={() => setDevice(id)}
                   key={id}
                 >
                   <i className={`ph-bold ${icon}`} />
-                </button>
+                </Button>
               ))}
             </div>
             <div className="sf-preview-url">
@@ -529,7 +533,7 @@ function Editor() {
               <span>acme.com{path}</span>
               <b>Preview</b>
             </div>
-            <button
+            <Button unstyled
               className={refreshing ? "spin" : ""}
               title="Refresh preview"
               onClick={() => {
@@ -539,8 +543,8 @@ function Editor() {
               }}
             >
               <i className="ph ph-arrow-clockwise" />
-            </button>
-            <button
+            </Button>
+            <Button unstyled
               title="Open preview"
               onClick={() =>
                 showToast(
@@ -549,7 +553,7 @@ function Editor() {
               }
             >
               <i className="ph ph-arrow-square-out" />
-            </button>
+            </Button>
           </div>
           <div className="sf-preview-stage sf-scroll">
             <iframe
@@ -566,24 +570,24 @@ function Editor() {
         </section>
         <aside className="sf-editor-panel">
           <div className="sf-editor-tabs">
-            <button
+            <Button unstyled
               className={tab === "content" ? "active" : ""}
               onClick={() => setTab("content")}
             >
               Content
-            </button>
-            <button
+            </Button>
+            <Button unstyled
               className={tab === "seo" ? "active" : ""}
               onClick={() => setTab("seo")}
             >
               SEO{problems.length > 0 && <b>{problems.length}</b>}
-            </button>
-            <button
+            </Button>
+            <Button unstyled
               className={tab === "settings" ? "active" : ""}
               onClick={() => setTab("settings")}
             >
               Page information
-            </button>
+            </Button>
           </div>
           <div className="sf-editor-fields sf-scroll">
             {tab === "content" && (
@@ -611,7 +615,7 @@ function Editor() {
                         </span>
                         <strong>{definition.label}</strong>
                         <span className="sf-spacer" />
-                        <button
+                        <Button unstyled
                           disabled={index === 0}
                           title="Move up"
                           onClick={(event) => {
@@ -620,8 +624,8 @@ function Editor() {
                           }}
                         >
                           <i className="ph-bold ph-arrow-up" />
-                        </button>
-                        <button
+                        </Button>
+                        <Button unstyled
                           disabled={index === page.blocks.length - 1}
                           title="Move down"
                           onClick={(event) => {
@@ -630,8 +634,8 @@ function Editor() {
                           }}
                         >
                           <i className="ph-bold ph-arrow-down" />
-                        </button>
-                        <button
+                        </Button>
+                        <Button unstyled
                           title="Remove block"
                           onClick={(event) => {
                             event.stopPropagation();
@@ -639,7 +643,7 @@ function Editor() {
                           }}
                         >
                           <i className="ph ph-trash" />
-                        </button>
+                        </Button>
                         <i
                           className={`ph ph-caret-down ${open ? "open" : ""}`}
                         />
@@ -650,7 +654,7 @@ function Editor() {
                             <label className="sf-editor-field" key={field.key}>
                               <span>{field.label}</span>
                               {field.type === "area" ? (
-                                <textarea
+                                <Textarea unstyled
                                   className="sf-editor-input"
                                   value={block.data[field.key] || ""}
                                   data-editor-block={block.id}
@@ -669,7 +673,7 @@ function Editor() {
                                   }
                                 />
                               ) : (
-                                <input
+                                <Input unstyled
                                   className="sf-editor-input"
                                   value={block.data[field.key] || ""}
                                   data-editor-block={block.id}
@@ -704,15 +708,15 @@ function Editor() {
                   );
                 })}
                 <div className="sf-add-block">
-                  <button onClick={() => setAddMenu((value) => !value)}>
+                  <Button unstyled onClick={() => setAddMenu((value) => !value)}>
                     <i className="ph-bold ph-plus" />
                     Add block
-                  </button>
+                  </Button>
                   {addMenu && (
                     <div className="sf-add-menu">
                       {(Object.keys(blockDefinitions) as BlockType[]).map(
                         (type) => (
-                          <button onClick={() => addBlock(type)} key={type}>
+                          <Button unstyled onClick={() => addBlock(type)} key={type}>
                             <i
                               className={`ph ${blockDefinitions[type].icon}`}
                             />
@@ -722,7 +726,7 @@ function Editor() {
                                 {blockDefinitions[type].description}
                               </small>
                             </span>
-                          </button>
+                          </Button>
                         ),
                       )}
                     </div>
@@ -745,7 +749,7 @@ function Editor() {
                 )}
                 <label className="sf-editor-field">
                   <span>Meta title</span>
-                  <input
+                  <Input unstyled
                     className="sf-editor-input"
                     value={page.seoTitle}
                     onChange={(event) =>
@@ -756,7 +760,7 @@ function Editor() {
                 </label>
                 <label className="sf-editor-field">
                   <span>Meta description</span>
-                  <textarea
+                  <Textarea unstyled
                     className="sf-editor-input"
                     value={page.seoDescription}
                     onChange={(event) =>
@@ -775,7 +779,7 @@ function Editor() {
                   <div className="sf-social-image">
                     <i className="ph-fill ph-image" />
                     <b>{page.socialImage || "og-default.png"}</b>
-                    <button
+                    <Button unstyled
                       onClick={() =>
                         showToast(
                           "Media selection will be connected with uploading later",
@@ -783,7 +787,7 @@ function Editor() {
                       }
                     >
                       Replace
-                    </button>
+                    </Button>
                   </div>
                 </label>
                 <label className="sf-editor-field">
@@ -801,7 +805,7 @@ function Editor() {
                   <span>Slug</span>
                   <div className="sf-slug">
                     <b>{page.parentPath}</b>
-                    <input
+                    <Input unstyled
                       value={page.slug}
                       onChange={(event) =>
                         update({
@@ -846,7 +850,7 @@ function Editor() {
                 </dl>
                 <label className="sf-editor-field">
                   <span>Preferred child template</span>
-                  <select
+                  <NativeSelect unstyled
                     className="sf-editor-input"
                     value={page.preferredChildTemplate || page.templateName}
                     onChange={(event) =>
@@ -856,7 +860,7 @@ function Editor() {
                     {templates.map((template) => (
                       <option key={template}>{template}</option>
                     ))}
-                  </select>
+                  </NativeSelect>
                   <p>Suggested first when adding a child page here.</p>
                 </label>
                 <div className="sf-translations">
@@ -874,7 +878,7 @@ function Editor() {
                   <div>
                     <b>FR</b>
                     <span>Not translated yet</span>
-                    <button
+                    <Button unstyled
                       onClick={() =>
                         showToast(
                           "Translation creation will be connected later",
@@ -882,15 +886,15 @@ function Editor() {
                       }
                     >
                       Create
-                    </button>
+                    </Button>
                   </div>
                 </div>
                 <div className="sf-danger">
                   <span>Danger zone</span>
-                  <button onClick={() => setDeleteOpen(true)}>
+                  <Button unstyled onClick={() => setDeleteOpen(true)}>
                     <i className="ph ph-trash" />
                     Delete this page
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
@@ -918,19 +922,19 @@ function Editor() {
               undone.
             </p>
             <div>
-              <button
+              <Button unstyled
                 className="sf-action"
                 onClick={() => setDeleteOpen(false)}
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button unstyled
                 className="sf-action danger"
                 disabled={saving}
                 onClick={() => void deletePage()}
               >
                 Delete page
-              </button>
+              </Button>
             </div>
           </section>
         </div>

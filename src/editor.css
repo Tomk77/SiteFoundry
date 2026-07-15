@@ -60,7 +60,7 @@
   font-weight: 600;
 }
 .sf-editor-location > b {
-  color: #0d6770;
+  color: #763fba;
   font: 500 12px "Geist Mono";
   white-space: nowrap;
 }
@@ -160,7 +160,7 @@
 }
 .sf-device-toggle button.active {
   background: #fff;
-  color: #0d6770;
+  color: #763fba;
   box-shadow: 0 1px 2px rgba(23, 35, 38, 0.14);
 }
 .sf-preview-url {
@@ -255,8 +255,8 @@
   cursor: pointer;
 }
 .sf-editor-tabs button.active {
-  border-color: #0d6770;
-  color: #0d6770;
+  border-color: #763fba;
+  color: #763fba;
 }
 .sf-editor-tabs b {
   display: inline-flex;
@@ -287,7 +287,7 @@
   background: #fff;
 }
 .sf-block.selected {
-  border-color: #a7d4ce;
+  border-color: #cbd3db;
 }
 .sf-block > header {
   display: flex;
@@ -298,7 +298,7 @@
   cursor: pointer;
 }
 .sf-block.selected > header {
-  background: #f1f7f6;
+  background: #f4f6f8;
 }
 .sf-block-icon {
   display: grid;
@@ -307,8 +307,8 @@
   flex: none;
   place-items: center;
   border-radius: 7px;
-  background: #dcedea;
-  color: #0d6770;
+  background: #eceef1;
+  color: #763fba;
   font-size: 15px;
 }
 .sf-block-icon.richtext {
@@ -393,8 +393,8 @@
   outline: 0;
 }
 .sf-editor-input:focus {
-  border-color: #0d6770;
-  box-shadow: 0 0 0 3px rgba(13, 103, 112, 0.15);
+  border-color: #763fba;
+  box-shadow: 0 0 0 3px rgba(118, 63, 186, 0.15);
 }
 textarea.sf-editor-input {
   min-height: 76px;
@@ -436,14 +436,14 @@ textarea.sf-editor-input {
   border: 1.5px dashed #c2ccc4;
   border-radius: 10px;
   background: #fafcfa;
-  color: #0d6770;
+  color: #763fba;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 }
 .sf-add-block > button:hover {
-  border-color: #a7d4ce;
-  background: #dcedea;
+  border-color: #cbd3db;
+  background: #eceef1;
 }
 .sf-add-menu {
   position: absolute;
@@ -481,7 +481,7 @@ textarea.sf-editor-input {
   place-items: center;
   border-radius: 7px;
   background: #eef1ed;
-  color: #0d6770;
+  color: #763fba;
   font-size: 16px;
 }
 .sf-add-menu > button > span {
@@ -590,8 +590,8 @@ textarea.sf-editor-input {
   background: #fff;
 }
 .sf-slug:focus-within {
-  border-color: #0d6770;
-  box-shadow: 0 0 0 3px rgba(13, 103, 112, 0.15);
+  border-color: #763fba;
+  box-shadow: 0 0 0 3px rgba(118, 63, 186, 0.15);
 }
 .sf-slug b {
   padding-left: 10px;
@@ -670,7 +670,7 @@ textarea.sf-editor-input {
   padding: 0;
   border: 0;
   background: transparent;
-  color: #0d6770;
+  color: #763fba;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -717,7 +717,7 @@ textarea.sf-editor-input {
   animation: sf-editor-toast 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .sf-editor-toast i {
-  color: #58c3c7;
+  color: #b994f8;
   font-size: 18px;
 }
 .sf-editor-modal {
@@ -844,15 +844,15 @@ textarea.sf-editor-input {
 }
 
 html[data-sf-theme="dark"] .sf-editor {
-  background: #101718;
-  color: #edf4f2;
+  background: #15181c;
+  color: #e9ecf1;
 }
 
 html[data-sf-theme="dark"] .sf-editor-top,
 html[data-sf-theme="dark"] .sf-preview-tools,
 html[data-sf-theme="dark"] .sf-editor-panel {
-  border-color: #2a3739;
-  background: #172123;
+  border-color: #323841;
+  background: #1d2126;
 }
 
 html[data-sf-theme="dark"] .sf-editor-tree,
@@ -865,50 +865,50 @@ html[data-sf-theme="dark"] .sf-slug,
 html[data-sf-theme="dark"] .sf-translations > div,
 html[data-sf-theme="dark"] .sf-add-menu,
 html[data-sf-theme="dark"] .sf-add-menu > button {
-  border-color: #35474a;
-  background: #172123;
-  color: #edf4f2;
+  border-color: #3d444e;
+  background: #1d2126;
+  color: #e9ecf1;
 }
 
 html[data-sf-theme="dark"] .sf-preview-pane,
 html[data-sf-theme="dark"] .sf-preview-stage {
-  background: #101718;
+  background: #15181c;
 }
 
 html[data-sf-theme="dark"] .sf-preview-stage iframe {
-  outline: 1px solid #2a3739;
+  outline: 1px solid #323841;
   box-shadow: 0 12px 36px rgb(0 0 0 / 32%);
 }
 
 html[data-sf-theme="dark"] .sf-device-toggle {
-  background: #101718;
+  background: #15181c;
 }
 
 html[data-sf-theme="dark"] .sf-device-toggle button.active {
-  background: #173033;
-  color: #58c3c7;
+  background: #2c333b;
+  color: #b994f8;
   box-shadow: none;
 }
 
 html[data-sf-theme="dark"] .sf-editor-tabs,
 html[data-sf-theme="dark"] .sf-block-fields,
 html[data-sf-theme="dark"] .sf-danger {
-  border-color: #2a3739;
+  border-color: #323841;
 }
 
 html[data-sf-theme="dark"] .sf-block.selected {
-  border-color: #347b80;
+  border-color: #515a65;
 }
 
 html[data-sf-theme="dark"] .sf-block.selected > header {
-  background: #173033;
+  background: #2c333b;
 }
 
 html[data-sf-theme="dark"] .sf-block > header button:hover,
 html[data-sf-theme="dark"] .sf-preview-tools > button:hover,
 html[data-sf-theme="dark"] .sf-add-menu > button:hover {
-  background: #1e2a2b;
-  color: #edf4f2;
+  background: #242930;
+  color: #e9ecf1;
 }
 
 html[data-sf-theme="dark"] .sf-editor-tabs button,
@@ -916,27 +916,27 @@ html[data-sf-theme="dark"] .sf-preview-url > span,
 html[data-sf-theme="dark"] .sf-social-image > b,
 html[data-sf-theme="dark"] .sf-canonical b,
 html[data-sf-theme="dark"] .sf-editor-location .current {
-  color: #a9b7b5;
+  color: #a7aeb8;
 }
 
 html[data-sf-theme="dark"] .sf-editor-tabs button.active,
 html[data-sf-theme="dark"] .sf-editor-location > b {
-  color: #58c3c7;
+  color: #b994f8;
 }
 
 html[data-sf-theme="dark"] .sf-social-image,
 html[data-sf-theme="dark"] .sf-page-meta,
 html[data-sf-theme="dark"] .sf-canonical,
 html[data-sf-theme="dark"] .sf-add-block > button {
-  border-color: #2a3739;
-  background: #1e2a2b;
-  color: #edf4f2;
+  border-color: #323841;
+  background: #242930;
+  color: #e9ecf1;
 }
 
 html[data-sf-theme="dark"] .sf-page-meta dd,
 html[data-sf-theme="dark"] .sf-slug input,
 html[data-sf-theme="dark"] .sf-translations > div > span {
-  color: #edf4f2;
+  color: #e9ecf1;
 }
 
 html[data-sf-theme="dark"] .sf-editor-field > span,
@@ -945,7 +945,7 @@ html[data-sf-theme="dark"] .sf-page-meta dt,
 html[data-sf-theme="dark"] .sf-editor-field > p,
 html[data-sf-theme="dark"] .sf-editor-field > small,
 html[data-sf-theme="dark"] .sf-add-menu small {
-  color: #7c8c8a;
+  color: #79808b;
 }
 
 html[data-sf-theme="dark"] .sf-seo-problems {
@@ -961,5 +961,5 @@ html[data-sf-theme="dark"] .sf-danger > button {
 }
 
 html[data-sf-theme="dark"] .sf-editor-modal p {
-  color: #a9b7b5;
+  color: #a7aeb8;
 }

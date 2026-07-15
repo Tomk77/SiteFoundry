@@ -18,15 +18,15 @@
   *{box-sizing:border-box}
   html,body{height:100%}
   body{margin:0;background:#F5F7F4;color:#172326;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden}
-  a{color:#0D6770;text-decoration:none}a:hover{color:#0A545C}
-  ::selection{background:#CFE6E1}
+  a{color:#763FBA;text-decoration:none}a:hover{color:#5E299C}
+  ::selection{background:#DFE3E8}
   input,textarea,select{font-family:inherit}
   i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
   .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
   .sf-scroll::-webkit-scrollbar{width:10px;height:10px}
   .sf-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #F5F7F4}
   .sf-in{width:100%;padding:8px 10px;border:1.5px solid #CFD6D0;border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none;transition:border-color .12s,box-shadow .12s}
-  .sf-in:focus{border-color:#0D6770;box-shadow:0 0 0 3px rgba(13,103,112,0.15)}
+  .sf-in:focus{border-color:#763FBA;box-shadow:0 0 0 3px rgba(118,63,186,0.15)}
   textarea.sf-in{resize:vertical;line-height:1.5}
   @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
   @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
@@ -43,14 +43,14 @@
       <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#869693">
         <span>Home</span><i class="ph ph-caret-right" style="font-size:10px"></i><span>News</span><i class="ph ph-caret-right" style="font-size:10px"></i><span style="color:#33474A;font-weight:600">{{ pageTitle }}</span>
       </div>
-      <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#0D6770;font-weight:500">{{ path }}</span>
+      <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#763FBA;font-weight:500">{{ path }}</span>
     </div>
     <span style="display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:5px;font-size:11.5px;font-weight:600;background:{{ statusBg }};color:{{ statusFg }}"><span style="width:5px;height:5px;border-radius:999px;background:{{ statusDot }}"></span>{{ statusLabel }}</span>
     <sc-if value="{{ hasProblems }}" hint-placeholder-val="{{ false }}"><span onClick="{{ gotoSeo }}" style="display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:5px;font-size:11.5px;font-weight:600;background:#F7EDDA;color:#8A5A06;cursor:pointer"><i class="ph-fill ph-warning" style="font-size:12px"></i>{{ problemCount }}</span></sc-if>
     <span style="flex:1"></span>
     <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#869693"><i class="ph {{ saveIcon }}" style="font-size:14px;color:{{ saveIconColor }}"></i>{{ savedLabel }}</span>
     <button onClick="{{ saveConcept }}" style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;border:1px solid #CFD6D0;border-radius:8px;background:#fff;color:#172326;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#F5F7F4"><i class="ph ph-floppy-disk" style="font-size:15px"></i>Save concept</button>
-    <button onClick="{{ publish }}" style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border:none;border-radius:8px;background:#0D6770;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.12);white-space:nowrap" style-hover="background:#0A545C"><i class="ph-bold ph-rocket-launch" style="font-size:15px"></i>{{ publishLabel }}</button>
+    <button onClick="{{ publish }}" style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border:none;border-radius:8px;background:#763FBA;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.12);white-space:nowrap" style-hover="background:#5E299C"><i class="ph-bold ph-rocket-launch" style="font-size:15px"></i>{{ publishLabel }}</button>
   </div>
 
   <div style="display:flex;flex:1;min-height:0">
@@ -117,7 +117,7 @@
           </sc-for>
 
           <div style="position:relative">
-            <button onClick="{{ toggleAddMenu }}" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:42px;border:1.5px dashed #C2CCC4;border-radius:10px;background:#FAFCFA;color:#0D6770;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#DCEDEA;border-color:#A7D4CE"><i class="ph-bold ph-plus" style="font-size:15px"></i>Add block</button>
+            <button onClick="{{ toggleAddMenu }}" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:42px;border:1.5px dashed #C2CCC4;border-radius:10px;background:#FAFCFA;color:#763FBA;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#ECEEF1;border-color:#CBD3DB"><i class="ph-bold ph-plus" style="font-size:15px"></i>Add block</button>
             <sc-if value="{{ addMenu }}" hint-placeholder-val="{{ false }}">
               <div style="position:absolute;left:0;right:0;bottom:48px;z-index:20;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:sfPop .13s ease">
                 <sc-for list="{{ blockTypes }}" as="t" hint-placeholder-count="5">
@@ -212,7 +212,7 @@
 
 <sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
   <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:sfToast .2s cubic-bezier(.2,.8,.2,1)">
-    <i class="{{ toastIcon }}" style="font-size:18px;color:#58C3C7"></i>
+    <i class="{{ toastIcon }}" style="font-size:18px;color:#B994F8"></i>
     <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
   </div>
 </sc-if>
@@ -226,7 +226,7 @@ const BLOCK_DEFS = {
   cta: { label: "Call to action", icon: "ph-cursor-click", desc: "Heading with button", fields: [{ k: "heading", l: "Heading", t: "text", ph: "Ready to start?" }, { k: "button", l: "Button label", t: "text", ph: "Get started" }] },
 };
 const BLOCK_COLORS = {
-  hero: { bg: "#DCEDEA", fg: "#0D6770" },
+  hero: { bg: "#ECEEF1", fg: "#763FBA" },
   richtext: { bg: "#EEF1ED", fg: "#526366" },
   quote: { bg: "#EDE7F5", fg: "#5B4B8A" },
   image: { bg: "#E7EEF5", fg: "#3F5C8A" },
@@ -246,7 +246,7 @@ const SRCDOC = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="vie
 + '.meta{display:flex;align-items:center;gap:12px;font-size:13px;color:#8A8A8A;margin-bottom:28px;flex-wrap:wrap}'
 + '.meta .cat{color:#2F5FE0;font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:11px}'
 + '.blk{position:relative;transition:outline-color .12s;outline:2px solid transparent;outline-offset:6px;border-radius:2px}'
-+ '.blk.sel{outline-color:#0D6770}'
++ '.blk.sel{outline-color:#8A95A1}'
 + '.blk+.blk{margin-top:30px}'
 + '.eyebrow{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#2F5FE0;margin:0 0 12px}'
 + 'h1{font-family:Newsreader,Georgia,serif;font-weight:600;font-size:42px;line-height:1.12;letter-spacing:-.01em;margin:0 0 16px}'
@@ -346,7 +346,7 @@ class Component extends DCLogic {
     const problemCount = problems.length;
 
     const tabDef = [{ id: "content", label: "Content" }, { id: "seo", label: "SEO", badge: problemCount }, { id: "settings", label: "Page information" }];
-    const tabs = tabDef.map(t => ({ label: t.label, badge: t.badge || 0, onClick: () => this.setState({ tab: t.id }), color: s.tab === t.id ? "#0D6770" : "#526366", border: s.tab === t.id ? "#0D6770" : "transparent" }));
+    const tabs = tabDef.map(t => ({ label: t.label, badge: t.badge || 0, onClick: () => this.setState({ tab: t.id }), color: s.tab === t.id ? "#763FBA" : "#526366", border: s.tab === t.id ? "#763FBA" : "transparent" }));
 
     const blocks = s.blocks.map((b, idx) => {
       const def = BLOCK_DEFS[b.type];
@@ -355,7 +355,7 @@ class Component extends DCLogic {
       return {
         id: b.id, label: def.label, icon: def.icon,
         iconBg: (BLOCK_COLORS[b.type] || {}).bg || "#EEF1ED", iconFg: (BLOCK_COLORS[b.type] || {}).fg || "#526366",
-        border: selected ? "#A7D4CE" : "#E2E7E2", headBg: selected ? "#F1F7F6" : "#fff",
+        border: selected ? "#CBD3DB" : "#E2E7E2", headBg: selected ? "#F4F6F8" : "#fff",
         expanded, caret: expanded ? "180deg" : "0deg",
         upColor: idx === 0 ? "#D3DAD5" : "#869693", upCursor: idx === 0 ? "default" : "pointer",
         downColor: idx === s.blocks.length - 1 ? "#D3DAD5" : "#869693", downCursor: idx === s.blocks.length - 1 ? "default" : "pointer",
@@ -371,10 +371,10 @@ class Component extends DCLogic {
       };
     });
 
-    const blockTypes = Object.keys(BLOCK_DEFS).map(k => ({ label: BLOCK_DEFS[k].label, icon: BLOCK_DEFS[k].icon, desc: BLOCK_DEFS[k].desc, iconBg: (BLOCK_COLORS[k] || {}).bg || "#EEF1ED", iconFg: (BLOCK_COLORS[k] || {}).fg || "#0D6770", onClick: () => this.add(k) }));
+    const blockTypes = Object.keys(BLOCK_DEFS).map(k => ({ label: BLOCK_DEFS[k].label, icon: BLOCK_DEFS[k].icon, desc: BLOCK_DEFS[k].desc, iconBg: (BLOCK_COLORS[k] || {}).bg || "#EEF1ED", iconFg: (BLOCK_COLORS[k] || {}).fg || "#763FBA", onClick: () => this.add(k) }));
 
     const dev = { desktop: "100%", tablet: "820px", mobile: "390px" }[s.device];
-    const seg = (id) => ({ bg: s.device === id ? "#fff" : "transparent", fg: s.device === id ? "#0D6770" : "#869693", sh: s.device === id ? "0 1px 2px rgba(23,35,38,0.14)" : "none" });
+    const seg = (id) => ({ bg: s.device === id ? "#fff" : "transparent", fg: s.device === id ? "#763FBA" : "#869693", sh: s.device === id ? "0 1px 2px rgba(23,35,38,0.14)" : "none" });
     const dk = seg("desktop"), tb = seg("tablet"), mb = seg("mobile");
 
     const descLen = s.seo.desc.length;
@@ -409,7 +409,7 @@ class Component extends DCLogic {
 
       slug: s.slug, onSlug: (e) => this.setState({ slug: e.target.value.replace(/[^a-z0-9-]/gi, "-").toLowerCase() }),
       focusSlug: () => this.setState({ slugFocus: true }), blurSlug: () => this.setState({ slugFocus: false }),
-      slugBorder: s.slugFocus ? "#0D6770" : "#CFD6D0", slugRing: s.slugFocus ? "0 0 0 3px rgba(13,103,112,0.15)" : "none",
+      slugBorder: s.slugFocus ? "#763FBA" : "#CFD6D0", slugRing: s.slugFocus ? "0 0 0 3px rgba(118,63,186,0.15)" : "none",
       slugChanged: s.slug !== "product-launch",
       settingsMeta: [
         { k: "Parent", v: "News (/news)" },

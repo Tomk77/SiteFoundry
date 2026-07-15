@@ -18,8 +18,8 @@
   *{box-sizing:border-box}
   html,body{height:100%}
   body{margin:0;background:#F5F7F4;color:#172326;font-family:Geist,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden}
-  a{color:#0D6770;text-decoration:none}a:hover{color:#0A545C}
-  ::selection{background:#CFE6E1}
+  a{color:#763FBA;text-decoration:none}a:hover{color:#5E299C}
+  ::selection{background:#DFE3E8}
   input,textarea,select{font-family:inherit}
   i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
   .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
@@ -27,7 +27,7 @@
   .sf-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #fff}
   @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
   @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
-  @keyframes sfFlash{0%{box-shadow:0 0 0 2px #0D6770}100%{box-shadow:0 0 0 2px transparent}}
+  @keyframes sfFlash{0%{box-shadow:0 0 0 2px #763FBA}100%{box-shadow:0 0 0 2px transparent}}
 </style>
 </helmet>
 
@@ -84,14 +84,14 @@
         <span onClick="{{ setList }}" title="List" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;background:{{ listBg }};color:{{ listFg }};box-shadow:{{ listShadow }}"><i class="ph-bold ph-rows" style="font-size:16px"></i></span>
       </div>
       <button onClick="{{ newFolder }}" style="display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 12px;border:1px solid #CFD6D0;border-radius:8px;background:#fff;color:#33474A;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#F5F7F4"><i class="ph ph-folder-plus" style="font-size:16px"></i>New folder</button>
-      <button onClick="{{ upload }}" style="display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border:none;border-radius:8px;background:#0D6770;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.1);white-space:nowrap;flex:none" style-hover="background:#0A545C"><i class="ph-bold ph-upload-simple" style="font-size:16px"></i>Upload</button>
+      <button onClick="{{ upload }}" style="display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border:none;border-radius:8px;background:#763FBA;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(23,35,38,0.1);white-space:nowrap;flex:none" style-hover="background:#5E299C"><i class="ph-bold ph-upload-simple" style="font-size:16px"></i>Upload</button>
     </div>
 
     <!-- breadcrumb -->
     <div style="display:flex;align-items:center;gap:6px;padding:11px 22px;border-bottom:1px solid #EEF1ED;font-size:13px">
       <sc-for list="{{ crumbs }}" as="c" hint-placeholder-count="1">
         <sc-if value="{{ c.sep }}" hint-placeholder-val="{{ false }}"><i class="ph ph-caret-right" style="font-size:12px;color:#AEBAB6"></i></sc-if>
-        <span onClick="{{ c.onClick }}" style="display:inline-flex;align-items:center;gap:5px;font-weight:{{ c.weight }};color:{{ c.color }};cursor:pointer" style-hover="color:#0D6770"><sc-if value="{{ c.home }}" hint-placeholder-val="{{ false }}"><i class="ph ph-house" style="font-size:14px"></i></sc-if>{{ c.name }}</span>
+        <span onClick="{{ c.onClick }}" style="display:inline-flex;align-items:center;gap:5px;font-weight:{{ c.weight }};color:{{ c.color }};cursor:pointer" style-hover="color:#763FBA"><sc-if value="{{ c.home }}" hint-placeholder-val="{{ false }}"><i class="ph ph-house" style="font-size:14px"></i></sc-if>{{ c.name }}</span>
       </sc-for>
     </div>
 
@@ -106,7 +106,7 @@
               <span style="font-size:16px;font-weight:600">{{ emptyTitle }}</span>
               <span style="font-size:13.5px;line-height:1.55;color:#526366">{{ emptyBody }}</span>
             </div>
-            <button onClick="{{ upload }}" style="display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 15px;border:none;border-radius:8px;background:#0D6770;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#0A545C"><i class="ph-bold ph-upload-simple" style="font-size:16px"></i>Upload images</button>
+            <button onClick="{{ upload }}" style="display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 15px;border:none;border-radius:8px;background:#763FBA;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#5E299C"><i class="ph-bold ph-upload-simple" style="font-size:16px"></i>Upload images</button>
           </div>
         </sc-if>
 
@@ -117,10 +117,10 @@
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
               <sc-for list="{{ folders }}" as="f" hint-placeholder-count="4">
                 <div draggable="true" onClick="{{ f.onOpen }}" onDragStart="{{ f.onDragStart }}" onDragOver="{{ f.onDragOver }}" onDragEnter="{{ f.onDragOver }}" onDrop="{{ f.onDrop }}" onDragEnd="{{ f.onDragEnd }}" style="display:flex;align-items:center;gap:11px;padding:12px;border:1.5px solid {{ f.border }};border-radius:10px;background:{{ f.bg }};cursor:pointer;transition:border-color .12s,background .12s" style-hover="border-color:#CFD6D0;background:#FAFCFA">
-                  <span style="width:38px;height:38px;border-radius:9px;background:#DCEDEA;color:#0D6770;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph-fill ph-folder" style="font-size:20px"></i></span>
+                  <span style="width:38px;height:38px;border-radius:9px;background:#ECEEF1;color:#763FBA;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph-fill ph-folder" style="font-size:20px"></i></span>
                   <div style="display:flex;flex-direction:column;gap:1px;min-width:0;flex:1">
                     <sc-if value="{{ f.editing }}" hint-placeholder-val="{{ false }}">
-                      <input value="{{ f.name }}" onInput="{{ f.onRename }}" onBlur="{{ f.commitRename }}" onKeyDown="{{ f.onRenameKey }}" onClick="{{ stop }}" autofocus="true" style="border:1.5px solid #0D6770;border-radius:6px;padding:3px 6px;font-size:13px;font-weight:600;color:#172326;outline:none;width:100%"/>
+                      <input value="{{ f.name }}" onInput="{{ f.onRename }}" onBlur="{{ f.commitRename }}" onKeyDown="{{ f.onRenameKey }}" onClick="{{ stop }}" autofocus="true" style="border:1.5px solid #763FBA;border-radius:6px;padding:3px 6px;font-size:13px;font-weight:600;color:#172326;outline:none;width:100%"/>
                     </sc-if>
                     <sc-if value="{{ f.notEditing }}" hint-placeholder-val="{{ true }}">
                       <span style="font-size:13.5px;font-weight:600;color:#172326;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</span>
@@ -144,11 +144,11 @@
                   <div style="position:relative;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:{{ i.tint }};border:2px solid {{ i.ring }};display:flex;align-items:center;justify-content:center;transition:border-color .12s">
                     <i class="{{ i.glyph }}" style="font-size:30px;color:{{ i.glyphColor }}"></i>
                     <span style="position:absolute;top:7px;left:7px;font-size:9.5px;font-weight:700;letter-spacing:0.04em;padding:2px 6px;border-radius:5px;background:rgba(23,35,38,0.55);color:#fff">{{ i.ext }}</span>
-                    <sc-if value="{{ i.selected }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:7px;right:7px;width:20px;height:20px;border-radius:999px;background:#0D6770;color:#fff;display:flex;align-items:center;justify-content:center"><i class="ph-bold ph-check" style="font-size:12px"></i></span></sc-if>
+                    <sc-if value="{{ i.selected }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:7px;right:7px;width:20px;height:20px;border-radius:999px;background:#763FBA;color:#fff;display:flex;align-items:center;justify-content:center"><i class="ph-bold ph-check" style="font-size:12px"></i></span></sc-if>
                     <sc-if value="{{ i.uploading }}" hint-placeholder-val="{{ false }}">
                       <div style="position:absolute;inset:0;background:rgba(245,247,244,0.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:0 18px">
-                        <span style="font-size:11px;font-weight:600;color:#0D6770">Uploading… {{ i.progress }}%</span>
-                        <span style="width:100%;height:4px;border-radius:3px;background:#DCE3DE;overflow:hidden"><span style="display:block;height:100%;background:#0D6770;width:{{ i.progressW }};transition:width .2s"></span></span>
+                        <span style="font-size:11px;font-weight:600;color:#763FBA">Uploading… {{ i.progress }}%</span>
+                        <span style="width:100%;height:4px;border-radius:3px;background:#DCE3DE;overflow:hidden"><span style="display:block;height:100%;background:#763FBA;width:{{ i.progressW }};transition:width .2s"></span></span>
                       </div>
                     </sc-if>
                   </div>
@@ -197,11 +197,11 @@
             </div>
             <div style="display:flex;flex-direction:column;gap:5px">
               <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">File name</label>
-              <input value="{{ selName }}" onInput="{{ onSelName }}" style="height:36px;padding:0 10px;border:1.5px solid #CFD6D0;border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none" style-focus="border-color:#0D6770;box-shadow:0 0 0 3px rgba(13,103,112,0.15)"/>
+              <input value="{{ selName }}" onInput="{{ onSelName }}" style="height:36px;padding:0 10px;border:1.5px solid #CFD6D0;border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none" style-focus="border-color:#763FBA;box-shadow:0 0 0 3px rgba(118,63,186,0.15)"/>
             </div>
             <div style="display:flex;flex-direction:column;gap:5px">
               <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Alt text <span style="color:#DC4436">·</span></label>
-              <textarea value="{{ selAlt }}" onInput="{{ onSelAlt }}" placeholder="Describe this image for screen readers and SEO" style="min-height:60px;padding:8px 10px;border:1.5px solid {{ altBorder }};border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none;resize:vertical;line-height:1.45" style-focus="border-color:#0D6770;box-shadow:0 0 0 3px rgba(13,103,112,0.15)"></textarea>
+              <textarea value="{{ selAlt }}" onInput="{{ onSelAlt }}" placeholder="Describe this image for screen readers and SEO" style="min-height:60px;padding:8px 10px;border:1.5px solid {{ altBorder }};border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none;resize:vertical;line-height:1.45" style-focus="border-color:#763FBA;box-shadow:0 0 0 3px rgba(118,63,186,0.15)"></textarea>
               <sc-if value="{{ altMissing }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:5px;font-size:11.5px;color:#8A5A06"><i class="ph-fill ph-warning" style="font-size:12px"></i>Missing alt text flags a validation problem on pages using this image.</span></sc-if>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px;padding:12px;background:#fff;border:1px solid #E2E7E2;border-radius:10px">
@@ -241,14 +241,14 @@
 <!-- toast -->
 <sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
   <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:sfToast .2s cubic-bezier(.2,.8,.2,1);max-width:520px">
-    <i class="{{ toastIcon }}" style="font-size:18px;color:#58C3C7"></i>
+    <i class="{{ toastIcon }}" style="font-size:18px;color:#B994F8"></i>
     <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
   </div>
 </sc-if>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
 const AUTHORS = { "Mara Jensen": "MJ", "Devin Park": "DP", "Sofia Ruiz": "SR" };
-const TINTS = ["#DCEDEA", "#FBEBE1", "#EAE6F5", "#E3F3EA", "#F7EDDA", "#E7EEF5", "#F0E6EC"];
+const TINTS = ["#ECEEF1", "#FBEBE1", "#EAE6F5", "#E3F3EA", "#F7EDDA", "#E7EEF5", "#F0E6EC"];
 const GLYPHS = { image: ["ph-fill ph-image", "#7FA9A4"], svg: ["ph-fill ph-bezier-curve", "#7F8FA9"], pdf: ["ph-fill ph-file-pdf", "#C0776A"] };
 let SEQ = 100;
 function file(name, ext, w, h, size, kb, author, date, parentId, tint) {
@@ -359,7 +359,7 @@ class Component extends DCLogic {
 
     const nav = [
       { icon: "ph-tree-structure", label: "Pages", bg: "transparent", fg: "#33474A", count: 0, onClick: () => {} },
-      { icon: "ph-image-square", label: "Media", bg: "#DCEDEA", fg: "#0D6770", count: allFiles.length, onClick: () => {} },
+      { icon: "ph-image-square", label: "Media", bg: "#ECEEF1", fg: "#763FBA", count: allFiles.length, onClick: () => {} },
       { icon: "ph-arrow-bend-up-right", label: "Redirects", bg: "transparent", fg: "#33474A", count: 0, onClick: () => {} },
       { icon: "ph-app-window", label: "Header navigation", bg: "transparent", fg: "#33474A", count: 0, onClick: () => {} },
       { icon: "ph-cards", label: "Footer", bg: "transparent", fg: "#33474A", count: 0, onClick: () => {} },
@@ -382,8 +382,8 @@ class Component extends DCLogic {
     const folders = folderItems.map(f => ({
       id: f.id, name: f.name, count: this.folderCount(f.id),
       editing: s.editingFolder === f.id, notEditing: s.editingFolder !== f.id,
-      bg: s.dropFolder === f.id ? "#DCEDEA" : "#fff",
-      border: s.dropFolder === f.id ? "#0D6770" : (s.flashId === f.id ? "#0D6770" : "#E2E7E2"),
+      bg: s.dropFolder === f.id ? "#ECEEF1" : "#fff",
+      border: s.dropFolder === f.id ? "#763FBA" : (s.flashId === f.id ? "#763FBA" : "#E2E7E2"),
       onOpen: () => { if (s.editingFolder === f.id) return; this.setState({ cwd: f.id, selected: null, q: "" }); },
       onMenu: (e) => { e.stopPropagation(); const r = e.currentTarget.getBoundingClientRect(); this.setState({ menu: { id: f.id, x: Math.min(r.right - 180, window.innerWidth - 190), y: r.bottom + 6 } }); },
       onRename: (e) => this.setState({ items: s.items.map(x => x.id === f.id ? { ...x, name: e.target.value } : x) }),
@@ -403,8 +403,8 @@ class Component extends DCLogic {
         dims: it.kind === "pdf" ? "Document" : it.w + "×" + it.h, size: it.size, modified: it.date,
         tint: it.tint, glyph: g[0], glyphColor: g[1],
         selected: s.selected === it.id && !up,
-        ring: s.selected === it.id && !up ? "#0D6770" : "transparent",
-        rowBg: s.selected === it.id ? "#DCEDEA" : "transparent",
+        ring: s.selected === it.id && !up ? "#763FBA" : "transparent",
+        rowBg: s.selected === it.id ? "#ECEEF1" : "transparent",
         uploading: up, progress: Math.round(it.progress), progressW: Math.round(it.progress) + "%",
         anim: s.flashId === it.id ? "sfFlash .9s ease" : "none",
         onSelect: () => { if (up) return; this.setState({ selected: it.id, copied: false }); },
@@ -450,10 +450,10 @@ class Component extends DCLogic {
       nav, libCount: allFiles.length, libSize,
       q: s.q, onSearch: (e) => this.setState({ q: e.target.value }),
       focusSearch: () => this.setState({ searchFocus: true }), blurSearch: () => this.setState({ searchFocus: false }),
-      searchBorder: s.searchFocus ? "#0D6770" : "#CFD6D0", searchRing: s.searchFocus ? "0 0 0 3px rgba(13,103,112,0.15)" : "none", searchIcon: s.searchFocus ? "#0D6770" : "#869693",
+      searchBorder: s.searchFocus ? "#763FBA" : "#CFD6D0", searchRing: s.searchFocus ? "0 0 0 3px rgba(118,63,186,0.15)" : "none", searchIcon: s.searchFocus ? "#763FBA" : "#869693",
       setGrid: () => this.setState({ view: "grid" }), setList: () => this.setState({ view: "list" }),
-      gridBg: s.view === "grid" ? "#fff" : "transparent", gridFg: s.view === "grid" ? "#0D6770" : "#869693", gridShadow: s.view === "grid" ? "0 1px 2px rgba(23,35,38,0.12)" : "none",
-      listBg: s.view === "list" ? "#fff" : "transparent", listFg: s.view === "list" ? "#0D6770" : "#869693", listShadow: s.view === "list" ? "0 1px 2px rgba(23,35,38,0.12)" : "none",
+      gridBg: s.view === "grid" ? "#fff" : "transparent", gridFg: s.view === "grid" ? "#763FBA" : "#869693", gridShadow: s.view === "grid" ? "0 1px 2px rgba(23,35,38,0.12)" : "none",
+      listBg: s.view === "list" ? "#fff" : "transparent", listFg: s.view === "list" ? "#763FBA" : "#869693", listShadow: s.view === "list" ? "0 1px 2px rgba(23,35,38,0.12)" : "none",
       upload: () => this.upload(), newFolder: () => this.newFolder(),
       crumbs,
       isEmpty,

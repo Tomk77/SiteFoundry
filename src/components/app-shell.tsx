@@ -1,3 +1,4 @@
+import { Button } from "./ui/button";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import type { WorkspaceOption } from "../lib/page-tree";
@@ -69,14 +70,19 @@ export function AppShell({
       "/header-navigation",
     ],
     ["Footer", "ph-layout", "footer", "/footer"],
-    ["Structured content", "ph-cube", "structured-content", ""],
+    [
+      "Structured content",
+      "ph-cube",
+      "structured-content",
+      "/structured-content",
+    ],
     ["Settings", "ph-gear", "", ""],
   ] as const;
   return (
     <div className="sf-shell">
       <aside className="sf-side">
         <div className="sf-site-wrap" style={{ position: "relative" }}>
-          <button
+          <Button unstyled
             className="sf-site"
             onClick={() => setWorkspaceOpen((value) => !value)}
             type="button"
@@ -91,11 +97,11 @@ export function AppShell({
               </small>
             </span>
             <i className="ph ph-caret-up-down" />
-          </button>
+          </Button>
           {workspaceOpen && workspaces?.length ? (
             <div className="sf-workspace-menu">
               {workspaces.map((workspace) => (
-                <button
+                <Button unstyled
                   className={
                     workspace.siteName === siteName &&
                     workspace.languageCode === languageCode
@@ -121,7 +127,7 @@ export function AppShell({
                   workspace.languageCode === languageCode ? (
                     <i className="ph-bold ph-check" />
                   ) : null}
-                </button>
+                </Button>
               ))}
             </div>
           ) : null}
@@ -129,7 +135,7 @@ export function AppShell({
         <nav className="sf-nav">
           <div className="sf-nav-label">Content</div>
           {nav.map(([label, icon, key, to]) => (
-            <button
+            <Button unstyled
               className={key === active ? "active" : ""}
               key={label}
               onClick={() => to && void navigate({ to })}
@@ -140,11 +146,11 @@ export function AppShell({
               {key === "pages" && pageCount !== undefined ? (
                 <span className="sf-nav-count">{pageCount}</span>
               ) : null}
-            </button>
+            </Button>
           ))}
         </nav>
         <div className="sf-spacer" />
-        <button
+        <Button unstyled
           aria-label="Open personal settings"
           className="sf-user"
           onClick={() => void navigate({ to: "/personal-settings" })}
@@ -160,14 +166,14 @@ export function AppShell({
             className="ph ph-sliders-horizontal"
             style={{ color: "#AEBAB6" }}
           />
-        </button>
-        <button
+        </Button>
+        <Button unstyled
           className="sf-signout"
           onClick={() => void signOut()}
           type="button"
         >
           <i className="ph ph-sign-out" /> Sign out
-        </button>
+        </Button>
       </aside>
       <main className="sf-main">{children}</main>
     </div>

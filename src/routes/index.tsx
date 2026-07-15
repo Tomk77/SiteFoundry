@@ -1,3 +1,6 @@
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { NativeSelect } from "../components/ui/native-select";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   type CSSProperties,
@@ -271,6 +274,11 @@ function PageTree() {
   useEffect(() => {
     if (user) void load();
   }, [user?.id]);
+  useEffect(() => {
+    if (!authLoading && !user) {
+      void navigate({ to: "/auth", replace: true });
+    }
+  }, [authLoading, navigate, user]);
   useEffect(() => {
     if (!data || !restored.current) return;
     const persist = () =>
@@ -565,14 +573,14 @@ function PageTree() {
         <span className="sf-spacer" />
         <label className="sf-search">
           <i className="ph ph-magnifying-glass" />
-          <input
+          <Input unstyled
             aria-label="Search pages"
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search pages..."
             value={query}
           />
         </label>
-        <button
+        <Button unstyled
           className={`sf-action ${filtersOpen || filtering ? "active" : ""}`}
           onClick={() => setFiltersOpen((value) => !value)}
         >
@@ -590,8 +598,8 @@ function PageTree() {
               }
             </b>
           ) : null}
-        </button>
-        <button
+        </Button>
+        <Button unstyled
           className="sf-action"
           disabled={filtering || expandableIds.size === 0}
           onClick={() =>
@@ -605,60 +613,60 @@ function PageTree() {
         >
           <i className={`ph ph-caret-double-${allExpanded ? "up" : "down"}`} />
           {allExpanded ? "Collapse all" : "Expand all"}
-        </button>
-        <button className="sf-action primary" onClick={() => openAdd()}>
+        </Button>
+        <Button unstyled className="sf-action primary" onClick={() => openAdd()}>
           <i className="ph-bold ph-plus" />
           Add page
-        </button>
+        </Button>
       </header>
       {filtering && (
         <div className="sf-active-filters" aria-label="Active filters">
           <span>Active filters</span>
           {query.trim() ? (
-            <button onClick={() => setQuery("")}>
+            <Button unstyled onClick={() => setQuery("")}>
               Search: “{query.trim()}” <i className="ph ph-x" />
-            </button>
+            </Button>
           ) : null}
           {filters.status !== "all" ? (
-            <button
+            <Button unstyled
               onClick={() =>
                 setFilters((value) => ({ ...value, status: "all" }))
               }
             >
               Status: {filters.status} <i className="ph ph-x" />
-            </button>
+            </Button>
           ) : null}
           {filters.template !== "all" ? (
-            <button
+            <Button unstyled
               onClick={() =>
                 setFilters((value) => ({ ...value, template: "all" }))
               }
             >
               Template: {filters.template} <i className="ph ph-x" />
-            </button>
+            </Button>
           ) : null}
           {filters.validation !== "all" ? (
-            <button
+            <Button unstyled
               onClick={() =>
                 setFilters((value) => ({ ...value, validation: "all" }))
               }
             >
               Validation: Needs attention <i className="ph ph-x" />
-            </button>
+            </Button>
           ) : null}
-          <button
+          <Button unstyled
             className="sf-reset-filters"
             onClick={() => updateUrlView("", defaultFilters)}
           >
             Reset all
-          </button>
+          </Button>
         </div>
       )}
       {filtersOpen && (
         <div className="sf-filter-bar">
           <label>
             <span>Status</span>
-            <select
+            <NativeSelect unstyled
               value={filters.status}
               onChange={(event) =>
                 setFilters((value) => ({
@@ -670,11 +678,11 @@ function PageTree() {
               <option value="all">All statuses</option>
               <option>Published</option>
               <option>Concept</option>
-            </select>
+            </NativeSelect>
           </label>
           <label>
             <span>Template</span>
-            <select
+            <NativeSelect unstyled
               value={filters.template}
               onChange={(event) =>
                 setFilters((value) => ({
@@ -687,11 +695,11 @@ function PageTree() {
               {templates.map((template) => (
                 <option key={template}>{template}</option>
               ))}
-            </select>
+            </NativeSelect>
           </label>
           <label>
             <span>Validation</span>
-            <select
+            <NativeSelect unstyled
               value={filters.validation}
               onChange={(event) =>
                 setFilters((value) => ({
@@ -702,12 +710,12 @@ function PageTree() {
             >
               <option value="all">All pages</option>
               <option value="problems">Needs attention</option>
-            </select>
+            </NativeSelect>
           </label>
           {filtering && (
-            <button onClick={() => updateUrlView("", defaultFilters)}>
+            <Button unstyled onClick={() => updateUrlView("", defaultFilters)}>
               Clear filters
-            </button>
+            </Button>
           )}
         </div>
       )}
@@ -750,7 +758,7 @@ function PageTree() {
                 } as CSSProperties
               }
             >
-              <button
+              <Button unstyled
                 className={`sf-tree-chevron${page.hasChildren ? "" : " hidden"}`}
                 onClick={(event) => {
                   event.stopPropagation();
@@ -766,7 +774,7 @@ function PageTree() {
                 <i
                   className={`ph-bold ph-caret-${visibleExpanded.has(page.id) ? "down" : "right"}`}
                 />
-              </button>
+              </Button>
               <span className="sf-tree-icon">
                 <i
                   className={`ph ${page.depth === 0 ? "ph-house" : page.hasChildren ? "ph-folder" : "ph-file-text"}`}
@@ -782,7 +790,7 @@ function PageTree() {
                   <i className="ph-fill ph-warning" />1
                 </span>
               ) : null}
-              <button
+              <Button unstyled
                 aria-label={`Add under ${page.title}`}
                 className="sf-row-icon"
                 onClick={(event) => {
@@ -791,8 +799,8 @@ function PageTree() {
                 }}
               >
                 <i className="ph-bold ph-plus" />
-              </button>
-              <button
+              </Button>
+              <Button unstyled
                 aria-label={`More actions for ${page.title}`}
                 className={`sf-row-icon${actionPage?.id === page.id ? " active" : ""}`}
                 onClick={(event) => {
@@ -803,13 +811,13 @@ function PageTree() {
                 }}
               >
                 <i className="ph-bold ph-dots-three" />
-              </button>
+              </Button>
               {actionPage?.id === page.id ? (
                 <div
                   className="sf-row-menu"
                   onClick={(event) => event.stopPropagation()}
                 >
-                  <button
+                  <Button unstyled
                     onClick={() =>
                       void navigate({
                         to: "/editor",
@@ -818,16 +826,16 @@ function PageTree() {
                     }
                   >
                     <i className="ph ph-pencil-simple" /> Edit page
-                  </button>
-                  <button
+                  </Button>
+                  <Button unstyled
                     onClick={() => {
                       setActionPage(null);
                       openAdd(page);
                     }}
                   >
                     <i className="ph ph-plus" /> Add child page
-                  </button>
-                  <button
+                  </Button>
+                  <Button unstyled
                     onClick={() => {
                       setActionPage(null);
                       setModalError("");
@@ -836,8 +844,8 @@ function PageTree() {
                     }}
                   >
                     <i className="ph ph-text-t" /> Rename title
-                  </button>
-                  <button
+                  </Button>
+                  <Button unstyled
                     className="danger"
                     disabled={page.isHomepage || page.hasChildren}
                     title={
@@ -854,7 +862,7 @@ function PageTree() {
                     }}
                   >
                     <i className="ph ph-trash" /> Delete page
-                  </button>
+                  </Button>
                 </div>
               ) : null}
             </div>
@@ -864,9 +872,9 @@ function PageTree() {
             <i className="ph ph-magnifying-glass" />
             <strong>No pages found</strong>
             <span>Try a different search or clear your filters.</span>
-            <button onClick={() => updateUrlView("", defaultFilters)}>
+            <Button unstyled onClick={() => updateUrlView("", defaultFilters)}>
               Clear filters
-            </button>
+            </Button>
           </div>
         )}
       </div>
@@ -899,7 +907,7 @@ function PageTree() {
             <div className="sf-overview-modal-body">
               <label>
                 <span>Page title</span>
-                <input
+                <Input unstyled
                   autoFocus
                   value={addTitle}
                   onChange={(event) => setAddTitle(event.target.value)}
@@ -910,7 +918,7 @@ function PageTree() {
                 <span>URL slug</span>
                 <div className="sf-add-slug">
                   <b>{addParent.slug === "/" ? "/" : `${addParent.slug}/`}</b>
-                  <input
+                  <Input unstyled
                     value={addSlug}
                     onChange={(event) => setAddSlug(event.target.value)}
                     placeholder="generated-from-title"
@@ -919,7 +927,7 @@ function PageTree() {
               </label>
               <label>
                 <span>Starting template</span>
-                <select
+                <NativeSelect unstyled
                   value={addTemplate}
                   onChange={(event) => setAddTemplate(event.target.value)}
                 >
@@ -934,7 +942,7 @@ function PageTree() {
                     .map((template) => (
                       <option key={template}>{template}</option>
                     ))}
-                </select>
+                </NativeSelect>
                 <small>
                   Templates provide starting content only. The page remains
                   fully editable.
@@ -945,13 +953,13 @@ function PageTree() {
               <ModalClose className="sf-action" disabled={creating}>
                 Cancel
               </ModalClose>
-              <button
+              <Button unstyled
                 className="sf-action primary"
                 disabled={!addTitle.trim() || creating}
                 onClick={() => void create()}
               >
                 {creating ? "Creating..." : "Create page"}
-              </button>
+              </Button>
             </footer>
           </>
         ) : null}
@@ -974,7 +982,7 @@ function PageTree() {
             <div className="sf-overview-modal-body">
               <label>
                 <span>Page title</span>
-                <input
+                <Input unstyled
                   autoFocus
                   value={renameTitle}
                   onChange={(event) => setRenameTitle(event.target.value)}
@@ -989,13 +997,13 @@ function PageTree() {
               <ModalClose className="sf-action" disabled={mutating}>
                 Cancel
               </ModalClose>
-              <button
+              <Button unstyled
                 className="sf-action primary"
                 disabled={!renameTitle.trim() || mutating}
                 onClick={() => void rename()}
               >
                 {mutating ? "Saving..." : "Save title"}
-              </button>
+              </Button>
             </footer>
           </>
         ) : null}
@@ -1028,13 +1036,13 @@ function PageTree() {
               <ModalClose className="sf-action" disabled={mutating}>
                 Cancel
               </ModalClose>
-              <button
+              <Button unstyled
                 className="sf-action danger"
                 disabled={mutating}
                 onClick={() => void remove()}
               >
                 {mutating ? "Deleting..." : "Delete page"}
-              </button>
+              </Button>
             </footer>
           </>
         ) : null}
@@ -1085,7 +1093,7 @@ function PageTree() {
                 ))}
               </div>
               <label className="sf-redirect-choice">
-                <input
+                <Input unstyled
                   type="checkbox"
                   checked={createMoveRedirects}
                   disabled={!pendingMove.impacts.some((item) => item.published)}
@@ -1114,7 +1122,7 @@ function PageTree() {
               <ModalClose className="sf-action" disabled={moving}>
                 Cancel move
               </ModalClose>
-              <button
+              <Button unstyled
                 className="sf-action primary"
                 disabled={moving}
                 onClick={() => {
@@ -1131,7 +1139,7 @@ function PageTree() {
                 }}
               >
                 {moving ? "Moving..." : "Confirm move"}
-              </button>
+              </Button>
             </footer>
           </>
         ) : null}
@@ -1143,12 +1151,12 @@ function PageTree() {
             <strong>{toast.title}</strong>
             <span>{toast.detail}</span>
           </div>
-          <button
+          <Button unstyled
             onClick={() => setToast(null)}
             aria-label="Dismiss notification"
           >
             <i className="ph ph-x" />
-          </button>
+          </Button>
         </div>
       ) : null}
     </AppShell>

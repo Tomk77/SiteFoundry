@@ -1,8 +1,8 @@
 # SiteFoundry admin — design handoff
 
-Session output: four interactive design prototypes built as Design Components (`*.dc.html`), inline-styled, Phosphor icons, Geist / Geist Mono, Foundry Petrol & Fired Clay palette. Each is a clickable spec — open it and interact; every state below is reachable in the prototype.
+Session output: interactive design prototypes built as Design Components (`*.dc.html`), inline-styled, with Phosphor icons, Geist / Geist Mono, and the approved Foundry Amethyst and Fired Clay palette. Each is a clickable spec — open it and interact; every state below is reachable in the prototype.
 
-**Intended real stack:** headless primitives (Radix Primitives or React Aria) styled with the Petrol/Clay tokens on the TanStack Start / React + Supabase codebase. The prototypes are HTML for review only — do not ship them; rebuild in the app stack using the tokens in `CLAUDE.md`.
+**Intended real stack:** headless primitives (Radix Primitives or React Aria) styled with the Amethyst/Clay tokens on the TanStack Start / React + Supabase codebase. The prototypes are HTML for review only — do not ship them; rebuild in the app stack using the tokens in `CLAUDE.md`.
 
 **Global conventions (apply to all screens)**
 - Palette, type, radii, icon set: see `CLAUDE.md`. Dark-mode token set is documented there too.
@@ -92,3 +92,23 @@ Account-scoped settings, per `personal-settings.md` spec. **Distinct from site-w
 ## Also changed this session
 - **Left-nav icons** updated in `Page Tree.dc.html` to match `app-shell.tsx` (the codebase source of truth): Media `ph-image`, Redirects `ph-arrow-bend-up-left`, Header navigation `ph-browser`, Footer `ph-layout`, Settings `ph-gear`.
 - **Page Editor block icons** (`Page Editor.dc.html`) given colored rounded-square badges to match the navigation builders' item styling.
+
+---
+
+## 5. Structured content - `Structured Content.dc.html`
+
+Structured non-page content uses a two-rail layout: the normal product navigation, a content-type rail, and a record table. The selected type controls the dynamic columns and record editor fields.
+
+**Content type model:** name, singular name, icon, field definitions, and records. Fields support text, long text, rich text, email, phone, URL, number, date, toggle, tags, image, choice, and reference. One field is the primary display field.
+
+**Record workflow:** search and status filters, create, edit in a right-hand drawer, Concept / Published state, field-specific controls, validation of the primary field, delete confirmation, empty states, and success feedback.
+
+**Type workflow:** create and configure a type, choose an icon, add or remove fields, change field types, select the primary field, and delete a custom type. Schema editing is a development-only capability according to `PAGE_TREE_SPEC.md`; production should load deployed schema configuration as read-only.
+
+**URL state:** selected type, query, and status filter are represented in the URL so a filtered record view can be shared and restored.
+
+## Palette update
+
+- Amethyst is the only interactive accent across product screens.
+- Selected rows, active navigation, and selected builder blocks use neutral slate selection tokens.
+- Dark mode uses neutral gray/slate surfaces with `#15181C` canvas, `#1D2126` surface, `#B994F8` interactive accent, and `#2C333B` selection.

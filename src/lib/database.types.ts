@@ -9,6 +9,96 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      content_fields: {
+        Row: {
+          id: string;
+          content_type_id: string;
+          site_language_id: string;
+          key: string;
+          label: string;
+          field_type: string;
+          position: number;
+          is_primary: boolean;
+          is_required: boolean;
+          options: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          content_type_id: string;
+          site_language_id: string;
+          key: string;
+          label: string;
+          field_type: string;
+          position?: number;
+          is_primary?: boolean;
+          is_required?: boolean;
+          options?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["content_fields"]["Insert"]>;
+        Relationships: [];
+      };
+      content_records: {
+        Row: {
+          id: string;
+          content_type_id: string;
+          site_language_id: string;
+          status: string;
+          values: Json;
+          created_by: string | null;
+          updated_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          content_type_id: string;
+          site_language_id: string;
+          status?: string;
+          values?: Json;
+          created_by?: string | null;
+          updated_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["content_records"]["Insert"]>;
+        Relationships: [];
+      };
+      content_types: {
+        Row: {
+          id: string;
+          site_language_id: string;
+          slug: string;
+          name: string;
+          singular_name: string;
+          icon: string;
+          chip_bg: string;
+          chip_fg: string;
+          description: string;
+          position: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          site_language_id: string;
+          slug: string;
+          name: string;
+          singular_name: string;
+          icon?: string;
+          chip_bg?: string;
+          chip_fg?: string;
+          description?: string;
+          position?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["content_types"]["Insert"]>;
+        Relationships: [];
+      };
       navigation_menus: {
         Row: {
           id: string;
@@ -198,6 +288,19 @@ export type Database = {
           create_redirects: boolean;
         };
         Returns: unknown;
+      };
+      save_content_type: {
+        Args: {
+          target_language_id: string;
+          target_type_id: string | null;
+          target_slug: string;
+          target_name: string;
+          target_singular_name: string;
+          target_icon: string;
+          target_description: string;
+          target_fields: Json;
+        };
+        Returns: string;
       };
     };
     Enums: Record<string, never>;
