@@ -3,12 +3,8 @@ import { Input } from "../components/ui/input";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppShell } from "../components/app-shell";
-import {
-  Modal,
-  ModalClose,
-  ModalDescription,
-  ModalTitle,
-} from "../components/modal";
+import { AppShellSkeleton } from "../components/loading";
+import { Modal, ModalClose, ModalDescription, ModalTitle } from "../components/modal";
 import { useAuth } from "../lib/auth";
 import {
   deleteRedirect,
@@ -20,10 +16,7 @@ import {
   type RedirectWorkspace,
 } from "../lib/redirects";
 import type { WorkspaceOption } from "../lib/page-tree";
-import {
-  createRedirectsUrlSearch,
-  parseRedirectsUrlSearch,
-} from "../lib/url-view-state";
+import { createRedirectsUrlSearch, parseRedirectsUrlSearch } from "../lib/url-view-state";
 import "../redirects.css";
 
 export const Route = createFileRoute("/redirects")({
@@ -34,13 +27,13 @@ export const Route = createFileRoute("/redirects")({
 const redirectWorkspaceCache = new Map<string, RedirectWorkspace>();
 
 type Filter = "all" | "automatic" | "manual" | "attention";
-type RedirectForm = {
+interface RedirectForm {
   id?: string;
   automatic: boolean;
   sourcePath: string;
   destinationPath: string;
   statusCode: 301 | 302;
-};
+}
 
 const emptyForm: RedirectForm = {
   automatic: false,
@@ -64,12 +57,8 @@ function Redirects() {
   const navigate = useNavigate();
   const urlSearch = Route.useSearch();
   const cacheKey = user?.id ?? "";
-  const cachedWorkspace = cacheKey
-    ? (redirectWorkspaceCache.get(cacheKey) ?? null)
-    : null;
-  const [workspace, setWorkspace] = useState<RedirectWorkspace | null>(
-    cachedWorkspace,
-  );
+  const cachedWorkspace = cacheKey ? (redirectWorkspaceCache.get(cacheKey) ?? null) : null;
+  const [workspace, setWorkspace] = useState<RedirectWorkspace | null>(cachedWorkspace);
   const [selection, setSelection] = useState<{
     siteId?: string;
     languageId?: string;
@@ -112,9 +101,7 @@ function Redirects() {
         });
       }
     } catch (reason) {
-      setError(
-        reason instanceof Error ? reason.message : "Could not load redirects.",
-      );
+      setError(reason instanceof Error ? reason.message : "Could not load redirects.");
     } finally {
       setLoading(false);
     }
@@ -122,6 +109,8 @@ function Redirects() {
 
   useEffect(() => {
     if (user) void load();
+    // The loader intentionally starts from the default workspace when the user changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   const showToast = (message: string) => {
@@ -184,29 +173,20 @@ function Redirects() {
   }, [filter, visible]);
 
   const formState = useMemo(() => {
-    if (!form || !workspace)
-      return { sourceError: "", destinationHint: "", valid: false };
+    if (!form || !workspace) return { sourceError: "", destinationHint: "", valid: false };
     const source = normalizeRedirectPath(form.sourcePath);
     const destination = normalizeRedirectPath(form.destinationPath);
     let sourceError = "";
     if (!source) sourceError = "Enter a source path.";
     else if (source === "/") sourceError = "The homepage cannot be redirected.";
-    else if (
-      workspace.redirects.some(
-        (item) => item.id !== form.id && item.sourcePath === source,
-      )
-    )
+    else if (workspace.redirects.some((item) => item.id !== form.id && item.sourcePath === source))
       sourceError = "A redirect already exists for this source path.";
-    else if (source === destination)
-      sourceError = "Source and destination must be different.";
+    else if (source === destination) sourceError = "Source and destination must be different.";
     let destinationHint = "";
     if (!destination) destinationHint = "Enter a destination path.";
     else if (livePaths.has(destination)) destinationHint = "Live page";
-    else if (
-      workspace.redirects.some((item) => item.sourcePath === destination)
-    )
-      destinationHint =
-        "This points to another redirect and will create a chain.";
+    else if (workspace.redirects.some((item) => item.sourcePath === destination))
+      destinationHint = "This points to another redirect and will create a chain.";
     else destinationHint = "No live page currently uses this path.";
     return {
       sourceError,
@@ -243,9 +223,7 @@ function Redirects() {
       await load(selection);
       showToast(edited ? "Redirect updated" : "Redirect created");
     } catch (reason) {
-      setModalError(
-        reason instanceof Error ? reason.message : "Could not save redirect.",
-      );
+      setModalError(reason instanceof Error ? reason.message : "Could not save redirect.");
     } finally {
       setSaving(false);
     }
@@ -261,9 +239,7 @@ function Redirects() {
       await load(selection);
       showToast("Redirect deleted");
     } catch (reason) {
-      setModalError(
-        reason instanceof Error ? reason.message : "Could not delete redirect.",
-      );
+      setModalError(reason instanceof Error ? reason.message : "Could not delete redirect.");
     } finally {
       setSaving(false);
     }
@@ -276,21 +252,8 @@ function Redirects() {
   };
 
   if (!workspace && loading)
-    return (
-      <AppShell active="redirects">
-        <div className="sf-route-loading" role="status">
-          <span className="sf-route-loading-mark">
-            <i className="ph ph-arrow-bend-up-left" />
-          </span>
-          <strong>Loading redirects</strong>
-          <small>Your workspace remains available while rules load.</small>
-        </div>
-      </AppShell>
-    );
-  if (!workspace)
-    return (
-      <div className="sf-loading">{error || "No website is available."}</div>
-    );
+    return <AppShellSkeleton active="redirects" label="Loading redirects" variant="table" />;
+  if (!workspace) return <div className="sf-loading">{error || "No website is available."}</div>;
 
   return (
     <AppShell
@@ -309,29 +272,27 @@ function Redirects() {
             <b>{counts.all} rules</b>
           </div>
           <span>
-            Forwarding rules for this language tree · {workspace.language.name}{" "}
-            · {workspace.language.code.toUpperCase()}
+            Forwarding rules for this language tree · {workspace.language.name} ·{" "}
+            {workspace.language.code.toUpperCase()}
           </span>
         </div>
         <span className="sf-spacer" />
         <label className="sf-search sf-redirect-search">
           <i className="ph ph-magnifying-glass" />
-          <Input unstyled
+          <Input
+            unstyled
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search source or target..."
             value={query}
           />
           {query ? (
-            <Button unstyled
-              onClick={() => setQuery("")}
-              title="Clear search"
-              type="button"
-            >
+            <Button unstyled onClick={() => setQuery("")} title="Clear search" type="button">
               <i className="ph ph-x" />
             </Button>
           ) : null}
         </label>
-        <Button unstyled
+        <Button
+          unstyled
           className="sf-action primary"
           onClick={() => {
             setModalError("");
@@ -353,32 +314,26 @@ function Redirects() {
               ["attention", "Needs attention"],
             ] as const
           ).map(([value, label]) => (
-            <Button unstyled
+            <Button
+              unstyled
               className={filter === value ? "active" : ""}
               key={value}
               onClick={() => setFilter(value)}
               type="button"
             >
               {label}
-              <span className={value === "attention" ? "danger" : ""}>
-                {counts[value]}
-              </span>
+              <span className={value === "attention" ? "danger" : ""}>{counts[value]}</span>
             </Button>
           ))}
         </div>
         <span className="sf-spacer" />
-        <span className="sf-mono sf-redirect-result">
-          {visible.length} redirects
-        </span>
+        <span className="sf-mono sf-redirect-result">{visible.length} redirects</span>
       </div>
 
       {counts.attention ? (
         <div className="sf-attention-banner">
           <i className="ph-fill ph-warning-octagon" />
-          <strong>
-            {counts.attention} redirects point somewhere broken, chained, or
-            looping.
-          </strong>
+          <strong>{counts.attention} redirects point somewhere broken, chained, or looping.</strong>
           <span className="sf-spacer" />
           <Button unstyled onClick={() => setFilter("attention")} type="button">
             Review {counts.attention}
@@ -404,9 +359,7 @@ function Redirects() {
                 <i className="ph ph-signpost" />
               </span>
               <strong>
-                {workspace.redirects.length
-                  ? "No matching redirects"
-                  : "No redirects yet"}
+                {workspace.redirects.length ? "No matching redirects" : "No redirects yet"}
               </strong>
               <p>
                 {workspace.redirects.length
@@ -414,7 +367,8 @@ function Redirects() {
                   : "Create a forwarding rule when an old URL should lead somewhere new."}
               </p>
               {!workspace.redirects.length ? (
-                <Button unstyled
+                <Button
+                  unstyled
                   className="sf-action primary"
                   onClick={() => setForm({ ...emptyForm })}
                   type="button"
@@ -439,18 +393,20 @@ function Redirects() {
                       className="sf-redirect-grid sf-redirect-row"
                       key={redirect.id}
                       onClick={() => openEdit(redirect)}
+                      onKeyDown={(event) => {
+                        if (event.key !== "Enter" && event.key !== " ") return;
+                        event.preventDefault();
+                        openEdit(redirect);
+                      }}
+                      role="button"
+                      tabIndex={0}
                     >
                       <span className="sf-mono">{redirect.sourcePath}</span>
                       <i className="ph-bold ph-arrow-right" />
                       <span className="sf-redirect-destination">
-                        <span className="sf-mono">
-                          {redirect.destinationPath}
-                        </span>
+                        <span className="sf-mono">{redirect.destinationPath}</span>
                         {warning ? (
-                          <span
-                            className={`sf-health ${warning.kind}`}
-                            title={warning.detail}
-                          >
+                          <span className={`sf-health ${warning.kind}`} title={warning.detail}>
                             <i
                               className={`ph-fill ${
                                 warning.kind === "chained"
@@ -466,11 +422,7 @@ function Redirects() {
                       </span>
                       <span className="sf-redirect-type">
                         <b className="sf-mono">{redirect.statusCode}</b>
-                        <small>
-                          {redirect.statusCode === 301
-                            ? "Permanent"
-                            : "Temporary"}
-                        </small>
+                        <small>{redirect.statusCode === 301 ? "Permanent" : "Temporary"}</small>
                       </span>
                       <span className="sf-origin">
                         <b className={redirect.pageId ? "automatic" : "manual"}>
@@ -485,11 +437,10 @@ function Redirects() {
                             : "Added manually"}
                         </small>
                       </span>
-                      <span className="sf-redirect-date">
-                        {formatDate(redirect.createdAt)}
-                      </span>
+                      <span className="sf-redirect-date">{formatDate(redirect.createdAt)}</span>
                       <span className="sf-redirect-actions">
-                        <Button unstyled
+                        <Button
+                          unstyled
                           onClick={(event) => {
                             event.stopPropagation();
                             openEdit(redirect);
@@ -499,7 +450,8 @@ function Redirects() {
                         >
                           <i className="ph ph-pencil-simple" />
                         </Button>
-                        <Button unstyled
+                        <Button
+                          unstyled
                           onClick={(event) => {
                             event.stopPropagation();
                             setModalError("");
@@ -522,28 +474,20 @@ function Redirects() {
 
       <footer className="sf-redirect-foot">
         <i className="ph ph-info" />
-        Redirects are added automatically when a published page moves, changes
-        slug, or is deleted
+        Redirects are added automatically when a published page moves, changes slug, or is deleted
         <span className="sf-spacer" />
         <span className="sf-mono">{counts.attention} need attention</span>
       </footer>
 
-      <Modal
-        open={Boolean(form)}
-        onOpenChange={(open) => !open && setForm(null)}
-      >
+      <Modal open={Boolean(form)} onOpenChange={(open) => !open && setForm(null)}>
         {form ? (
           <>
             <div className="sf-modal-head">
               <span className="sf-modal-icon">
-                <i
-                  className={`ph ${form.id ? "ph-pencil-simple" : "ph-signpost"}`}
-                />
+                <i className={`ph ${form.id ? "ph-pencil-simple" : "ph-signpost"}`} />
               </span>
               <div>
-                <ModalTitle>
-                  {form.id ? "Edit redirect" : "Add redirect"}
-                </ModalTitle>
+                <ModalTitle>{form.id ? "Edit redirect" : "Add redirect"}</ModalTitle>
                 <ModalDescription>
                   Forward one path in this language tree to another.
                 </ModalDescription>
@@ -556,38 +500,30 @@ function Redirects() {
             <div className="sf-redirect-modal-body">
               <label>
                 <span>Source path</span>
-                <Input unstyled
+                <Input
+                  unstyled
                   disabled={form.automatic}
-                  onChange={(event) =>
-                    setForm({ ...form, sourcePath: event.target.value })
-                  }
+                  onChange={(event) => setForm({ ...form, sourcePath: event.target.value })}
                   placeholder="/old-path"
                   value={form.sourcePath}
                 />
                 {form.automatic ? (
-                  <small>
-                    Automatic redirect sources follow the page history.
-                  </small>
+                  <small>Automatic redirect sources follow the page history.</small>
                 ) : formState.sourceError ? (
                   <small className="error">{formState.sourceError}</small>
                 ) : null}
               </label>
               <label>
                 <span>Redirects to</span>
-                <Input unstyled
-                  onChange={(event) =>
-                    setForm({ ...form, destinationPath: event.target.value })
-                  }
+                <Input
+                  unstyled
+                  onChange={(event) => setForm({ ...form, destinationPath: event.target.value })}
                   placeholder="/new-path"
                   value={form.destinationPath}
                 />
                 {formState.destinationHint ? (
                   <small
-                    className={
-                      formState.destinationHint === "Live page"
-                        ? "success"
-                        : "warning"
-                    }
+                    className={formState.destinationHint === "Live page" ? "success" : "warning"}
                   >
                     <i
                       className={`ph-fill ${
@@ -603,12 +539,11 @@ function Redirects() {
               <fieldset>
                 <legend>Redirect type</legend>
                 {[301, 302].map((code) => (
-                  <Button unstyled
+                  <Button
+                    unstyled
                     className={form.statusCode === code ? "active" : ""}
                     key={code}
-                    onClick={() =>
-                      setForm({ ...form, statusCode: code as 301 | 302 })
-                    }
+                    onClick={() => setForm({ ...form, statusCode: code as 301 | 302 })}
                     type="button"
                   >
                     <b>{code}</b>
@@ -618,29 +553,25 @@ function Redirects() {
               </fieldset>
               {form.automatic ? (
                 <p className="sf-origin-note">
-                  <i className="ph ph-arrows-clockwise" /> Automatic redirect
-                  created from a page change
+                  <i className="ph ph-arrows-clockwise" /> Automatic redirect created from a page
+                  change
                 </p>
               ) : null}
-              {modalError ? (
-                <p className="sf-modal-error">{modalError}</p>
-              ) : null}
+              {modalError ? <p className="sf-modal-error">{modalError}</p> : null}
             </div>
             <div className="sf-modal-actions">
               <ModalClose className="sf-action" disabled={saving}>
                 Cancel
               </ModalClose>
-              <Button unstyled
+              <Button
+                unstyled
                 className="sf-action primary"
                 disabled={!formState.valid || saving}
+                loading={saving}
                 onClick={() => void submit()}
                 type="button"
               >
-                {saving
-                  ? "Saving..."
-                  : form.id
-                    ? "Save redirect"
-                    : "Add redirect"}
+                {saving ? "Saving..." : form.id ? "Save redirect" : "Add redirect"}
               </Button>
             </div>
           </>
@@ -669,17 +600,17 @@ function Redirects() {
               <span className="sf-mono">{deleteTarget.sourcePath}</span>
               <i className="ph-bold ph-arrow-right" />
               <span className="sf-mono">{deleteTarget.destinationPath}</span>
-              {modalError ? (
-                <p className="sf-modal-error">{modalError}</p>
-              ) : null}
+              {modalError ? <p className="sf-modal-error">{modalError}</p> : null}
             </div>
             <div className="sf-modal-actions">
               <ModalClose className="sf-action" disabled={saving}>
                 Cancel
               </ModalClose>
-              <Button unstyled
+              <Button
+                unstyled
                 className="sf-action danger"
                 disabled={saving}
+                loading={saving}
                 onClick={() => void remove()}
                 type="button"
               >

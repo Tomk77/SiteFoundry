@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { AppShell, StatusPill } from "../components/app-shell";
+import { AppShellSkeleton, LoadingSplash } from "../components/loading";
 import { Button } from "../components/ui/button";
 import {
   Dialog,
@@ -24,7 +25,6 @@ import {
   recordMatchesSearch,
   structuredFieldTypes,
   type StructuredField,
-  type StructuredFieldType,
   type StructuredRecord,
   type StructuredType,
   type StructuredValue,
@@ -42,41 +42,36 @@ import {
 import { useAuth } from "../lib/auth";
 import "../structured-content.css";
 
-type StructuredSearch = {
+interface StructuredSearch {
   q?: string;
   status?: "published" | "concept";
   type?: string;
-};
+}
 
 export const Route = createFileRoute("/structured-content")({
   validateSearch: (search: Record<string, unknown>): StructuredSearch => ({
     q: typeof search.q === "string" && search.q.trim() ? search.q : undefined,
     status:
-      search.status === "published" || search.status === "concept"
-        ? search.status
-        : undefined,
-    type:
-      typeof search.type === "string" && search.type.trim()
-        ? search.type
-        : undefined,
+      search.status === "published" || search.status === "concept" ? search.status : undefined,
+    type: typeof search.type === "string" && search.type.trim() ? search.type : undefined,
   }),
   component: StructuredContent,
 });
 
-type RecordDraft = {
+interface RecordDraft {
   id?: string;
   status: "published" | "concept";
   values: Record<string, StructuredValue>;
-};
+}
 
-type TypeDraft = {
+interface TypeDraft {
   id?: string;
   slug: string;
   name: string;
   singular: string;
   icon: string;
   fields: StructuredField[];
-};
+}
 
 const typeIcons = [
   "ph-cube",
@@ -108,8 +103,7 @@ function StructuredContent() {
   const [toast, setToast] = useState("");
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const activeType =
-    types.find((type) => type.slug === search.type) ?? types[0] ?? null;
+  const activeType = types.find((type) => type.slug === search.type) ?? types[0] ?? null;
   const query = search.q ?? "";
   const status = search.status ?? "all";
 
@@ -122,11 +116,7 @@ function StructuredContent() {
       setTypes(next?.types ?? []);
       return next;
     } catch (reason) {
-      setError(
-        reason instanceof Error
-          ? reason.message
-          : "Could not load structured content",
-      );
+      setError(reason instanceof Error ? reason.message : "Could not load structured content");
       return null;
     } finally {
       setLoading(false);
@@ -135,6 +125,8 @@ function StructuredContent() {
 
   useEffect(() => {
     if (user) void loadWorkspace();
+    // The workspace should reload only when the authenticated user changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   const updateSearch = (next: StructuredSearch) =>
@@ -159,54 +151,45 @@ function StructuredContent() {
     toastTimer.current = setTimeout(() => setToast(""), 3200);
   };
 
-  const primaryField =
-    activeType?.fields.find((field) => field.primary) ?? activeType?.fields[0];
-  const listFields = activeType && primaryField
-    ? activeType.fields
-        .filter(
-          (field) =>
-            field.key !== primaryField.key &&
-            !["image", "long", "rich", "tags"].includes(field.type),
-        )
-        .slice(0, 3)
-    : [];
+  const primaryField = activeType?.fields.find((field) => field.primary) ?? activeType?.fields[0];
+  const listFields =
+    activeType && primaryField
+      ? activeType.fields
+          .filter(
+            (field) =>
+              field.key !== primaryField.key &&
+              !["image", "long", "rich", "tags"].includes(field.type),
+          )
+          .slice(0, 3)
+      : [];
   const records = useMemo(
     () =>
       (activeType?.records ?? []).filter(
         (record) =>
-          (status === "all" || record.status === status) &&
-          recordMatchesSearch(record, query),
+          (status === "all" || record.status === status) && recordMatchesSearch(record, query),
       ),
     [activeType, query, status],
   );
   const counts = {
     all: activeType?.records.length ?? 0,
-    published: (activeType?.records ?? []).filter((item) => item.status === "published")
-      .length,
-    concept: (activeType?.records ?? []).filter((item) => item.status === "concept")
-      .length,
+    published: (activeType?.records ?? []).filter((item) => item.status === "published").length,
+    concept: (activeType?.records ?? []).filter((item) => item.status === "concept").length,
   };
 
-  if (authLoading || !user || (loading && !workspace)) {
+  if (authLoading || !user) return <LoadingSplash />;
+  if (loading && !workspace)
     return (
-      <AppShell active="structured-content">
-        <div className="sf-route-loading" role="status">
-          <span className="sf-route-loading-mark">
-            <i className="ph ph-cube" />
-          </span>
-          <strong>Loading structured content</strong>
-          <small>Fetching content types and records from your workspace.</small>
-        </div>
-      </AppShell>
+      <AppShellSkeleton
+        active="structured-content"
+        label="Loading structured content"
+        variant="table"
+      />
     );
-  }
 
   if (error || !workspace || !activeType || !primaryField) {
     return (
       <AppShell active="structured-content">
-        <div className="sf-loading">
-          {error || "No structured content workspace is available."}
-        </div>
+        <div className="sf-loading">{error || "No structured content workspace is available."}</div>
       </AppShell>
     );
   }
@@ -224,9 +207,7 @@ function StructuredContent() {
     });
   const setRecordValue = (key: string, value: StructuredValue) =>
     setRecordDraft((current) =>
-      current
-        ? { ...current, values: { ...current.values, [key]: value } }
-        : current,
+      current ? { ...current, values: { ...current.values, [key]: value } } : current,
     );
   const saveRecord = async () => {
     if (!recordDraft || saving) return;
@@ -248,9 +229,7 @@ function StructuredContent() {
             ? {
                 ...type,
                 records: recordDraft.id
-                  ? type.records.map((record) =>
-                      record.id === saved.id ? saved : record,
-                    )
+                  ? type.records.map((record) => (record.id === saved.id ? saved : record))
                   : [saved, ...type.records],
               }
             : type,
@@ -332,10 +311,7 @@ function StructuredContent() {
       current
         ? {
             ...current,
-            fields: [
-              ...current.fields,
-              { id, key: id, label: "", type: "text" },
-            ],
+            fields: [...current.fields, { id, key: id, label: "", type: "text" }],
           }
         : current,
     );
@@ -346,9 +322,7 @@ function StructuredContent() {
     const normalizedFields = typeDraft.fields.map((item, index) => {
       const label = item.label.trim() || `Field ${index + 1}`;
       const isPersistedField = !item.id.startsWith("field-");
-      const baseKey = isPersistedField
-        ? item.key
-        : fieldKeyFromLabel(label, index);
+      const baseKey = isPersistedField ? item.key : fieldKeyFromLabel(label, index);
       let key = baseKey;
       let suffix = 2;
       while (usedKeys.has(key)) key = `${baseKey}${suffix++}`;
@@ -357,14 +331,10 @@ function StructuredContent() {
         ...item,
         key,
         label,
-        primary: typeDraft.fields.some((field) => field.primary)
-          ? item.primary
-          : index === 0,
+        primary: typeDraft.fields.some((field) => field.primary) ? item.primary : index === 0,
       };
     });
-    const slug = typeDraft.id
-      ? typeDraft.slug
-      : slugifyContentType(typeDraft.name);
+    const slug = typeDraft.id ? typeDraft.slug : slugifyContentType(typeDraft.name);
     setSaving(true);
     try {
       await saveStructuredType({
@@ -373,12 +343,9 @@ function StructuredContent() {
         slug,
         name: typeDraft.name.trim(),
         singular:
-          typeDraft.singular.trim() ||
-          typeDraft.name.trim().replace(/s$/i, "").toLowerCase(),
+          typeDraft.singular.trim() || typeDraft.name.trim().replace(/s$/i, "").toLowerCase(),
         icon: typeDraft.icon,
-        description: typeDraft.id
-          ? activeType.description
-          : "Custom structured content type.",
+        description: typeDraft.id ? activeType.description : "Custom structured content type.",
         fields: normalizedFields,
       });
       const next = await loadWorkspace();
@@ -401,13 +368,15 @@ function StructuredContent() {
     if (!window.confirm(`Delete the ${typeDraft.name} content type?`)) return;
     setSaving(true);
     try {
-      await deleteStructuredType(typeDraft.id);
       const remaining = types.filter((type) => type.id !== typeDraft.id);
+      const nextType = remaining[0];
+      if (!nextType) throw new Error("At least one content type must remain");
+      await deleteStructuredType(typeDraft.id);
       setTypes(remaining);
       setTypeDraft(null);
       void navigate({
         to: "/structured-content",
-        search: { type: remaining[0].slug },
+        search: { type: nextType.slug },
         replace: true,
       });
       showToast("Content type deleted");
@@ -490,9 +459,7 @@ function StructuredContent() {
                 aria-label={`Search ${activeType.name}`}
                 placeholder={`Search ${activeType.name.toLowerCase()}...`}
                 value={query}
-                onChange={(event) =>
-                  updateSearch({ q: event.target.value || undefined })
-                }
+                onChange={(event) => updateSearch({ q: event.target.value || undefined })}
               />
               {query ? (
                 <Button
@@ -511,14 +478,12 @@ function StructuredContent() {
                 <Button
                   className={status === value ? "active" : ""}
                   key={value}
-                  onClick={() =>
-                    updateSearch({ status: value === "all" ? undefined : value })
-                  }
+                  onClick={() => updateSearch({ status: value === "all" ? undefined : value })}
                   size="xs"
                   type="button"
                   variant="ghost"
                 >
-                  {value[0].toUpperCase() + value.slice(1)} {counts[value]}
+                  {value.charAt(0).toUpperCase() + value.slice(1)} {counts[value]}
                 </Button>
               ))}
             </div>
@@ -548,15 +513,21 @@ function StructuredContent() {
             {records.map((record) => {
               const primary = String(record.values[primaryField.key] || "(untitled)");
               return (
-                <Button
+                <div
+                  aria-label={`Edit ${primary}`}
                   className="sf-structured-table-row"
                   key={record.id}
                   onClick={() => openRecord(record)}
+                  onKeyDown={(event) => {
+                    if (event.key !== "Enter" && event.key !== " ") return;
+                    event.preventDefault();
+                    openRecord(record);
+                  }}
+                  role="button"
                   style={{
                     gridTemplateColumns: `minmax(220px, 1.6fr) repeat(${listFields.length}, minmax(120px, 1fr)) 118px 110px 78px`,
                   }}
-                  type="button"
-                  variant="ghost"
+                  tabIndex={0}
                 >
                   <span className="sf-structured-primary">
                     <b
@@ -574,21 +545,22 @@ function StructuredContent() {
                       {formatValue(record.values[field.key])}
                     </span>
                   ))}
-                  <StatusPill
-                    status={record.status === "published" ? "Published" : "Concept"}
-                  />
+                  <StatusPill status={record.status === "published" ? "Published" : "Concept"} />
                   <span className="sf-structured-updated">{record.updated}</span>
                   <span className="sf-structured-actions">
                     <i className="ph ph-pencil-simple" />
-                    <i
+                    <Button
+                      unstyled
+                      aria-label={`Delete ${primary}`}
                       className="ph ph-trash"
                       onClick={(event) => {
                         event.stopPropagation();
                         setDeleteRecord(record);
                       }}
+                      type="button"
                     />
                   </span>
-                </Button>
+                </div>
               );
             })}
             {!records.length ? (
@@ -630,20 +602,28 @@ function StructuredContent() {
               <i className="ph ph-link-simple" /> Referenced by page blocks
             </span>
             <span className="sf-spacer" />
-            <span>{activeType.fields.length} fields · {activeType.records.length} records</span>
+            <span>
+              {activeType.fields.length} fields · {activeType.records.length} records
+            </span>
           </footer>
         </section>
       </div>
 
       {recordDraft ? (
-        <div className="sf-record-layer" onMouseDown={() => setRecordDraft(null)}>
-          <aside className="sf-record-drawer" onMouseDown={(event) => event.stopPropagation()}>
+        <div
+          className="sf-record-layer"
+          onMouseDown={(event) => event.target === event.currentTarget && setRecordDraft(null)}
+          role="presentation"
+        >
+          <aside className="sf-record-drawer">
             <header>
               <div>
                 <strong>
                   {recordDraft.id ? "Edit" : "New"} {activeType.singular}
                 </strong>
-                <small>{activeType.name} · {activeType.fields.length} fields</small>
+                <small>
+                  {activeType.name} · {activeType.fields.length} fields
+                </small>
               </div>
               <Button
                 aria-label="Close record"
@@ -661,9 +641,7 @@ function StructuredContent() {
                   className={recordDraft.status === value ? "active" : ""}
                   key={value}
                   onClick={() =>
-                    setRecordDraft((current) =>
-                      current ? { ...current, status: value } : current,
-                    )
+                    setRecordDraft((current) => (current ? { ...current, status: value } : current))
                   }
                   size="xs"
                   type="button"
@@ -689,9 +667,7 @@ function StructuredContent() {
                 <Button
                   className="sf-record-delete"
                   onClick={() => {
-                    const record = activeType.records.find(
-                      (item) => item.id === recordDraft.id,
-                    );
+                    const record = activeType.records.find((item) => item.id === recordDraft.id);
                     if (record) setDeleteRecord(record);
                   }}
                   type="button"
@@ -704,7 +680,7 @@ function StructuredContent() {
               <Button onClick={() => setRecordDraft(null)} type="button" variant="outline">
                 Cancel
               </Button>
-              <Button disabled={saving} onClick={saveRecord} type="button">
+              <Button disabled={saving} loading={saving} onClick={saveRecord} type="button">
                 {saving ? "Saving..." : recordDraft.id ? "Save changes" : "Create"}
               </Button>
             </footer>
@@ -725,32 +701,40 @@ function StructuredContent() {
 
       <Dialog open={Boolean(deleteRecord)} onOpenChange={(open) => !open && setDeleteRecord(null)}>
         <DialogContent showCloseButton={false}>
-        <div className="sf-modal-head">
-          <div>
-            <DialogTitle>Delete structured item?</DialogTitle>
-            <DialogDescription>This cannot be undone.</DialogDescription>
+          <div className="sf-modal-head">
+            <div>
+              <DialogTitle>Delete structured item?</DialogTitle>
+              <DialogDescription>This cannot be undone.</DialogDescription>
+            </div>
+            <DialogClose
+              render={<Button aria-label="Close" size="icon-sm" type="button" variant="ghost" />}
+            >
+              <i className="ph ph-x" />
+            </DialogClose>
           </div>
-          <DialogClose
-            render={<Button aria-label="Close" size="icon-sm" type="button" variant="ghost" />}
-          >
-            <i className="ph ph-x" />
-          </DialogClose>
-        </div>
-        <div className="sf-structured-delete-copy">
-          <span><i className="ph ph-trash" /></span>
-          <p>
-            <strong>{deleteRecord ? String(deleteRecord.values[primaryField.key] || "Untitled") : ""}</strong>
-            will be removed from {activeType.name.toLowerCase()}.
-          </p>
-        </div>
-        <div className="sf-modal-actions">
-          <DialogClose render={<Button type="button" variant="outline" />}>
-            Cancel
-          </DialogClose>
-          <Button disabled={saving} onClick={confirmDeleteRecord} type="button" variant="destructive">
-            {saving ? "Deleting..." : "Delete item"}
-          </Button>
-        </div>
+          <div className="sf-structured-delete-copy">
+            <span>
+              <i className="ph ph-trash" />
+            </span>
+            <p>
+              <strong>
+                {deleteRecord ? String(deleteRecord.values[primaryField.key] || "Untitled") : ""}
+              </strong>
+              will be removed from {activeType.name.toLowerCase()}.
+            </p>
+          </div>
+          <div className="sf-modal-actions">
+            <DialogClose render={<Button type="button" variant="outline" />}>Cancel</DialogClose>
+            <Button
+              disabled={saving}
+              loading={saving}
+              onClick={confirmDeleteRecord}
+              type="button"
+              variant="destructive"
+            >
+              {saving ? "Deleting..." : "Delete item"}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -785,8 +769,13 @@ function RecordField({
   return (
     <label className="sf-record-field">
       <span>
-        <strong>{field.label}{field.required ? <b>*</b> : null}</strong>
-        <small><i className={`ph ${meta.icon}`} /> {meta.label}</small>
+        <strong>
+          {field.label}
+          {field.required ? <b>*</b> : null}
+        </strong>
+        <small>
+          <i className={`ph ${meta.icon}`} /> {meta.label}
+        </small>
       </span>
       {field.type === "toggle" ? (
         <span className="sf-structured-switch-row">
@@ -821,9 +810,17 @@ function RecordField({
           />
         </div>
       ) : field.type === "image" ? (
-        <Button className="sf-image-field" onClick={() => onChange("selected-image.jpg")} type="button" variant="outline">
+        <Button
+          className="sf-image-field"
+          onClick={() => onChange("selected-image.jpg")}
+          type="button"
+          variant="outline"
+        >
           <i className="ph ph-image" />
-          <span><strong>{stringValue || "No image selected"}</strong><small>Choose from the media library</small></span>
+          <span>
+            <strong>{stringValue || "No image selected"}</strong>
+            <small>Choose from the media library</small>
+          </span>
           <i className="ph ph-caret-right" />
         </Button>
       ) : field.type === "choice" || field.type === "reference" ? (
@@ -836,7 +833,9 @@ function RecordField({
           </SelectTrigger>
           <SelectContent>
             {(field.options ?? []).map((option) => (
-              <SelectItem key={option} value={option}>{option}</SelectItem>
+              <SelectItem key={option} value={option}>
+                {option}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -844,18 +843,38 @@ function RecordField({
         <div className={field.type === "rich" ? "sf-rich-field" : ""}>
           {field.type === "rich" ? (
             <div className="sf-rich-tools">
-              {['ph-text-b','ph-text-italic','ph-list-bullets','ph-list-numbers','ph-link-simple'].map((icon) => (
+              {[
+                "ph-text-b",
+                "ph-text-italic",
+                "ph-list-bullets",
+                "ph-list-numbers",
+                "ph-link-simple",
+              ].map((icon) => (
                 <Button aria-label={icon} key={icon} size="icon-xs" type="button" variant="ghost">
                   <i className={`ph ${icon}`} />
                 </Button>
               ))}
             </div>
           ) : null}
-          <Textarea rows={field.type === "rich" ? 6 : 4} value={stringValue} onChange={(event) => onChange(event.target.value)} />
+          <Textarea
+            rows={field.type === "rich" ? 6 : 4}
+            value={stringValue}
+            onChange={(event) => onChange(event.target.value)}
+          />
         </div>
       ) : (
         <Input
-          type={field.type === "date" ? "date" : field.type === "number" ? "number" : field.type === "email" ? "email" : field.type === "url" ? "url" : "text"}
+          type={
+            field.type === "date"
+              ? "date"
+              : field.type === "number"
+                ? "number"
+                : field.type === "email"
+                  ? "email"
+                  : field.type === "url"
+                    ? "url"
+                    : "text"
+          }
           value={stringValue}
           onChange={(event) => onChange(event.target.value)}
         />
@@ -886,60 +905,152 @@ function TypeModal({
   return (
     <Dialog open={Boolean(draft)} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sf-type-modal" showCloseButton={false}>
-      <div className="sf-modal-head">
-        <div>
-          <DialogTitle>{draft?.id ? `Configure · ${draft.name}` : "New content type"}</DialogTitle>
-          <DialogDescription>Define a reusable collection and the fields it stores.</DialogDescription>
+        <div className="sf-modal-head">
+          <div>
+            <DialogTitle>
+              {draft?.id ? `Configure · ${draft.name}` : "New content type"}
+            </DialogTitle>
+            <DialogDescription>
+              Define a reusable collection and the fields it stores.
+            </DialogDescription>
+          </div>
+          <DialogClose
+            render={<Button aria-label="Close" size="icon-sm" type="button" variant="ghost" />}
+          >
+            <i className="ph ph-x" />
+          </DialogClose>
         </div>
-        <DialogClose
-          render={<Button aria-label="Close" size="icon-sm" type="button" variant="ghost" />}
-        >
-          <i className="ph ph-x" />
-        </DialogClose>
-      </div>
-      {draft ? (
-        <div className="sf-type-modal-body sf-scroll">
-          <div className="sf-type-basics">
-            <label><span>Name</span><Input value={draft.name} onChange={(event) => onChange({ ...draft, name: event.target.value })} placeholder="e.g. Partners" /></label>
-            <label><span>Singular name</span><Input value={draft.singular} onChange={(event) => onChange({ ...draft, singular: event.target.value })} placeholder="e.g. partner" /></label>
-          </div>
-          <div className="sf-type-icons">
-            <span>Icon</span>
-            <div>{typeIcons.map((icon) => <Button aria-label={icon} className={draft.icon === icon ? "active" : ""} key={icon} onClick={() => onChange({ ...draft, icon })} size="icon" type="button" variant="ghost"><i className={`ph ${icon}`} /></Button>)}</div>
-          </div>
-          <div className="sf-type-fields-head"><strong>Fields</strong><span>{draft.fields.length} fields</span></div>
-          <div className="sf-type-fields">
-            {draft.fields.map((field) => (
-              <div className={field.primary ? "primary" : ""} key={field.id}>
-                <Button aria-label="Set as primary field" className="sf-primary-field" onClick={() => onChange({ ...draft, fields: draft.fields.map((item) => ({ ...item, primary: item.id === field.id })) })} size="icon-sm" type="button" variant="ghost"><i className={`ph${field.primary ? '-fill' : ''} ph-star`} /></Button>
-                <Input value={field.label} onChange={(event) => onFieldChange(field.id, { label: event.target.value })} placeholder="Field name" />
-                <Select value={field.type} onValueChange={(value) => onFieldChange(field.id, { type: value as StructuredFieldType })}>
-                  <SelectTrigger aria-label={`${field.label || "Field"} type`}>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(structuredFieldTypes).map(([value, item]) => (
-                      <SelectItem key={value} value={value}>{item.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button aria-label="Remove field" disabled={draft.fields.length === 1} onClick={() => onChange({ ...draft, fields: draft.fields.filter((item) => item.id !== field.id) })} size="icon-sm" type="button" variant="ghost"><i className="ph ph-trash" /></Button>
+        {draft ? (
+          <div className="sf-type-modal-body sf-scroll">
+            <div className="sf-type-basics">
+              <label htmlFor="content-type-name">
+                <span>Name</span>
+                <Input
+                  id="content-type-name"
+                  value={draft.name}
+                  onChange={(event) => onChange({ ...draft, name: event.target.value })}
+                  placeholder="e.g. Partners"
+                />
+              </label>
+              <label htmlFor="content-type-singular">
+                <span>Singular name</span>
+                <Input
+                  id="content-type-singular"
+                  value={draft.singular}
+                  onChange={(event) => onChange({ ...draft, singular: event.target.value })}
+                  placeholder="e.g. partner"
+                />
+              </label>
+            </div>
+            <div className="sf-type-icons">
+              <span>Icon</span>
+              <div>
+                {typeIcons.map((icon) => (
+                  <Button
+                    aria-label={icon}
+                    className={draft.icon === icon ? "active" : ""}
+                    key={icon}
+                    onClick={() => onChange({ ...draft, icon })}
+                    size="icon"
+                    type="button"
+                    variant="ghost"
+                  >
+                    <i className={`ph ${icon}`} />
+                  </Button>
+                ))}
               </div>
-            ))}
+            </div>
+            <div className="sf-type-fields-head">
+              <strong>Fields</strong>
+              <span>{draft.fields.length} fields</span>
+            </div>
+            <div className="sf-type-fields">
+              {draft.fields.map((field) => (
+                <div className={field.primary ? "primary" : ""} key={field.id}>
+                  <Button
+                    aria-label="Set as primary field"
+                    className="sf-primary-field"
+                    onClick={() =>
+                      onChange({
+                        ...draft,
+                        fields: draft.fields.map((item) => ({
+                          ...item,
+                          primary: item.id === field.id,
+                        })),
+                      })
+                    }
+                    size="icon-sm"
+                    type="button"
+                    variant="ghost"
+                  >
+                    <i className={`ph${field.primary ? "-fill" : ""} ph-star`} />
+                  </Button>
+                  <Input
+                    value={field.label}
+                    onChange={(event) => onFieldChange(field.id, { label: event.target.value })}
+                    placeholder="Field name"
+                  />
+                  <Select
+                    value={field.type}
+                    onValueChange={(value) => onFieldChange(field.id, { type: value! })}
+                  >
+                    <SelectTrigger aria-label={`${field.label || "Field"} type`}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(structuredFieldTypes).map(([value, item]) => (
+                        <SelectItem key={value} value={value}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    aria-label="Remove field"
+                    disabled={draft.fields.length === 1}
+                    onClick={() =>
+                      onChange({
+                        ...draft,
+                        fields: draft.fields.filter((item) => item.id !== field.id),
+                      })
+                    }
+                    size="icon-sm"
+                    type="button"
+                    variant="ghost"
+                  >
+                    <i className="ph ph-trash" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+            <Button className="sf-add-field" onClick={onAddField} type="button" variant="outline">
+              <i className="ph-bold ph-plus" /> Add field
+            </Button>
           </div>
-          <Button className="sf-add-field" onClick={onAddField} type="button" variant="outline"><i className="ph-bold ph-plus" /> Add field</Button>
+        ) : null}
+        <div className="sf-modal-actions">
+          {draft?.id ? (
+            <Button
+              className="sf-type-delete"
+              disabled={saving}
+              onClick={onDelete}
+              type="button"
+              variant="link"
+            >
+              Delete type
+            </Button>
+          ) : null}
+          <span className="sf-spacer" />
+          <DialogClose render={<Button type="button" variant="outline" />}>Cancel</DialogClose>
+          <Button
+            disabled={!draft?.name.trim() || saving}
+            loading={saving}
+            onClick={onSave}
+            type="button"
+          >
+            {saving ? "Saving..." : draft?.id ? "Save fields" : "Create type"}
+          </Button>
         </div>
-      ) : null}
-      <div className="sf-modal-actions">
-        {draft?.id ? <Button className="sf-type-delete" disabled={saving} onClick={onDelete} type="button" variant="link">Delete type</Button> : null}
-        <span className="sf-spacer" />
-        <DialogClose render={<Button type="button" variant="outline" />}>
-          Cancel
-        </DialogClose>
-        <Button disabled={!draft?.name.trim() || saving} onClick={onSave} type="button">
-          {saving ? "Saving..." : draft?.id ? "Save fields" : "Create type"}
-        </Button>
-      </div>
       </DialogContent>
     </Dialog>
   );

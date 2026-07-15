@@ -8,13 +8,13 @@ import type {
   StructuredValue,
 } from "./structured-content";
 
-export type StructuredContentWorkspace = {
+export interface StructuredContentWorkspace {
   site: { id: string; name: string };
   language: { id: string; name: string; code: string };
   types: StructuredType[];
-};
+}
 
-type TypeRow = {
+interface TypeRow {
   id: string;
   site_language_id: string;
   slug: string;
@@ -25,9 +25,9 @@ type TypeRow = {
   chip_fg: string;
   description: string;
   position: number;
-};
+}
 
-type FieldRow = {
+interface FieldRow {
   id: string;
   content_type_id: string;
   key: string;
@@ -37,15 +37,15 @@ type FieldRow = {
   is_primary: boolean;
   is_required: boolean;
   options: Json;
-};
+}
 
-type RecordRow = {
+interface RecordRow {
   id: string;
   content_type_id: string;
   status: string;
   values: Json;
   updated_at: string;
-};
+}
 
 function requireClient() {
   const client = getSupabaseBrowserClient();
@@ -87,11 +87,7 @@ function valuesFromJson(value: Json): Record<string, StructuredValue> {
   );
 }
 
-function mapWorkspaceTypes(
-  typeRows: TypeRow[],
-  fieldRows: FieldRow[],
-  recordRows: RecordRow[],
-) {
+function mapWorkspaceTypes(typeRows: TypeRow[], fieldRows: FieldRow[], recordRows: RecordRow[]) {
   return typeRows.map<StructuredType>((type) => ({
     id: type.id,
     slug: type.slug,
@@ -148,7 +144,9 @@ export async function loadStructuredContentWorkspace(): Promise<StructuredConten
 
   const { data: typeData, error: typeError } = await client
     .from("content_types")
-    .select("id, site_language_id, slug, name, singular_name, icon, chip_bg, chip_fg, description, position")
+    .select(
+      "id, site_language_id, slug, name, singular_name, icon, chip_bg, chip_fg, description, position",
+    )
     .eq("site_language_id", language.id)
     .order("position")
     .order("name");
@@ -162,7 +160,9 @@ export async function loadStructuredContentWorkspace(): Promise<StructuredConten
     const [fieldsResult, recordsResult] = await Promise.all([
       client
         .from("content_fields")
-        .select("id, content_type_id, key, label, field_type, position, is_primary, is_required, options")
+        .select(
+          "id, content_type_id, key, label, field_type, position, is_primary, is_required, options",
+        )
         .in("content_type_id", typeIds)
         .order("position"),
       client
@@ -173,8 +173,8 @@ export async function loadStructuredContentWorkspace(): Promise<StructuredConten
     ]);
     if (fieldsResult.error) throw fieldsResult.error;
     if (recordsResult.error) throw recordsResult.error;
-    fieldRows = (fieldsResult.data ?? []) as FieldRow[];
-    recordRows = (recordsResult.data ?? []) as RecordRow[];
+    fieldRows = fieldsResult.data ?? [];
+    recordRows = recordsResult.data ?? [];
   }
 
   return {
@@ -211,7 +211,7 @@ export async function saveStructuredRecord(input: {
         .select("id, content_type_id, status, values, updated_at")
         .single();
   if (result.error) throw result.error;
-  const row = result.data as RecordRow;
+  const row = result.data;
   return {
     id: row.id,
     status: row.status === "published" ? "published" : "concept",
@@ -242,7 +242,7 @@ export function fieldKeyFromLabel(value: string, index: number) {
   const [first = "field", ...rest] = words;
   const key =
     first.toLowerCase() +
-    rest.map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase()).join("");
+    rest.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join("");
   return /^[a-z]/.test(key) ? key : `field${index + 1}${key}`;
 }
 

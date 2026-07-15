@@ -1,4 +1,5 @@
 import { Button } from "../components/ui/button";
+import { LoadingSplash, RouteLoading } from "../components/loading";
 import { Input } from "../components/ui/input";
 import { NativeSelect } from "../components/ui/native-select";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -11,7 +12,6 @@ import {
   loadPersonalSettings,
   savePersonalSettings,
   usesPasswordAuthentication,
-  type InterfaceMode,
   type PersonalSettings as PersonalSettingsValue,
 } from "../lib/personal-settings";
 import "../redirects.css";
@@ -33,6 +33,7 @@ const emptySettings: PersonalSettingsValue = {
 function PersonalSettings() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const [settingsUser, setSettingsUser] = useState(() => user);
   const [saved, setSaved] = useState(emptySettings);
   const [form, setForm] = useState(emptySettings);
   const [loading, setLoading] = useState(true);
@@ -54,21 +55,19 @@ function PersonalSettings() {
   const [passwordError, setPasswordError] = useState("");
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  useEffect(() => {
+    if (user && user.id !== settingsUser?.id) setSettingsUser(user);
+  }, [settingsUser?.id, user]);
+
   const dirty = JSON.stringify(form) !== JSON.stringify(saved);
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim());
-  const valid = Boolean(
-    form.firstName.trim() && form.displayName.trim() && emailValid,
-  );
+  const valid = Boolean(form.firstName.trim() && form.displayName.trim() && emailValid);
   const passwordValid = Boolean(
-    password.current &&
-    password.next.length >= 10 &&
-    password.next === password.confirm,
+    password.current && password.next.length >= 10 && password.next === password.confirm,
   );
   const hasPassword = user ? usesPasswordAuthentication(user) : false;
   const displayName =
-    form.displayName ||
-    [form.firstName, form.lastName].filter(Boolean).join(" ") ||
-    "Editor";
+    form.displayName || [form.firstName, form.lastName].filter(Boolean).join(" ") || "Editor";
   const initials = displayName
     .split(/\s+/)
     .slice(0, 2)
@@ -81,32 +80,28 @@ function PersonalSettings() {
   }, [authLoading, user, navigate]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!settingsUser) return;
     setLoading(true);
-    void loadPersonalSettings(user)
+    void loadPersonalSettings(settingsUser)
       .then((settings) => {
         setSaved(settings);
         setForm(settings);
         applyInterfaceMode(settings.interfaceMode);
       })
       .catch((reason: unknown) =>
-        setError(
-          reason instanceof Error
-            ? reason.message
-            : "Could not load personal settings.",
-        ),
+        setError(reason instanceof Error ? reason.message : "Could not load personal settings."),
       )
       .finally(() => setLoading(false));
-  }, [user?.id]);
+  }, [settingsUser]);
 
   useEffect(() => {
+    if (loading) return;
     applyInterfaceMode(form.interfaceMode);
     const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = () =>
-      form.interfaceMode === "system" && applyInterfaceMode("system");
+    const onChange = () => form.interfaceMode === "system" && applyInterfaceMode("system");
     media.addEventListener("change", onChange);
     return () => media.removeEventListener("change", onChange);
-  }, [form.interfaceMode]);
+  }, [form.interfaceMode, loading]);
 
   useEffect(() => {
     const beforeUnload = (event: BeforeUnloadEvent) => {
@@ -146,11 +141,7 @@ function PersonalSettings() {
         );
       showToast("Personal settings saved");
     } catch (reason) {
-      setError(
-        reason instanceof Error
-          ? reason.message
-          : "Could not save personal settings.",
-      );
+      setError(reason instanceof Error ? reason.message : "Could not save personal settings.");
     } finally {
       setSaving(false);
     }
@@ -169,23 +160,20 @@ function PersonalSettings() {
       setPassword({ current: "", next: "", confirm: "" });
       showToast("Password updated");
     } catch (reason) {
-      setPasswordError(
-        reason instanceof Error ? reason.message : "Could not update password.",
-      );
+      setPasswordError(reason instanceof Error ? reason.message : "Could not update password.");
     } finally {
       setPasswordSaving(false);
     }
   };
 
   const leave = () => {
-    if (dirty && !window.confirm("Discard your unsaved personal settings?"))
-      return;
+    if (dirty && !window.confirm("Discard your unsaved personal settings?")) return;
     applyInterfaceMode(saved.interfaceMode);
     void navigate({ to: "/" });
   };
 
-  if (loading || authLoading)
-    return <div className="sf-loading">Loading personal settings...</div>;
+  if (authLoading) return <LoadingSplash />;
+  if (loading) return <PersonalSettingsLoading />;
   if (!user) return <div className="sf-loading">Redirecting to sign in...</div>;
 
   return (
@@ -203,14 +191,11 @@ function PersonalSettings() {
         </div>
         <span className="sf-spacer" />
         <span className="sf-personal-saved">
-          {saving
-            ? "Saving..."
-            : dirty
-              ? "Unsaved changes"
-              : "All changes saved"}
+          {saving ? "Saving..." : dirty ? "Unsaved changes" : "All changes saved"}
         </span>
         {dirty ? (
-          <Button unstyled
+          <Button
+            unstyled
             className="sf-personal-discard"
             onClick={() => {
               setForm(saved);
@@ -221,9 +206,11 @@ function PersonalSettings() {
             Discard
           </Button>
         ) : null}
-        <Button unstyled
+        <Button
+          unstyled
           className="sf-personal-save"
           disabled={!dirty || !valid || saving}
+          loading={saving}
           onClick={() => void save()}
           type="button"
         >
@@ -249,12 +236,9 @@ function PersonalSettings() {
             description="Your name and sign-in identity"
           >
             <div className="sf-profile-grid">
-              <SettingField
-                label="First name"
-                required
-                dirty={form.firstName !== saved.firstName}
-              >
-                <Input unstyled
+              <SettingField label="First name" required dirty={form.firstName !== saved.firstName}>
+                <Input
+                  unstyled
                   aria-invalid={!form.firstName.trim()}
                   value={form.firstName}
                   onChange={(event) => update("firstName", event.target.value)}
@@ -263,11 +247,9 @@ function PersonalSettings() {
                   <small className="error">First name is required.</small>
                 ) : null}
               </SettingField>
-              <SettingField
-                label="Last name"
-                dirty={form.lastName !== saved.lastName}
-              >
-                <Input unstyled
+              <SettingField label="Last name" dirty={form.lastName !== saved.lastName}>
+                <Input
+                  unstyled
                   value={form.lastName}
                   onChange={(event) => update("lastName", event.target.value)}
                 />
@@ -278,19 +260,17 @@ function PersonalSettings() {
                 required
                 dirty={form.email !== saved.email}
               >
-                <Input unstyled
+                <Input
+                  unstyled
                   aria-invalid={!emailValid}
                   type="email"
                   value={form.email}
                   onChange={(event) => update("email", event.target.value)}
                 />
-                {!emailValid ? (
-                  <small className="error">Enter a valid email address.</small>
-                ) : null}
+                {!emailValid ? <small className="error">Enter a valid email address.</small> : null}
                 {form.email !== saved.email && emailValid ? (
                   <small>
-                    Email changes require confirmation from a link sent to the
-                    new address.
+                    Email changes require confirmation from a link sent to the new address.
                   </small>
                 ) : null}
               </SettingField>
@@ -299,15 +279,13 @@ function PersonalSettings() {
                 label="Display name"
                 dirty={form.displayName !== saved.displayName}
               >
-                <Input unstyled
+                <Input
+                  unstyled
                   value={form.displayName}
-                  onChange={(event) =>
-                    update("displayName", event.target.value)
-                  }
+                  onChange={(event) => update("displayName", event.target.value)}
                 />
                 <small>
-                  Shown on your user card and in activity logs. Not your public
-                  author name.
+                  Shown on your user card and in activity logs. Not your public author name.
                 </small>
               </SettingField>
             </div>
@@ -326,9 +304,7 @@ function PersonalSettings() {
                   name="current"
                   value={password.current}
                   visible={showPassword.current}
-                  onChange={(value) =>
-                    setPassword((current) => ({ ...current, current: value }))
-                  }
+                  onChange={(value) => setPassword((current) => ({ ...current, current: value }))}
                   onToggle={() =>
                     setShowPassword((current) => ({
                       ...current,
@@ -341,9 +317,7 @@ function PersonalSettings() {
                   name="next"
                   value={password.next}
                   visible={showPassword.next}
-                  onChange={(value) =>
-                    setPassword((current) => ({ ...current, next: value }))
-                  }
+                  onChange={(value) => setPassword((current) => ({ ...current, next: value }))}
                   onToggle={() =>
                     setShowPassword((current) => ({
                       ...current,
@@ -356,9 +330,7 @@ function PersonalSettings() {
                   name="confirm"
                   value={password.confirm}
                   visible={showPassword.confirm}
-                  onChange={(value) =>
-                    setPassword((current) => ({ ...current, confirm: value }))
-                  }
+                  onChange={(value) => setPassword((current) => ({ ...current, confirm: value }))}
                   onToggle={() =>
                     setShowPassword((current) => ({
                       ...current,
@@ -374,11 +346,7 @@ function PersonalSettings() {
                     At least 10 characters
                   </span>
                   {password.confirm ? (
-                    <span
-                      className={
-                        password.next === password.confirm ? "valid" : "error"
-                      }
-                    >
+                    <span className={password.next === password.confirm ? "valid" : "error"}>
                       <i
                         className={`ph-fill ${password.next === password.confirm ? "ph-check-circle" : "ph-warning-circle"}`}
                       />{" "}
@@ -388,17 +356,17 @@ function PersonalSettings() {
                     </span>
                   ) : null}
                   <span className="sf-spacer" />
-                  <Button unstyled
+                  <Button
+                    unstyled
                     disabled={!passwordValid || passwordSaving}
+                    loading={passwordSaving}
                     onClick={() => void updatePassword()}
                     type="button"
                   >
                     {passwordSaving ? "Updating..." : "Update password"}
                   </Button>
                 </div>
-                {passwordError ? (
-                  <p className="sf-personal-error wide">{passwordError}</p>
-                ) : null}
+                {passwordError ? <p className="sf-personal-error wide">{passwordError}</p> : null}
               </div>
             ) : (
               <div className="sf-provider-guidance">
@@ -408,9 +376,8 @@ function PersonalSettings() {
                 <div>
                   <strong>Password managed by Google</strong>
                   <p>
-                    You signed in with Google, so there is no SiteFoundry
-                    password to change. Manage your sign-in security in your
-                    Google account.
+                    You signed in with Google, so there is no SiteFoundry password to change. Manage
+                    your sign-in security in your Google account.
                   </p>
                 </div>
               </div>
@@ -427,11 +394,10 @@ function PersonalSettings() {
                 label="Interface language"
                 dirty={form.interfaceLanguage !== saved.interfaceLanguage}
               >
-                <NativeSelect unstyled
+                <NativeSelect
+                  unstyled
                   value={form.interfaceLanguage}
-                  onChange={(event) =>
-                    update("interfaceLanguage", event.target.value)
-                  }
+                  onChange={(event) => update("interfaceLanguage", event.target.value)}
                 >
                   {interfaceLanguages.map((language) => (
                     <option key={language.code} value={language.code}>
@@ -440,8 +406,7 @@ function PersonalSettings() {
                   ))}
                 </NativeSelect>
                 <small>
-                  Changes only your SiteFoundry interface, never website content
-                  language.
+                  Changes only your SiteFoundry interface, never website content language.
                 </small>
               </SettingField>
               <SettingField
@@ -456,12 +421,11 @@ function PersonalSettings() {
                       ["dark", "Dark", "ph-moon-stars"],
                     ] as const
                   ).map(([value, label, icon]) => (
-                    <Button unstyled
+                    <Button
+                      unstyled
                       className={form.interfaceMode === value ? "active" : ""}
                       key={value}
-                      onClick={() =>
-                        update("interfaceMode", value as InterfaceMode)
-                      }
+                      onClick={() => update("interfaceMode", value)}
                       type="button"
                     >
                       <i className={`ph ${icon}`} />
@@ -469,10 +433,7 @@ function PersonalSettings() {
                     </Button>
                   ))}
                 </div>
-                <small>
-                  “System” follows your device and switches automatically when
-                  it does.
-                </small>
+                <small>“System” follows your device and switches automatically when it does.</small>
               </SettingField>
             </div>
           </SettingsSection>
@@ -497,6 +458,26 @@ function PersonalSettings() {
           {toast}
         </div>
       ) : null}
+    </main>
+  );
+}
+
+function PersonalSettingsLoading() {
+  return (
+    <main aria-busy="true" className="sf-personal-settings">
+      <header className="sf-personal-top">
+        <Button unstyled disabled type="button">
+          <i className="ph-bold ph-arrow-left" /> Back to app
+        </Button>
+        <span className="sf-personal-mark">
+          <i className="ph-bold ph-hammer" />
+        </span>
+        <div>
+          <strong>Personal settings</strong>
+          <small>Applies to your account across every website</small>
+        </div>
+      </header>
+      <RouteLoading detail="Loading your profile and preferences." title="Loading settings" />
     </main>
   );
 }
@@ -574,10 +555,9 @@ function PasswordField({
     <label className={`sf-setting-field ${className}`}>
       <span>{label}</span>
       <div className="sf-password-input">
-        <Input unstyled
-          autoComplete={
-            name === "current" ? "current-password" : "new-password"
-          }
+        <Input
+          unstyled
+          autoComplete={name === "current" ? "current-password" : "new-password"}
           type={visible ? "text" : "password"}
           value={value}
           onChange={(event) => onChange(event.target.value)}
@@ -589,7 +569,8 @@ function PasswordField({
                 : "New password"
           }
         />
-        <Button unstyled
+        <Button
+          unstyled
           aria-label={`${visible ? "Hide" : "Show"} ${label.toLowerCase()}`}
           onClick={onToggle}
           type="button"

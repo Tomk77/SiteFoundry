@@ -5,19 +5,23 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   type CSSProperties,
   type DragEvent,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
 import { AppShell, StatusPill } from "../components/app-shell";
-import {
-  Modal,
-  ModalClose,
-  ModalDescription,
-  ModalTitle,
-} from "../components/modal";
+import { AppShellSkeleton, LoadingSplash } from "../components/loading";
+import { Modal, ModalClose, ModalDescription, ModalTitle } from "../components/modal";
 import { useAuth } from "../lib/auth";
+import {
+  slugifyTemplateKey,
+  templateComponentSummary,
+  validatePageTemplate,
+  type PageTemplateDefinition,
+} from "../lib/page-templates";
+import { loadPageTemplates } from "../lib/page-templates-data";
 import {
   createChildPage,
   deletePage,
@@ -29,10 +33,7 @@ import {
   type PageTreeWorkspace,
   type WorkspaceOption,
 } from "../lib/page-tree";
-import {
-  createPageTreeUrlSearch,
-  parsePageTreeUrlSearch,
-} from "../lib/url-view-state";
+import { createPageTreeUrlSearch, parsePageTreeUrlSearch } from "../lib/url-view-state";
 import "../overview.css";
 
 export const Route = createFileRoute("/")({
@@ -42,35 +43,30 @@ export const Route = createFileRoute("/")({
 const pageTreeWorkspaceCache = new Map<string, PageTreeWorkspace>();
 
 type Flat = PageNode & { depth: number; hasChildren: boolean; muted?: boolean };
-type Filters = {
+interface Filters {
   status: "all" | "Published" | "Concept";
   validation: "all" | "problems";
   template: string;
-};
-type UrlImpact = {
+}
+interface UrlImpact {
   id: string;
   title: string;
   oldPath: string;
   newPath: string;
   published: boolean;
-};
-type PendingMove = {
+}
+interface PendingMove {
   source: PageNode;
   destination: { id: string; position: PageDropPosition };
   impacts: UrlImpact[];
-};
+}
 const defaultFilters: Filters = {
   status: "all",
   validation: "all",
   template: "all",
 };
 
-function flatten(
-  nodes: PageNode[],
-  expanded: Set<string>,
-  muted: Set<string>,
-  depth = 0,
-): Flat[] {
+function flatten(nodes: PageNode[], expanded: Set<string>, muted: Set<string>, depth = 0): Flat[] {
   return nodes.flatMap((node) => [
     {
       ...node,
@@ -78,9 +74,7 @@ function flatten(
       hasChildren: node.children.length > 0,
       muted: muted.has(node.id),
     },
-    ...(expanded.has(node.id)
-      ? flatten(node.children, expanded, muted, depth + 1)
-      : []),
+    ...(expanded.has(node.id) ? flatten(node.children, expanded, muted, depth + 1) : []),
   ]);
 }
 function expandable(nodes: PageNode[]) {
@@ -115,9 +109,7 @@ function findNode(nodes: PageNode[], id: string): PageNode | null {
   return null;
 }
 function containsNode(node: PageNode, id: string): boolean {
-  return node.children.some(
-    (child) => child.id === id || containsNode(child, id),
-  );
+  return node.children.some((child) => child.id === id || containsNode(child, id));
 }
 function subtree(node: PageNode): PageNode[] {
   return [node, ...node.children.flatMap(subtree)];
@@ -138,8 +130,7 @@ function moveImpacts(
   if (!newParent || newParent.id === source.parentId) return [];
   const segment = source.slug.split("/").filter(Boolean).at(-1);
   if (!segment) return [];
-  const newRoot =
-    newParent.slug === "/" ? `/${segment}` : `${newParent.slug}/${segment}`;
+  const newRoot = newParent.slug === "/" ? `/${segment}` : `${newParent.slug}/${segment}`;
   return subtree(source)
     .map((page) => ({
       id: page.id,
@@ -155,9 +146,7 @@ function PageTree() {
   const navigate = useNavigate(),
     { user, loading: authLoading } = useAuth();
   const urlSearch = Route.useSearch();
-  const cachedWorkspace = user
-    ? (pageTreeWorkspaceCache.get(user.id) ?? null)
-    : null;
+  const cachedWorkspace = user ? (pageTreeWorkspaceCache.get(user.id) ?? null) : null;
   const [data, setData] = useState<PageTreeWorkspace | null>(cachedWorkspace),
     [loading, setLoading] = useState(!cachedWorkspace),
     [error, setError] = useState(""),
@@ -169,9 +158,13 @@ function PageTree() {
       languageId?: string;
     }>({}),
     [addParent, setAddParent] = useState<PageNode | null>(null),
+    [addQuickParent, setAddQuickParent] = useState<PageNode | null>(null),
     [addTitle, setAddTitle] = useState(""),
     [addSlug, setAddSlug] = useState(""),
-    [addTemplate, setAddTemplate] = useState("Standard page"),
+    [addSlugEdited, setAddSlugEdited] = useState(false),
+    [addTemplateKey, setAddTemplateKey] = useState(""),
+    [pageTemplates, setPageTemplates] = useState<PageTemplateDefinition[]>([]),
+    [templateLoadError, setTemplateLoadError] = useState(""),
     [creating, setCreating] = useState(false),
     [actionPage, setActionPage] = useState<PageNode | null>(null),
     [renameTarget, setRenameTarget] = useState<PageNode | null>(null),
@@ -239,6 +232,15 @@ function PageTree() {
       if (workspace && user?.id) pageTreeWorkspaceCache.set(user.id, workspace);
       setData(workspace);
       if (workspace) {
+        try {
+          setPageTemplates(await loadPageTemplates(workspace.language.id));
+          setTemplateLoadError("");
+        } catch (templateError) {
+          setPageTemplates([]);
+          setTemplateLoadError(
+            templateError instanceof Error ? templateError.message : "Could not load templates.",
+          );
+        }
         setSelection({
           siteId: workspace.site.id,
           languageId: workspace.language.id,
@@ -254,8 +256,7 @@ function PageTree() {
           setExpanded(new Set(state.expanded ?? []));
           setSelected(state.selected ?? "");
           requestAnimationFrame(() => {
-            if (scrollRef.current)
-              scrollRef.current.scrollTop = state.scrollTop ?? 0;
+            if (scrollRef.current) scrollRef.current.scrollTop = state.scrollTop ?? 0;
           });
         } else {
           setExpanded(expandable(workspace.pages));
@@ -263,9 +264,7 @@ function PageTree() {
         }
       }
     } catch (reason) {
-      setError(
-        reason instanceof Error ? reason.message : "Could not load pages",
-      );
+      setError(reason instanceof Error ? reason.message : "Could not load pages");
     } finally {
       setLoading(false);
       restored.current = true;
@@ -273,6 +272,8 @@ function PageTree() {
   };
   useEffect(() => {
     if (user) void load();
+    // The loader intentionally uses the initial workspace selection for each signed-in user.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
   useEffect(() => {
     if (!authLoading && !user) {
@@ -295,23 +296,33 @@ function PageTree() {
     element?.addEventListener("scroll", persist, { passive: true });
     return () => element?.removeEventListener("scroll", persist);
   }, [data, expanded, selected]);
-  const templates = useMemo(
+  const templatesById = useMemo(
     () =>
-      data
-        ? [
-            ...new Set([
-              "Standard page",
-              "Landing page",
-              "News article",
-              "Blog article",
-              ...flatten(data.pages, expandable(data.pages), new Set()).map(
-                (page) => page.template,
-              ),
-            ]),
-          ].sort()
-        : [],
-    [data],
+      new Map(
+        pageTemplates.flatMap((template) =>
+          template.id ? [[template.id, template] as const] : [],
+        ),
+      ),
+    [pageTemplates],
   );
+  const templatesByKey = useMemo(
+    () => new Map(pageTemplates.map((template) => [template.key, template])),
+    [pageTemplates],
+  );
+  const templateForPage = useCallback(
+    (page: PageNode) =>
+      (page.templateId ? templatesById.get(page.templateId) : undefined) ??
+      (page.templateKey ? templatesByKey.get(page.templateKey) : undefined) ??
+      pageTemplates.find((template) => template.name === page.template),
+    [pageTemplates, templatesById, templatesByKey],
+  );
+  const filterTemplates = useMemo(
+    () => [...pageTemplates].sort((first, second) => first.name.localeCompare(second.name)),
+    [pageTemplates],
+  );
+  const activeFilterTemplate =
+    templatesByKey.get(filters.template) ??
+    pageTemplates.find((template) => template.name === filters.template);
   const filtering =
     Boolean(query.trim()) ||
     filters.status !== "all" ||
@@ -321,41 +332,72 @@ function PageTree() {
     () =>
       data
         ? filterTree(data.pages, (page) => {
+            const resolvedTemplate = templateForPage(page);
             const text =
-              `${page.title} ${page.slug} ${page.template}`.toLowerCase();
+              `${page.title} ${page.slug} ${resolvedTemplate?.name ?? page.template} ${resolvedTemplate?.key ?? page.templateKey ?? ""}`.toLowerCase();
             return (
               (!query.trim() || text.includes(query.toLowerCase())) &&
               (filters.status === "all" || page.status === filters.status) &&
-              (filters.validation === "all" ||
-                page.validation === "Needs attention") &&
-              (filters.template === "all" || page.template === filters.template)
+              (filters.validation === "all" || page.validation === "Needs attention") &&
+              (filters.template === "all" ||
+                (activeFilterTemplate
+                  ? page.templateId === activeFilterTemplate.id ||
+                    page.templateKey === activeFilterTemplate.key ||
+                    page.template === activeFilterTemplate.name
+                  : page.template === filters.template || page.templateKey === filters.template))
             );
           })
         : { nodes: [], muted: new Set<string>() },
-    [data, query, filters],
+    [activeFilterTemplate, data, filters, query, templateForPage],
   );
   const visibleExpanded = filtering ? expandable(filtered.nodes) : expanded;
-  const expandableIds = useMemo(
-    () => (data ? expandable(data.pages) : new Set<string>()),
-    [data],
-  );
+  const expandableIds = useMemo(() => (data ? expandable(data.pages) : new Set<string>()), [data]);
   const allExpanded =
-    expandableIds.size > 0 &&
-    [...expandableIds].every((pageId) => expanded.has(pageId));
+    expandableIds.size > 0 && [...expandableIds].every((pageId) => expanded.has(pageId));
   const rows = useMemo(
     () => flatten(filtered.nodes, visibleExpanded, filtered.muted),
     [filtered, visibleExpanded],
   );
-  const openAdd = (parent?: PageNode | null) => {
+  const preferredTemplateFor = (parent: PageNode) => {
+    const preferred = parent.preferredChildTemplate;
+    const available = pageTemplates.filter(
+      (template) => template.status === "published" && !validatePageTemplate(template).length,
+    );
+    return (
+      available.find((template) => template.key === preferred || template.name === preferred) ??
+      available.find((template) => template.fallback) ??
+      available[0]
+    );
+  };
+  const openAdd = (parent?: PageNode | null, templateKey?: string) => {
     const fallback = parent ?? data?.pages[0] ?? null;
     if (!fallback) return;
     setAddParent(fallback);
+    setAddQuickParent(null);
     setAddTitle("");
     setAddSlug("");
-    setAddTemplate(fallback.preferredChildTemplate || "Standard page");
+    setAddSlugEdited(false);
+    setAddTemplateKey(templateKey || preferredTemplateFor(fallback)?.key || "");
   };
+  const selectedAddTemplate = pageTemplates.find((template) => template.key === addTemplateKey);
+  const addTemplateIssues = selectedAddTemplate ? validatePageTemplate(selectedAddTemplate) : [];
+  const normalizedAddSlug = slugifyTemplateKey(addSlug || addTitle) || "untitled-page";
+  const slugCollision = Boolean(
+    addParent?.children.some(
+      (child) => child.slug.split("/").filter(Boolean).at(-1) === normalizedAddSlug,
+    ),
+  );
   const create = async () => {
-    if (!data || !addParent || !addTitle.trim() || creating) return;
+    if (
+      !data ||
+      !addParent ||
+      !addTitle.trim() ||
+      !selectedAddTemplate ||
+      addTemplateIssues.length ||
+      slugCollision ||
+      creating
+    )
+      return;
     setCreating(true);
     try {
       const id = await createChildPage({
@@ -363,14 +405,52 @@ function PageTree() {
         parentId: addParent.id,
         title: addTitle,
         slug: addSlug,
-        template: addTemplate,
+        template: selectedAddTemplate,
       });
       setAddParent(null);
       await load(selection);
       void navigate({ to: "/editor", search: { page: id } });
     } catch (reason) {
-      setError(
-        reason instanceof Error ? reason.message : "Could not create page",
+      setModalError(reason instanceof Error ? reason.message : "Could not create page");
+    } finally {
+      setCreating(false);
+    }
+  };
+  const quickCreate = async (parent: PageNode) => {
+    const template = preferredTemplateFor(parent);
+    if (!data || !template || validatePageTemplate(template).length || creating) {
+      openAdd(parent, template?.key);
+      return;
+    }
+    const baseTitle = `Untitled ${template.name.toLowerCase()}`;
+    const occupiedSlugs = new Set(
+      parent.children.map((child) => child.slug.split("/").filter(Boolean).at(-1)),
+    );
+    const baseSlug = slugifyTemplateKey(baseTitle);
+    let slug = baseSlug;
+    let suffix = 2;
+    while (occupiedSlugs.has(slug)) {
+      slug = `${baseSlug}-${suffix}`;
+      suffix += 1;
+    }
+    const title = slug === baseSlug ? baseTitle : `${baseTitle} ${suffix - 1}`;
+    setCreating(true);
+    setAddQuickParent(null);
+    try {
+      const id = await createChildPage({
+        languageId: data.language.id,
+        parentId: parent.id,
+        title,
+        slug,
+        template,
+      });
+      await load(selection);
+      showToast("Page created", `${title} saved as a concept.`);
+      void navigate({ to: "/editor", search: { page: id } });
+    } catch (reason) {
+      showToast(
+        "Could not create page",
+        reason instanceof Error ? reason.message : "Try the full page dialog.",
       );
     } finally {
       setCreating(false);
@@ -412,11 +492,7 @@ function PageTree() {
     const rect = event.currentTarget.getBoundingClientRect(),
       offset = event.clientY - rect.top;
     let position: PageDropPosition =
-      offset < rect.height * 0.3
-        ? "before"
-        : offset > rect.height * 0.7
-          ? "after"
-          : "inside";
+      offset < rect.height * 0.3 ? "before" : offset > rect.height * 0.7 ? "after" : "inside";
     if (target.isHomepage) position = "inside";
     dropTargetRef.current = { id: target.id, position };
     setDropTarget((current) =>
@@ -442,18 +518,10 @@ function PageTree() {
   const drop = async (event: DragEvent<HTMLDivElement>, target: PageNode) => {
     event.preventDefault();
     event.stopPropagation();
-    const sourceId =
-        dragIdRef.current || event.dataTransfer.getData("text/plain"),
+    const sourceId = dragIdRef.current || event.dataTransfer.getData("text/plain"),
       destination = dropTargetRef.current ?? dropTarget;
     clearDrag();
-    if (
-      !data ||
-      !sourceId ||
-      !destination ||
-      destination.id !== target.id ||
-      moving
-    )
-      return;
+    if (!data || !sourceId || !destination || destination.id !== target.id || moving) return;
     const source = findNode(data.pages, sourceId);
     if (!source) return;
     const impacts = moveImpacts(data.pages, source, destination);
@@ -493,8 +561,7 @@ function PageTree() {
       );
       return true;
     } catch (reason) {
-      const message =
-        reason instanceof Error ? reason.message : "The move was not saved.";
+      const message = reason instanceof Error ? reason.message : "The move was not saved.";
       if (pendingMove) setModalError(message);
       showToast("Could not move page", message);
       return false;
@@ -511,9 +578,7 @@ function PageTree() {
       setRenameTarget(null);
       await load(selection);
     } catch (reason) {
-      setModalError(
-        reason instanceof Error ? reason.message : "Could not rename page",
-      );
+      setModalError(reason instanceof Error ? reason.message : "Could not rename page");
     } finally {
       setMutating(false);
     }
@@ -528,27 +593,13 @@ function PageTree() {
       setSelected((value) => (value === deleteTarget.id ? "" : value));
       await load(selection);
     } catch (reason) {
-      setModalError(
-        reason instanceof Error ? reason.message : "Could not delete page",
-      );
+      setModalError(reason instanceof Error ? reason.message : "Could not delete page");
     } finally {
       setMutating(false);
     }
   };
-  if (authLoading || !user)
-    return <div className="sf-loading">Loading your page tree...</div>;
-  if (loading && !data)
-    return (
-      <AppShell active="pages">
-        <div className="sf-route-loading" role="status">
-          <span className="sf-route-loading-mark">
-            <i className="ph ph-tree-structure" />
-          </span>
-          <strong>Loading your page tree</strong>
-          <small>The navigation stays put while your pages arrive.</small>
-        </div>
-      </AppShell>
-    );
+  if (authLoading || !user) return <LoadingSplash />;
+  if (loading && !data) return <AppShellSkeleton label="Loading your page tree" variant="tree" />;
   return (
     <AppShell
       active="pages"
@@ -571,16 +622,19 @@ function PageTree() {
           </span>
         </div>
         <span className="sf-spacer" />
-        <label className="sf-search">
+        <label className="sf-search" htmlFor="page-search">
           <i className="ph ph-magnifying-glass" />
-          <Input unstyled
+          <Input
+            unstyled
+            id="page-search"
             aria-label="Search pages"
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search pages..."
             value={query}
           />
         </label>
-        <Button unstyled
+        <Button
+          unstyled
           className={`sf-action ${filtersOpen || filtering ? "active" : ""}`}
           onClick={() => setFiltersOpen((value) => !value)}
         >
@@ -599,17 +653,12 @@ function PageTree() {
             </b>
           ) : null}
         </Button>
-        <Button unstyled
+        <Button
+          unstyled
           className="sf-action"
           disabled={filtering || expandableIds.size === 0}
-          onClick={() =>
-            setExpanded(allExpanded ? new Set() : new Set(expandableIds))
-          }
-          title={
-            filtering
-              ? "Clear search and filters to change the tree expansion"
-              : undefined
-          }
+          onClick={() => setExpanded(allExpanded ? new Set() : new Set(expandableIds))}
+          title={filtering ? "Clear search and filters to change the tree expansion" : undefined}
         >
           <i className={`ph ph-caret-double-${allExpanded ? "up" : "down"}`} />
           {allExpanded ? "Collapse all" : "Expand all"}
@@ -628,33 +677,25 @@ function PageTree() {
             </Button>
           ) : null}
           {filters.status !== "all" ? (
-            <Button unstyled
-              onClick={() =>
-                setFilters((value) => ({ ...value, status: "all" }))
-              }
-            >
+            <Button unstyled onClick={() => setFilters((value) => ({ ...value, status: "all" }))}>
               Status: {filters.status} <i className="ph ph-x" />
             </Button>
           ) : null}
           {filters.template !== "all" ? (
-            <Button unstyled
-              onClick={() =>
-                setFilters((value) => ({ ...value, template: "all" }))
-              }
-            >
-              Template: {filters.template} <i className="ph ph-x" />
+            <Button unstyled onClick={() => setFilters((value) => ({ ...value, template: "all" }))}>
+              Template: {activeFilterTemplate?.name ?? filters.template} <i className="ph ph-x" />
             </Button>
           ) : null}
           {filters.validation !== "all" ? (
-            <Button unstyled
-              onClick={() =>
-                setFilters((value) => ({ ...value, validation: "all" }))
-              }
+            <Button
+              unstyled
+              onClick={() => setFilters((value) => ({ ...value, validation: "all" }))}
             >
               Validation: Needs attention <i className="ph ph-x" />
             </Button>
           ) : null}
-          <Button unstyled
+          <Button
+            unstyled
             className="sf-reset-filters"
             onClick={() => updateUrlView("", defaultFilters)}
           >
@@ -664,9 +705,11 @@ function PageTree() {
       )}
       {filtersOpen && (
         <div className="sf-filter-bar">
-          <label>
+          <label htmlFor="page-status-filter">
             <span>Status</span>
-            <NativeSelect unstyled
+            <NativeSelect
+              unstyled
+              id="page-status-filter"
               value={filters.status}
               onChange={(event) =>
                 setFilters((value) => ({
@@ -680,10 +723,12 @@ function PageTree() {
               <option>Concept</option>
             </NativeSelect>
           </label>
-          <label>
+          <label htmlFor="page-template-filter">
             <span>Template</span>
-            <NativeSelect unstyled
-              value={filters.template}
+            <NativeSelect
+              unstyled
+              id="page-template-filter"
+              value={activeFilterTemplate?.key ?? filters.template}
               onChange={(event) =>
                 setFilters((value) => ({
                   ...value,
@@ -692,14 +737,18 @@ function PageTree() {
               }
             >
               <option value="all">All templates</option>
-              {templates.map((template) => (
-                <option key={template}>{template}</option>
+              {filterTemplates.map((template) => (
+                <option key={template.key} value={template.key}>
+                  {template.name}
+                </option>
               ))}
             </NativeSelect>
           </label>
-          <label>
+          <label htmlFor="page-validation-filter">
             <span>Validation</span>
-            <NativeSelect unstyled
+            <NativeSelect
+              unstyled
+              id="page-validation-filter"
               value={filters.validation}
               onChange={(event) =>
                 setFilters((value) => ({
@@ -727,6 +776,8 @@ function PageTree() {
         ) : rows.length ? (
           rows.map((page) => (
             <div
+              aria-level={page.depth + 1}
+              aria-selected={selected === page.id}
               className={`sf-tree-row${selected === page.id ? " selected" : ""}${page.muted ? " muted" : ""}${actionPage?.id === page.id ? " menu-open" : ""}${dragId === page.id ? " dragging" : ""}${dropTarget?.id === page.id ? ` drop-${dropTarget.position}` : ""}`}
               draggable={!page.isHomepage && !moving}
               key={page.id}
@@ -735,6 +786,14 @@ function PageTree() {
                 setSelected(page.id);
                 void navigate({ to: "/editor", search: { page: page.id } });
               }}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter" && event.key !== " ") return;
+                event.preventDefault();
+                setSelected(page.id);
+                void navigate({ to: "/editor", search: { page: page.id } });
+              }}
+              role="treeitem"
+              tabIndex={0}
               onDragStart={(event) => {
                 if (page.isHomepage || moving) {
                   event.preventDefault();
@@ -758,15 +817,15 @@ function PageTree() {
                 } as CSSProperties
               }
             >
-              <Button unstyled
+              <Button
+                unstyled
                 className={`sf-tree-chevron${page.hasChildren ? "" : " hidden"}`}
                 onClick={(event) => {
                   event.stopPropagation();
                   setExpanded((current) => {
                     const next = new Set(current);
-                    next.has(page.id)
-                      ? next.delete(page.id)
-                      : next.add(page.id);
+                    if (next.has(page.id)) next.delete(page.id);
+                    else next.add(page.id);
                     return next;
                   });
                 }}
@@ -783,31 +842,57 @@ function PageTree() {
               <span className="sf-tree-name">{page.title}</span>
               <span className="sf-tree-slug">{ownSlug(page.slug)}</span>
               <span className="sf-spacer" />
-              <span className="sf-template">{page.template}</span>
+              <span className="sf-template">{templateForPage(page)?.name ?? page.template}</span>
               <StatusPill status={page.status} />
               {page.validation === "Needs attention" ? (
                 <span className="sf-validation-badge" title="Needs attention">
                   <i className="ph-fill ph-warning" />1
                 </span>
               ) : null}
-              <Button unstyled
+              <Button
+                unstyled
                 aria-label={`Add under ${page.title}`}
                 className="sf-row-icon"
                 onClick={(event) => {
                   event.stopPropagation();
-                  openAdd(page);
+                  setAddQuickParent((current) => (current?.id === page.id ? null : page));
                 }}
               >
                 <i className="ph-bold ph-plus" />
               </Button>
-              <Button unstyled
+              {addQuickParent?.id === page.id ? (
+                <div
+                  className="sf-add-page-quick-menu"
+                  onClick={(event) => event.stopPropagation()}
+                  role="presentation"
+                >
+                  <Button unstyled disabled={creating} onClick={() => void quickCreate(page)}>
+                    <i className="ph ph-file-plus" />
+                    <span>
+                      <strong>Add {preferredTemplateFor(page)?.name ?? "page"}</strong>
+                      <small>
+                        {page.preferredChildTemplate
+                          ? "Preferred template here"
+                          : "Site fallback template"}
+                      </small>
+                    </span>
+                  </Button>
+                  <Button unstyled onClick={() => openAdd(page)}>
+                    <i className="ph ph-stack" />
+                    <span>
+                      <strong>Add different kind of page...</strong>
+                      <small>Choose from all templates</small>
+                    </span>
+                  </Button>
+                </div>
+              ) : null}
+              <Button
+                unstyled
                 aria-label={`More actions for ${page.title}`}
                 className={`sf-row-icon${actionPage?.id === page.id ? " active" : ""}`}
                 onClick={(event) => {
                   event.stopPropagation();
-                  setActionPage((current) =>
-                    current?.id === page.id ? null : page,
-                  );
+                  setActionPage((current) => (current?.id === page.id ? null : page));
                 }}
               >
                 <i className="ph-bold ph-dots-three" />
@@ -816,8 +901,11 @@ function PageTree() {
                 <div
                   className="sf-row-menu"
                   onClick={(event) => event.stopPropagation()}
+                  onKeyDown={(event) => event.stopPropagation()}
+                  role="presentation"
                 >
-                  <Button unstyled
+                  <Button
+                    unstyled
                     onClick={() =>
                       void navigate({
                         to: "/editor",
@@ -827,7 +915,8 @@ function PageTree() {
                   >
                     <i className="ph ph-pencil-simple" /> Edit page
                   </Button>
-                  <Button unstyled
+                  <Button
+                    unstyled
                     onClick={() => {
                       setActionPage(null);
                       openAdd(page);
@@ -835,7 +924,8 @@ function PageTree() {
                   >
                     <i className="ph ph-plus" /> Add child page
                   </Button>
-                  <Button unstyled
+                  <Button
+                    unstyled
                     onClick={() => {
                       setActionPage(null);
                       setModalError("");
@@ -845,7 +935,8 @@ function PageTree() {
                   >
                     <i className="ph ph-text-t" /> Rename title
                   </Button>
-                  <Button unstyled
+                  <Button
+                    unstyled
                     className="danger"
                     disabled={page.isHomepage || page.hasChildren}
                     title={
@@ -883,11 +974,11 @@ function PageTree() {
         Drag a row to reorder, or onto another page to reparent
         <span className="sf-spacer" />
         <span className="sf-mono">
-          {rows.filter((row) => !row.muted).length} matching · {rows.length}{" "}
-          shown
+          {rows.filter((row) => !row.muted).length} matching · {rows.length} shown
         </span>
       </footer>
       <Modal
+        className="sf-create-page-modal"
         open={Boolean(addParent)}
         onOpenChange={(open) => !open && !creating && setAddParent(null)}
       >
@@ -904,61 +995,155 @@ function PageTree() {
                 <i className="ph ph-x" />
               </ModalClose>
             </header>
-            <div className="sf-overview-modal-body">
-              <label>
+            <div className="sf-overview-modal-body sf-create-page-body">
+              <div className="sf-create-page-context">
+                <span>
+                  <i className="ph ph-globe-hemisphere-west" /> {data?.site.name}
+                </span>
+                <span>
+                  {data?.language.name} · {data?.language.code.toUpperCase()}
+                </span>
+                <span className="sf-mono">
+                  {addParent.slug === "/" ? "/" : `${addParent.slug}/`}
+                </span>
+              </div>
+              <div className="sf-create-template-section">
+                <span>Starting template</span>
+                {templateLoadError ? (
+                  <div className="sf-create-template-state error">
+                    <i className="ph ph-warning-circle" />
+                    <span>
+                      <strong>Templates could not be loaded</strong>
+                      <small>{templateLoadError}</small>
+                    </span>
+                    <Button unstyled onClick={() => void load(selection)}>
+                      Retry
+                    </Button>
+                  </div>
+                ) : !pageTemplates.length ? (
+                  <div className="sf-create-template-state">
+                    <i className="ph ph-stack" />
+                    <span>
+                      <strong>No templates available for this site</strong>
+                      <small>Add one under Settings → Page templates first.</small>
+                    </span>
+                  </div>
+                ) : (
+                  <div className="sf-create-template-grid sf-scroll">
+                    {pageTemplates.map((template) => {
+                      const issues = validatePageTemplate(template);
+                      const unavailable = template.status !== "published" || issues.length > 0;
+                      const preferred =
+                        addParent.preferredChildTemplate === template.key ||
+                        addParent.preferredChildTemplate === template.name;
+                      return (
+                        <Button
+                          unstyled
+                          className={`${addTemplateKey === template.key ? "selected" : ""}${unavailable ? " unavailable" : ""}`}
+                          disabled={unavailable}
+                          key={template.key}
+                          onClick={() => setAddTemplateKey(template.key)}
+                          type="button"
+                        >
+                          <i className={`ph ${template.icon}`} />
+                          <span>
+                            <strong>
+                              {template.name}
+                              {preferred ? <b>Preferred</b> : null}
+                              {template.fallback ? (
+                                <b>
+                                  <i className="ph-fill ph-push-pin" /> Fallback
+                                </b>
+                              ) : null}
+                            </strong>
+                            <small>{template.description}</small>
+                            <em>
+                              {template.components.length} components ·{" "}
+                              {templateComponentSummary(template) || "Empty"}
+                            </em>
+                            {unavailable ? (
+                              <em className="error">
+                                <i className="ph-fill ph-warning-circle" /> Unavailable ·{" "}
+                                {template.status === "draft"
+                                  ? "template is still a draft"
+                                  : `${issues.length} validation ${issues.length === 1 ? "issue" : "issues"}`}
+                              </em>
+                            ) : null}
+                          </span>
+                          {addTemplateKey === template.key ? (
+                            <i className="ph-fill ph-check-circle" />
+                          ) : null}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+              <label htmlFor="add-page-title">
                 <span>Page title</span>
-                <Input unstyled
+                <Input
+                  unstyled
                   autoFocus
+                  id="add-page-title"
                   value={addTitle}
-                  onChange={(event) => setAddTitle(event.target.value)}
+                  onChange={(event) => {
+                    setAddTitle(event.target.value);
+                    if (!addSlugEdited) setAddSlug(slugifyTemplateKey(event.target.value));
+                  }}
                   placeholder="Untitled page"
                 />
               </label>
-              <label>
+              <label htmlFor="add-page-slug">
                 <span>URL slug</span>
                 <div className="sf-add-slug">
                   <b>{addParent.slug === "/" ? "/" : `${addParent.slug}/`}</b>
-                  <Input unstyled
+                  <Input
+                    unstyled
+                    id="add-page-slug"
                     value={addSlug}
-                    onChange={(event) => setAddSlug(event.target.value)}
+                    onChange={(event) => {
+                      setAddSlugEdited(true);
+                      setAddSlug(slugifyTemplateKey(event.target.value));
+                    }}
                     placeholder="generated-from-title"
                   />
                 </div>
               </label>
-              <label>
-                <span>Starting template</span>
-                <NativeSelect unstyled
-                  value={addTemplate}
-                  onChange={(event) => setAddTemplate(event.target.value)}
-                >
-                  {addParent.preferredChildTemplate ? (
-                    <option>{addParent.preferredChildTemplate}</option>
-                  ) : null}
-                  {templates
-                    .filter(
-                      (template) =>
-                        template !== addParent.preferredChildTemplate,
-                    )
-                    .map((template) => (
-                      <option key={template}>{template}</option>
-                    ))}
-                </NativeSelect>
-                <small>
-                  Templates provide starting content only. The page remains
-                  fully editable.
-                </small>
-              </label>
+              <div className={`sf-resulting-url${slugCollision ? " collision" : ""}`}>
+                <span>Resulting URL</span>
+                <strong className="sf-mono">
+                  {addParent.slug === "/" ? "/" : `${addParent.slug}/`}
+                  {normalizedAddSlug}
+                </strong>
+                {slugCollision ? (
+                  <em>
+                    <i className="ph-fill ph-warning-circle" /> A page already uses this URL.
+                  </em>
+                ) : null}
+              </div>
+              {modalError ? <p className="sf-modal-error">{modalError}</p> : null}
             </div>
             <footer>
+              <span className="sf-create-page-note">
+                Templates provide starting content only · the page stays fully editable.
+              </span>
               <ModalClose className="sf-action" disabled={creating}>
                 Cancel
               </ModalClose>
-              <Button unstyled
+              <Button
+                unstyled
                 className="sf-action primary"
-                disabled={!addTitle.trim() || creating}
+                disabled={
+                  !addTitle.trim() ||
+                  !selectedAddTemplate ||
+                  Boolean(addTemplateIssues.length) ||
+                  slugCollision ||
+                  creating
+                }
+                loading={creating}
                 onClick={() => void create()}
               >
-                {creating ? "Creating..." : "Create page"}
+                {creating ? "Creating..." : "Create as concept"}
               </Button>
             </footer>
           </>
@@ -980,26 +1165,28 @@ function PageTree() {
               </ModalClose>
             </header>
             <div className="sf-overview-modal-body">
-              <label>
+              <label htmlFor="rename-page-title">
                 <span>Page title</span>
-                <Input unstyled
+                <Input
+                  unstyled
                   autoFocus
+                  id="rename-page-title"
                   value={renameTitle}
                   onChange={(event) => setRenameTitle(event.target.value)}
                   onKeyDown={(event) => event.key === "Enter" && void rename()}
                 />
               </label>
-              {modalError ? (
-                <p className="sf-modal-error">{modalError}</p>
-              ) : null}
+              {modalError ? <p className="sf-modal-error">{modalError}</p> : null}
             </div>
             <footer>
               <ModalClose className="sf-action" disabled={mutating}>
                 Cancel
               </ModalClose>
-              <Button unstyled
+              <Button
+                unstyled
                 className="sf-action primary"
                 disabled={!renameTitle.trim() || mutating}
+                loading={mutating}
                 onClick={() => void rename()}
               >
                 {mutating ? "Saving..." : "Save title"}
@@ -1025,20 +1212,20 @@ function PageTree() {
             </header>
             <div className="sf-overview-modal-body">
               <p className="sf-delete-copy">
-                <strong>{deleteTarget.title}</strong> will be permanently
-                deleted. This cannot be undone.
+                <strong>{deleteTarget.title}</strong> will be permanently deleted. This cannot be
+                undone.
               </p>
-              {modalError ? (
-                <p className="sf-modal-error">{modalError}</p>
-              ) : null}
+              {modalError ? <p className="sf-modal-error">{modalError}</p> : null}
             </div>
             <footer>
               <ModalClose className="sf-action" disabled={mutating}>
                 Cancel
               </ModalClose>
-              <Button unstyled
+              <Button
+                unstyled
                 className="sf-action danger"
                 disabled={mutating}
+                loading={mutating}
                 onClick={() => void remove()}
               >
                 {mutating ? "Deleting..." : "Delete page"}
@@ -1069,9 +1256,7 @@ function PageTree() {
               <div className="sf-impact-summary">
                 <i className="ph ph-warning-circle" />
                 <span>
-                  <strong>
-                    {pendingMove.impacts.length} URLs will change.
-                  </strong>
+                  <strong>{pendingMove.impacts.length} URLs will change.</strong>
                   Review the old and proposed addresses before continuing.
                 </span>
               </div>
@@ -1080,11 +1265,7 @@ function PageTree() {
                   <div className="sf-impact-row" key={impact.id}>
                     <div>
                       <strong>{impact.title}</strong>
-                      {impact.published ? (
-                        <span>Published</span>
-                      ) : (
-                        <span>Concept</span>
-                      )}
+                      {impact.published ? <span>Published</span> : <span>Concept</span>}
                     </div>
                     <code>{impact.oldPath}</code>
                     <i className="ph ph-arrow-right" />
@@ -1093,36 +1274,30 @@ function PageTree() {
                 ))}
               </div>
               <label className="sf-redirect-choice">
-                <Input unstyled
+                <Input
+                  unstyled
                   type="checkbox"
                   checked={createMoveRedirects}
                   disabled={!pendingMove.impacts.some((item) => item.published)}
-                  onChange={(event) =>
-                    setCreateMoveRedirects(event.target.checked)
-                  }
+                  onChange={(event) => setCreateMoveRedirects(event.target.checked)}
                 />
                 <span>
                   <strong>Create redirects from published URLs</strong>
-                  {
-                    pendingMove.impacts.filter((item) => item.published).length
-                  }{" "}
-                  old published URL
-                  {pendingMove.impacts.filter((item) => item.published)
-                    .length === 1
+                  {pendingMove.impacts.filter((item) => item.published).length} old published URL
+                  {pendingMove.impacts.filter((item) => item.published).length === 1
                     ? ""
                     : "s"}{" "}
                   will continue to work.
                 </span>
               </label>
-              {modalError ? (
-                <p className="sf-modal-error">{modalError}</p>
-              ) : null}
+              {modalError ? <p className="sf-modal-error">{modalError}</p> : null}
             </div>
             <footer>
               <ModalClose className="sf-action" disabled={moving}>
                 Cancel move
               </ModalClose>
-              <Button unstyled
+              <Button
+                unstyled
                 className="sf-action primary"
                 disabled={moving}
                 onClick={() => {
@@ -1151,10 +1326,7 @@ function PageTree() {
             <strong>{toast.title}</strong>
             <span>{toast.detail}</span>
           </div>
-          <Button unstyled
-            onClick={() => setToast(null)}
-            aria-label="Dismiss notification"
-          >
+          <Button unstyled onClick={() => setToast(null)} aria-label="Dismiss notification">
             <i className="ph ph-x" />
           </Button>
         </div>

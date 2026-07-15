@@ -1,50 +1,55 @@
 import { getSupabaseBrowserClient, getSupabaseConfigError } from "./supabase";
+import { cloneTemplateComponentsForPage, type PageTemplateDefinition } from "./page-templates";
 
 export type PageStatus = "Published" | "Concept";
-export type WorkspaceOption = {
+export interface WorkspaceOption {
   siteId: string;
   siteName: string;
   languageId: string;
   languageName: string;
   languageCode: string;
-};
+}
 
-export type PageNode = {
+export interface PageNode {
   id: string;
   parentId: string | null;
   title: string;
   slug: string;
   template: string;
+  templateId: string | null;
+  templateKey: string | null;
   status: PageStatus;
   validation: "Ready" | "Needs attention";
   updatedAt: string;
   isHomepage: boolean;
   preferredChildTemplate: string | null;
   children: PageNode[];
-};
+}
 
-export type PageTreeWorkspace = {
+export interface PageTreeWorkspace {
   site: { id: string; name: string; slug: string };
   language: { id: string; code: string; name: string };
   workspaces: WorkspaceOption[];
   pages: PageNode[];
   pageCount: number;
   lastUpdatedAt: string;
-};
+}
 
-type CompactPage = {
+interface CompactPage {
   id: string;
   parent_id: string | null;
   title: string;
   slug: string;
   template_name: string;
+  created_from_template_id: string | null;
+  created_from_template_key: string | null;
   status: string;
   validation_status: string;
   position: number;
   is_homepage: boolean;
   preferred_child_template: string | null;
   updated_at: string;
-};
+}
 
 function buildPath(parentPath: string, slug: string, isHomepage: boolean) {
   if (isHomepage) return "/";
@@ -54,21 +59,11 @@ function buildPath(parentPath: string, slug: string, isHomepage: boolean) {
 function buildTree(rows: CompactPage[]) {
   const childrenByParent = new Map<string | null, CompactPage[]>();
   for (const row of rows)
-    childrenByParent.set(row.parent_id, [
-      ...(childrenByParent.get(row.parent_id) ?? []),
-      row,
-    ]);
+    childrenByParent.set(row.parent_id, [...(childrenByParent.get(row.parent_id) ?? []), row]);
   for (const siblings of childrenByParent.values())
-    siblings.sort(
-      (a, b) => a.position - b.position || a.title.localeCompare(b.title),
-    );
-  const visit = (
-    row: CompactPage,
-    parentPath: string,
-    ancestors: Set<string>,
-  ): PageNode => {
-    if (ancestors.has(row.id))
-      throw new Error("The page tree contains a cycle.");
+    siblings.sort((a, b) => a.position - b.position || a.title.localeCompare(b.title));
+  const visit = (row: CompactPage, parentPath: string, ancestors: Set<string>): PageNode => {
+    if (ancestors.has(row.id)) throw new Error("The page tree contains a cycle.");
     const path = buildPath(parentPath, row.slug, row.is_homepage);
     return {
       id: row.id,
@@ -76,11 +71,10 @@ function buildTree(rows: CompactPage[]) {
       title: row.title,
       slug: path,
       template: row.template_name,
+      templateId: row.created_from_template_id,
+      templateKey: row.created_from_template_key,
       status: row.status === "published" ? "Published" : "Concept",
-      validation:
-        row.validation_status === "needs_attention"
-          ? "Needs attention"
-          : "Ready",
+      validation: row.validation_status === "needs_attention" ? "Needs attention" : "Ready",
       updatedAt: row.updated_at,
       isHomepage: row.is_homepage,
       preferredChildTemplate: row.preferred_child_template,
@@ -89,9 +83,7 @@ function buildTree(rows: CompactPage[]) {
       ),
     };
   };
-  return (childrenByParent.get(null) ?? []).map((row) =>
-    visit(row, "/", new Set()),
-  );
+  return (childrenByParent.get(null) ?? []).map((row) => visit(row, "/", new Set()));
 }
 
 export async function loadPageTreeWorkspace(
@@ -106,6 +98,7 @@ export async function loadPageTreeWorkspace(
   if (sitesError) throw sitesError;
   if (!sites?.length) return null;
   const site = sites.find((item) => item.id === selection.siteId) ?? sites[0];
+  if (!site) return null;
   const { data: allLanguages, error: languageError } = await client
     .from("site_languages")
     .select("id, site_id, code, name, is_default, position, updated_at")
@@ -117,18 +110,14 @@ export async function loadPageTreeWorkspace(
   if (languageError) throw languageError;
   const siteLanguages = (allLanguages ?? [])
     .filter((item) => item.site_id === site.id)
-    .sort(
-      (a, b) =>
-        Number(b.is_default) - Number(a.is_default) || a.position - b.position,
-    );
+    .sort((a, b) => Number(b.is_default) - Number(a.is_default) || a.position - b.position);
   const language =
-    siteLanguages.find((item) => item.id === selection.languageId) ??
-    siteLanguages[0];
+    siteLanguages.find((item) => item.id === selection.languageId) ?? siteLanguages[0];
   if (!language) return null;
   const { data: pages, error: pagesError } = await client
     .from("pages")
     .select(
-      "id, parent_id, title, slug, template_name, status, validation_status, position, is_homepage, preferred_child_template, updated_at",
+      "id, parent_id, title, slug, template_name, created_from_template_id, created_from_template_key, status, validation_status, position, is_homepage, preferred_child_template, updated_at",
     )
     .eq("site_language_id", language.id)
     .order("position");
@@ -136,9 +125,7 @@ export async function loadPageTreeWorkspace(
   const rows = (pages ?? []) as CompactPage[];
   const latest = rows.reduce(
     (value, page) => (page.updated_at > value ? page.updated_at : value),
-    language.updated_at > site.updated_at
-      ? language.updated_at
-      : site.updated_at,
+    language.updated_at > site.updated_at ? language.updated_at : site.updated_at,
   );
   const siteById = new Map(sites.map((item) => [item.id, item]));
   return {
@@ -172,7 +159,7 @@ export async function createChildPage(input: {
   parentId: string;
   title: string;
   slug?: string;
-  template: string;
+  template: PageTemplateDefinition;
 }) {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
@@ -184,11 +171,9 @@ export async function createChildPage(input: {
     .eq("parent_id", input.parentId);
   if (siblingError) throw siblingError;
   const used = new Set((siblings ?? []).map((item) => item.slug));
-  let slug = base;
-  for (let suffix = 2; used.has(slug); suffix += 1) slug = `${base}-${suffix}`;
-  const position =
-    (siblings ?? []).reduce((max, item) => Math.max(max, item.position), -1) +
-    1;
+  if (used.has(base)) throw new Error("A page with this URL already exists under this parent.");
+  const slug = base;
+  const position = (siblings ?? []).reduce((max, item) => Math.max(max, item.position), -1) + 1;
   const { data, error } = await client
     .from("pages")
     .insert({
@@ -196,7 +181,12 @@ export async function createChildPage(input: {
       parent_id: input.parentId,
       title: input.title.trim() || "Untitled page",
       slug,
-      template_name: input.template,
+      template_name: input.template.name,
+      created_from_template_id: input.template.id ?? null,
+      created_from_template_key: input.template.key,
+      content_blocks: cloneTemplateComponentsForPage(input.template.components),
+      seo_title: input.template.defaults.seoTitle,
+      seo_description: input.template.defaults.seoDescription,
       status: "concept",
       validation_status: "needs_attention",
       position,
@@ -204,7 +194,7 @@ export async function createChildPage(input: {
     .select("id")
     .single();
   if (error) throw error;
-  return data.id as string;
+  return data.id;
 }
 
 export async function renamePage(pageId: string, title: string) {
@@ -212,10 +202,7 @@ export async function renamePage(pageId: string, title: string) {
   if (!client) throw getSupabaseConfigError();
   const nextTitle = title.trim();
   if (!nextTitle) throw new Error("A page title is required.");
-  const { error } = await client
-    .from("pages")
-    .update({ title: nextTitle })
-    .eq("id", pageId);
+  const { error } = await client.from("pages").update({ title: nextTitle }).eq("id", pageId);
   if (error) throw error;
 }
 
@@ -234,10 +221,7 @@ export async function deletePage(pageId: string) {
     .select("id", { count: "exact", head: true })
     .eq("parent_id", pageId);
   if (childError) throw childError;
-  if (count)
-    throw new Error(
-      "This page has child pages. Move or delete those pages first.",
-    );
+  if (count) throw new Error("This page has child pages. Move or delete those pages first.");
   const { error } = await client.from("pages").delete().eq("id", pageId);
   if (error) throw error;
 }

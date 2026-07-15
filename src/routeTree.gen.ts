@@ -10,8 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StructuredContentRouteImport } from './routes/structured-content'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as RedirectsRouteImport } from './routes/redirects'
 import { Route as PersonalSettingsRouteImport } from './routes/personal-settings'
+import { Route as PageTemplatesRouteImport } from './routes/page-templates'
 import { Route as MediaRouteImport } from './routes/media'
 import { Route as HeaderNavigationRouteImport } from './routes/header-navigation'
 import { Route as FooterRouteImport } from './routes/footer'
@@ -24,6 +26,11 @@ const StructuredContentRoute = StructuredContentRouteImport.update({
   path: '/structured-content',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RedirectsRoute = RedirectsRouteImport.update({
   id: '/redirects',
   path: '/redirects',
@@ -32,6 +39,11 @@ const RedirectsRoute = RedirectsRouteImport.update({
 const PersonalSettingsRoute = PersonalSettingsRouteImport.update({
   id: '/personal-settings',
   path: '/personal-settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PageTemplatesRoute = PageTemplatesRouteImport.update({
+  id: '/page-templates',
+  path: '/page-templates',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MediaRoute = MediaRouteImport.update({
@@ -72,8 +84,10 @@ export interface FileRoutesByFullPath {
   '/footer': typeof FooterRoute
   '/header-navigation': typeof HeaderNavigationRoute
   '/media': typeof MediaRoute
+  '/page-templates': typeof PageTemplatesRoute
   '/personal-settings': typeof PersonalSettingsRoute
   '/redirects': typeof RedirectsRoute
+  '/settings': typeof SettingsRoute
   '/structured-content': typeof StructuredContentRoute
 }
 export interface FileRoutesByTo {
@@ -83,8 +97,10 @@ export interface FileRoutesByTo {
   '/footer': typeof FooterRoute
   '/header-navigation': typeof HeaderNavigationRoute
   '/media': typeof MediaRoute
+  '/page-templates': typeof PageTemplatesRoute
   '/personal-settings': typeof PersonalSettingsRoute
   '/redirects': typeof RedirectsRoute
+  '/settings': typeof SettingsRoute
   '/structured-content': typeof StructuredContentRoute
 }
 export interface FileRoutesById {
@@ -95,8 +111,10 @@ export interface FileRoutesById {
   '/footer': typeof FooterRoute
   '/header-navigation': typeof HeaderNavigationRoute
   '/media': typeof MediaRoute
+  '/page-templates': typeof PageTemplatesRoute
   '/personal-settings': typeof PersonalSettingsRoute
   '/redirects': typeof RedirectsRoute
+  '/settings': typeof SettingsRoute
   '/structured-content': typeof StructuredContentRoute
 }
 export interface FileRouteTypes {
@@ -108,8 +126,10 @@ export interface FileRouteTypes {
     | '/footer'
     | '/header-navigation'
     | '/media'
+    | '/page-templates'
     | '/personal-settings'
     | '/redirects'
+    | '/settings'
     | '/structured-content'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -119,8 +139,10 @@ export interface FileRouteTypes {
     | '/footer'
     | '/header-navigation'
     | '/media'
+    | '/page-templates'
     | '/personal-settings'
     | '/redirects'
+    | '/settings'
     | '/structured-content'
   id:
     | '__root__'
@@ -130,8 +152,10 @@ export interface FileRouteTypes {
     | '/footer'
     | '/header-navigation'
     | '/media'
+    | '/page-templates'
     | '/personal-settings'
     | '/redirects'
+    | '/settings'
     | '/structured-content'
   fileRoutesById: FileRoutesById
 }
@@ -142,8 +166,10 @@ export interface RootRouteChildren {
   FooterRoute: typeof FooterRoute
   HeaderNavigationRoute: typeof HeaderNavigationRoute
   MediaRoute: typeof MediaRoute
+  PageTemplatesRoute: typeof PageTemplatesRoute
   PersonalSettingsRoute: typeof PersonalSettingsRoute
   RedirectsRoute: typeof RedirectsRoute
+  SettingsRoute: typeof SettingsRoute
   StructuredContentRoute: typeof StructuredContentRoute
 }
 
@@ -154,6 +180,13 @@ declare module '@tanstack/react-router' {
       path: '/structured-content'
       fullPath: '/structured-content'
       preLoaderRoute: typeof StructuredContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/redirects': {
@@ -168,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/personal-settings'
       fullPath: '/personal-settings'
       preLoaderRoute: typeof PersonalSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/page-templates': {
+      id: '/page-templates'
+      path: '/page-templates'
+      fullPath: '/page-templates'
+      preLoaderRoute: typeof PageTemplatesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/media': {
@@ -222,8 +262,10 @@ const rootRouteChildren: RootRouteChildren = {
   FooterRoute: FooterRoute,
   HeaderNavigationRoute: HeaderNavigationRoute,
   MediaRoute: MediaRoute,
+  PageTemplatesRoute: PageTemplatesRoute,
   PersonalSettingsRoute: PersonalSettingsRoute,
   RedirectsRoute: RedirectsRoute,
+  SettingsRoute: SettingsRoute,
   StructuredContentRoute: StructuredContentRoute,
 }
 export const routeTree = rootRouteImport

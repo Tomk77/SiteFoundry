@@ -421,10 +421,7 @@
 }
 .sf-impact-row {
   display: grid;
-  grid-template-columns: minmax(170px, 0.8fr) minmax(150px, 1fr) 20px minmax(
-      150px,
-      1fr
-    );
+  grid-template-columns: minmax(170px, 0.8fr) minmax(150px, 1fr) 20px minmax(150px, 1fr);
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
@@ -697,4 +694,302 @@ html[data-sf-theme="dark"] .sf-validation-badge {
     transform: rotate(90deg);
     text-align: left;
   }
+}
+
+.sf-add-page-quick-menu {
+  position: absolute;
+  z-index: 18;
+  top: 37px;
+  right: 44px;
+  display: flex;
+  width: 286px;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  border: 1px solid var(--sf-border);
+  border-radius: 10px;
+  background: var(--sf-surface);
+  box-shadow: 0 12px 32px rgb(23 35 38 / 18%);
+  animation: sf-overview-menu 0.13s ease;
+}
+
+.sf-add-page-quick-menu > button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  padding: 9px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sf-add-page-quick-menu > button:hover {
+  background: var(--sf-selection);
+}
+
+.sf-add-page-quick-menu > button > i {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  place-items: center;
+  border-radius: 7px;
+  background: var(--sf-sunken);
+  color: var(--sf-accent);
+  font-size: 16px;
+}
+
+.sf-add-page-quick-menu > button > span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sf-add-page-quick-menu strong {
+  color: var(--sf-ink);
+  font-size: 13px;
+}
+
+.sf-add-page-quick-menu small {
+  color: var(--sf-ink-3);
+  font-size: 11.5px;
+}
+
+.sf-create-page-modal {
+  width: min(760px, calc(100vw - 40px));
+}
+
+.sf-create-page-body {
+  max-height: min(680px, calc(100vh - 190px));
+  overflow: auto;
+}
+
+.sf-create-page-context {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 11px;
+  border: 1px solid var(--sf-border);
+  border-radius: 9px;
+  background: var(--sf-canvas);
+  color: var(--sf-ink-2);
+  font-size: 12px;
+}
+
+.sf-create-page-context > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sf-create-page-context > span + span::before {
+  margin-right: 4px;
+  color: var(--sf-ink-3);
+  content: "·";
+}
+
+.sf-create-template-section {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.sf-create-template-section > span,
+.sf-resulting-url > span {
+  color: var(--sf-ink-3);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sf-create-template-grid {
+  display: grid;
+  max-height: 330px;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  overflow: auto;
+  padding: 2px;
+}
+
+.sf-create-template-grid > button {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px;
+  border: 1.5px solid var(--sf-border);
+  border-radius: 10px;
+  background: var(--sf-surface);
+  color: var(--sf-ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.sf-create-template-grid > button:hover {
+  border-color: #cbd3db;
+  background: var(--sf-canvas);
+}
+
+.sf-create-template-grid > button.selected {
+  border-color: #cbd3db;
+  background: var(--sf-selection);
+}
+
+.sf-create-template-grid > button.unavailable {
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
+.sf-create-template-grid > button > i:first-child {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--sf-sunken);
+  color: var(--sf-accent);
+  font-size: 17px;
+}
+
+.sf-create-template-grid > button > i:last-child {
+  color: var(--sf-accent);
+  font-size: 16px;
+}
+
+.sf-create-template-grid > button > span {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sf-create-template-grid strong {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+}
+
+.sf-create-template-grid strong b {
+  display: inline-flex;
+  height: 18px;
+  align-items: center;
+  gap: 3px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #dfe3e8;
+  color: #33474a;
+  font-size: 9.5px;
+}
+
+.sf-create-template-grid small {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--sf-ink-2);
+  font-size: 11.5px;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.sf-create-template-grid em {
+  overflow: hidden;
+  color: var(--sf-ink-3);
+  font-size: 10.5px;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-create-template-grid em.error {
+  color: #b5382c;
+}
+
+.sf-create-template-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px;
+  border: 1px dashed var(--sf-border);
+  border-radius: 10px;
+  background: var(--sf-canvas);
+}
+
+.sf-create-template-state > i {
+  color: var(--sf-accent);
+  font-size: 22px;
+}
+
+.sf-create-template-state > span {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sf-create-template-state small {
+  color: var(--sf-ink-2);
+  font-size: 11.5px;
+}
+
+.sf-create-template-state.error > i {
+  color: #b5382c;
+}
+
+.sf-resulting-url {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 9px 11px;
+  border: 1px solid var(--sf-border);
+  border-radius: 9px;
+  background: var(--sf-canvas);
+}
+
+.sf-resulting-url strong {
+  overflow: hidden;
+  color: var(--sf-ink);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-resulting-url em {
+  grid-column: 2;
+  color: #b5382c;
+  font-size: 11.5px;
+  font-style: normal;
+}
+
+.sf-resulting-url.collision {
+  border-color: #eec6bc;
+  background: #fdf4f2;
+}
+
+.sf-create-page-note {
+  max-width: 270px;
+  margin-right: auto;
+  color: var(--sf-ink-3);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+html[data-sf-theme="dark"] .sf-create-template-grid strong b {
+  background: #333b44;
+  color: #c5cdd6;
+}
+
+html[data-sf-theme="dark"] .sf-resulting-url.collision {
+  border-color: #4a2e27;
+  background: #3a2320;
 }

@@ -1,13 +1,10 @@
 import { Button } from "./ui/button";
-import { useNavigate } from "@tanstack/react-router";
+import { LoadingSplash } from "./loading";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import type { WorkspaceOption } from "../lib/page-tree";
 import { useAuth } from "../lib/auth";
-export function StatusPill({
-  status,
-}: {
-  status: "Published" | "Concept" | "Needs attention";
-}) {
+export function StatusPill({ status }: { status: "Published" | "Concept" | "Needs attention" }) {
   return (
     <span
       className={`sf-status ${status === "Published" ? "published" : status === "Concept" ? "concept" : "attention"}`}
@@ -33,6 +30,7 @@ export function AppShell({
     | "header-navigation"
     | "footer"
     | "structured-content"
+    | "page-templates"
     | "settings";
   children: ReactNode;
   siteName?: string;
@@ -48,11 +46,8 @@ export function AppShell({
   useEffect(() => {
     if (!loading && !user) void navigate({ to: "/auth" });
   }, [loading, user, navigate]);
-  if (loading || !user)
-    return <div className="sf-loading">Loading your workspace...</div>;
-  const name = String(
-    user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "Editor",
-  );
+  if (loading || !user) return <LoadingSplash />;
+  const name = String(user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "Editor");
   const initials = name
     .split(/\s+/)
     .slice(0, 2)
@@ -63,26 +58,18 @@ export function AppShell({
     ["Pages", "ph-tree-structure", "pages", "/"],
     ["Media", "ph-image", "media", "/media"],
     ["Redirects", "ph-arrow-bend-up-left", "redirects", "/redirects"],
-    [
-      "Header navigation",
-      "ph-browser",
-      "header-navigation",
-      "/header-navigation",
-    ],
+    ["Header navigation", "ph-browser", "header-navigation", "/header-navigation"],
     ["Footer", "ph-layout", "footer", "/footer"],
-    [
-      "Structured content",
-      "ph-cube",
-      "structured-content",
-      "/structured-content",
-    ],
-    ["Settings", "ph-gear", "", ""],
+    ["Structured content", "ph-cube", "structured-content", "/structured-content"],
+    ["Page templates", "ph-stack", "page-templates", "/page-templates"],
+    ["Settings", "ph-gear", "settings", "/settings"],
   ] as const;
   return (
     <div className="sf-shell">
       <aside className="sf-side">
         <div className="sf-site-wrap" style={{ position: "relative" }}>
-          <Button unstyled
+          <Button
+            unstyled
             className="sf-site"
             onClick={() => setWorkspaceOpen((value) => !value)}
             type="button"
@@ -101,10 +88,10 @@ export function AppShell({
           {workspaceOpen && workspaces?.length ? (
             <div className="sf-workspace-menu">
               {workspaces.map((workspace) => (
-                <Button unstyled
+                <Button
+                  unstyled
                   className={
-                    workspace.siteName === siteName &&
-                    workspace.languageCode === languageCode
+                    workspace.siteName === siteName && workspace.languageCode === languageCode
                       ? "active"
                       : ""
                   }
@@ -119,12 +106,10 @@ export function AppShell({
                   <span>
                     <strong>{workspace.siteName}</strong>
                     <small>
-                      {workspace.languageName} ·{" "}
-                      {workspace.languageCode.toUpperCase()}
+                      {workspace.languageName} · {workspace.languageCode.toUpperCase()}
                     </small>
                   </span>
-                  {workspace.siteName === siteName &&
-                  workspace.languageCode === languageCode ? (
+                  {workspace.siteName === siteName && workspace.languageCode === languageCode ? (
                     <i className="ph-bold ph-check" />
                   ) : null}
                 </Button>
@@ -135,7 +120,8 @@ export function AppShell({
         <nav className="sf-nav">
           <div className="sf-nav-label">Content</div>
           {nav.map(([label, icon, key, to]) => (
-            <Button unstyled
+            <Button
+              unstyled
               className={key === active ? "active" : ""}
               key={label}
               onClick={() => to && void navigate({ to })}
@@ -150,11 +136,12 @@ export function AppShell({
           ))}
         </nav>
         <div className="sf-spacer" />
-        <Button unstyled
+        <Link
           aria-label="Open personal settings"
           className="sf-user"
-          onClick={() => void navigate({ to: "/personal-settings" })}
-          type="button"
+          preload="intent"
+          preloadDelay={0}
+          to="/personal-settings"
         >
           <span className="sf-avatar">{initials}</span>
           <span className="sf-user-copy">
@@ -162,16 +149,9 @@ export function AppShell({
             <small>Owner</small>
           </span>
           <span className="sf-spacer" />
-          <i
-            className="ph ph-sliders-horizontal"
-            style={{ color: "#AEBAB6" }}
-          />
-        </Button>
-        <Button unstyled
-          className="sf-signout"
-          onClick={() => void signOut()}
-          type="button"
-        >
+          <i className="ph ph-sliders-horizontal" style={{ color: "#AEBAB6" }} />
+        </Link>
+        <Button unstyled className="sf-signout" onClick={() => void signOut()} type="button">
           <i className="ph ph-sign-out" /> Sign out
         </Button>
       </aside>

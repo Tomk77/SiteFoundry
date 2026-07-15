@@ -1,17 +1,10 @@
 import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { getSupabaseBrowserClient, getSupabaseConfigError } from "./supabase";
-import { applyInterfaceMode, type InterfaceMode } from "./personal-settings";
+import { applyInterfaceMode } from "./personal-settings";
 
-type AuthContextValue = {
+interface AuthContextValue {
   user: User | null;
   session: Session | null;
   loading: boolean;
@@ -25,7 +18,7 @@ type AuthContextValue = {
   requestPasswordReset: (email: string) => Promise<void>;
   updatePassword: (password: string) => Promise<void>;
   signOut: () => Promise<void>;
-};
+}
 
 export type OAuthProvider = "github" | "google";
 
@@ -45,9 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let active = true;
 
     const stored = window.localStorage.getItem("sf-interface-mode");
-    applyInterfaceMode(
-      stored === "light" || stored === "dark" ? stored : "system",
-    );
+    applyInterfaceMode(stored === "light" || stored === "dark" ? stored : "system");
 
     void client.auth
       .getSession()
@@ -66,11 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data } = client.auth.onAuthStateChange(
       (_event: AuthChangeEvent, nextSession: Session | null) => {
         const stored = window.localStorage.getItem("sf-interface-mode");
-        applyInterfaceMode(
-          (stored === "light" || stored === "dark"
-            ? stored
-            : "system") as InterfaceMode,
-        );
+        applyInterfaceMode(stored === "light" || stored === "dark" ? stored : "system");
         setSession(nextSession);
         setLoading(false);
       },
@@ -87,11 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     let active = true;
     void Promise.resolve(
-      client
-        .from("profiles")
-        .select("interface_mode")
-        .eq("id", session.user.id)
-        .maybeSingle(),
+      client.from("profiles").select("interface_mode").eq("id", session.user.id).maybeSingle(),
     )
       .then(({ data: profile }) => {
         if (!active) return;

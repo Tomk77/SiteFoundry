@@ -1,20 +1,20 @@
 import { Button } from "../components/ui/button";
+import { LoadingSplash } from "../components/loading";
 import { Input } from "../components/ui/input";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { useAuth } from "../lib/auth";
 export const Route = createFileRoute("/auth")({ component: Auth });
 type Mode = "signin" | "register" | "forgot" | "verify";
+
+function formString(form: FormData, key: string) {
+  const value = form.get(key);
+  return typeof value === "string" ? value : "";
+}
+
 function Auth() {
   const navigate = useNavigate();
-  const {
-    user,
-    loading,
-    signIn,
-    signUp,
-    signInWithProvider,
-    requestPasswordReset,
-  } = useAuth();
+  const { user, loading, signIn, signUp, signInWithProvider, requestPasswordReset } = useAuth();
   const [mode, setMode] = useState<Mode>("signin");
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -39,12 +39,12 @@ function Auth() {
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
-    const mail = String(f.get("email") ?? "");
-    const password = String(f.get("password") ?? "");
+    const mail = formString(f, "email");
+    const password = formString(f, "password");
     if (mode === "signin") await run(() => signIn(mail, password));
     if (mode === "register")
       await run(async () => {
-        const r = await signUp(String(f.get("name") ?? ""), mail, password);
+        const r = await signUp(formString(f, "name"), mail, password);
         if (r.needsEmailConfirmation) {
           setEmail(mail);
           setMode("verify");
@@ -56,6 +56,7 @@ function Auth() {
         setNotice("If that account exists, a reset link is on its way.");
       });
   }
+  if (loading) return <LoadingSplash />;
   return (
     <main className="sf-auth">
       <section className="sf-auth-brand">
@@ -65,28 +66,24 @@ function Auth() {
         </div>
         <div className="sf-auth-copy">
           <div>
-            <label>Website-native CMS</label>
+            <span className="sf-auth-eyebrow">Website-native CMS</span>
             <h1>Build, update and publish with the whole website in view.</h1>
             <p>
-              SiteFoundry gives editors a clear page tree and one
-              straightforward workflow for creating pages, composing content,
-              previewing changes and publishing safely. Manage URLs, navigation,
-              redirects, multiple languages and revisions alongside the content
+              SiteFoundry gives editors a clear page tree and one straightforward workflow for
+              creating pages, composing content, previewing changes and publishing safely. Manage
+              URLs, navigation, redirects, multiple languages and revisions alongside the content
               they belong to.
             </p>
           </div>
           <div className="sf-auth-open">
             <i className="ph-bold ph-code" />
             <span>
-              <strong>Open-source and headless</strong>, with{" "}
-              <strong>REST</strong> and <strong>GraphQL</strong> APIs for any
-              frontend.
+              <strong>Open-source and headless</strong>, with <strong>REST</strong> and{" "}
+              <strong>GraphQL</strong> APIs for any frontend.
             </span>
           </div>
         </div>
-        <div className="sf-auth-foot">
-          © 2026 SiteFoundry · Self-hosted &amp; MIT-licensed
-        </div>
+        <div className="sf-auth-foot">© 2026 SiteFoundry · Self-hosted &amp; MIT-licensed</div>
       </section>
       <section className="sf-auth-panel">
         <div className="sf-auth-box">
@@ -97,12 +94,10 @@ function Auth() {
               <i className="ph ph-envelope-simple" />
               <div>
                 <h2>Check your inbox</h2>
-                <p>
-                  We sent a verification link to {email}. Click it to activate
-                  your account.
-                </p>
+                <p>We sent a verification link to {email}. Click it to activate your account.</p>
               </div>
-              <Button unstyled
+              <Button
+                unstyled
                 className="sf-auth-primary"
                 onClick={() => setMode("signin")}
                 style={{ width: 280 }}
@@ -114,7 +109,8 @@ function Auth() {
           ) : (
             <>
               {mode !== "signin" ? (
-                <Button unstyled
+                <Button
+                  unstyled
                   className="sf-auth-back"
                   onClick={() => setMode("signin")}
                   type="button"
@@ -142,30 +138,22 @@ function Auth() {
               <form className="sf-auth-form" onSubmit={submit}>
                 {mode === "signin" ? (
                   <div className="sf-auth-sso">
-                    <Button unstyled
+                    <Button
+                      unstyled
                       className="sf-auth-secondary"
                       disabled={busy}
-                      onClick={() =>
-                        void run(() => signInWithProvider("google"))
-                      }
+                      onClick={() => void run(() => signInWithProvider("google"))}
                       type="button"
                     >
                       <Google />
                       Continue with Google
                     </Button>
-                    <div className="sf-auth-divider">
-                      or continue with email
-                    </div>
+                    <div className="sf-auth-divider">or continue with email</div>
                   </div>
                 ) : null}
                 <div className="sf-auth-fields">
                   {mode === "register" ? (
-                    <Field
-                      icon="ph-user"
-                      label="Full name"
-                      name="name"
-                      placeholder="Mara Jensen"
-                    />
+                    <Field icon="ph-user" label="Full name" name="name" placeholder="Mara Jensen" />
                   ) : null}
                   <Field
                     icon="ph-envelope-simple"
@@ -178,6 +166,7 @@ function Auth() {
                     <div className="sf-auth-field">
                       <div className="sf-auth-row">
                         <label
+                          htmlFor="auth-password"
                           style={{
                             fontSize: 12.5,
                             fontWeight: 600,
@@ -188,25 +177,26 @@ function Auth() {
                         </label>
                         <span className="sf-spacer" />
                         {mode === "signin" ? (
-                          <a onClick={() => setMode("forgot")}>
+                          <Button unstyled onClick={() => setMode("forgot")} type="button">
                             Forgot password?
-                          </a>
+                          </Button>
                         ) : null}
                       </div>
                       <div className="sf-auth-input">
                         <i className="ph ph-lock-simple" />
-                        <Input unstyled
+                        <Input
+                          unstyled
+                          id="auth-password"
                           minLength={8}
                           name="password"
                           placeholder={
-                            mode === "register"
-                              ? "At least 8 characters"
-                              : "Enter your password"
+                            mode === "register" ? "At least 8 characters" : "Enter your password"
                           }
                           required
                           type={show ? "text" : "password"}
                         />
-                        <Button unstyled
+                        <Button
+                          unstyled
                           aria-label="Toggle password"
                           onClick={() => setShow((v) => !v)}
                           type="button"
@@ -217,15 +207,17 @@ function Auth() {
                     </div>
                   ) : null}
                   {mode === "register" ? (
-                    <label className="sf-auth-check">
-                      <Input unstyled required type="checkbox" />I agree to the Terms of
-                      Service and Privacy Policy.
+                    <label className="sf-auth-check" htmlFor="auth-terms">
+                      <Input unstyled id="auth-terms" required type="checkbox" />I agree to the
+                      Terms of Service and Privacy Policy.
                     </label>
                   ) : null}
                 </div>
-                <Button unstyled
+                <Button
+                  unstyled
                   className="sf-auth-primary"
                   disabled={busy}
+                  loading={busy}
                   type="submit"
                 >
                   {busy
@@ -268,10 +260,17 @@ function Field({
 }) {
   return (
     <div className="sf-auth-field">
-      <label>{label}</label>
+      <label htmlFor={`auth-${name}`}>{label}</label>
       <div className="sf-auth-input">
         <i className={`ph ${icon}`} />
-        <Input unstyled name={name} placeholder={placeholder} required type={type} />
+        <Input
+          unstyled
+          id={`auth-${name}`}
+          name={name}
+          placeholder={placeholder}
+          required
+          type={type}
+        />
       </div>
     </div>
   );

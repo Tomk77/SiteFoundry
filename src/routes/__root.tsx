@@ -1,5 +1,6 @@
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { SiteFoundryToaster } from "../components/ui/sonner";
 import { AuthProvider } from "../lib/auth";
 import css from "../styles.css?url";
 
@@ -21,11 +22,6 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "stylesheet", href: css },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap",
-      },
       {
         rel: "stylesheet",
         href: "https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css",
@@ -52,6 +48,7 @@ function Root({ children }: { children: ReactNode }) {
       </head>
       <body>
         <AuthProvider>{children}</AuthProvider>
+        <SiteFoundryToaster />
         <Scripts />
       </body>
     </html>

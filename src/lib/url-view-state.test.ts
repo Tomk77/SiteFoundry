@@ -16,13 +16,13 @@ describe("shareable URL view state", () => {
         q: "launch",
         status: "published",
         validation: "nope",
-        template: "News article",
+        template: "news-article",
       }),
     ).toEqual({
       q: "launch",
       status: "published",
       validation: undefined,
-      template: "News article",
+      template: "news-article",
     });
   });
 
@@ -44,9 +44,7 @@ describe("shareable URL view state", () => {
       q: "old",
       filter: "manual",
     });
-    expect(parseRedirectsUrlSearch({ filter: "invalid" }).filter).toBe(
-      undefined,
-    );
+    expect(parseRedirectsUrlSearch({ filter: "invalid" }).filter).toBe(undefined);
   });
 
   it("round-trips media search context without serializing defaults", () => {
@@ -57,8 +55,10 @@ describe("shareable URL view state", () => {
     });
 
     expect(parseMediaUrlSearch(search)).toEqual(search);
-    expect(
-      createMediaUrlSearch({ q: "", folder: "root", view: "grid" }),
-    ).toEqual({ q: undefined, folder: undefined, view: undefined });
+    expect(createMediaUrlSearch({ q: "", folder: "root", view: "grid" })).toEqual({
+      q: undefined,
+      folder: undefined,
+      view: undefined,
+    });
   });
 });

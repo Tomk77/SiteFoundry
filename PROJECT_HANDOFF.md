@@ -1,7 +1,7 @@
 # Project handoff
 
-- Last updated: 2026-07-10
-- Project stage: Product discovery and technical foundation
+- Last updated: 2026-07-15
+- Project stage: Functional proof of concept
 
 ## What this project is
 
@@ -11,11 +11,13 @@ The CMS will serve content through REST and GraphQL. Consuming websites remain r
 
 ## Current state
 
-- A minimal TanStack Start application is scaffolded and builds successfully.
-- TanStack dependencies are pinned.
+- A TanStack Start administration application is implemented and builds successfully.
+- Supabase authentication and database persistence support the proof of concept.
+- Page tree, page editor, media flow, redirects, navigation, structured content, and personal settings have working UI flows.
+- Page templates are implemented as language-scoped database definitions with production editing, draft/published lifecycle, revision history, validation, fallback selection, usage reporting, and copy-on-create page creation.
 - The product vision and initial architecture are documented.
 - Page-tree product discovery is complete enough for a working specification.
-- No database, authentication, CMS domain model, or content API has been implemented.
+- A public REST or GraphQL content API has not yet been implemented.
 - No production deployment target has been selected.
 
 ## Start here on a new machine
@@ -59,8 +61,8 @@ Also inspect `git status` before editing. Uncommitted work may belong to another
 - Autosave uses a separate temporary working copy.
 - Editing published content leaves its current published revision live until the concept is published.
 - Permissions must support site, language, subtree, and action scopes.
-- Schemas and templates are edited only in local development and saved as JSON files.
-- Production schemas are deployed and read-only.
+- Templates are edited by authorized users in production and stored in Supabase with immutable revision snapshots.
+- The shared schema and field registry is still code-defined and must be hardened before it becomes production-editable.
 
 ## Technical direction
 
@@ -100,4 +102,4 @@ When asked to implement a feature:
 
 ## Immediate next step
 
-Continue product discovery with the schema and field system or the page editor. Do not begin database implementation until the schema, page-content, and revision boundaries are better specified.
+Specify and harden the shared schema and field system, then use it to remove the remaining duplicated component metadata between page editing, structured content, and page templates. After that, define the revision and public content API contracts before treating the proof of concept as production architecture.

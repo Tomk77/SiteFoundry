@@ -1,12 +1,6 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
-export type Database = {
+export interface Database {
   public: {
     Tables: {
       content_fields: {
@@ -120,15 +114,15 @@ export type Database = {
           updated_at?: string;
           published_at?: string | null;
         };
-        Update: Partial<
-          Database["public"]["Tables"]["navigation_menus"]["Insert"]
-        >;
+        Update: Partial<Database["public"]["Tables"]["navigation_menus"]["Insert"]>;
         Relationships: [];
       };
       pages: {
         Row: {
           content_blocks: unknown;
           created_at: string;
+          created_from_template_id: string | null;
+          created_from_template_key: string | null;
           id: string;
           is_homepage: boolean;
           parent_id: string | null;
@@ -147,6 +141,8 @@ export type Database = {
         };
         Insert: {
           content_blocks?: unknown;
+          created_from_template_id?: string | null;
+          created_from_template_key?: string | null;
           id?: string;
           site_language_id: string;
           parent_id?: string | null;
@@ -165,6 +161,66 @@ export type Database = {
           updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["pages"]["Insert"]>;
+        Relationships: [];
+      };
+      page_template_revisions: {
+        Row: {
+          id: string;
+          template_id: string;
+          version: number;
+          snapshot: Json;
+          note: string;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          template_id: string;
+          version: number;
+          snapshot: Json;
+          note?: string;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["page_template_revisions"]["Insert"]>;
+        Relationships: [];
+      };
+      page_templates: {
+        Row: {
+          id: string;
+          site_language_id: string;
+          key: string;
+          name: string;
+          description: string;
+          icon: string;
+          status: string;
+          is_fallback: boolean;
+          defaults: Json;
+          preview_path: string;
+          components: Json;
+          created_by: string | null;
+          updated_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          site_language_id: string;
+          key: string;
+          name: string;
+          description?: string;
+          icon?: string;
+          status?: string;
+          is_fallback?: boolean;
+          defaults?: Json;
+          preview_path?: string;
+          components?: Json;
+          created_by?: string | null;
+          updated_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["page_templates"]["Insert"]>;
         Relationships: [];
       };
       profiles: {
@@ -236,9 +292,7 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
-        Update: Partial<
-          Database["public"]["Tables"]["site_languages"]["Insert"]
-        >;
+        Update: Partial<Database["public"]["Tables"]["site_languages"]["Insert"]>;
         Relationships: [];
       };
       site_members: {
@@ -280,6 +334,14 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      delete_page_template: {
+        Args: { target_language_id: string; target_template_id: string };
+        Returns: undefined;
+      };
+      get_page_template_workspace: {
+        Args: { target_language_id: string };
+        Returns: Json;
+      };
       move_page: {
         Args: {
           moving_page_id: string;
@@ -302,10 +364,30 @@ export type Database = {
         };
         Returns: string;
       };
+      save_page_template: {
+        Args: {
+          target_language_id: string;
+          target_template_id: string | null;
+          target_key: string;
+          target_name: string;
+          target_description: string;
+          target_icon: string;
+          target_status: string;
+          target_is_fallback: boolean;
+          target_defaults: Json;
+          target_preview_path: string;
+          target_components: Json;
+        };
+        Returns: string;
+      };
+      set_fallback_page_template: {
+        Args: { target_language_id: string; target_template_id: string };
+        Returns: undefined;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };
-};
+}
 
 export type PageRow = Database["public"]["Tables"]["pages"]["Row"];

@@ -1,7 +1,7 @@
-import { Button as ButtonPrimitive } from "@base-ui/react/button"
-import { cva, type VariantProps } from "class-variance-authority"
+import { Button as ButtonPrimitive } from "@base-ui/react/button";
+import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
   "group/button inline-flex shrink-0 items-center justify-center rounded-lg border text-[12.5px] font-semibold whitespace-nowrap transition-[background-color,border-color,color,box-shadow,transform] outline-none select-none focus-visible:border-[var(--sf-accent)] focus-visible:ring-[3px] focus-visible:ring-[var(--sf-focus-ring)] active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 [&_i]:pointer-events-none [&_i]:shrink-0",
@@ -21,7 +21,7 @@ const buttonVariants = cva(
         link: "border-transparent bg-transparent text-[var(--sf-accent)] underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-9 gap-2 px-3.5",
+        default: "h-9 gap-1.5 px-3.5 text-[13px]",
         xs: "h-7 gap-1.5 rounded-md px-2 text-[11px]",
         sm: "h-8 gap-1.5 px-2.5 text-xs",
         lg: "h-10 gap-2 px-4 text-sm",
@@ -35,28 +35,35 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
-)
+  },
+);
 
 function Button({
+  children,
   className,
+  disabled,
+  loading = false,
   variant = "default",
   size = "default",
   unstyled = false,
   ...props
 }: ButtonPrimitive.Props &
   VariantProps<typeof buttonVariants> & {
-    unstyled?: boolean
+    loading?: boolean;
+    unstyled?: boolean;
   }) {
   return (
     <ButtonPrimitive
+      aria-busy={loading || undefined}
       data-slot="button"
-      className={
-        unstyled ? className : cn(buttonVariants({ variant, size, className }))
-      }
+      disabled={disabled || loading}
+      className={unstyled ? className : cn(buttonVariants({ variant, size, className }))}
       {...props}
-    />
-  )
+    >
+      {loading ? <span aria-hidden="true" className="sf-button-spinner" /> : null}
+      {children}
+    </ButtonPrimitive>
+  );
 }
 
-export { Button, buttonVariants }
+export { Button, buttonVariants };

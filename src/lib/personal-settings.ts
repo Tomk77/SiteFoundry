@@ -3,14 +3,14 @@ import { getSupabaseBrowserClient, getSupabaseConfigError } from "./supabase";
 
 export type InterfaceMode = "system" | "light" | "dark";
 
-export type PersonalSettings = {
+export interface PersonalSettings {
   firstName: string;
   lastName: string;
   email: string;
   displayName: string;
   interfaceLanguage: string;
   interfaceMode: InterfaceMode;
-};
+}
 
 export const interfaceLanguages = [
   { code: "en", name: "English" },
@@ -25,21 +25,16 @@ export function applyInterfaceMode(mode: InterfaceMode) {
   document.documentElement.dataset.sfMode = mode;
   const dark =
     mode === "dark" ||
-    (mode === "system" &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches);
+    (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
   document.documentElement.dataset.sfTheme = dark ? "dark" : "light";
 }
 
-export async function loadPersonalSettings(
-  user: User,
-): Promise<PersonalSettings> {
+export async function loadPersonalSettings(user: User): Promise<PersonalSettings> {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
   const { data, error } = await client
     .from("profiles")
-    .select(
-      "first_name, last_name, display_name, full_name, interface_language, interface_mode",
-    )
+    .select("first_name, last_name, display_name, full_name, interface_language, interface_mode")
     .eq("id", user.id)
     .maybeSingle();
   if (error) throw error;
@@ -47,8 +42,7 @@ export async function loadPersonalSettings(
   const fallbackName = metadataName || user.email?.split("@")[0] || "Editor";
   return {
     firstName: data?.first_name ?? fallbackName.split(/\s+/)[0] ?? "",
-    lastName:
-      data?.last_name ?? fallbackName.split(/\s+/).slice(1).join(" ") ?? "",
+    lastName: data?.last_name ?? fallbackName.split(/\s+/).slice(1).join(" ") ?? "",
     email: user.email ?? "",
     displayName: data?.display_name ?? data?.full_name ?? fallbackName,
     interfaceLanguage: data?.interface_language ?? "en",
@@ -59,23 +53,17 @@ export async function loadPersonalSettings(
   };
 }
 
-export async function savePersonalSettings(
-  user: User,
-  settings: PersonalSettings,
-) {
+export async function savePersonalSettings(user: User, settings: PersonalSettings) {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
-  const emailChanged =
-    settings.email.trim().toLowerCase() !== user.email?.toLowerCase();
+  const emailChanged = settings.email.trim().toLowerCase() !== user.email?.toLowerCase();
   if (emailChanged) {
     const { error: emailError } = await client.auth.updateUser({
       email: settings.email.trim().toLowerCase(),
     });
     if (emailError) throw emailError;
   }
-  const fullName = [settings.firstName.trim(), settings.lastName.trim()]
-    .filter(Boolean)
-    .join(" ");
+  const fullName = [settings.firstName.trim(), settings.lastName.trim()].filter(Boolean).join(" ");
   const { error } = await client
     .from("profiles")
     .update({

@@ -1,11 +1,7 @@
-import {
-  loadPageTreeWorkspace,
-  type PageNode,
-  type PageTreeWorkspace,
-} from "./page-tree";
+import { loadPageTreeWorkspace, type PageNode, type PageTreeWorkspace } from "./page-tree";
 import { getSupabaseBrowserClient, getSupabaseConfigError } from "./supabase";
 
-export type RedirectRecord = {
+export interface RedirectRecord {
   id: string;
   siteLanguageId: string;
   pageId: string | null;
@@ -14,11 +10,11 @@ export type RedirectRecord = {
   statusCode: 301 | 302;
   createdAt: string;
   pageTitle: string | null;
-};
+}
 
 export type RedirectWorkspace = PageTreeWorkspace & {
   redirects: RedirectRecord[];
-  livePages: Array<{ id: string; title: string; path: string }>;
+  livePages: { id: string; title: string; path: string }[];
 };
 
 export type RedirectHealth =
@@ -26,9 +22,7 @@ export type RedirectHealth =
   | { kind: "chained"; label: "Chained"; detail: string }
   | { kind: "loop"; label: "Loop"; detail: string };
 
-function flattenPages(
-  nodes: PageNode[],
-): Array<{ id: string; title: string; path: string }> {
+function flattenPages(nodes: PageNode[]): { id: string; title: string; path: string }[] {
   return nodes.flatMap((node) => [
     { id: node.id, title: node.title, path: node.slug },
     ...flattenPages(node.children),
@@ -47,9 +41,7 @@ export function getRedirectHealth(
   livePaths: Set<string>,
   redirects: RedirectRecord[],
 ): RedirectHealth | null {
-  const graph = new Map(
-    redirects.map((item) => [item.sourcePath, item.destinationPath]),
-  );
+  const graph = new Map(redirects.map((item) => [item.sourcePath, item.destinationPath]));
   const chained = graph.has(redirect.destinationPath);
   const seen = new Set([redirect.sourcePath]);
   let current = redirect.destinationPath;
@@ -68,16 +60,14 @@ export function getRedirectHealth(
     return {
       kind: "chained",
       label: "Chained",
-      detail:
-        "The destination is another redirect. Point directly to its final page.",
+      detail: "The destination is another redirect. Point directly to its final page.",
     };
   }
   if (!livePaths.has(redirect.destinationPath)) {
     return {
       kind: "broken",
       label: "Broken target",
-      detail:
-        "The destination does not match a live page in this language tree.",
+      detail: "The destination does not match a live page in this language tree.",
     };
   }
   return null;
@@ -92,9 +82,7 @@ export async function loadRedirectWorkspace(
   if (!client) throw getSupabaseConfigError();
   const { data, error } = await client
     .from("redirects")
-    .select(
-      "id, site_language_id, page_id, source_path, destination_path, status_code, created_at",
-    )
+    .select("id, site_language_id, page_id, source_path, destination_path, status_code, created_at")
     .eq("site_language_id", workspace.language.id)
     .order("created_at", { ascending: false });
   if (error) throw error;
@@ -131,10 +119,7 @@ export async function saveRedirect(input: {
     status_code: input.statusCode,
   };
   if (input.id) {
-    const { error } = await client
-      .from("redirects")
-      .update(payload)
-      .eq("id", input.id);
+    const { error } = await client.from("redirects").update(payload).eq("id", input.id);
     if (error) throw error;
     return input.id;
   }

@@ -5,10 +5,7 @@ import { NativeSelect } from "../components/ui/native-select";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppShell } from "../components/app-shell";
-import {
-  createMediaUrlSearch,
-  parseMediaUrlSearch,
-} from "../lib/url-view-state";
+import { createMediaUrlSearch, parseMediaUrlSearch } from "../lib/url-view-state";
 import "../media.css";
 
 export const Route = createFileRoute("/media")({
@@ -16,8 +13,12 @@ export const Route = createFileRoute("/media")({
   component: Media,
 });
 
-type Folder = { id: string; name: string; parentId: string };
-type MediaFile = {
+interface Folder {
+  id: string;
+  name: string;
+  parentId: string;
+}
+interface MediaFile {
   id: string;
   name: string;
   ext: string;
@@ -30,7 +31,7 @@ type MediaFile = {
   tint: string;
   alt: string;
   kind: "image" | "svg" | "pdf";
-};
+}
 const foldersSeed: Folder[] = [
   { id: "brand", name: "Brand", parentId: "root" },
   { id: "blog", name: "Blog images", parentId: "root" },
@@ -237,19 +238,9 @@ const filesSeed: MediaFile[] = [
   ),
 ];
 
-function Preview({
-  item,
-  compact = false,
-}: {
-  item: MediaFile;
-  compact?: boolean;
-}) {
+function Preview({ item, compact = false }: { item: MediaFile; compact?: boolean }) {
   const icon =
-    item.kind === "pdf"
-      ? "ph-file-pdf"
-      : item.kind === "svg"
-        ? "ph-bezier-curve"
-        : "ph-image";
+    item.kind === "pdf" ? "ph-file-pdf" : item.kind === "svg" ? "ph-bezier-curve" : "ph-image";
   return (
     <div
       className={`sf-media-preview ${compact ? "compact" : ""}`}
@@ -276,11 +267,7 @@ function Media() {
       : "root";
   const view = urlSearch.view ?? "grid";
   const query = urlSearch.q ?? "";
-  const updateUrlView = (next: {
-    q?: string;
-    folder?: string;
-    view?: "grid" | "list";
-  }) => {
+  const updateUrlView = (next: { q?: string; folder?: string; view?: "grid" | "list" }) => {
     void navigate({
       to: "/media",
       search: createMediaUrlSearch({
@@ -297,13 +284,10 @@ function Media() {
   const currentFolder = folders.find((folder) => folder.id === cwd),
     q = query.toLowerCase();
   const visibleFolders = folders.filter(
-    (folder) =>
-      folder.parentId === cwd && folder.name.toLowerCase().includes(q),
+    (folder) => folder.parentId === cwd && folder.name.toLowerCase().includes(q),
   );
   const visibleFiles = files.filter(
-    (item) =>
-      item.parentId === cwd &&
-      `${item.name}.${item.ext}`.toLowerCase().includes(q),
+    (item) => item.parentId === cwd && `${item.name}.${item.ext}`.toLowerCase().includes(q),
   );
   const selectedFile = files.find((item) => item.id === selected) ?? null,
     itemCount = visibleFolders.length + visibleFiles.length;
@@ -327,18 +311,13 @@ function Media() {
   };
   const addFolder = () => {
     const id = `folder-${Date.now()}`;
-    setFolders((value) => [
-      ...value,
-      { id, name: "Untitled folder", parentId: cwd },
-    ]);
+    setFolders((value) => [...value, { id, name: "Untitled folder", parentId: cwd }]);
     setRenaming(id);
   };
   const updateFile = (changes: Partial<MediaFile>) =>
     selectedFile &&
     setFiles((value) =>
-      value.map((item) =>
-        item.id === selectedFile.id ? { ...item, ...changes } : item,
-      ),
+      value.map((item) => (item.id === selectedFile.id ? { ...item, ...changes } : item)),
     );
   const deleteFile = () => {
     if (!selectedFile) return;
@@ -357,22 +336,26 @@ function Media() {
           <span>Manage images and files used across your website.</span>
         </div>
         <span className="sf-spacer" />
-        <label className="sf-search sf-media-search">
+        <label className="sf-search sf-media-search" htmlFor="media-search">
           <i className="ph ph-magnifying-glass" />
-          <Input unstyled
+          <Input
+            unstyled
+            id="media-search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search files..."
           />
         </label>
         <div className="sf-view-toggle">
-          <Button unstyled
+          <Button
+            unstyled
             className={view === "grid" ? "active" : ""}
             onClick={() => setView("grid")}
           >
             <i className="ph ph-squares-four" />
           </Button>
-          <Button unstyled
+          <Button
+            unstyled
             className={view === "list" ? "active" : ""}
             onClick={() => setView("list")}
           >
@@ -383,10 +366,7 @@ function Media() {
           <i className="ph ph-folder-plus" />
           New folder
         </Button>
-        <Button unstyled
-          className="sf-action primary"
-          onClick={() => setUploadOpen(true)}
-        >
+        <Button unstyled className="sf-action primary" onClick={() => setUploadOpen(true)}>
           <i className="ph-bold ph-upload-simple" />
           Upload
         </Button>
@@ -395,7 +375,8 @@ function Media() {
         {breadcrumbs.map((crumb, index) => (
           <span key={crumb.id}>
             {index > 0 && <i className="ph ph-caret-right" />}
-            <Button unstyled
+            <Button
+              unstyled
               className={index === breadcrumbs.length - 1 ? "current" : ""}
               onClick={() => openFolder(crumb.id)}
             >
@@ -412,47 +393,41 @@ function Media() {
               <div className="sf-folder-grid">
                 {visibleFolders.map((folder) => (
                   <div className="sf-folder-card" key={folder.id}>
-                    <Button unstyled
+                    <Button
+                      unstyled
                       className="sf-folder-main"
                       onClick={() => openFolder(folder.id)}
                     >
                       <i className="ph-fill ph-folder" />
                       <span>
                         {renaming === folder.id ? (
-                          <Input unstyled
+                          <Input
+                            unstyled
                             autoFocus
                             value={folder.name}
                             onClick={(e) => e.stopPropagation()}
                             onChange={(e) =>
                               setFolders((all) =>
                                 all.map((f) =>
-                                  f.id === folder.id
-                                    ? { ...f, name: e.target.value }
-                                    : f,
+                                  f.id === folder.id ? { ...f, name: e.target.value } : f,
                                 ),
                               )
                             }
                             onBlur={() => setRenaming(null)}
-                            onKeyDown={(e) =>
-                              e.key === "Enter" && setRenaming(null)
-                            }
+                            onKeyDown={(e) => e.key === "Enter" && setRenaming(null)}
                           />
                         ) : (
                           <>
                             <strong>{folder.name}</strong>
                             <small>
-                              {
-                                files.filter(
-                                  (item) => item.parentId === folder.id,
-                                ).length
-                              }{" "}
-                              items
+                              {files.filter((item) => item.parentId === folder.id).length} items
                             </small>
                           </>
                         )}
                       </span>
                     </Button>
-                    <Button unstyled
+                    <Button
+                      unstyled
                       className="sf-icon-button"
                       onClick={() => setRenaming(folder.id)}
                     >
@@ -469,7 +444,8 @@ function Media() {
               {view === "grid" ? (
                 <div className="sf-file-grid">
                   {visibleFiles.map((item) => (
-                    <Button unstyled
+                    <Button
+                      unstyled
                       className={`sf-file-card ${selected === item.id ? "selected" : ""}`}
                       key={item.id}
                       onClick={() => setSelected(item.id)}
@@ -493,7 +469,8 @@ function Media() {
                     <span>Uploaded</span>
                   </div>
                   {visibleFiles.map((item) => (
-                    <Button unstyled
+                    <Button
+                      unstyled
                       className={selected === item.id ? "selected" : ""}
                       key={item.id}
                       onClick={() => setSelected(item.id)}
@@ -506,11 +483,7 @@ function Media() {
                         </small>
                       </span>
                       <span>{item.ext}</span>
-                      <span>
-                        {item.width
-                          ? `${item.width}×${item.height}`
-                          : "Document"}
-                      </span>
+                      <span>{item.width ? `${item.width}×${item.height}` : "Document"}</span>
                       <span>{item.size}</span>
                       <span>{item.date}</span>
                     </Button>
@@ -522,18 +495,13 @@ function Media() {
           {itemCount === 0 && (
             <div className="sf-media-empty">
               <i className="ph ph-image-square" />
-              <h2>
-                {query ? "No matches in this folder" : "This folder is empty"}
-              </h2>
+              <h2>{query ? "No matches in this folder" : "This folder is empty"}</h2>
               <p>
                 {query
                   ? "Try a different search, or clear it to see everything here."
                   : "Drag images in, or use Upload to add your first assets to this folder."}
               </p>
-              <Button unstyled
-                className="sf-action primary"
-                onClick={() => setUploadOpen(true)}
-              >
+              <Button unstyled className="sf-action primary" onClick={() => setUploadOpen(true)}>
                 <i className="ph-bold ph-upload-simple" />
                 Upload images
               </Button>
@@ -550,19 +518,23 @@ function Media() {
             </div>
             <div className="sf-details-body sf-scroll">
               <Preview item={selectedFile} />
-              <label className="sf-detail-field">
+              <label className="sf-detail-field" htmlFor="media-file-name">
                 <span>File name</span>
                 <div>
-                  <Input unstyled
+                  <Input
+                    unstyled
+                    id="media-file-name"
                     value={selectedFile.name}
                     onChange={(e) => updateFile({ name: e.target.value })}
                   />
                   <em>.{selectedFile.ext.toLowerCase()}</em>
                 </div>
               </label>
-              <label className="sf-detail-field">
+              <label className="sf-detail-field" htmlFor="media-alt-text">
                 <span>Alternative text</span>
-                <Textarea unstyled
+                <Textarea
+                  unstyled
+                  id="media-alt-text"
                   value={selectedFile.alt}
                   onChange={(e) => updateFile({ alt: e.target.value })}
                   placeholder="Describe this image for accessibility"
@@ -571,10 +543,7 @@ function Media() {
               {!selectedFile.alt && selectedFile.kind === "image" && (
                 <div className="sf-alt-warning">
                   <i className="ph-fill ph-warning-circle" />
-                  <span>
-                    Add alternative text so this image is accessible to
-                    everyone.
-                  </span>
+                  <span>Add alternative text so this image is accessible to everyone.</span>
                 </div>
               )}
               <dl className="sf-media-metadata">
@@ -605,7 +574,8 @@ function Media() {
               </dl>
               <label className="sf-detail-field">
                 <span>Folder</span>
-                <NativeSelect unstyled
+                <NativeSelect
+                  unstyled
                   value={selectedFile.parentId}
                   onChange={(e) => {
                     updateFile({ parentId: e.target.value });
@@ -625,9 +595,7 @@ function Media() {
                   <i className="ph ph-link" />
                   Copy URL
                 </Button>
-                <Button unstyled
-                  onClick={() => showToast("Download will be connected later")}
-                >
+                <Button unstyled onClick={() => showToast("Download will be connected later")}>
                   <i className="ph ph-download-simple" />
                   Download
                 </Button>
@@ -643,9 +611,8 @@ function Media() {
       {uploadOpen && (
         <div
           className="sf-modal-backdrop"
-          onMouseDown={(e) =>
-            e.target === e.currentTarget && setUploadOpen(false)
-          }
+          onMouseDown={(e) => e.target === e.currentTarget && setUploadOpen(false)}
+          role="presentation"
         >
           <section className="sf-upload-modal" role="dialog" aria-modal="true">
             <header>
@@ -661,20 +628,16 @@ function Media() {
               <i className="ph ph-cloud-arrow-up" />
               <strong>Drop files here</strong>
               <span>or choose files from your computer</span>
-              <Button unstyled
-                onClick={() =>
-                  showToast("File selection will be connected with uploading")
-                }
+              <Button
+                unstyled
+                onClick={() => showToast("File selection will be connected with uploading")}
               >
                 Choose files
               </Button>
               <small>JPG, PNG, SVG, GIF or PDF · up to 10 MB</small>
             </div>
             <footer>
-              <Button unstyled
-                className="sf-action"
-                onClick={() => setUploadOpen(false)}
-              >
+              <Button unstyled className="sf-action" onClick={() => setUploadOpen(false)}>
                 Cancel
               </Button>
               <Button unstyled className="sf-action primary" disabled>

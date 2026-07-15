@@ -1,9 +1,5 @@
 import type { Json } from "./database.types";
-import {
-  loadPageTreeWorkspace,
-  type PageNode,
-  type PageTreeWorkspace,
-} from "./page-tree";
+import { loadPageTreeWorkspace, type PageNode, type PageTreeWorkspace } from "./page-tree";
 import { getSupabaseBrowserClient, getSupabaseConfigError } from "./supabase";
 
 export type NavigationLocation = "header" | "footer";
@@ -26,12 +22,10 @@ export type NavigationWorkspace = PageTreeWorkspace & {
   items: NavigationItem[];
   publishedItems: NavigationItem[];
   publishedAt: string | null;
-  pageOptions: Array<{ id: string; title: string; path: string }>;
+  pageOptions: { id: string; title: string; path: string }[];
 };
 
-function flattenPages(
-  nodes: PageNode[],
-): Array<{ id: string; title: string; path: string }> {
+function flattenPages(nodes: PageNode[]): { id: string; title: string; path: string }[] {
   return nodes.flatMap((node) => [
     { id: node.id, title: node.title, path: node.slug },
     ...flattenPages(node.children),
@@ -104,9 +98,7 @@ export async function loadNavigationWorkspace(
   if (!client) throw getSupabaseConfigError();
   const { data, error } = await client
     .from("navigation_menus")
-    .select(
-      "id, location, draft_items, published_items, published_at, updated_at",
-    )
+    .select("id, location, draft_items, published_items, published_at, updated_at")
     .eq("site_language_id", workspace.language.id)
     .eq("location", location)
     .maybeSingle();
@@ -115,9 +107,7 @@ export async function loadNavigationWorkspace(
     const { data: created, error: createError } = await client
       .from("navigation_menus")
       .insert({ site_language_id: workspace.language.id, location })
-      .select(
-        "id, location, draft_items, published_items, published_at, updated_at",
-      )
+      .select("id, location, draft_items, published_items, published_at, updated_at")
       .single();
     if (createError) throw createError;
     return {
@@ -141,15 +131,12 @@ export async function loadNavigationWorkspace(
   };
 }
 
-export async function saveNavigationDraft(
-  menuId: string,
-  items: NavigationItem[],
-) {
+export async function saveNavigationDraft(menuId: string, items: NavigationItem[]) {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
   const { data, error } = await client
     .from("navigation_menus")
-    .update({ draft_items: items as unknown as Json })
+    .update({ draft_items: items })
     .eq("id", menuId)
     .select("updated_at")
     .single();
@@ -157,10 +144,7 @@ export async function saveNavigationDraft(
   return data.updated_at;
 }
 
-export async function publishNavigation(
-  menuId: string,
-  items: NavigationItem[],
-) {
+export async function publishNavigation(menuId: string, items: NavigationItem[]) {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
   const now = new Date().toISOString();

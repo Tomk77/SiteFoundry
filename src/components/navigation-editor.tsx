@@ -1,4 +1,5 @@
 import { Button } from "./ui/button";
+import { LoadingSplash, RouteLoading } from "./loading";
 import { Input } from "./ui/input";
 import { NativeSelect } from "./ui/native-select";
 import { useNavigate } from "@tanstack/react-router";
@@ -27,10 +28,10 @@ const itemTheme = {
 } as const;
 
 function move<T>(items: T[], from: number, to: number) {
-  if (from < 0 || to < 0 || from >= items.length || to >= items.length)
-    return items;
+  if (from < 0 || to < 0 || from >= items.length || to >= items.length) return items;
   const next = [...items];
   const [item] = next.splice(from, 1);
+  if (item === undefined) return items;
   next.splice(to, 0, item);
   return next;
 }
@@ -40,33 +41,19 @@ function allItems(items: NavigationItem[]) {
 }
 
 function parentOf(items: NavigationItem[], childId: string) {
-  return items.find((item) =>
-    item.children.some((child) => child.id === childId),
-  );
+  return items.find((item) => item.children.some((child) => child.id === childId));
 }
 
 const navigationWorkspaceCache = new Map<string, NavigationWorkspace>();
 
-export function NavigationEditor({
-  location,
-}: {
-  location: NavigationLocation;
-}) {
+export function NavigationEditor({ location }: { location: NavigationLocation }) {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const cacheKey = user ? `${user.id}:${location}` : "";
-  const cachedWorkspace = cacheKey
-    ? (navigationWorkspaceCache.get(cacheKey) ?? null)
-    : null;
-  const [workspace, setWorkspace] = useState<NavigationWorkspace | null>(
-    cachedWorkspace,
-  );
-  const [items, setItems] = useState<NavigationItem[]>(
-    cachedWorkspace?.items ?? [],
-  );
-  const [savedSnapshot, setSavedSnapshot] = useState(
-    JSON.stringify(cachedWorkspace?.items ?? []),
-  );
+  const cachedWorkspace = cacheKey ? (navigationWorkspaceCache.get(cacheKey) ?? null) : null;
+  const [workspace, setWorkspace] = useState<NavigationWorkspace | null>(cachedWorkspace);
+  const [items, setItems] = useState<NavigationItem[]>(cachedWorkspace?.items ?? []);
+  const [savedSnapshot, setSavedSnapshot] = useState(JSON.stringify(cachedWorkspace?.items ?? []));
   const [publishedSnapshot, setPublishedSnapshot] = useState(
     JSON.stringify(cachedWorkspace?.publishedItems ?? []),
   );
@@ -81,13 +68,14 @@ export function NavigationEditor({
   const [mobileGroups, setMobileGroups] = useState<Set<string>>(new Set());
   const [dragId, setDragId] = useState<string | null>(null);
   const [dropId, setDropId] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
+  const [savingAction, setSavingAction] = useState<"draft" | "publish" | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [publishConfirm, setPublishConfirm] = useState(false);
   const [toast, setToast] = useState("");
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isFooter = location === "footer";
+  const saving = savingAction !== null;
   const currentSnapshot = JSON.stringify(items);
   const dirty = currentSnapshot !== savedSnapshot;
   const published = currentSnapshot === publishedSnapshot && !dirty;
@@ -99,9 +87,7 @@ export function NavigationEditor({
     () =>
       allItems(items).filter(
         (item) =>
-          item.kind !== "group" &&
-          item.targetType === "page" &&
-          !livePaths.has(item.target),
+          item.kind !== "group" && item.targetType === "page" && !livePaths.has(item.target),
       ),
     [items, livePaths],
   );
@@ -124,14 +110,10 @@ export function NavigationEditor({
         }
       })
       .catch((reason: unknown) =>
-        setError(
-          reason instanceof Error
-            ? reason.message
-            : "Could not load navigation.",
-        ),
+        setError(reason instanceof Error ? reason.message : "Could not load navigation."),
       )
       .finally(() => setLoading(false));
-  }, [user?.id, location]);
+  }, [user, location]);
 
   const showToast = (message: string) => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -193,9 +175,7 @@ export function NavigationEditor({
     child.label = "New link";
     setItems((current) =>
       current.map((item) =>
-        item.id === parentId
-          ? { ...item, children: [...item.children, child] }
-          : item,
+        item.id === parentId ? { ...item, children: [...item.children, child] } : item,
       ),
     );
     setSelected(child.id);
@@ -237,24 +217,22 @@ export function NavigationEditor({
 
   const save = async () => {
     if (!workspace || saving) return;
-    setSaving(true);
+    setSavingAction("draft");
     setError("");
     try {
       await saveNavigationDraft(workspace.menuId, items);
       setSavedSnapshot(JSON.stringify(items));
       showToast(`${isFooter ? "Footer" : "Header navigation"} draft saved`);
     } catch (reason) {
-      setError(
-        reason instanceof Error ? reason.message : "Could not save draft.",
-      );
+      setError(reason instanceof Error ? reason.message : "Could not save draft.");
     } finally {
-      setSaving(false);
+      setSavingAction(null);
     }
   };
 
   const publish = async () => {
     if (!workspace || saving) return;
-    setSaving(true);
+    setSavingAction("publish");
     setError("");
     try {
       await publishNavigation(workspace.menuId, items);
@@ -264,11 +242,9 @@ export function NavigationEditor({
       setPublishConfirm(false);
       showToast(`${isFooter ? "Footer" : "Header navigation"} published`);
     } catch (reason) {
-      setError(
-        reason instanceof Error ? reason.message : "Could not publish changes.",
-      );
+      setError(reason instanceof Error ? reason.message : "Could not publish changes.");
     } finally {
-      setSaving(false);
+      setSavingAction(null);
     }
   };
 
@@ -277,7 +253,8 @@ export function NavigationEditor({
     setTimeout(() => setRefreshing(false), 500);
   };
 
-  if ((loading || authLoading) && !workspace)
+  if (authLoading || !user) return <LoadingSplash />;
+  if (loading && !workspace)
     return (
       <main className="sf-navigation-editor sf-navigation-loading">
         <header className="sf-navigation-top">
@@ -290,24 +267,19 @@ export function NavigationEditor({
             <small>Loading workspace</small>
           </div>
         </header>
-        <div className="sf-route-loading" role="status">
-          <span className="sf-route-loading-mark">
-            <i className={`ph ${isFooter ? "ph-layout" : "ph-browser"}`} />
-          </span>
-          <strong>Loading {isFooter ? "footer" : "header navigation"}</strong>
-          <small>The builder will be ready in a moment.</small>
-        </div>
+        <RouteLoading
+          detail="The builder will be ready in a moment."
+          title={`Loading ${isFooter ? "footer" : "header navigation"}`}
+        />
       </main>
     );
-  if (!workspace)
-    return (
-      <div className="sf-loading">{error || "No website is available."}</div>
-    );
+  if (!workspace) return <div className="sf-loading">{error || "No website is available."}</div>;
 
   return (
     <main className="sf-navigation-editor">
       <header className="sf-navigation-top">
-        <Button unstyled
+        <Button
+          unstyled
           className="sf-back-button"
           onClick={() => void navigate({ to: "/" })}
           type="button"
@@ -318,13 +290,10 @@ export function NavigationEditor({
           <span>Navigation</span>
           <strong>{isFooter ? "Footer" : "Header"}</strong>
           <small className="sf-mono">
-            {isFooter ? "Site footer" : "Primary menu"} ·{" "}
-            {workspace.language.code.toUpperCase()}
+            {isFooter ? "Site footer" : "Primary menu"} · {workspace.language.code.toUpperCase()}
           </small>
         </div>
-        <span
-          className={`sf-editor-status ${published ? "Published" : "Concept"}`}
-        >
+        <span className={`sf-editor-status ${published ? "Published" : "Concept"}`}>
           {published ? "Published" : "Draft"}
         </span>
         {brokenItems.length ? (
@@ -335,29 +304,25 @@ export function NavigationEditor({
         ) : null}
         <span className="sf-spacer" />
         <span className="sf-navigation-saved">
-          <i
-            className={`ph ${saving ? "ph-spinner" : dirty ? "ph-cloud" : "ph-cloud-check"}`}
-          />
-          {saving
-            ? "Saving..."
-            : dirty
-              ? "Unsaved changes"
-              : "All changes saved"}
+          <i className={`ph ${saving ? "ph-spinner" : dirty ? "ph-cloud" : "ph-cloud-check"}`} />
+          {saving ? "Saving..." : dirty ? "Unsaved changes" : "All changes saved"}
         </span>
-        <Button unstyled
+        <Button
+          unstyled
           className="sf-action"
           disabled={!dirty || saving}
+          loading={savingAction === "draft"}
           onClick={() => void save()}
           type="button"
         >
           <i className="ph ph-floppy-disk" /> Save draft
         </Button>
-        <Button unstyled
+        <Button
+          unstyled
           className="sf-action primary"
           disabled={saving}
-          onClick={() =>
-            brokenItems.length ? setPublishConfirm(true) : void publish()
-          }
+          loading={savingAction === "publish"}
+          onClick={() => (brokenItems.length ? setPublishConfirm(true) : void publish())}
           type="button"
         >
           <i className="ph-bold ph-rocket-launch" /> Publish changes
@@ -375,7 +340,8 @@ export function NavigationEditor({
                   ["mobile", "ph-device-mobile", "Mobile"],
                 ] as const
               ).map(([value, icon, label]) => (
-                <Button unstyled
+                <Button
+                  unstyled
                   className={device === value ? "active" : ""}
                   key={value}
                   onClick={() => setDevice(value)}
@@ -391,7 +357,8 @@ export function NavigationEditor({
               <span className="sf-mono">{workspace.site.slug}.com</span>
               <b>Preview</b>
             </div>
-            <Button unstyled
+            <Button
+              unstyled
               className={refreshing ? "spin" : ""}
               onClick={refresh}
               title="Refresh preview"
@@ -456,9 +423,7 @@ export function NavigationEditor({
                         item.kind !== "group" &&
                         !livePaths.has(item.target)) ||
                       item.children.some(
-                        (child) =>
-                          child.targetType === "page" &&
-                          !livePaths.has(child.target),
+                        (child) => child.targetType === "page" && !livePaths.has(child.target),
                       )
                     }
                     drop={dropId === item.id}
@@ -468,9 +433,7 @@ export function NavigationEditor({
                     key={item.id}
                     location={location}
                     onAddChild={() => addChild(item.id)}
-                    onChildMove={(id, direction) =>
-                      moveChild(item.id, id, direction)
-                    }
+                    onChildMove={(id, direction) => moveChild(item.id, id, direction)}
                     onDragEnd={() => {
                       setDragId(null);
                       setDropId(null);
@@ -499,8 +462,7 @@ export function NavigationEditor({
                     onUpdate={updateItem}
                     pageOptions={workspace.pageOptions}
                     selected={
-                      selected === item.id ||
-                      item.children.some((child) => child.id === selected)
+                      selected === item.id || item.children.some((child) => child.id === selected)
                     }
                     total={items.length}
                   />
@@ -509,41 +471,22 @@ export function NavigationEditor({
             ) : (
               <div className="sf-builder-empty">
                 <span>
-                  <i
-                    className={`ph ${isFooter ? "ph-columns" : "ph-list-plus"}`}
-                  />
+                  <i className={`ph ${isFooter ? "ph-columns" : "ph-list-plus"}`} />
                 </span>
-                <strong>
-                  {isFooter
-                    ? "Build your site footer"
-                    : "Build your primary menu"}
-                </strong>
-                <p>
-                  Add links, groups, and a call-to-action. You can reorder
-                  everything later.
-                </p>
+                <strong>{isFooter ? "Build your site footer" : "Build your primary menu"}</strong>
+                <p>Add links, groups, and a call-to-action. You can reorder everything later.</p>
               </div>
             )}
             <div className="sf-add-navigation">
-              <Button unstyled
-                onClick={() => setAddOpen((value) => !value)}
-                type="button"
-              >
-                <i className="ph-bold ph-plus" />{" "}
-                {isFooter ? "Add to footer" : "Add menu item"}
+              <Button unstyled onClick={() => setAddOpen((value) => !value)} type="button">
+                <i className="ph-bold ph-plus" /> {isFooter ? "Add to footer" : "Add menu item"}
               </Button>
               {addOpen ? (
                 <div className="sf-add-navigation-menu">
                   {(
                     (isFooter
                       ? [
-                          [
-                            "group",
-                            false,
-                            "Link column",
-                            "A titled column of links",
-                            "ph-columns",
-                          ],
+                          ["group", false, "Link column", "A titled column of links", "ph-columns"],
                           [
                             "link",
                             false,
@@ -595,11 +538,10 @@ export function NavigationEditor({
                             "A highlighted call-to-action",
                             "ph-cursor-click",
                           ],
-                        ]) as Array<
-                      [NavigationKind, boolean, string, string, string]
-                    >
+                        ]) as [NavigationKind, boolean, string, string, string][]
                   ).map(([kind, external, label, description, icon]) => (
-                    <Button unstyled
+                    <Button
+                      unstyled
                       key={label}
                       onClick={() => addItem(kind, external)}
                       type="button"
@@ -621,11 +563,7 @@ export function NavigationEditor({
         </aside>
       </div>
 
-      <Modal
-        open={publishConfirm}
-        onOpenChange={setPublishConfirm}
-        className="sf-small-modal"
-      >
+      <Modal open={publishConfirm} onOpenChange={setPublishConfirm} className="sf-small-modal">
         <div className="sf-modal-head">
           <span className="sf-modal-icon danger">
             <i className="ph-fill ph-warning" />
@@ -633,8 +571,7 @@ export function NavigationEditor({
           <div>
             <ModalTitle>Publish with broken links?</ModalTitle>
             <ModalDescription>
-              {brokenItems.length}{" "}
-              {brokenItems.length === 1 ? "link points" : "links point"} to
+              {brokenItems.length} {brokenItems.length === 1 ? "link points" : "links point"} to
               pages that do not exist.
             </ModalDescription>
           </div>
@@ -649,9 +586,11 @@ export function NavigationEditor({
         </div>
         <div className="sf-modal-actions">
           <ModalClose className="sf-action">Keep editing</ModalClose>
-          <Button unstyled
+          <Button
+            unstyled
             className="sf-action primary"
             disabled={saving}
+            loading={savingAction === "publish"}
             onClick={() => void publish()}
             type="button"
           >
@@ -700,7 +639,7 @@ function MenuCard({
   broken: boolean;
   drop: boolean;
   location: NavigationLocation;
-  pageOptions: Array<{ id: string; title: string; path: string }>;
+  pageOptions: { id: string; title: string; path: string }[];
   onSelect: () => void;
   onToggle: () => void;
   onUpdate: (id: string, patch: Partial<NavigationItem>) => void;
@@ -723,29 +662,27 @@ function MenuCard({
       onDragStart={onDragStart}
       onDrop={onDrop}
     >
-      <div className="sf-menu-card-head" onClick={onSelect}>
+      <div className="sf-menu-card-head">
         <i className="ph ph-dots-six-vertical sf-drag-handle" />
-        <span
-          className="sf-menu-kind"
-          style={{ background: theme.bg, color: theme.fg }}
-        >
+        <span className="sf-menu-kind" style={{ background: theme.bg, color: theme.fg }}>
           <i className={`ph ${theme.icon}`} />
         </span>
-        <span className="sf-menu-card-copy">
+        <Button unstyled className="sf-menu-card-copy" onClick={onSelect} type="button">
           <strong>{item.label || "Untitled item"}</strong>
           <small className="sf-mono">
             {item.kind === "group"
               ? `${location === "footer" ? "Column" : "Dropdown"} · ${item.children.length} ${item.children.length === 1 ? "link" : "links"}`
               : `${item.kind === "button" ? "Button · " : ""}${item.target}`}
           </small>
-        </span>
+        </Button>
         {broken ? (
           <i
             className="ph-fill ph-warning sf-menu-warning"
             title="One or more target pages do not exist"
           />
         ) : null}
-        <Button unstyled
+        <Button
+          unstyled
           disabled={index === 0}
           onClick={(event) => {
             event.stopPropagation();
@@ -756,7 +693,8 @@ function MenuCard({
         >
           <i className="ph-bold ph-arrow-up" />
         </Button>
-        <Button unstyled
+        <Button
+          unstyled
           disabled={index === total - 1}
           onClick={(event) => {
             event.stopPropagation();
@@ -767,7 +705,8 @@ function MenuCard({
         >
           <i className="ph-bold ph-arrow-down" />
         </Button>
-        <Button unstyled
+        <Button
+          unstyled
           onClick={(event) => {
             event.stopPropagation();
             onToggle();
@@ -780,21 +719,19 @@ function MenuCard({
       </div>
       {expanded ? (
         <div className="sf-menu-card-fields">
-          <label className="sf-builder-field">
+          <label className="sf-builder-field" htmlFor={`navigation-label-${item.id}`}>
             <span>Label</span>
-            <Input unstyled
+            <Input
+              unstyled
+              id={`navigation-label-${item.id}`}
               value={item.label}
-              onChange={(event) =>
-                onUpdate(item.id, { label: event.target.value })
-              }
+              onChange={(event) => onUpdate(item.id, { label: event.target.value })}
             />
           </label>
           {item.kind === "group" ? (
             <div className="sf-child-links">
               <span>
-                {location === "footer"
-                  ? "Links in this column"
-                  : "Links in this dropdown"}
+                {location === "footer" ? "Links in this column" : "Links in this dropdown"}
               </span>
               {item.children.map((child, childIndex) => (
                 <div className="sf-child-link" key={child.id}>
@@ -802,14 +739,14 @@ function MenuCard({
                     <i className="ph ph-link-simple" />
                   </span>
                   <div>
-                    <Input unstyled
+                    <Input
+                      unstyled
                       aria-label="Link label"
                       value={child.label}
-                      onChange={(event) =>
-                        onUpdate(child.id, { label: event.target.value })
-                      }
+                      onChange={(event) => onUpdate(child.id, { label: event.target.value })}
                     />
-                    <NativeSelect unstyled
+                    <NativeSelect
+                      unstyled
                       aria-label="Link target"
                       value={child.target}
                       onChange={(event) =>
@@ -819,12 +756,8 @@ function MenuCard({
                         })
                       }
                     >
-                      {!pageOptions.some(
-                        (page) => page.path === child.target,
-                      ) ? (
-                        <option value={child.target}>
-                          {child.target} (missing)
-                        </option>
+                      {!pageOptions.some((page) => page.path === child.target) ? (
+                        <option value={child.target}>{child.target} (missing)</option>
                       ) : null}
                       {pageOptions.map((page) => (
                         <option key={page.id} value={page.path}>
@@ -833,7 +766,8 @@ function MenuCard({
                       ))}
                     </NativeSelect>
                   </div>
-                  <Button unstyled
+                  <Button
+                    unstyled
                     disabled={childIndex === 0}
                     onClick={() => onChildMove(child.id, -1)}
                     title="Move up"
@@ -841,7 +775,8 @@ function MenuCard({
                   >
                     <i className="ph-bold ph-arrow-up" />
                   </Button>
-                  <Button unstyled
+                  <Button
+                    unstyled
                     disabled={childIndex === item.children.length - 1}
                     onClick={() => onChildMove(child.id, 1)}
                     title="Move down"
@@ -849,7 +784,8 @@ function MenuCard({
                   >
                     <i className="ph-bold ph-arrow-down" />
                   </Button>
-                  <Button unstyled
+                  <Button
+                    unstyled
                     onClick={() => onRemove(child.id)}
                     title="Remove link"
                     type="button"
@@ -858,11 +794,7 @@ function MenuCard({
                   </Button>
                 </div>
               ))}
-              <Button unstyled
-                className="sf-add-child"
-                onClick={onAddChild}
-                type="button"
-              >
+              <Button unstyled className="sf-add-child" onClick={onAddChild} type="button">
                 <i className="ph-bold ph-plus" /> Add link to{" "}
                 {location === "footer" ? "column" : "dropdown"}
               </Button>
@@ -872,7 +804,8 @@ function MenuCard({
               <div className="sf-link-type">
                 <span>Links to</span>
                 <div>
-                  <Button unstyled
+                  <Button
+                    unstyled
                     className={item.targetType === "page" ? "active" : ""}
                     onClick={() =>
                       onUpdate(item.id, {
@@ -884,7 +817,8 @@ function MenuCard({
                   >
                     Page
                   </Button>
-                  <Button unstyled
+                  <Button
+                    unstyled
                     className={item.targetType === "url" ? "active" : ""}
                     onClick={() =>
                       onUpdate(item.id, {
@@ -901,16 +835,13 @@ function MenuCard({
               <label className="sf-builder-field">
                 <span>{item.targetType === "page" ? "Page" : "URL"}</span>
                 {item.targetType === "page" ? (
-                  <NativeSelect unstyled
+                  <NativeSelect
+                    unstyled
                     value={item.target}
-                    onChange={(event) =>
-                      onUpdate(item.id, { target: event.target.value })
-                    }
+                    onChange={(event) => onUpdate(item.id, { target: event.target.value })}
                   >
                     {!pageOptions.some((page) => page.path === item.target) ? (
-                      <option value={item.target}>
-                        {item.target} (missing)
-                      </option>
+                      <option value={item.target}>{item.target} (missing)</option>
                     ) : null}
                     {pageOptions.map((page) => (
                       <option key={page.id} value={page.path}>
@@ -919,21 +850,19 @@ function MenuCard({
                     ))}
                   </NativeSelect>
                 ) : (
-                  <Input unstyled
+                  <Input
+                    unstyled
                     className="sf-mono"
                     value={item.target}
-                    onChange={(event) =>
-                      onUpdate(item.id, { target: event.target.value })
-                    }
+                    onChange={(event) => onUpdate(item.id, { target: event.target.value })}
                   />
                 )}
               </label>
               <label className="sf-new-tab">
-                <Input unstyled
+                <Input
+                  unstyled
                   checked={item.newTab}
-                  onChange={(event) =>
-                    onUpdate(item.id, { newTab: event.target.checked })
-                  }
+                  onChange={(event) => onUpdate(item.id, { newTab: event.target.checked })}
                   type="checkbox"
                 />{" "}
                 Open in a new tab
@@ -947,13 +876,13 @@ function MenuCard({
               </span>
             ) : null}
             <span className="sf-spacer" />
-            <Button unstyled
+            <Button
+              unstyled
               className="sf-remove-item"
               onClick={() => onRemove(item.id)}
               type="button"
             >
-              <i className="ph ph-trash" /> Remove{" "}
-              {location === "footer" ? "item" : "menu item"}
+              <i className="ph ph-trash" /> Remove {location === "footer" ? "item" : "menu item"}
             </Button>
           </div>
         </div>
@@ -1000,7 +929,8 @@ function HeaderPreview({
             {items.map((item) =>
               item.kind === "group" ? (
                 <div key={item.id}>
-                  <Button unstyled
+                  <Button
+                    unstyled
                     className={selected === item.id ? "selected" : ""}
                     onClick={() => {
                       onSelect(item.id);
@@ -1015,7 +945,8 @@ function HeaderPreview({
                   </Button>
                   {mobileGroups.has(item.id)
                     ? item.children.map((child) => (
-                        <Button unstyled
+                        <Button
+                          unstyled
                           className={`child${selected === child.id ? " selected" : ""}`}
                           key={child.id}
                           onClick={() => onSelect(child.id)}
@@ -1027,7 +958,8 @@ function HeaderPreview({
                     : null}
                 </div>
               ) : (
-                <Button unstyled
+                <Button
+                  unstyled
                   className={`${item.kind === "button" ? "cta" : ""}${selected === item.id ? " selected" : ""}`}
                   key={item.id}
                   onClick={() => onSelect(item.id)}
@@ -1051,7 +983,8 @@ function HeaderPreview({
         </div>
         <nav className="sf-scroll">
           {items.map((item) => (
-            <Button unstyled
+            <Button
+              unstyled
               className={`${item.kind === "button" ? "cta" : ""}${selected === item.id ? " selected" : ""}`}
               key={item.id}
               onClick={() => {
@@ -1062,9 +995,7 @@ function HeaderPreview({
               type="button"
             >
               {item.label}
-              {item.kind === "group" ? (
-                <i className="ph-bold ph-caret-down" />
-              ) : null}
+              {item.kind === "group" ? <i className="ph-bold ph-caret-down" /> : null}
             </Button>
           ))}
         </nav>
@@ -1074,7 +1005,8 @@ function HeaderPreview({
           {items
             .find((item) => item.id === previewGroup)
             ?.children.map((child) => (
-              <Button unstyled
+              <Button
+                unstyled
                 className={selected === child.id ? "selected" : ""}
                 key={child.id}
                 onClick={() => onSelect(child.id)}
@@ -1115,17 +1047,15 @@ function FooterPreview({
               <Logo />
               <strong>Acme</strong>
             </div>
-            <p>
-              The website-native, open-source CMS for teams who care about their
-              URLs.
-            </p>
+            <p>The website-native, open-source CMS for teams who care about their URLs.</p>
             <div className="sf-socials">
               <i className="ph ph-x-logo" />
               <i className="ph ph-github-logo" />
               <i className="ph ph-linkedin-logo" />
             </div>
             {buttons.map((item) => (
-              <Button unstyled
+              <Button
+                unstyled
                 className={selected === item.id ? "selected" : ""}
                 key={item.id}
                 onClick={() => onSelect(item.id)}
@@ -1139,11 +1069,13 @@ function FooterPreview({
             <div
               className={`sf-footer-column${selected === group.id ? " selected" : ""}`}
               key={group.id}
-              onClick={() => onSelect(group.id)}
             >
-              <strong>{group.label}</strong>
+              <Button unstyled onClick={() => onSelect(group.id)} type="button">
+                <strong>{group.label}</strong>
+              </Button>
               {group.children.map((child) => (
-                <Button unstyled
+                <Button
+                  unstyled
                   className={selected === child.id ? "selected" : ""}
                   key={child.id}
                   onClick={(event) => {
@@ -1162,7 +1094,8 @@ function FooterPreview({
           <span>© 2026 Acme Marketing. All rights reserved.</span>
           <nav>
             {links.map((item) => (
-              <Button unstyled
+              <Button
+                unstyled
                 className={selected === item.id ? "selected" : ""}
                 key={item.id}
                 onClick={() => onSelect(item.id)}

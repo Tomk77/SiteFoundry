@@ -1,7 +1,7 @@
 # Specification index
 
 - Status: Active
-- Last updated: 2026-07-13
+- Last updated: 2026-07-15
 
 ## Purpose
 
@@ -45,7 +45,7 @@ The order below is a dependency-aware planning order, not a release commitment.
 |        1 | Page tree and page lifecycle                     | Working specification | [Page tree specification](PAGE_TREE_SPEC.md)         | Product vision                                                        |
 |        2 | Page editor and content composition              | Not started           | `docs/specs/page-editor.md`                          | Page tree, schema model                                               |
 |        3 | Schema and field system                          | Not started           | `docs/specs/schema-system.md`                        | Page tree                                                             |
-|        4 | Page templates                                   | Not started           | `docs/specs/page-templates.md`                       | Schema system, page editor                                            |
+|        4 | Page templates                                   | Implemented           | [Page templates](docs/specs/page-templates.md)       | Schema system, page editor                                            |
 |        5 | Persistence and revision model                   | Not started           | `docs/specs/revisions.md`                            | Page tree, schema system                                              |
 |        6 | REST content API                                 | Not started           | `docs/specs/rest-api.md`                             | Schema system, revisions                                              |
 |        7 | GraphQL content API                              | Not started           | `docs/specs/graphql-api.md`                          | Schema system, revisions                                              |

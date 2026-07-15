@@ -1030,10 +1030,7 @@ html[data-sf-theme="dark"] .sf-link-type button.active {
   box-shadow: none;
 }
 
-html[data-sf-theme="dark"]
-  .sf-navigation-preview
-  .sf-preview-tools
-  > button:hover,
+html[data-sf-theme="dark"] .sf-navigation-preview .sf-preview-tools > button:hover,
 html[data-sf-theme="dark"] .sf-add-child:hover,
 html[data-sf-theme="dark"] .sf-add-navigation > button:hover {
   background: #2c333b;

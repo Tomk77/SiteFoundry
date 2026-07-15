@@ -15,7 +15,7 @@ export type StructuredFieldType =
 
 export type StructuredValue = string | boolean | string[];
 
-export type StructuredField = {
+export interface StructuredField {
   id: string;
   key: string;
   label: string;
@@ -23,16 +23,16 @@ export type StructuredField = {
   primary?: boolean;
   required?: boolean;
   options?: string[];
-};
+}
 
-export type StructuredRecord = {
+export interface StructuredRecord {
   id: string;
   status: "published" | "concept";
   updated: string;
   values: Record<string, StructuredValue>;
-};
+}
 
-export type StructuredType = {
+export interface StructuredType {
   id: string;
   slug: string;
   name: string;
@@ -43,12 +43,9 @@ export type StructuredType = {
   description: string;
   fields: StructuredField[];
   records: StructuredRecord[];
-};
+}
 
-export const structuredFieldTypes: Record<
-  StructuredFieldType,
-  { label: string; icon: string }
-> = {
+export const structuredFieldTypes: Record<StructuredFieldType, { label: string; icon: string }> = {
   text: { label: "Text", icon: "ph-text-aa" },
   long: { label: "Long text", icon: "ph-text-align-left" },
   rich: { label: "Rich text", icon: "ph-article" },
@@ -84,9 +81,7 @@ export function recordMatchesSearch(record: StructuredRecord, query: string) {
   const needle = query.trim().toLowerCase();
   if (!needle) return true;
   return Object.values(record.values).some((value) =>
-    (Array.isArray(value) ? value.join(" ") : String(value))
-      .toLowerCase()
-      .includes(needle),
+    (Array.isArray(value) ? value.join(" ") : String(value)).toLowerCase().includes(needle),
   );
 }
 
@@ -197,9 +192,39 @@ export function seedStructuredTypes(): StructuredType[] {
         field("phone", "Phone", "phone"),
       ],
       records: [
-        { id: "location-amsterdam", status: "published", updated: "3 weeks ago", values: { name: "Amsterdam HQ", city: "Amsterdam", address: "Herengracht 210", phone: "+31 20 555 0110" } },
-        { id: "location-berlin", status: "published", updated: "3 weeks ago", values: { name: "Berlin Studio", city: "Berlin", address: "Torstraße 44", phone: "+49 30 555 220" } },
-        { id: "location-london", status: "concept", updated: "Yesterday", values: { name: "London Loft", city: "London", address: "Shoreditch High St 9", phone: "+44 20 5550 990" } },
+        {
+          id: "location-amsterdam",
+          status: "published",
+          updated: "3 weeks ago",
+          values: {
+            name: "Amsterdam HQ",
+            city: "Amsterdam",
+            address: "Herengracht 210",
+            phone: "+31 20 555 0110",
+          },
+        },
+        {
+          id: "location-berlin",
+          status: "published",
+          updated: "3 weeks ago",
+          values: {
+            name: "Berlin Studio",
+            city: "Berlin",
+            address: "Torstraße 44",
+            phone: "+49 30 555 220",
+          },
+        },
+        {
+          id: "location-london",
+          status: "concept",
+          updated: "Yesterday",
+          values: {
+            name: "London Loft",
+            city: "London",
+            address: "Shoreditch High St 9",
+            phone: "+44 20 5550 990",
+          },
+        },
       ],
     },
     {
@@ -213,14 +238,46 @@ export function seedStructuredTypes(): StructuredType[] {
       description: "Vacancies rendered on the careers page.",
       fields: [
         field("title", "Title", "text", { primary: true, required: true }),
-        field("team", "Team", "choice", { options: ["Engineering", "Design", "Marketing", "Sales", "Operations"] }),
+        field("team", "Team", "choice", {
+          options: ["Engineering", "Design", "Marketing", "Sales", "Operations"],
+        }),
         field("location", "Location", "text"),
         field("mode", "Type", "choice", { options: ["Full-time", "Part-time", "Contract"] }),
       ],
       records: [
-        { id: "job-frontend", status: "published", updated: "4 days ago", values: { title: "Frontend Engineer", team: "Engineering", location: "Amsterdam / Remote", mode: "Full-time" } },
-        { id: "job-content", status: "published", updated: "1 week ago", values: { title: "Content Strategist", team: "Marketing", location: "Berlin", mode: "Full-time" } },
-        { id: "job-design", status: "concept", updated: "2 days ago", values: { title: "Design Intern", team: "Design", location: "Amsterdam", mode: "Part-time" } },
+        {
+          id: "job-frontend",
+          status: "published",
+          updated: "4 days ago",
+          values: {
+            title: "Frontend Engineer",
+            team: "Engineering",
+            location: "Amsterdam / Remote",
+            mode: "Full-time",
+          },
+        },
+        {
+          id: "job-content",
+          status: "published",
+          updated: "1 week ago",
+          values: {
+            title: "Content Strategist",
+            team: "Marketing",
+            location: "Berlin",
+            mode: "Full-time",
+          },
+        },
+        {
+          id: "job-design",
+          status: "concept",
+          updated: "2 days ago",
+          values: {
+            title: "Design Intern",
+            team: "Design",
+            location: "Amsterdam",
+            mode: "Part-time",
+          },
+        },
       ],
     },
     {
@@ -235,12 +292,41 @@ export function seedStructuredTypes(): StructuredType[] {
       fields: [
         field("question", "Question", "text", { primary: true, required: true }),
         field("answer", "Answer", "rich", { required: true }),
-        field("topic", "Topic", "choice", { options: ["Billing", "Account", "Product", "Privacy"] }),
+        field("topic", "Topic", "choice", {
+          options: ["Billing", "Account", "Product", "Privacy"],
+        }),
       ],
       records: [
-        { id: "faq-password", status: "published", updated: "6 days ago", values: { question: "How do I reset my password?", answer: "Use the reset link on the sign-in screen. The email arrives within a minute.", topic: "Account" } },
-        { id: "faq-plan", status: "published", updated: "6 days ago", values: { question: "Can I change my plan later?", answer: "Yes. Upgrades apply immediately and downgrades at the next cycle.", topic: "Billing" } },
-        { id: "faq-data", status: "concept", updated: "Today", values: { question: "Where is my data stored?", answer: "In EU-based data centres.", topic: "Privacy" } },
+        {
+          id: "faq-password",
+          status: "published",
+          updated: "6 days ago",
+          values: {
+            question: "How do I reset my password?",
+            answer: "Use the reset link on the sign-in screen. The email arrives within a minute.",
+            topic: "Account",
+          },
+        },
+        {
+          id: "faq-plan",
+          status: "published",
+          updated: "6 days ago",
+          values: {
+            question: "Can I change my plan later?",
+            answer: "Yes. Upgrades apply immediately and downgrades at the next cycle.",
+            topic: "Billing",
+          },
+        },
+        {
+          id: "faq-data",
+          status: "concept",
+          updated: "Today",
+          values: {
+            question: "Where is my data stored?",
+            answer: "In EU-based data centres.",
+            topic: "Privacy",
+          },
+        },
       ],
     },
     {
@@ -258,8 +344,26 @@ export function seedStructuredTypes(): StructuredType[] {
         field("role", "Role or company", "text"),
       ],
       records: [
-        { id: "testimonial-one", status: "published", updated: "2 weeks ago", values: { quote: "Finally, a CMS our editors actually understand.", author: "Noor de Wit", role: "Digital lead, Northstar" } },
-        { id: "testimonial-two", status: "concept", updated: "Yesterday", values: { quote: "The page tree changed how our team thinks about content.", author: "Amir Malik", role: "Product manager, Common Ground" } },
+        {
+          id: "testimonial-one",
+          status: "published",
+          updated: "2 weeks ago",
+          values: {
+            quote: "Finally, a CMS our editors actually understand.",
+            author: "Noor de Wit",
+            role: "Digital lead, Northstar",
+          },
+        },
+        {
+          id: "testimonial-two",
+          status: "concept",
+          updated: "Yesterday",
+          values: {
+            quote: "The page tree changed how our team thinks about content.",
+            author: "Amir Malik",
+            role: "Product manager, Common Ground",
+          },
+        },
       ],
     },
   ];
