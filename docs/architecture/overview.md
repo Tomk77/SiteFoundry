@@ -25,6 +25,9 @@ Preview website    <---- authorized draft API + preview bridge
 - **Persistence layer:** PostgreSQL repositories, migrations, and object-storage integration.
 - **Delivery layer:** stable HTTP API, preview authorization, webhooks, and SDKs.
 
+The administration application's feature-first source layout and dependency direction are defined in
+[Administration frontend structure](frontend-structure.md).
+
 ## Constraints
 
 - Tenant and website boundaries must be explicit in data access and authorization.

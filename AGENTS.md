@@ -108,3 +108,14 @@ Before product, architecture, or implementation work:
 4. Inspect `docs/decisions` and `git status`.
 
 When a decision or implementation materially changes agreed behaviour, update the relevant specification, `SPEC_INDEX.md`, and `PROJECT_HANDOFF.md`. Keep unresolved choices explicit. Do not introduce framework dependencies into the CMS domain model.
+
+## Administration source structure
+
+- Keep TanStack route modules as thin URL adapters; new route files must stay at or below 150 lines.
+- Put screen ownership, feature components, hooks, and UI-only models under `src/features/<feature>`.
+- Keep new React modules at or below 350 lines. Treat size as design pressure, not a reason for arbitrary fragmentation.
+- Keep `src/components/ui` feature-neutral and do not import another feature's internal modules.
+- Keep CMS domain code free of React, TanStack, Tailwind, and Supabase dependencies.
+- Put tests under the top-level `tests/` directory, mirroring `src/` and using the `@/` source alias.
+- When touching a legacy size exception in `tests/source-architecture.test.ts`, shrink it and remove the exception when the refactor is complete.
+- Follow `CONTRIBUTING.md` and `docs/architecture/frontend-structure.md` for the complete conventions.

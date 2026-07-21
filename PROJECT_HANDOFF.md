@@ -104,6 +104,8 @@ When asked to implement a feature:
 - Styling architecture is recorded in ADR 0002. Do not add new feature-to-feature stylesheet imports or duplicate light/dark token sets; use the semantic utilities in `src/styles.css`.
 - Tailwind class ordering is enforced by `prettier-plugin-tailwindcss`; the styling contract test prevents route-owned CSS from being reintroduced.
 - Vitest files live under the top-level `tests/` directory, mirroring `src/`; source imports in tests use the `@/` alias, and the test-layout contract prevents test files from being colocated under `src/`.
+- Administration screens are being migrated to the feature-first structure documented in `docs/architecture/frontend-structure.md`. Routes are thin URL adapters, shared UI remains feature-neutral, and source-shape/import contracts prevent new oversized modules and boundary violations.
+- GitHub Actions runs formatting, linting, type checking, tests, route generation, and the production build for pushes to `main` and pull requests.
 
 ## Immediate next step
 
