@@ -33,6 +33,7 @@ export function normalizeRedirectPath(value: string) {
   const trimmed = value.trim();
   if (!trimmed) return "";
   const path = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+
   return path.replace(/\/{2,}/g, "/").replace(/\/$/, "") || "/";
 }
 
@@ -53,9 +54,11 @@ export function getRedirectHealth(
         detail: "This redirect eventually points back to itself.",
       };
     }
+
     seen.add(current);
     current = graph.get(current) ?? current;
   }
+
   if (chained) {
     return {
       kind: "chained",
@@ -63,6 +66,7 @@ export function getRedirectHealth(
       detail: "The destination is another redirect. Point directly to its final page.",
     };
   }
+
   if (!livePaths.has(redirect.destinationPath)) {
     return {
       kind: "broken",
@@ -70,6 +74,7 @@ export function getRedirectHealth(
       detail: "The destination does not match a live page in this language tree.",
     };
   }
+
   return null;
 }
 
@@ -88,6 +93,7 @@ export async function loadRedirectWorkspace(
   if (error) throw error;
   const livePages = flattenPages(workspace.pages);
   const pageNames = new Map(livePages.map((page) => [page.id, page.title]));
+
   return {
     ...workspace,
     livePages,
@@ -121,8 +127,10 @@ export async function saveRedirect(input: {
   if (input.id) {
     const { error } = await client.from("redirects").update(payload).eq("id", input.id);
     if (error) throw error;
+
     return input.id;
   }
+
   const { data, error } = await client
     .from("redirects")
     .insert({
@@ -133,6 +141,7 @@ export async function saveRedirect(input: {
     .select("id")
     .single();
   if (error) throw error;
+
   return data.id;
 }
 

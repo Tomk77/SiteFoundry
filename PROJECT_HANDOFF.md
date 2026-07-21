@@ -104,6 +104,7 @@ When asked to implement a feature:
 - TanStack package versions are deliberately pinned while the framework remains close to its 1.0 transition.
 - Styling architecture is recorded in ADR 0002. Do not add new feature-to-feature stylesheet imports or duplicate light/dark token sets; use the semantic utilities in `src/styles.css`.
 - Tailwind class ordering is enforced by `prettier-plugin-tailwindcss`; the styling contract test prevents route-owned CSS from being reintroduced.
+- ESLint keeps imports at the top of TypeScript modules, requires one declaration per statement, and enforces semantic padding around block statements and returns. Architecture size limits count non-empty lines so readability spacing is not penalized.
 - Vitest files live under the top-level `tests/` directory, mirroring `src/`; source imports in tests use the `@/` alias, and the test-layout contract prevents test files from being colocated under `src/`.
 - The feature-first route migration documented in `docs/architecture/frontend-structure.md` is complete. Shared UI remains feature-neutral; new routes are limited to 150 lines and new React modules to 350 lines; existing feature-screen exceptions may shrink but cannot grow.
 - GitHub Actions runs formatting, linting, type checking, tests, route generation, and the production build for pushes to `main` and pull requests.

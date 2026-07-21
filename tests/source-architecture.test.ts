@@ -7,6 +7,7 @@ const sourceRoot = resolve("src");
 function sourceFiles(directory: string): string[] {
   return readdirSync(directory).flatMap((entry) => {
     const path = resolve(directory, entry);
+
     return statSync(path).isDirectory()
       ? sourceFiles(path)
       : /\.[cm]?[jt]sx?$/.test(entry)
@@ -19,19 +20,21 @@ function sourcePath(path: string) {
   return relative(sourceRoot, path).split(sep).join("/");
 }
 
-function lineCount(path: string) {
-  return readFileSync(path, "utf8").split(/\r?\n/).length;
+function logicalLineCount(path: string) {
+  return readFileSync(path, "utf8")
+    .split(/\r?\n/)
+    .filter((line) => line.trim().length > 0).length;
 }
 
 const legacyReactBaselines: Record<string, number> = {
-  "features/media/media-screen.tsx": 694,
-  "features/navigation/navigation-editor.tsx": 617,
-  "features/page-templates/page-template-editor.tsx": 713,
-  "features/page-templates/page-templates-screen.tsx": 849,
-  "features/page-tree/page-tree-screen.tsx": 1416,
-  "features/personal-settings/personal-settings-screen.tsx": 599,
-  "features/redirects/redirects-screen.tsx": 677,
-  "features/structured-content/structured-content-screen.tsx": 1091,
+  "features/media/media-screen.tsx": 690,
+  "features/navigation/navigation-editor.tsx": 592,
+  "features/page-templates/page-template-editor.tsx": 710,
+  "features/page-templates/page-templates-screen.tsx": 836,
+  "features/page-tree/page-tree-screen.tsx": 1411,
+  "features/personal-settings/personal-settings-screen.tsx": 574,
+  "features/redirects/redirects-screen.tsx": 652,
+  "features/structured-content/structured-content-screen.tsx": 1062,
 };
 
 describe("source architecture", () => {
@@ -43,8 +46,9 @@ describe("source architecture", () => {
       .flatMap((path) => {
         const name = sourcePath(path);
         const maximum = 150;
-        const lines = lineCount(path);
-        return lines > maximum ? [`${name}: ${lines} lines (maximum ${maximum})`] : [];
+        const lines = logicalLineCount(path);
+
+        return lines > maximum ? [`${name}: ${lines} non-empty lines (maximum ${maximum})`] : [];
       });
 
     expect(failures).toEqual([]);
@@ -56,8 +60,9 @@ describe("source architecture", () => {
       .flatMap((path) => {
         const name = sourcePath(path);
         const maximum = legacyReactBaselines[name] ?? 350;
-        const lines = lineCount(path);
-        return lines > maximum ? [`${name}: ${lines} lines (maximum ${maximum})`] : [];
+        const lines = logicalLineCount(path);
+
+        return lines > maximum ? [`${name}: ${lines} non-empty lines (maximum ${maximum})`] : [];
       });
 
     expect(failures).toEqual([]);

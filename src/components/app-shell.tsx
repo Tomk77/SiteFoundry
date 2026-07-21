@@ -25,6 +25,7 @@ export function StatusPill({ status }: { status: "Published" | "Concept" | "Need
     </span>
   );
 }
+
 export function AppShell({
   active,
   children,
@@ -76,6 +77,7 @@ export function AppShell({
     ["Page templates", "ph-stack", "page-templates", "/page-templates"],
     ["Settings", "ph-gear", "settings", "/settings"],
   ] as const;
+
   return (
     <div className="sf-shell flex h-screen w-screen overflow-hidden border-t-[6px] border-app-chrome bg-surface">
       <aside className="max-[800px]:flex-basis-[210px] flex w-[244px] flex-[0_0_244px] flex-col border-r border-border bg-[#fafcfa] max-[800px]:w-[210px] dark:bg-surface">
@@ -105,6 +107,7 @@ export function AppShell({
               {workspaces.map((workspace) => {
                 const selected =
                   workspace.siteName === siteName && workspace.languageCode === languageCode;
+
                 return (
                   <Button
                     className={cn(

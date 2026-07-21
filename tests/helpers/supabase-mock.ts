@@ -23,6 +23,7 @@ class MockQueryBuilder implements PromiseLike<MockQueryResult> {
 
   private chain(method: string, args: unknown[]) {
     this.calls.push({ method, args });
+
     return this;
   }
 
@@ -60,11 +61,13 @@ class MockQueryBuilder implements PromiseLike<MockQueryResult> {
 
   single() {
     this.calls.push({ method: "single", args: [] });
+
     return Promise.resolve(this.value);
   }
 
   maybeSingle() {
     this.calls.push({ method: "maybeSingle", args: [] });
+
     return Promise.resolve(this.value);
   }
 
@@ -98,13 +101,16 @@ export function createSupabaseMock(
     from: vi.fn((table: string) => {
       calls.push({ method: "from", args: [table] });
       const value = tableQueues[table]?.shift() ?? result([]);
+
       return new MockQueryBuilder(value, calls);
     }),
     rpc: vi.fn((name: string, args?: unknown) => {
       calls.push({ method: "rpc", args: [name, args] });
+
       return Promise.resolve(rpcQueues[name]?.shift() ?? result(null));
     }),
   };
+
   return { client, calls, auth, result };
 }
 

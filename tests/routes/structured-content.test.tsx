@@ -103,6 +103,7 @@ const workspace: StructuredContentWorkspace = {
 async function renderRoute() {
   const { Route } = await import("@/routes/structured-content");
   const Component = (Route as unknown as { component: React.ComponentType }).component;
+
   return render(<Component />);
 }
 
@@ -112,6 +113,7 @@ function getFieldControl(label: string) {
   );
   const control = field?.querySelector("input, textarea");
   if (!control) throw new Error(`No control found for ${label}`);
+
   return control;
 }
 

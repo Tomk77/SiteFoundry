@@ -80,6 +80,7 @@ export function createEmptyStructuredValues(fields: StructuredField[]) {
 export function recordMatchesSearch(record: StructuredRecord, query: string) {
   const needle = query.trim().toLowerCase();
   if (!needle) return true;
+
   return Object.values(record.values).some((value) =>
     (Array.isArray(value) ? value.join(" ") : String(value)).toLowerCase().includes(needle),
   );

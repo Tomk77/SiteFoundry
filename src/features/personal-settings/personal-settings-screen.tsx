@@ -94,6 +94,7 @@ export function PersonalSettingsScreen() {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = () => form.interfaceMode === "system" && applyInterfaceMode("system");
     media.addEventListener("change", onChange);
+
     return () => media.removeEventListener("change", onChange);
   }, [form.interfaceMode, loading]);
 
@@ -102,7 +103,9 @@ export function PersonalSettingsScreen() {
       if (!dirty) return;
       event.preventDefault();
     };
+
     window.addEventListener("beforeunload", beforeUnload);
+
     return () => window.removeEventListener("beforeunload", beforeUnload);
   }, [dirty]);
 

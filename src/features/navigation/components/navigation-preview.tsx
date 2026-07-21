@@ -90,6 +90,7 @@ export function HeaderPreview({
       </div>
     );
   }
+
   return (
     <div className="sf-desktop-header-preview [position:relative] [min-height:252px] [&_nav_button]:[cursor:pointer] [&_nav_button]:[background:transparent] [&_nav_button]:[border:0] [&>header]:[display:flex] [&>header]:[height:66px] [&>header]:[align-items:center] [&>header]:[gap:28px] [&>header]:[padding:0_28px] [&>header]:[border-bottom:1px_solid_#edeff2] [&>header_nav]:[display:flex] [&>header_nav]:[min-width:0] [&>header_nav]:[flex:1] [&>header_nav]:[align-items:center] [&>header_nav]:[justify-content:flex-end] [&>header_nav]:[gap:4px] [&>header_nav]:[overflow-x:auto] [&>header_nav_button]:[display:inline-flex] [&>header_nav_button]:[height:38px] [&>header_nav_button]:[flex:none] [&>header_nav_button]:[align-items:center] [&>header_nav_button]:[gap:5px] [&>header_nav_button]:[border-radius:8px] [&>header_nav_button]:[padding:0_13px] [&>header_nav_button]:[font-size:14px] [&>header_nav_button]:[font-weight:500] [&>header_nav_button]:[white-space:nowrap] [&>header_nav_button]:[color:#141a2e] [&>header_nav_button.cta]:[margin-left:10px] [&>header_nav_button.cta]:[padding:0_17px] [&>header_nav_button.cta]:[font-weight:600] [&>header_nav_button.cta]:[color:#fff] [&>header_nav_button.cta]:[background:#2f5fe0] [&>header_nav_button.selected]:bg-selection [&>header_nav_button.selected]:[box-shadow:inset_0_0_0_1.5px_var(--sf-selection-rail)]">
       <header>
@@ -155,6 +156,7 @@ export function FooterPreview({
   const groups = items.filter((item) => item.kind === "group");
   const buttons = items.filter((item) => item.kind === "button");
   const links = items.filter((item) => item.kind === "link");
+
   return (
     <div
       className={`sf-footer-preview [min-height:458px] [&_.sf-preview-skeleton]:[min-height:124px] [&_footer]:[margin:0] [&_footer]:[padding:38px_40px_26px] [&_footer]:[color:#fff] [&_footer]:[background:#141a2e] [&.mobile_.sf-footer-bottom]:[flex-direction:column] [&.mobile_.sf-footer-bottom]:[align-items:flex-start] [&.mobile_.sf-footer-bottom_nav]:[margin-left:0] [&.mobile_.sf-footer-main]:[display:flex] [&.mobile_.sf-footer-main]:[flex-direction:column] [&.mobile_.sf-footer-main]:[gap:28px] [&.mobile_footer]:[padding:30px_26px] ${device}`}

@@ -26,6 +26,7 @@ function authValue(overrides = {}) {
 async function renderAuth() {
   const { Route } = await import("@/routes/auth");
   const Component = (Route as unknown as { component: React.ComponentType }).component;
+
   return render(<Component />);
 }
 

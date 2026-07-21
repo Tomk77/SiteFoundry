@@ -13,6 +13,7 @@ import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 vi.mock("@/lib/page-tree", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/page-tree")>();
+
   return { ...actual, loadPageTreeWorkspace: vi.fn() };
 });
 

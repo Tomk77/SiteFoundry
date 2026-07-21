@@ -73,18 +73,23 @@ function flatten(nodes: PageNode[], expanded: Set<string>, muted: Set<string>, d
     ...(expanded.has(node.id) ? flatten(node.children, expanded, muted, depth + 1) : []),
   ]);
 }
+
 function expandable(nodes: PageNode[]) {
   const ids = new Set<string>();
   const walk = (node: PageNode) => {
     if (node.children.length) ids.add(node.id);
     node.children.forEach(walk);
   };
+
   nodes.forEach(walk);
+
   return ids;
 }
+
 function ownSlug(path: string) {
   return path === "/" ? "/" : `/${path.split("/").filter(Boolean).at(-1)}`;
 }
+
 function filterTree(nodes: PageNode[], ownMatch: (node: PageNode) => boolean) {
   const muted = new Set<string>();
   const visit = (node: PageNode): PageNode | null => {
@@ -92,24 +97,31 @@ function filterTree(nodes: PageNode[], ownMatch: (node: PageNode) => boolean) {
     const matches = ownMatch(node);
     if (!matches && !children.length) return null;
     if (!matches) muted.add(node.id);
+
     return { ...node, children };
   };
+
   return { nodes: nodes.map(visit).filter(Boolean) as PageNode[], muted };
 }
+
 function findNode(nodes: PageNode[], id: string): PageNode | null {
   for (const node of nodes) {
     if (node.id === id) return node;
     const child = findNode(node.children, id);
     if (child) return child;
   }
+
   return null;
 }
+
 function containsNode(node: PageNode, id: string): boolean {
   return node.children.some((child) => child.id === id || containsNode(child, id));
 }
+
 function subtree(node: PageNode): PageNode[] {
   return [node, ...node.children.flatMap(subtree)];
 }
+
 function moveImpacts(
   pages: PageNode[],
   source: PageNode,
@@ -127,6 +139,7 @@ function moveImpacts(
   const segment = source.slug.split("/").filter(Boolean).at(-1);
   if (!segment) return [];
   const newRoot = newParent.slug === "/" ? `/${segment}` : `${newParent.slug}/${segment}`;
+
   return subtree(source)
     .map((page) => ({
       id: page.id,
@@ -143,56 +156,56 @@ export function PageTreeScreen({
 }: {
   urlSearch: ReturnType<typeof parsePageTreeUrlSearch>;
 }) {
-  const navigate = useNavigate({ from: "/" }),
-    { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate({ from: "/" });
+  const { user, loading: authLoading } = useAuth();
   const cachedWorkspace = user ? (pageTreeWorkspaceCache.get(user.id) ?? null) : null;
-  const [data, setData] = useState<PageTreeWorkspace | null>(cachedWorkspace),
-    [loading, setLoading] = useState(!cachedWorkspace),
-    [error, setError] = useState(""),
-    [expanded, setExpanded] = useState(new Set<string>()),
-    [selected, setSelected] = useState(""),
-    [filtersOpen, setFiltersOpen] = useState(false),
-    [selection, setSelection] = useState<{
-      siteId?: string;
-      languageId?: string;
-    }>({}),
-    [addParent, setAddParent] = useState<PageNode | null>(null),
-    [addQuickParent, setAddQuickParent] = useState<PageNode | null>(null),
-    [addTitle, setAddTitle] = useState(""),
-    [addSlug, setAddSlug] = useState(""),
-    [addSlugEdited, setAddSlugEdited] = useState(false),
-    [addTemplateKey, setAddTemplateKey] = useState(""),
-    [pageTemplates, setPageTemplates] = useState<PageTemplateDefinition[]>([]),
-    [templateLoadError, setTemplateLoadError] = useState(""),
-    [creating, setCreating] = useState(false),
-    [actionPage, setActionPage] = useState<PageNode | null>(null),
-    [renameTarget, setRenameTarget] = useState<PageNode | null>(null),
-    [renameTitle, setRenameTitle] = useState(""),
-    [deleteTarget, setDeleteTarget] = useState<PageNode | null>(null),
-    [mutating, setMutating] = useState(false),
-    [modalError, setModalError] = useState(""),
-    [dragId, setDragId] = useState(""),
-    [dropTarget, setDropTarget] = useState<{
-      id: string;
-      position: PageDropPosition;
-    } | null>(null),
-    [moving, setMoving] = useState(false),
-    [pendingMove, setPendingMove] = useState<PendingMove | null>(null),
-    [createMoveRedirects, setCreateMoveRedirects] = useState(true),
-    [toast, setToast] = useState<{
-      title: string;
-      detail: string;
-    } | null>(null);
-  const scrollRef = useRef<HTMLDivElement | null>(null),
-    restored = useRef(false),
-    expandTimer = useRef<ReturnType<typeof setTimeout> | null>(null),
-    didDrag = useRef(false),
-    dragIdRef = useRef(""),
-    dropTargetRef = useRef<{
-      id: string;
-      position: PageDropPosition;
-    } | null>(null),
-    toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [data, setData] = useState<PageTreeWorkspace | null>(cachedWorkspace);
+  const [loading, setLoading] = useState(!cachedWorkspace);
+  const [error, setError] = useState("");
+  const [expanded, setExpanded] = useState(new Set<string>());
+  const [selected, setSelected] = useState("");
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [selection, setSelection] = useState<{
+    siteId?: string;
+    languageId?: string;
+  }>({});
+  const [addParent, setAddParent] = useState<PageNode | null>(null);
+  const [addQuickParent, setAddQuickParent] = useState<PageNode | null>(null);
+  const [addTitle, setAddTitle] = useState("");
+  const [addSlug, setAddSlug] = useState("");
+  const [addSlugEdited, setAddSlugEdited] = useState(false);
+  const [addTemplateKey, setAddTemplateKey] = useState("");
+  const [pageTemplates, setPageTemplates] = useState<PageTemplateDefinition[]>([]);
+  const [templateLoadError, setTemplateLoadError] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [actionPage, setActionPage] = useState<PageNode | null>(null);
+  const [renameTarget, setRenameTarget] = useState<PageNode | null>(null);
+  const [renameTitle, setRenameTitle] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<PageNode | null>(null);
+  const [mutating, setMutating] = useState(false);
+  const [modalError, setModalError] = useState("");
+  const [dragId, setDragId] = useState("");
+  const [dropTarget, setDropTarget] = useState<{
+    id: string;
+    position: PageDropPosition;
+  } | null>(null);
+  const [moving, setMoving] = useState(false);
+  const [pendingMove, setPendingMove] = useState<PendingMove | null>(null);
+  const [createMoveRedirects, setCreateMoveRedirects] = useState(true);
+  const [toast, setToast] = useState<{
+    title: string;
+    detail: string;
+  } | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const restored = useRef(false);
+  const expandTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const didDrag = useRef(false);
+  const dragIdRef = useRef("");
+  const dropTargetRef = useRef<{
+    id: string;
+    position: PageDropPosition;
+  } | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const query = urlSearch.q ?? "";
   const filters = useMemo<Filters>(
     () => ({
@@ -218,11 +231,13 @@ export function PageTreeScreen({
       resetScroll: false,
     });
   };
+
   const setQuery = (value: string) => updateUrlView(value, filters);
   const setFilters = (value: Filters | ((current: Filters) => Filters)) => {
     const next = typeof value === "function" ? value(filters) : value;
     updateUrlView(query, next);
   };
+
   const load = async (nextSelection = selection) => {
     setLoading(true);
     setError("");
@@ -240,12 +255,13 @@ export function PageTreeScreen({
             templateError instanceof Error ? templateError.message : "Could not load templates.",
           );
         }
+
         setSelection({
           siteId: workspace.site.id,
           languageId: workspace.language.id,
         });
-        const key = `sf-tree:${workspace.language.id}`,
-          saved = sessionStorage.getItem(key);
+        const key = `sf-tree:${workspace.language.id}`;
+        const saved = sessionStorage.getItem(key);
         if (saved) {
           const state = JSON.parse(saved) as {
             expanded?: string[];
@@ -269,6 +285,7 @@ export function PageTreeScreen({
       restored.current = true;
     }
   };
+
   useEffect(() => {
     if (user) void load();
     // The loader intentionally uses the initial workspace selection for each signed-in user.
@@ -293,6 +310,7 @@ export function PageTreeScreen({
     persist();
     const element = scrollRef.current;
     element?.addEventListener("scroll", persist, { passive: true });
+
     return () => element?.removeEventListener("scroll", persist);
   }, [data, expanded, selected]);
   const templatesById = useMemo(
@@ -334,6 +352,7 @@ export function PageTreeScreen({
             const resolvedTemplate = templateForPage(page);
             const text =
               `${page.title} ${page.slug} ${resolvedTemplate?.name ?? page.template} ${resolvedTemplate?.key ?? page.templateKey ?? ""}`.toLowerCase();
+
             return (
               (!query.trim() || text.includes(query.toLowerCase())) &&
               (filters.status === "all" || page.status === filters.status) &&
@@ -362,12 +381,14 @@ export function PageTreeScreen({
     const available = pageTemplates.filter(
       (template) => template.status === "published" && !validatePageTemplate(template).length,
     );
+
     return (
       available.find((template) => template.key === preferred || template.name === preferred) ??
       available.find((template) => template.fallback) ??
       available[0]
     );
   };
+
   const openAdd = (parent?: PageNode | null, templateKey?: string) => {
     const fallback = parent ?? data?.pages[0] ?? null;
     if (!fallback) return;
@@ -378,6 +399,7 @@ export function PageTreeScreen({
     setAddSlugEdited(false);
     setAddTemplateKey(templateKey || preferredTemplateFor(fallback)?.key || "");
   };
+
   const selectedAddTemplate = pageTemplates.find((template) => template.key === addTemplateKey);
   const addTemplateIssues = selectedAddTemplate ? validatePageTemplate(selectedAddTemplate) : [];
   const normalizedAddSlug = slugifyTemplateKey(addSlug || addTitle) || "untitled-page";
@@ -415,12 +437,15 @@ export function PageTreeScreen({
       setCreating(false);
     }
   };
+
   const quickCreate = async (parent: PageNode) => {
     const template = preferredTemplateFor(parent);
     if (!data || !template || validatePageTemplate(template).length || creating) {
       openAdd(parent, template?.key);
+
       return;
     }
+
     const baseTitle = `Untitled ${template.name.toLowerCase()}`;
     const occupiedSlugs = new Set(
       parent.children.map((child) => child.slug.split("/").filter(Boolean).at(-1)),
@@ -432,6 +457,7 @@ export function PageTreeScreen({
       slug = `${baseSlug}-${suffix}`;
       suffix += 1;
     }
+
     const title = slug === baseSlug ? baseTitle : `${baseTitle} ${suffix - 1}`;
     setCreating(true);
     setAddQuickParent(null);
@@ -455,17 +481,20 @@ export function PageTreeScreen({
       setCreating(false);
     }
   };
+
   const switchWorkspace = (workspace: WorkspaceOption) => {
     restored.current = false;
     const next = { siteId: workspace.siteId, languageId: workspace.languageId };
     setSelection(next);
     void load(next);
   };
+
   const showToast = (title: string, detail: string) => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
     setToast({ title, detail });
     toastTimer.current = setTimeout(() => setToast(null), 4200);
   };
+
   const clearDrag = () => {
     if (expandTimer.current) clearTimeout(expandTimer.current);
     expandTimer.current = null;
@@ -477,6 +506,7 @@ export function PageTreeScreen({
       didDrag.current = false;
     }, 0);
   };
+
   const dragOver = (event: DragEvent<HTMLDivElement>, target: PageNode) => {
     const sourceId = dragIdRef.current;
     if (!data || !sourceId || sourceId === target.id) return;
@@ -484,12 +514,14 @@ export function PageTreeScreen({
     if (!source || containsNode(source, target.id)) {
       dropTargetRef.current = null;
       setDropTarget(null);
+
       return;
     }
+
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
-    const rect = event.currentTarget.getBoundingClientRect(),
-      offset = event.clientY - rect.top;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const offset = event.clientY - rect.top;
     let position: PageDropPosition =
       offset < rect.height * 0.3 ? "before" : offset > rect.height * 0.7 ? "after" : "inside";
     if (target.isHomepage) position = "inside";
@@ -514,11 +546,12 @@ export function PageTreeScreen({
       expandTimer.current = null;
     }
   };
+
   const drop = async (event: DragEvent<HTMLDivElement>, target: PageNode) => {
     event.preventDefault();
     event.stopPropagation();
-    const sourceId = dragIdRef.current || event.dataTransfer.getData("text/plain"),
-      destination = dropTargetRef.current ?? dropTarget;
+    const sourceId = dragIdRef.current || event.dataTransfer.getData("text/plain");
+    const destination = dropTargetRef.current ?? dropTarget;
     clearDrag();
     if (!data || !sourceId || !destination || destination.id !== target.id || moving) return;
     const source = findNode(data.pages, sourceId);
@@ -528,10 +561,13 @@ export function PageTreeScreen({
       setCreateMoveRedirects(true);
       setModalError("");
       setPendingMove({ source, destination, impacts });
+
       return;
     }
+
     await commitMove(source, destination, false);
   };
+
   const commitMove = async (
     source: PageNode,
     destination: { id: string; position: PageDropPosition },
@@ -558,16 +594,19 @@ export function PageTreeScreen({
           ? `${result.affectedPages} URL${result.affectedPages === 1 ? "" : "s"} updated${result.redirectsCreated ? ` · ${result.redirectsCreated} redirect${result.redirectsCreated === 1 ? "" : "s"} created` : ""}`
           : "Sibling order saved.",
       );
+
       return true;
     } catch (reason) {
       const message = reason instanceof Error ? reason.message : "The move was not saved.";
       if (pendingMove) setModalError(message);
       showToast("Could not move page", message);
+
       return false;
     } finally {
       setMoving(false);
     }
   };
+
   const rename = async () => {
     if (!renameTarget || !renameTitle.trim() || mutating) return;
     setMutating(true);
@@ -582,6 +621,7 @@ export function PageTreeScreen({
       setMutating(false);
     }
   };
+
   const remove = async () => {
     if (!deleteTarget || mutating) return;
     setMutating(true);
@@ -597,8 +637,10 @@ export function PageTreeScreen({
       setMutating(false);
     }
   };
+
   if (authLoading || !user) return <LoadingSplash />;
   if (loading && !data) return <AppShellSkeleton label="Loading your page tree" variant="tree" />;
+
   return (
     <AppShell
       active="pages"
@@ -819,8 +861,10 @@ export function PageTreeScreen({
               onDragStart={(event) => {
                 if (page.isHomepage || moving) {
                   event.preventDefault();
+
                   return;
                 }
+
                 didDrag.current = true;
                 event.dataTransfer.effectAllowed = "move";
                 event.dataTransfer.setData("text/plain", page.id);
@@ -851,6 +895,7 @@ export function PageTreeScreen({
                     const next = new Set(current);
                     if (next.has(page.id)) next.delete(page.id);
                     else next.add(page.id);
+
                     return next;
                   });
                 }}
@@ -1073,6 +1118,7 @@ export function PageTreeScreen({
                       const preferred =
                         addParent.preferredChildTemplate === template.key ||
                         addParent.preferredChildTemplate === template.name;
+
                       return (
                         <Button
                           unstyled

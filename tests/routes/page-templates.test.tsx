@@ -132,6 +132,7 @@ function workspace(templates = [standard, article, draft]) {
 async function renderRoute() {
   const { Route } = await import("@/routes/page-templates");
   const Component = (Route as unknown as { component: React.ComponentType }).component;
+
   return render(<Component />);
 }
 

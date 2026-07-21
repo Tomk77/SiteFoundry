@@ -19,6 +19,7 @@ let currentAuth: ReturnType<typeof useAuth> | null = null;
 
 function AuthProbe() {
   currentAuth = useAuth();
+
   return (
     <output data-loading={String(currentAuth.loading)} data-user={currentAuth.user?.id ?? "none"} />
   );
@@ -31,6 +32,7 @@ function createAuthClient(session: Session | null = null) {
     getSession: vi.fn().mockResolvedValue({ data: { session } }),
     onAuthStateChange: vi.fn((callback) => {
       authChange = callback;
+
       return { data: { subscription: { unsubscribe } } };
     }),
     signInWithPassword: vi.fn().mockResolvedValue({ error: null }),
@@ -47,6 +49,7 @@ function createAuthClient(session: Session | null = null) {
   };
   profileBuilder.select.mockReturnValue(profileBuilder);
   profileBuilder.eq.mockReturnValue(profileBuilder);
+
   return {
     client: { auth, from: vi.fn(() => profileBuilder) },
     auth,

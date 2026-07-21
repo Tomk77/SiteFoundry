@@ -40,8 +40,8 @@ to an intentional shared boundary instead.
 
 ## File shape
 
-- New route files are at most 150 lines.
-- React files are normally at most 350 lines.
+- New route files are at most 150 non-empty lines.
+- React files are normally at most 350 non-empty lines.
 - A screen coordinates state and behavior; presentational regions live in focused components.
 - Pure configuration and transformations live in `.ts` modules.
 - Existing oversized files use a checked-in no-growth baseline while being migrated.

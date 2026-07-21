@@ -35,6 +35,7 @@ function flattenPages(nodes: PageNode[]): { id: string; title: string; path: str
 function isNavigationItem(value: unknown): value is NavigationItem {
   if (!value || typeof value !== "object") return false;
   const item = value as Partial<NavigationItem>;
+
   return (
     typeof item.id === "string" &&
     ["link", "group", "button"].includes(String(item.kind)) &&
@@ -77,6 +78,7 @@ export function createNavigationItem(
       ],
     };
   }
+
   return {
     id,
     kind,
@@ -110,6 +112,7 @@ export async function loadNavigationWorkspace(
       .select("id, location, draft_items, published_items, published_at, updated_at")
       .single();
     if (createError) throw createError;
+
     return {
       ...workspace,
       menuId: created.id,
@@ -120,6 +123,7 @@ export async function loadNavigationWorkspace(
       pageOptions: flattenPages(workspace.pages),
     };
   }
+
   return {
     ...workspace,
     menuId: data.id,
@@ -141,6 +145,7 @@ export async function saveNavigationDraft(menuId: string, items: NavigationItem[
     .select("updated_at")
     .single();
   if (error) throw error;
+
   return data.updated_at;
 }
 
@@ -160,5 +165,6 @@ export async function publishNavigation(menuId: string, items: NavigationItem[])
     .select("updated_at, published_at")
     .single();
   if (error) throw error;
+
   return data;
 }

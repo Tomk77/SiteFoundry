@@ -4,10 +4,12 @@ import { Input } from "@/components/ui/input";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { useAuth } from "@/lib/auth";
+
 type Mode = "signin" | "register" | "forgot" | "verify";
 
 function formString(form: FormData, key: string) {
   const value = form.get(key);
+
   return typeof value === "string" ? value : "";
 }
 
@@ -35,6 +37,7 @@ export function AuthScreen() {
       setBusy(false);
     }
   }
+
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
@@ -55,7 +58,9 @@ export function AuthScreen() {
         setNotice("If that account exists, a reset link is on its way.");
       });
   }
+
   if (loading) return <LoadingSplash />;
+
   return (
     <main className="sf-auth [display:flex] [height:100vh] [width:100vw] [overflow:hidden]">
       <section className="sf-auth-brand [position:relative] [display:flex] [width:42%] [max-width:560px] [flex:none] [flex-direction:column] [overflow:hidden] bg-action-hover [padding:44px] [color:#e9ecf1] max-[780px]:[display:none] [&:before]:[position:absolute] [&:before]:[inset:0] [&:before]:[background-image:radial-gradient(_circle_at_1px_1px,_rgba(255,_255,_255,_0.06)_1px,_transparent_0_)] [&:before]:[background-size:22px_22px] [&:before]:[content:'']">
@@ -262,6 +267,7 @@ export function AuthScreen() {
     </main>
   );
 }
+
 function Field({
   icon,
   label,
@@ -292,6 +298,7 @@ function Field({
     </div>
   );
 }
+
 function Google() {
   return (
     <svg aria-hidden="true" height="17" viewBox="0 0 48 48" width="17">

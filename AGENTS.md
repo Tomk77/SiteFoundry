@@ -111,9 +111,9 @@ When a decision or implementation materially changes agreed behaviour, update th
 
 ## Administration source structure
 
-- Keep TanStack route modules as thin URL adapters; new route files must stay at or below 150 lines.
+- Keep TanStack route modules as thin URL adapters; new route files must stay at or below 150 non-empty lines.
 - Put screen ownership, feature components, hooks, and UI-only models under `src/features/<feature>`.
-- Keep new React modules at or below 350 lines. Treat size as design pressure, not a reason for arbitrary fragmentation.
+- Keep new React modules at or below 350 non-empty lines. Treat size as design pressure, not a reason for arbitrary fragmentation.
 - Keep `src/components/ui` feature-neutral and do not import another feature's internal modules.
 - Keep CMS domain code free of React, TanStack, Tailwind, and Supabase dependencies.
 - Put tests under the top-level `tests/` directory, mirroring `src/` and using the `@/` source alias.

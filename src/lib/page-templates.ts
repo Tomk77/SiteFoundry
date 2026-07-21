@@ -217,6 +217,7 @@ export function createTemplateComponent(type: string): PageTemplateComponent {
               ? (field.options?.[0] ?? "")
               : "";
   }
+
   return { id: crypto.randomUUID(), type, values };
 }
 
@@ -234,11 +235,13 @@ export function validatePageTemplate(template: PageTemplateDefinition): Template
   if (template.fallback && template.status !== "published") {
     issues.push({ message: "The fallback template must be published." });
   }
+
   if (!PAGE_TEMPLATE_KEY_PATTERN.test(template.key)) {
     issues.push({
       message: "Keys use lowercase letters, numbers and hyphens, and start with a letter.",
     });
   }
+
   template.components.forEach((component, componentIndex) => {
     const definition = pageComponentRegistry[component.type];
     if (!definition) {
@@ -247,8 +250,10 @@ export function validatePageTemplate(template: PageTemplateDefinition): Template
         componentIndex,
         message: `Unknown component "${component.type}"`,
       });
+
       return;
     }
+
     for (const field of definition.fields) {
       const value = component.values[field.key];
       if (field.required && isEmpty(value)) {
@@ -272,6 +277,7 @@ export function validatePageTemplate(template: PageTemplateDefinition): Template
       }
     }
   });
+
   return issues;
 }
 
@@ -289,6 +295,7 @@ export function templateComponentSummary(template: PageTemplateDefinition) {
     const label = pageComponentRegistry[component.type]?.label ?? component.type;
     counts.set(label, (counts.get(label) ?? 0) + 1);
   }
+
   return [...counts]
     .map(([label, count]) => (count > 1 ? `${label} × ${count}` : label))
     .join(", ");

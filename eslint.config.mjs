@@ -67,4 +67,26 @@ export default defineConfig(
     },
   },
   eslintConfigPrettier,
+  {
+    files: ["**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            "Program > :not(ImportDeclaration):not(ExpressionStatement[directive]) ~ ImportDeclaration",
+          message: "Keep all imports together at the top of the module.",
+        },
+      ],
+      "one-var": ["error", "never"],
+      "padding-line-between-statements": [
+        "error",
+        { blankLine: "always", prev: "import", next: "*" },
+        { blankLine: "any", prev: "import", next: "import" },
+        { blankLine: "always", prev: "block-like", next: "*" },
+        { blankLine: "any", prev: "block-like", next: ["case", "default"] },
+        { blankLine: "always", prev: "*", next: ["return", "throw"] },
+      ],
+    },
+  },
 );

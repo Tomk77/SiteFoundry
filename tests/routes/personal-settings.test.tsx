@@ -50,6 +50,7 @@ const user = {
 async function renderRoute() {
   const { Route } = await import("@/routes/personal-settings");
   const Component = (Route as unknown as { component: React.ComponentType }).component;
+
   return render(<Component />);
 }
 

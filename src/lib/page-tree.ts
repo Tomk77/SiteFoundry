@@ -53,6 +53,7 @@ interface CompactPage {
 
 function buildPath(parentPath: string, slug: string, isHomepage: boolean) {
   if (isHomepage) return "/";
+
   return `${parentPath === "/" ? "" : parentPath}/${slug}`;
 }
 
@@ -65,6 +66,7 @@ function buildTree(rows: CompactPage[]) {
   const visit = (row: CompactPage, parentPath: string, ancestors: Set<string>): PageNode => {
     if (ancestors.has(row.id)) throw new Error("The page tree contains a cycle.");
     const path = buildPath(parentPath, row.slug, row.is_homepage);
+
     return {
       id: row.id,
       parentId: row.parent_id,
@@ -83,6 +85,7 @@ function buildTree(rows: CompactPage[]) {
       ),
     };
   };
+
   return (childrenByParent.get(null) ?? []).map((row) => visit(row, "/", new Set()));
 }
 
@@ -128,6 +131,7 @@ export async function loadPageTreeWorkspace(
     language.updated_at > site.updated_at ? language.updated_at : site.updated_at,
   );
   const siteById = new Map(sites.map((item) => [item.id, item]));
+
   return {
     site: { id: site.id, name: site.name, slug: site.slug },
     language: { id: language.id, code: language.code, name: language.name },
@@ -194,6 +198,7 @@ export async function createChildPage(input: {
     .select("id")
     .single();
   if (error) throw error;
+
   return data.id;
 }
 
@@ -243,6 +248,7 @@ export async function movePage(input: {
     create_redirects: input.createRedirects ?? false,
   });
   if (error) throw error;
+
   return data as {
     reparented: boolean;
     parentTitle: string;

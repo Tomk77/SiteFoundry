@@ -40,6 +40,7 @@ function formatDate(value: string) {
   const date = new Date(value);
   const current = new Date();
   if (date.toDateString() === current.toDateString()) return "Today";
+
   return new Intl.DateTimeFormat("en", {
     month: "short",
     day: "numeric",
@@ -81,6 +82,7 @@ export function RedirectsScreen({
       resetScroll: false,
     });
   };
+
   const setQuery = (value: string) => updateUrlView(value, filter);
   const setFilter = (value: Filter) => updateUrlView(query, value);
 
@@ -132,6 +134,7 @@ export function RedirectsScreen({
   );
   const counts = useMemo(() => {
     const redirects = workspace?.redirects ?? [];
+
     return {
       all: redirects.length,
       automatic: redirects.filter((item) => item.pageId).length,
@@ -141,6 +144,7 @@ export function RedirectsScreen({
   }, [workspace, health]);
   const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
+
     return (workspace?.redirects ?? []).filter((item) => {
       const matchesSearch =
         !needle ||
@@ -151,12 +155,14 @@ export function RedirectsScreen({
         (filter === "automatic" && Boolean(item.pageId)) ||
         (filter === "manual" && !item.pageId) ||
         (filter === "attention" && Boolean(health.get(item.id)));
+
       return matchesSearch && matchesFilter;
     });
   }, [workspace, query, filter, health]);
 
   const groups = useMemo(() => {
     if (filter !== "all") return [{ label: "", items: visible }];
+
     return [
       {
         label: "Manual redirects",
@@ -185,6 +191,7 @@ export function RedirectsScreen({
     else if (workspace.redirects.some((item) => item.sourcePath === destination))
       destinationHint = "This points to another redirect and will create a chain.";
     else destinationHint = "No live page currently uses this path.";
+
     return {
       sourceError,
       destinationHint,
@@ -399,6 +406,7 @@ export function RedirectsScreen({
                 ) : null}
                 {group.items.map((redirect) => {
                   const warning = health.get(redirect.id);
+
                   return (
                     <div
                       className="sf-redirect-grid sf-redirect-row [display:grid] [min-height:61px] [cursor:pointer] [grid-template-columns:minmax(150px,_1.4fr)_22px_minmax(150px,_1.4fr)_92px_176px_96px_80px] [align-items:center] [gap:12px] bg-surface [padding-inline:22px] [border-bottom:1px_solid_var(--sf-canvas)] [transition:background_120ms_ease] dark:[border-color:#263235] dark:[background:#1d2126] [&:hover]:[background:#fafcfa] dark:[&:hover]:[background:#242930] [&>.sf-mono]:[overflow:hidden] [&>.sf-mono]:[font-size:12.5px] [&>.sf-mono]:[text-overflow:ellipsis] [&>.sf-mono]:[white-space:nowrap] [&>.sf-mono]:text-ink dark:[&>.sf-mono]:[color:#e9ecf1] [&>i]:[font-size:14px] [&>i]:[color:#b7c0bd] dark:[&>i]:[color:#647572]"

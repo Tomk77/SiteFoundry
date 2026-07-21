@@ -35,9 +35,10 @@ export function ContentTab({
   return (
     <div className="sf-block-list [display:flex] [flex-direction:column] [gap:10px]">
       {page.blocks.map((block, index) => {
-        const definition = blockDefinitions[block.type],
-          open = Boolean(expanded[block.id]),
-          active = selected === block.id;
+        const definition = blockDefinitions[block.type];
+        const open = Boolean(expanded[block.id]);
+        const active = selected === block.id;
+
         return (
           <article
             className={`sf-block [overflow:hidden] [border-radius:10px] bg-surface [border:1.5px_solid_var(--sf-border)] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&.selected]:border-selection-border dark:[&.selected]:[border-color:#515a65] [&.selected>header]:bg-selection-surface dark:[&.selected>header]:[background:#2c333b] [&>header]:[display:flex] [&>header]:[cursor:pointer] [&>header]:[align-items:center] [&>header]:[gap:9px] [&>header]:bg-surface [&>header]:[padding:9px_10px] dark:[&>header]:[border-color:#3d444e] dark:[&>header]:[color:#e9ecf1] dark:[&>header]:[background:#1d2126] [&>header_button]:[display:grid] [&>header_button]:[height:24px] [&>header_button]:[width:24px] [&>header_button]:[cursor:pointer] [&>header_button]:[place-items:center] [&>header_button]:[border-radius:6px] [&>header_button]:[font-size:14px] [&>header_button]:text-ink-subtle [&>header_button]:[background:transparent] [&>header_button]:[border:0] [&>header_button:disabled]:[cursor:default] [&>header_button:disabled]:[color:#d3dad5] [&>header_button:hover]:bg-sunken dark:[&>header_button:hover]:[color:#e9ecf1] dark:[&>header_button:hover]:[background:#242930] [&>header_button:nth-last-of-type(1):hover]:bg-danger-soft [&>header_button:nth-last-of-type(1):hover]:text-danger [&>header_strong]:[font-size:13px] [&>header>.ph-caret-down]:[font-size:14px] [&>header>.ph-caret-down]:text-ink-subtle [&>header>.ph-caret-down]:[transition:transform_0.15s] [&>header>.ph-caret-down.open]:[transform:rotate(180deg)] ${active ? "selected" : ""}`}

@@ -102,9 +102,11 @@ export function StructuredContentScreen({ search }: { search: StructuredSearch }
       const next = await loadStructuredContentWorkspace();
       setWorkspace(next);
       setTypes(next?.types ?? []);
+
       return next;
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Could not load structured content");
+
       return null;
     } finally {
       setLoading(false);
@@ -204,8 +206,10 @@ export function StructuredContentScreen({ search }: { search: StructuredSearch }
     const primaryValue = String(recordDraft.values[primaryField.key] ?? "").trim();
     if (!primaryValue) {
       showToast(`${primaryField.label} is required`);
+
       return;
     }
+
     setSaving(true);
     try {
       const saved = await saveStructuredRecord({
@@ -233,6 +237,7 @@ export function StructuredContentScreen({ search }: { search: StructuredSearch }
       setSaving(false);
     }
   };
+
   const confirmDeleteRecord = async () => {
     if (!deleteRecord || saving) return;
     setSaving(true);
@@ -306,6 +311,7 @@ export function StructuredContentScreen({ search }: { search: StructuredSearch }
         : current,
     );
   };
+
   const saveType = async () => {
     if (!typeDraft?.name.trim() || saving) return;
     const usedKeys = new Set<string>();
@@ -317,6 +323,7 @@ export function StructuredContentScreen({ search }: { search: StructuredSearch }
       let suffix = 2;
       while (usedKeys.has(key)) key = `${baseKey}${suffix++}`;
       usedKeys.add(key);
+
       return {
         ...item,
         key,
@@ -353,6 +360,7 @@ export function StructuredContentScreen({ search }: { search: StructuredSearch }
       setSaving(false);
     }
   };
+
   const deleteType = async () => {
     if (!typeDraft?.id || types.length <= 1 || saving) return;
     if (!window.confirm(`Delete the ${typeDraft.name} content type?`)) return;
@@ -393,6 +401,7 @@ export function StructuredContentScreen({ search }: { search: StructuredSearch }
           <div className="sf-type-list sf-scroll [display:flex] [min-height:0] [flex:1] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [flex-direction:column] [gap:2px] [overflow:auto] [padding:0_10px_10px] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff] [&>button_b]:text-ink-subtle [&>button_b]:[font:600_11px_'Geist_Mono',_monospace] max-[760px]:[&>button_b]:[font-size:0] [&>button_small]:[font-size:11px] [&>button_small]:text-ink-subtle [&>button_strong]:[overflow:hidden] [&>button_strong]:[font-size:13px] [&>button_strong]:[font-weight:500] [&>button_strong]:[text-overflow:ellipsis] [&>button_strong]:[white-space:nowrap] [&>button.active]:bg-selection [&>button.active]:[box-shadow:inset_2px_0_0_var(--sf-selection-rail)] [&>button.active_b]:text-action [&>button.active_strong]:[font-weight:600] [&>button.active_strong]:text-action-hover [&>button:not(.sf-new-type)]:[display:flex] [&>button:not(.sf-new-type)]:[width:100%] [&>button:not(.sf-new-type)]:[cursor:pointer] [&>button:not(.sf-new-type)]:[align-items:center] [&>button:not(.sf-new-type)]:[justify-content:flex-start] [&>button:not(.sf-new-type)]:[gap:10px] [&>button:not(.sf-new-type)]:[border-radius:9px] [&>button:not(.sf-new-type)]:[padding:8px_9px] [&>button:not(.sf-new-type)]:[text-align:left] [&>button:not(.sf-new-type)]:text-ink [&>button:not(.sf-new-type)]:[background:transparent] [&>button:not(.sf-new-type)]:[border:0] [&>button:not(.sf-new-type):hover]:bg-sunken dark:[&>button:not(.sf-new-type):hover]:[background:#22272d] [&>button>span:first-child]:[display:grid] [&>button>span:first-child]:[height:30px] [&>button>span:first-child]:[width:30px] [&>button>span:first-child]:[flex:none] [&>button>span:first-child]:[place-items:center] [&>button>span:first-child]:[border-radius:8px] [&>button>span:first-child]:[font-size:16px] [&>button>span:nth-child(2)]:[display:flex] [&>button>span:nth-child(2)]:[min-width:0] [&>button>span:nth-child(2)]:[flex:1] [&>button>span:nth-child(2)]:[flex-direction:column] [&>button>span:nth-child(2)]:[gap:1px] max-[760px]:[&>button>span:nth-child(2)]:[font-size:0]">
             {types.map((type) => {
               const active = type.id === activeType.id;
+
               return (
                 <Button
                   className={active ? "active" : ""}
@@ -507,6 +516,7 @@ export function StructuredContentScreen({ search }: { search: StructuredSearch }
             </div>
             {records.map((record) => {
               const primary = String(record.values[primaryField.key] || "(untitled)");
+
               return (
                 <div
                   aria-label={`Edit ${primary}`}
@@ -769,6 +779,7 @@ function RecordField({
     onChange([...tags, tagDraft.trim()]);
     setTagDraft("");
   };
+
   return (
     <label className="sf-record-field [display:flex] [flex-direction:column] [gap:7px] [&_textarea]:[resize:vertical] [&_textarea]:[line-height:1.5] [&>input]:[min-height:38px] [&>input]:[width:100%] [&>input]:[border-radius:8px] [&>input]:bg-surface [&>input]:[padding:8px_10px] [&>input]:[font-size:13px] [&>input]:text-ink [&>input]:[outline:none] [&>input]:[border:1.5px_solid_var(--sf-field)] dark:[&>input]:[border-color:#3d444e] [&>input:focus]:border-action [&>input:focus]:[box-shadow:0_0_0_3px_var(--sf-focus-ring)] [&>select]:[min-height:38px] [&>select]:[width:100%] [&>select]:[border-radius:8px] [&>select]:bg-surface [&>select]:[padding:8px_10px] [&>select]:[font-size:13px] [&>select]:text-ink [&>select]:[outline:none] [&>select]:[border:1.5px_solid_var(--sf-field)] dark:[&>select]:[border-color:#3d444e] [&>select:focus]:border-action [&>select:focus]:[box-shadow:0_0_0_3px_var(--sf-focus-ring)] [&>span]:[display:flex] [&>span]:[align-items:center] [&>span]:[justify-content:space-between] [&>span_small]:[display:inline-flex] [&>span_small]:[align-items:center] [&>span_small]:[gap:4px] [&>span_small]:[font-size:10.5px] [&>span_small]:text-ink-subtle [&>span_strong]:[font-size:12px] [&>span_strong]:[font-weight:600] [&>span_strong_b]:text-danger [&>textarea]:[min-height:38px] [&>textarea]:[width:100%] [&>textarea]:[border-radius:8px] [&>textarea]:bg-surface [&>textarea]:[padding:8px_10px] [&>textarea]:[font-size:13px] [&>textarea]:text-ink [&>textarea]:[outline:none] [&>textarea]:[border:1.5px_solid_var(--sf-field)] dark:[&>textarea]:[border-color:#3d444e] [&>textarea:focus]:border-action [&>textarea:focus]:[box-shadow:0_0_0_3px_var(--sf-focus-ring)]">
       <span>
@@ -1077,6 +1088,7 @@ function formatValue(value: StructuredValue | undefined) {
   if (Array.isArray(value)) return value.length ? value.join(", ") : "—";
   if (value === true) return "Yes";
   if (value === false) return "No";
+
   return value || "—";
 }
 

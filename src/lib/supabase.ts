@@ -18,6 +18,7 @@ export function getSupabaseBrowserClient(): BrowserSupabaseClient | null {
   }
 
   browserClient ??= createBrowserClient<Database>(url, publishableKey);
+
   return browserClient;
 }
 

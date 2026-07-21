@@ -235,6 +235,7 @@ const filesSeed: MediaFile[] = [
 function Preview({ item, compact = false }: { item: MediaFile; compact?: boolean }) {
   const icon =
     item.kind === "pdf" ? "ph-file-pdf" : item.kind === "svg" ? "ph-bezier-curve" : "ph-image";
+
   return (
     <div
       className={`sf-media-preview [position:relative] [display:grid] [aspect-ratio:4/3] [width:100%] [place-items:center] [overflow:hidden] [border-radius:10px] [color:#7fa9a4] [border:1.5px_solid_transparent] [&>i]:[font-size:38px] [&>i]:[opacity:0.75] [&>span]:[position:absolute] [&>span]:[right:7px] [&>span]:[bottom:7px] [&>span]:[border-radius:4px] [&>span]:[padding:3px_6px] [&>span]:text-ink-muted [&>span]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.08)] [&>span]:[background:rgba(255,_255,_255,_0.88)] [&>span]:[font:600_9.5px_'Geist_Mono'] ${compact ? "compact" : ""}`}
@@ -248,12 +249,12 @@ function Preview({ item, compact = false }: { item: MediaFile; compact?: boolean
 
 export function MediaScreen({ urlSearch }: { urlSearch: ReturnType<typeof parseMediaUrlSearch> }) {
   const navigate = useNavigate({ from: "/media" });
-  const [folders, setFolders] = useState(foldersSeed),
-    [files, setFiles] = useState(filesSeed),
-    [selected, setSelected] = useState<string | null>(null),
-    [renaming, setRenaming] = useState<string | null>(null),
-    [uploadOpen, setUploadOpen] = useState(false),
-    [toast, setToast] = useState("");
+  const [folders, setFolders] = useState(foldersSeed);
+  const [files, setFiles] = useState(filesSeed);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [renaming, setRenaming] = useState<string | null>(null);
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [toast, setToast] = useState("");
   const cwd =
     urlSearch.folder && folders.some((folder) => folder.id === urlSearch.folder)
       ? urlSearch.folder
@@ -272,18 +273,19 @@ export function MediaScreen({ urlSearch }: { urlSearch: ReturnType<typeof parseM
       resetScroll: false,
     });
   };
+
   const setQuery = (value: string) => updateUrlView({ q: value });
   const setView = (value: "grid" | "list") => updateUrlView({ view: value });
-  const currentFolder = folders.find((folder) => folder.id === cwd),
-    q = query.toLowerCase();
+  const currentFolder = folders.find((folder) => folder.id === cwd);
+  const q = query.toLowerCase();
   const visibleFolders = folders.filter(
     (folder) => folder.parentId === cwd && folder.name.toLowerCase().includes(q),
   );
   const visibleFiles = files.filter(
     (item) => item.parentId === cwd && `${item.name}.${item.ext}`.toLowerCase().includes(q),
   );
-  const selectedFile = files.find((item) => item.id === selected) ?? null,
-    itemCount = visibleFolders.length + visibleFiles.length;
+  const selectedFile = files.find((item) => item.id === selected) ?? null;
+  const itemCount = visibleFolders.length + visibleFiles.length;
   const breadcrumbs = useMemo(
     () =>
       currentFolder
@@ -298,15 +300,18 @@ export function MediaScreen({ urlSearch }: { urlSearch: ReturnType<typeof parseM
     setToast(message);
     window.setTimeout(() => setToast(""), 1800);
   };
+
   const openFolder = (id: string) => {
     setSelected(null);
     updateUrlView({ q: "", folder: id });
   };
+
   const addFolder = () => {
     const id = `folder-${Date.now()}`;
     setFolders((value) => [...value, { id, name: "Untitled folder", parentId: cwd }]);
     setRenaming(id);
   };
+
   const updateFile = (changes: Partial<MediaFile>) =>
     selectedFile &&
     setFiles((value) =>
@@ -318,6 +323,7 @@ export function MediaScreen({ urlSearch }: { urlSearch: ReturnType<typeof parseM
     setSelected(null);
     showToast("File deleted");
   };
+
   return (
     <AppShell active="media">
       <header className="sf-media-head [display:flex] [align-items:center] [gap:12px] [padding:16px_22px_14px] [border-bottom:1px_solid_var(--sf-sunken)] max-[800px]:[flex-wrap:wrap] dark:[border-color:#323841]">

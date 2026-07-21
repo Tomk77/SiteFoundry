@@ -13,15 +13,14 @@ import type { PageTemplateDefinition } from "@/lib/page-templates";
 import { loadPageTemplates } from "@/lib/page-templates-data";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-
-const editorPageCache = new Map<string, EditablePage>();
-
 import { EditorPanel } from "./components/editor-panel";
 import { EditorOverlays } from "./components/editor-overlays";
 import { EditorToolbar } from "./components/editor-toolbar";
 import { PreviewPane } from "./components/preview-pane";
 import { blockDefinitions, defaults, nextBlockId, type Device, type Tab } from "./editor-model";
 import { previewDocument } from "./preview-document";
+
+const editorPageCache = new Map<string, EditablePage>();
 
 interface PageEditorScreenProps {
   pageId?: string;
@@ -30,29 +29,34 @@ interface PageEditorScreenProps {
 export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
   const navigate = useNavigate({ from: "/editor" });
   const { user, loading: authLoading } = useAuth();
+
   const [page, setPage] = useState<EditablePage | null>(() =>
-      pageId ? (editorPageCache.get(pageId) ?? null) : null,
-    ),
-    [loadError, setLoadError] = useState(""),
-    [tab, setTab] = useState<Tab>("content"),
-    [device, setDevice] = useState<Device>("desktop"),
-    [selected, setSelected] = useState<string | null>(null),
-    [expanded, setExpanded] = useState<Record<string, boolean>>({}),
-    [addMenu, setAddMenu] = useState(false),
-    [savingAction, setSavingAction] = useState<"concept" | "publish" | "delete" | null>(null),
-    [savedLabel, setSavedLabel] = useState("Autosaved just now"),
-    [refreshing, setRefreshing] = useState(false),
-    [previewKey, setPreviewKey] = useState(0),
-    [toast, setToast] = useState(""),
-    [deleteOpen, setDeleteOpen] = useState(false),
-    [availableTemplates, setAvailableTemplates] = useState<PageTemplateDefinition[]>([]);
+    pageId ? (editorPageCache.get(pageId) ?? null) : null,
+  );
+  const [loadError, setLoadError] = useState("");
+  const [tab, setTab] = useState<Tab>("content");
+  const [device, setDevice] = useState<Device>("desktop");
+  const [selected, setSelected] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [addMenu, setAddMenu] = useState(false);
+  const [savingAction, setSavingAction] = useState<"concept" | "publish" | "delete" | null>(null);
+  const [savedLabel, setSavedLabel] = useState("Autosaved just now");
+  const [refreshing, setRefreshing] = useState(false);
+  const [previewKey, setPreviewKey] = useState(0);
+  const [toast, setToast] = useState("");
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [availableTemplates, setAvailableTemplates] = useState<PageTemplateDefinition[]>([]);
+
   const toastTimer = useRef<number | undefined>(undefined);
-  const saving = savingAction !== null;
   const previewRef = useRef<HTMLIFrameElement | null>(null);
   const pendingPreviewScroll = useRef<number | null>(null);
+
+  const saving = savingAction !== null;
+
   useEffect(() => {
     if (!authLoading && !user) void navigate({ to: "/auth" });
   }, [authLoading, user, navigate]);
+
   useEffect(() => {
     if (!user) return;
     setLoadError("");
@@ -60,8 +64,10 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
       .then((value) => {
         if (!value) {
           setLoadError("The page was not found.");
+
           return;
         }
+
         if (value && pageId) editorPageCache.set(pageId, value);
         setPage(value);
         if (value?.blocks[0]) {
@@ -73,15 +79,18 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
         setLoadError(error instanceof Error ? error.message : "Unable to load this page."),
       );
   }, [pageId, user]);
+
   useEffect(() => {
     if (page && pageId) editorPageCache.set(pageId, page);
   }, [page, pageId]);
+
   useEffect(() => {
     if (!page?.siteLanguageId) return;
     void loadPageTemplates(page.siteLanguageId)
       .then(setAvailableTemplates)
       .catch(() => setAvailableTemplates([]));
   }, [page?.siteLanguageId]);
+
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       const rawMessage: unknown = event.data;
@@ -107,6 +116,7 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
           }, 80);
         }
       }
+
       if (message.source === "sf-preview" && message.type === "ready" && selected) {
         previewRef.current?.contentWindow?.postMessage(
           { source: "sf-editor", type: "select", id: selected, scroll: false },
@@ -125,9 +135,12 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
         }
       }
     };
+
     window.addEventListener("message", onMessage);
+
     return () => window.removeEventListener("message", onMessage);
   }, [selected]);
+
   const selectBlock = (id: string, scroll = true) => {
     setSelected(id);
     const notifyPreview = () =>
@@ -138,11 +151,13 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
     notifyPreview();
     window.setTimeout(notifyPreview, 150);
   };
+
   const showToast = (message: string) => {
     window.clearTimeout(toastTimer.current);
     setToast(message);
     toastTimer.current = window.setTimeout(() => setToast(""), 2800);
   };
+
   const problems = useMemo(
     () =>
       page
@@ -155,11 +170,14 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
         : [],
     [page],
   );
+
   const path = page ? `${page.parentPath}${page.slug}`.replace(/\/{2,}/g, "/") : "/";
+
   const update = (changes: Partial<EditablePage>) => {
     setPage((value) => (value ? { ...value, ...changes } : value));
     setSavedLabel("Unsaved changes");
   };
+
   const save = async (publish = false) => {
     if (!page || saving) return;
     setSavingAction(publish ? "publish" : "concept");
@@ -192,6 +210,7 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
       setSavingAction(null);
     }
   };
+
   const editBlock = (id: string, key: string, value: string) =>
     page &&
     (() => {
@@ -200,17 +219,19 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
       } catch {
         pendingPreviewScroll.current = null;
       }
+
       update({
         blocks: page.blocks.map((block) =>
           block.id === id ? { ...block, data: { ...block.data, [key]: value } } : block,
         ),
       });
     })();
+
   const moveBlock = (id: string, direction: number) => {
     if (!page) return;
-    const blocks = [...page.blocks],
-      index = blocks.findIndex((block) => block.id === id),
-      target = index + direction;
+    const blocks = [...page.blocks];
+    const index = blocks.findIndex((block) => block.id === id);
+    const target = index + direction;
     if (target < 0 || target >= blocks.length) return;
     const currentBlock = blocks[index];
     const targetBlock = blocks[target];
@@ -219,6 +240,7 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
     blocks[target] = currentBlock;
     update({ blocks });
   };
+
   const removeBlock = (id: string) => {
     if (!page) return;
     const block = page.blocks.find((item) => item.id === id);
@@ -226,6 +248,7 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
     if (selected === id) setSelected(null);
     showToast(`Removed ${block ? blockDefinitions[block.type].label : "content"} block`);
   };
+
   const addBlock = (type: BlockType) => {
     if (!page) return;
     const block: ContentBlock = {
@@ -238,6 +261,7 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
     setExpanded((value) => ({ ...value, [block.id]: true }));
     setAddMenu(false);
   };
+
   const deletePage = async () => {
     if (saving || !page) return;
     setSavingAction("delete");
@@ -251,7 +275,9 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
       setSavingAction(null);
     }
   };
+
   if (authLoading || !user) return <LoadingSplash />;
+
   if (!page && !loadError)
     return (
       <RouteLoading
@@ -259,6 +285,7 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
         title="Loading your page editor"
       />
     );
+
   if (loadError || !page)
     return (
       <div className="sf-loading [display:grid] [height:100vh] [width:100vw] [place-items:center] bg-canvas [font-size:13px] text-ink-muted [transition:background-color_140ms_ease,_color_140ms_ease,_border-color_140ms_ease] motion-reduce:[transition:none] dark:[color:#a7aeb8] dark:[background:#15181c]">
@@ -276,8 +303,10 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
         </div>
       </div>
     );
-  const srcDoc = previewDocument(page.blocks),
-    deviceWidth = { desktop: "100%", tablet: "820px", mobile: "390px" }[device];
+
+  const srcDoc = previewDocument(page.blocks);
+  const deviceWidth = { desktop: "100%", tablet: "820px", mobile: "390px" }[device];
+
   return (
     <main className="sf-editor [display:flex] [height:100vh] [width:100vw] [animation:sf-route-enter_140ms_ease-out] [flex-direction:column] [overflow:hidden] bg-canvas text-ink motion-reduce:[animation:none] dark:[color:#e9ecf1] dark:[background:#15181c] [&_button]:[font-family:inherit]">
       <EditorToolbar

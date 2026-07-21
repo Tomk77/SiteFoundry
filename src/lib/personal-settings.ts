@@ -40,6 +40,7 @@ export async function loadPersonalSettings(user: User): Promise<PersonalSettings
   if (error) throw error;
   const metadataName = String(user.user_metadata?.full_name ?? "").trim();
   const fallbackName = metadataName || user.email?.split("@")[0] || "Editor";
+
   return {
     firstName: data?.first_name ?? fallbackName.split(/\s+/)[0] ?? "",
     lastName: data?.last_name ?? fallbackName.split(/\s+/).slice(1).join(" ") ?? "",
@@ -63,6 +64,7 @@ export async function savePersonalSettings(user: User, settings: PersonalSetting
     });
     if (emailError) throw emailError;
   }
+
   const fullName = [settings.firstName.trim(), settings.lastName.trim()].filter(Boolean).join(" ");
   const { error } = await client
     .from("profiles")
@@ -81,6 +83,7 @@ export async function savePersonalSettings(user: User, settings: PersonalSetting
   });
   if (metadataError) throw metadataError;
   applyInterfaceMode(settings.interfaceMode);
+
   return { emailConfirmationPending: emailChanged };
 }
 
@@ -106,5 +109,6 @@ export function usesPasswordAuthentication(user: User) {
   const providers = Array.isArray(user.app_metadata?.providers)
     ? user.app_metadata.providers.map(String)
     : [String(user.app_metadata?.provider ?? "")];
+
   return providers.includes("email");
 }

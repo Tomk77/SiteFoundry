@@ -130,6 +130,7 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
       current.map((item) => {
         if (item.id !== parentId) return item;
         const index = item.children.findIndex((child) => child.id === childId);
+
         return {
           ...item,
           children: move(item.children, index, index + direction),
@@ -165,12 +166,14 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
       current
         .filter((item) => {
           if (item.id === id) removed = item.label;
+
           return item.id !== id;
         })
         .map((item) => ({
           ...item,
           children: item.children.filter((child) => {
             if (child.id === id) removed = child.label;
+
             return child.id !== id;
           }),
         })),
@@ -183,8 +186,10 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
     if (!dragId || dragId === targetId) {
       setDragId(null);
       setDropId(null);
+
       return;
     }
+
     const from = items.findIndex((item) => item.id === dragId);
     const to = items.findIndex((item) => item.id === targetId);
     setItems(move(items, from, to));
@@ -381,6 +386,7 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
                       const next = new Set(current);
                       if (next.has(id)) next.delete(id);
                       else next.add(id);
+
                       return next;
                     })
                   }
@@ -448,6 +454,7 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
                         const next = new Set(current);
                         if (next.has(item.id)) next.delete(item.id);
                         else next.add(item.id);
+
                         return next;
                       });
                       setSelected(item.id);

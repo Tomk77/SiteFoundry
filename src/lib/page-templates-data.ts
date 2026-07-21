@@ -20,6 +20,7 @@ interface WorkspacePayload {
 function requireClient() {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
+
   return client;
 }
 
@@ -35,7 +36,9 @@ function templateValue(value: unknown): TemplateValue {
   if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
     return value;
   }
+
   if (Array.isArray(value) && value.every((item) => typeof item === "string")) return value;
+
   return null;
 }
 
@@ -57,6 +60,7 @@ function normalizeTemplate(value: unknown): PageTemplateDefinition {
           : [],
       )
     : [];
+
   return {
     id: stringValue(value.id) || undefined,
     siteLanguageId: stringValue(value.siteLanguageId) || undefined,
@@ -75,6 +79,7 @@ function normalizeTemplate(value: unknown): PageTemplateDefinition {
       ? value.components.flatMap((component) => {
           if (!isRecord(component)) return [];
           const values = isRecord(component.values) ? component.values : {};
+
           return [
             {
               id: crypto.randomUUID(),
@@ -102,6 +107,7 @@ async function templatePayload(languageId: string) {
   });
   if (error) throw error;
   const payload = isRecord(data) ? (data as WorkspacePayload) : {};
+
   return {
     pageCount: Number(payload.pageCount) || 0,
     templates: Array.isArray(payload.templates) ? payload.templates.map(normalizeTemplate) : [],
@@ -133,6 +139,7 @@ export async function loadPageTemplateWorkspace(
   if (!language) return null;
   const payload = await templatePayload(language.id);
   const siteById = new Map(sites.map((item) => [item.id, item]));
+
   return {
     site: { id: site.id, name: site.name, slug: site.slug },
     language: { id: language.id, code: language.code, name: language.name },
@@ -172,6 +179,7 @@ export async function savePageTemplate(input: {
     target_components: template.components.map(({ type, values }) => ({ type, values })) as Json,
   });
   if (error) throw error;
+
   return data;
 }
 

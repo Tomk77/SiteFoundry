@@ -72,6 +72,7 @@ const makePage = (): EditablePage => ({
 async function renderRoute() {
   const { Route } = await import("@/routes/editor");
   const Component = (Route as unknown as { component: React.ComponentType }).component;
+
   return render(<Component />);
 }
 

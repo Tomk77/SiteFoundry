@@ -19,7 +19,7 @@ src/
 ```
 
 Route files should validate URL input, read typed route state, and render a feature screen. Keep new
-route files at or below 150 lines and feature React files at or below 350 lines. Existing exceptions
+route files at or below 150 non-empty lines and feature React files at or below 350 non-empty lines. Existing exceptions
 are recorded in `tests/source-architecture.test.ts`; an exception may shrink, but it may not grow.
 Remove its entry when the file is refactored.
 
@@ -54,4 +54,3 @@ pnpm build
 ```
 
 For visible changes, compare representative screens at the same viewport and theme before and after.
-

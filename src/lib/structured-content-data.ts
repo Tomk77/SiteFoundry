@@ -50,6 +50,7 @@ interface RecordRow {
 function requireClient() {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
+
   return client;
 }
 
@@ -64,6 +65,7 @@ function relativeTime(value: string) {
   if (days === 1) return "Yesterday";
   if (days < 14) return `${days} days ago`;
   const weeks = Math.floor(days / 7);
+
   return `${weeks} ${weeks === 1 ? "week" : "weeks"} ago`;
 }
 
@@ -75,9 +77,11 @@ function optionsFromJson(value: Json): string[] {
 
 function valuesFromJson(value: Json): Record<string, StructuredValue> {
   if (!value || Array.isArray(value) || typeof value !== "object") return {};
+
   return Object.fromEntries(
     Object.entries(value).filter((entry): entry is [string, StructuredValue] => {
       const item = entry[1];
+
       return (
         typeof item === "string" ||
         typeof item === "boolean" ||
@@ -212,6 +216,7 @@ export async function saveStructuredRecord(input: {
         .single();
   if (result.error) throw result.error;
   const row = result.data;
+
   return {
     id: row.id,
     status: row.status === "published" ? "published" : "concept",
@@ -243,6 +248,7 @@ export function fieldKeyFromLabel(value: string, index: number) {
   const key =
     first.toLowerCase() +
     rest.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join("");
+
   return /^[a-z]/.test(key) ? key : `field${index + 1}${key}`;
 }
 
@@ -275,6 +281,7 @@ export async function saveStructuredType(input: {
     })) as Json,
   });
   if (error) throw error;
+
   return data;
 }
 

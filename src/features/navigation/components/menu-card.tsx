@@ -51,6 +51,7 @@ export function MenuCard({
   onDrop: () => void;
 }) {
   const theme = itemTheme[item.kind];
+
   return (
     <div
       className={cn(

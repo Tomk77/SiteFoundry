@@ -98,6 +98,7 @@ const workspace: RedirectWorkspace = {
 async function renderRoute() {
   const { Route } = await import("@/routes/redirects");
   const Component = (Route as unknown as { component: React.ComponentType }).component;
+
   return render(<Component />);
 }
 

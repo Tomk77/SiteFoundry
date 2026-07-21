@@ -34,6 +34,7 @@ export interface EditablePage {
 function isContentBlock(value: unknown): value is ContentBlock {
   if (!value || typeof value !== "object") return false;
   const block = value as { id?: unknown; type?: unknown; data?: unknown };
+
   return (
     typeof block.id === "string" &&
     ["hero", "richtext", "quote", "image", "cta"].includes(String(block.type)) &&
@@ -84,6 +85,7 @@ export async function loadEditablePage(pageId?: string): Promise<EditablePage | 
     });
     parentId = parent.parent_id;
   }
+
   const segments = ancestors.map((ancestor) => ancestor.slug).filter(Boolean);
   const parentPath = segments.length ? `/${segments.join("/")}/` : "/";
   const path = page.slug ? `${parentPath}${page.slug}`.replace(/\/+/g, "/") : "/";
@@ -139,6 +141,7 @@ export async function saveEditablePage(page: EditablePage, publish = false) {
     .select("updated_at, status, validation_status")
     .single();
   if (error) throw error;
+
   return {
     updatedAt: data.updated_at,
     status: data.status as EditablePage["status"],

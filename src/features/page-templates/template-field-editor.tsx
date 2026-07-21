@@ -26,6 +26,7 @@ export function TemplateFieldEditor({
   const [tag, setTag] = useState("");
   const tags = Array.isArray(value) ? value : [];
   const stringValue = typeof value === "string" || typeof value === "number" ? String(value) : "";
+
   return (
     <label
       className={cn(

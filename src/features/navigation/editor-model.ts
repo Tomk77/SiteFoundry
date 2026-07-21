@@ -14,6 +14,7 @@ export function move<T>(items: T[], from: number, to: number) {
   const [item] = next.splice(from, 1);
   if (item === undefined) return items;
   next.splice(to, 0, item);
+
   return next;
 }
 

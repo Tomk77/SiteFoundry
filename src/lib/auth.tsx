@@ -32,6 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!client) {
       setLoading(false);
+
       return;
     }
 
@@ -113,6 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           },
         });
         if (error) throw error;
+
         return { needsEmailConfirmation: !data.session };
       },
       async signInWithProvider(provider) {
@@ -152,5 +154,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const value = useContext(AuthContext);
   if (!value) throw new Error("useAuth must be used inside AuthProvider");
+
   return value;
 }

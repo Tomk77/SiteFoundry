@@ -80,8 +80,10 @@ export function PageTemplatesScreen({ search }: { search: PageTemplatesSearch })
       setWorkspace(nextWorkspace);
       if (!nextWorkspace) {
         setTemplates([]);
+
         return;
       }
+
       setTemplates(nextWorkspace.templates);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Could not load page templates.");
@@ -89,6 +91,7 @@ export function PageTemplatesScreen({ search }: { search: PageTemplatesSearch })
       setLoading(false);
     }
   };
+
   useEffect(() => {
     if (user) void load();
     // Site selection is intentionally initialized once for the signed-in user.
@@ -106,6 +109,7 @@ export function PageTemplatesScreen({ search }: { search: PageTemplatesSearch })
     });
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
+
     return needle
       ? templates.filter((template) =>
           `${template.name} ${template.key} ${template.description}`.toLowerCase().includes(needle),
@@ -174,6 +178,7 @@ export function PageTemplatesScreen({ search }: { search: PageTemplatesSearch })
       setSaving(false);
     }
   };
+
   const saveEditor = async (template: PageTemplateDefinition) => {
     if (!workspace) return;
     setSaving(true);
@@ -188,11 +193,13 @@ export function PageTemplatesScreen({ search }: { search: PageTemplatesSearch })
       toast.error("Could not save template", {
         description: reason instanceof Error ? reason.message : undefined,
       });
+
       throw reason;
     } finally {
       setSaving(false);
     }
   };
+
   const submitRename = async () => {
     const template = templates.find((item) => item.key === rename?.key);
     if (!template || !rename?.name.trim() || !workspace) return;
@@ -213,6 +220,7 @@ export function PageTemplatesScreen({ search }: { search: PageTemplatesSearch })
       setSaving(false);
     }
   };
+
   const confirmDelete = async () => {
     if (!deleteKey || !workspace) return;
     const template = templates.find((item) => item.key === deleteKey);
@@ -233,6 +241,7 @@ export function PageTemplatesScreen({ search }: { search: PageTemplatesSearch })
       setSaving(false);
     }
   };
+
   const confirmFallback = async () => {
     if (!fallbackKey || !workspace) return;
     const template = templates.find((item) => item.key === fallbackKey);
@@ -253,6 +262,7 @@ export function PageTemplatesScreen({ search }: { search: PageTemplatesSearch })
       setSaving(false);
     }
   };
+
   const switchWorkspace = (option: WorkspaceOption) =>
     void load({ siteId: option.siteId, languageId: option.languageId });
 
@@ -366,6 +376,7 @@ export function PageTemplatesScreen({ search }: { search: PageTemplatesSearch })
               </div>
               {filtered.map((template) => {
                 const issues = validatePageTemplate(template);
+
                 return (
                   <div
                     className="sf-template-row [position:relative] [display:grid] [cursor:pointer] [grid-template-columns:minmax(300px,_2fr)_172px_120px_150px_130px_44px] [align-items:center] [gap:16px] [padding:13px_22px] [border-bottom:1px_solid_var(--sf-sunken)] [&:hover]:bg-canvas [&>span:not(.sf-template-name)]:[display:flex] [&>span:not(.sf-template-name)]:[min-width:0] [&>span:not(.sf-template-name)]:[flex-direction:column] [&>span:not(.sf-template-name)]:[gap:3px] [&>span:not(.sf-template-name)]:[font-size:12.5px] [&>span:not(.sf-template-name)]:text-ink-muted [&>span>small]:[overflow:hidden] [&>span>small]:[font-size:11px] [&>span>small]:[text-overflow:ellipsis] [&>span>small]:[white-space:nowrap] [&>span>small]:text-ink-subtle [&>span>strong]:[overflow:hidden] [&>span>strong]:[font-size:12.5px] [&>span>strong]:[text-overflow:ellipsis] [&>span>strong]:[white-space:nowrap] [&>span>strong]:text-ink"
@@ -710,6 +721,7 @@ export function PageTemplatesScreen({ search }: { search: PageTemplatesSearch })
           ? (() => {
               const template = templates.find((item) => item.key === deleteKey);
               const blocked = Boolean(template?.fallback);
+
               return (
                 <>
                   <header>

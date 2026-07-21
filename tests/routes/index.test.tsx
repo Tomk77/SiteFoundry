@@ -127,6 +127,7 @@ const template: PageTemplateDefinition = {
 async function renderRoute() {
   const { Route } = await import("@/routes/index");
   const Component = (Route as unknown as { component: React.ComponentType }).component;
+
   return render(<Component />);
 }
 

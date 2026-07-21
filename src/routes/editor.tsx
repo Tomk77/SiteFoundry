@@ -10,5 +10,6 @@ export const Route = createFileRoute("/editor")({
 
 function EditorRoute() {
   const { page } = Route.useSearch();
+
   return <PageEditorScreen pageId={page} />;
 }

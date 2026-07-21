@@ -8,6 +8,7 @@ const sourceRoot = resolve(root, "src");
 function filesUnder(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = resolve(directory, entry.name);
+
     return entry.isDirectory() ? filesUnder(path) : [path];
   });
 }

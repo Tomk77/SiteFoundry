@@ -18,6 +18,7 @@ import { TemplateFieldEditor } from "./template-field-editor";
 
 import { ensureIds, type Device, type Tab, withoutComponentId } from "./editor-model";
 import { previewDocument } from "./preview-document";
+
 export function PageTemplateEditor({
   initialTemplate,
   siteName,
@@ -52,12 +53,14 @@ export function PageTemplateEditor({
       if (!issue.componentId) continue;
       map.set(issue.componentId, [...(map.get(issue.componentId) ?? []), issue]);
     }
+
     return map;
   }, [issues]);
   const patch = (next: PageTemplateDefinition) => {
     setTemplate(next);
     setDirty(true);
   };
+
   const postPreview = () =>
     iframeRef.current?.contentWindow?.postMessage(
       { source: "sf-template-editor", components: template.components, selectedId: selected },
@@ -78,13 +81,16 @@ export function PageTemplateEditor({
         setTab("components");
       }
     };
+
     window.addEventListener("message", receive);
+
     return () => window.removeEventListener("message", receive);
   });
   const select = (id: string) => {
     setSelected(id);
     setExpanded((current) => ({ ...current, [id]: true }));
   };
+
   const updateComponent = (id: string, fieldKey: string, value: TemplateValue) =>
     patch({
       ...template,
@@ -102,6 +108,7 @@ export function PageTemplateEditor({
     [components[from], components[to]] = [components[to]!, components[from]!];
     patch({ ...template, components });
   };
+
   const drop = (event: DragEvent<HTMLDivElement>, id: string) => {
     event.preventDefault();
     if (!dragId || dragId === id) return setDropId("");
@@ -114,6 +121,7 @@ export function PageTemplateEditor({
     setDragId("");
     setDropId("");
   };
+
   const addGroups = useMemo(() => {
     const query = addQuery.trim().toLowerCase();
     const groups = new Map<string, [string, (typeof pageComponentRegistry)[string]][]>();
@@ -121,11 +129,13 @@ export function PageTemplateEditor({
       if (query && !`${definition.label} ${definition.description}`.toLowerCase().includes(query)) {
         continue;
       }
+
       groups.set(definition.category, [
         ...(groups.get(definition.category) ?? []),
         [key, definition],
       ]);
     }
+
     return [...groups];
   }, [addQuery]);
   const json = JSON.stringify(
@@ -157,8 +167,10 @@ export function PageTemplateEditor({
           40,
         );
       } else setTab("settings");
+
       return;
     }
+
     try {
       await onSave(template);
       setDirty(false);
@@ -319,6 +331,7 @@ export function PageTemplateEditor({
                   const preview = primaryField
                     ? String(component.values[primaryField.key] ?? definition?.description ?? "")
                     : "Not registered for this site";
+
                   return (
                     <div
                       className={cn(

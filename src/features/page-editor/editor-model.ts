@@ -124,5 +124,6 @@ export const defaults: Record<BlockType, Record<string, string>> = {
 export function nextBlockId(blocks: ContentBlock[]) {
   let suffix = blocks.length + 1;
   while (blocks.some((block) => block.id === `block-${suffix}`)) suffix += 1;
+
   return `block-${suffix}`;
 }

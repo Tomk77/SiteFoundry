@@ -26,6 +26,7 @@ export function LoadingSplash({ messages = splashMessages }: { messages?: string
       () => setMessageIndex((current) => (current + 1) % availableMessages.length),
       1500,
     );
+
     return () => window.clearInterval(timer);
   }, [availableMessages.length]);
 
@@ -156,6 +157,7 @@ function TreeSkeletonRows() {
     <div className="sf-loading-tree-rows [padding:8px_0] [&>div]:[display:flex] [&>div]:[height:44px] [&>div]:[align-items:center] [&>div]:[gap:11px] [&>div]:[padding-right:22px] [&>div>span:nth-last-child(2)]:[flex:1]">
       {Array.from({ length: 10 }, (_, index) => {
         const child = index % 3 === 1 || index % 5 === 3;
+
         return (
           <div key={index} style={{ opacity: 1 - index * 0.06, paddingLeft: child ? 48 : 22 }}>
             <Shimmer className={child ? "invisible" : ""} style={{ height: 14, width: 14 }} />

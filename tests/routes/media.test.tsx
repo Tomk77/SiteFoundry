@@ -19,6 +19,7 @@ vi.mock("@/components/app-shell", () => ({
 async function renderMedia() {
   const { Route } = await import("@/routes/media");
   const Component = (Route as unknown as { component: React.ComponentType }).component;
+
   return render(<Component />);
 }
 
