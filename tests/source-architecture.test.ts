@@ -25,7 +25,6 @@ function lineCount(path: string) {
 
 const legacyRouteBaselines: Record<string, number> = {
   "routes/auth.tsx": 319,
-  "routes/editor.tsx": 985,
   "routes/index.tsx": 1418,
   "routes/media.tsx": 701,
   "routes/page-templates.tsx": 854,
