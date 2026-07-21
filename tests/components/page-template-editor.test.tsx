@@ -57,9 +57,12 @@ describe("PageTemplateEditor", () => {
     expect(screen.getByText("Standard page")).toBeTruthy();
     expect(screen.getByText("Valid")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "mobile" }));
-    expect((screen.getByTitle("Standard page preview") as HTMLIFrameElement).style.width).toBe(
-      "390px",
-    );
+    const preview = screen.getByTitle("Standard page preview") as HTMLIFrameElement;
+    const previewStage = preview.parentElement;
+
+    expect(preview.style.width).toBe("390px");
+    expect(previewStage?.className).toContain("[flex:1]");
+    expect(previewStage?.className).toContain("[&_iframe]:[height:100%]");
     fireEvent.click(screen.getByRole("button", { name: "Refresh preview" }));
     fireEvent.click(screen.getByRole("button", { name: "Back to templates" }));
     expect(onBack).toHaveBeenCalled();

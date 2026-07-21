@@ -1,7 +1,7 @@
 # Specification index
 
 - Status: Active
-- Last updated: 2026-07-15
+- Last updated: 2026-07-21
 
 ## Purpose
 
@@ -52,20 +52,26 @@ The order below is a dependency-aware planning order, not a release commitment.
 |        8 | Authentication and sessions                      | Not started           | `docs/specs/authentication.md`                       | Architecture overview                                                 |
 |        9 | Permissions                                      | Not started           | `docs/specs/permissions.md`                          | Authentication, page tree                                             |
 |       10 | Personal settings                                | Working specification | [Personal settings](docs/specs/personal-settings.md) | Authentication, permissions                                           |
-|       11 | Redirects and URL changes                        | Not started           | `docs/specs/redirects.md`                            | Page tree, permissions                                                |
-|       12 | Multi-site and languages                         | Not started           | `docs/specs/sites-and-languages.md`                  | Page tree, permissions                                                |
-|       13 | Translation relationships                        | Not started           | `docs/specs/translations.md`                         | Sites and languages                                                   |
-|       14 | Header navigation and footer                     | Not started           | `docs/specs/navigation-and-footer.md`                | Page tree, sites and languages                                        |
-|       15 | Media library                                    | Not started           | `docs/specs/media-library.md`                        | Permissions, storage                                                  |
-|       16 | Structured non-page content                      | Not started           | `docs/specs/structured-content.md`                   | Schema system, permissions                                            |
-|       17 | Live preview                                     | Not started           | `docs/specs/live-preview.md`                         | Page editor, content APIs                                             |
-|       18 | Frontend delivery SDK and preview bridge package | Not started           | `docs/specs/frontend-sdk.md`                         | Live preview, REST and GraphQL content APIs, stable block identifiers |
-|       19 | Search, filtering, and validation                | Not started           | `docs/specs/search-and-validation.md`                | Page tree, schema system                                              |
-|       20 | Admin information architecture                   | Not started           | `docs/specs/admin-information-architecture.md`       | All editor-facing features                                            |
-|       21 | Background jobs and webhooks                     | Not started           | `docs/specs/jobs-and-webhooks.md`                    | Publishing, content APIs                                              |
-|       22 | Deployment and configuration                     | Not started           | `docs/specs/deployment.md`                           | Architecture overview                                                 |
-|       23 | Plugin and extension system                      | Deferred              | `docs/specs/plugin-system.md`                        | Stable core APIs                                                      |
-|       24 | Data migrations                                  | Deferred              | `docs/specs/data-migrations.md`                      | Schema system, revisions                                              |
+|       11 | Site-wide settings UI                            | Working specification | [Site settings UI](docs/specs/site-settings-ui.md)   | Authentication, permissions, sites and languages, admin IA            |
+|       12 | Redirects and URL changes                        | Not started           | `docs/specs/redirects.md`                            | Page tree, permissions                                                |
+|       13 | Multi-site and languages                         | Not started           | `docs/specs/sites-and-languages.md`                  | Page tree, permissions                                                |
+|       14 | Translation relationships                        | Not started           | `docs/specs/translations.md`                         | Sites and languages                                                   |
+|       15 | Header navigation and footer                     | Not started           | `docs/specs/navigation-and-footer.md`                | Page tree, sites and languages                                        |
+|       16 | Media library                                    | Not started           | `docs/specs/media-library.md`                        | Permissions, storage                                                  |
+|       17 | Structured non-page content                      | Not started           | `docs/specs/structured-content.md`                   | Schema system, permissions                                            |
+|       18 | Live preview                                     | Not started           | `docs/specs/live-preview.md`                         | Page editor, content APIs                                             |
+|       19 | Frontend delivery SDK and preview bridge package | Not started           | `docs/specs/frontend-sdk.md`                         | Live preview, REST and GraphQL content APIs, stable block identifiers |
+|       20 | Search, filtering, and validation                | Not started           | `docs/specs/search-and-validation.md`                | Page tree, schema system                                              |
+|       21 | Admin information architecture                   | Not started           | `docs/specs/admin-information-architecture.md`       | All editor-facing features                                            |
+|       22 | Background jobs and webhooks                     | Not started           | `docs/specs/jobs-and-webhooks.md`                    | Publishing, content APIs                                              |
+|       23 | Deployment and configuration                     | Not started           | `docs/specs/deployment.md`                           | Architecture overview                                                 |
+|       24 | Plugin and extension system                      | Deferred              | `docs/specs/plugin-system.md`                        | Stable core APIs                                                      |
+|       25 | Data migrations                                  | Deferred              | `docs/specs/data-migrations.md`                      | Schema system, revisions                                              |
+
+The Site Settings row remains a working specification because the formal authentication, permission,
+invitation-delivery, DNS-verification, and export-worker contracts are unresolved. Its approved UI and
+synchronous persistence are implemented with Supabase RLS and guarded database functions; asynchronous
+operations remain explicitly queued.
 
 ## Cross-cutting requirements
 

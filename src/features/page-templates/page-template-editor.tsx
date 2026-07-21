@@ -181,7 +181,7 @@ export function PageTemplateEditor({
   };
 
   return (
-    <main className="sf-template-editor [display:flex] [height:100vh] [width:100vw] [flex-direction:column] [overflow:hidden] bg-canvas text-ink [&_.sf-preview-stage]:[min-height:0] [&_.sf-preview-stage_iframe]:[border-radius:6px]">
+    <main className="sf-template-editor [display:flex] [height:100vh] [width:100vw] [flex-direction:column] [overflow:hidden] bg-canvas text-ink">
       <header className="sf-template-editor-top [display:flex] [height:56px] [flex:none] [align-items:center] [gap:10px] bg-surface [padding:0_14px] [border-bottom:1px_solid_var(--sf-border)]">
         <Button onClick={onBack} size="sm" type="button" variant="outline">
           <i className="ph ph-arrow-left" /> Back to templates
@@ -260,7 +260,7 @@ export function PageTemplateEditor({
               <i className="ph ph-arrow-clockwise" />
             </Button>
           </div>
-          <div className="sf-preview-stage sf-scroll [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff]">
+          <div className="sf-preview-stage sf-scroll [display:flex] [min-height:0] [flex:1] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [align-items:flex-start] [justify-content:center] [overflow:auto] [padding:24px] dark:[background:#15181c] [&_iframe]:[height:100%] [&_iframe]:[min-height:100%] [&_iframe]:[max-width:100%] [&_iframe]:[border-radius:6px] [&_iframe]:bg-surface [&_iframe]:[box-shadow:0_8px_30px_rgba(23,_35,_38,_0.12)] [&_iframe]:[border:0] [&_iframe]:[transition:width_0.2s_ease] dark:[&_iframe]:[box-shadow:0_12px_36px_rgb(0_0_0_/_32%)] dark:[&_iframe]:[outline:1px_solid_#323841] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff]">
             <iframe
               ref={iframeRef}
               srcDoc={previewDocument}

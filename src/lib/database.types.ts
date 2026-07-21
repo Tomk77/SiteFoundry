@@ -281,6 +281,7 @@ export interface Database {
           position: number;
           site_id: string;
           updated_at: string;
+          url_prefix: string;
         };
         Insert: {
           id?: string;
@@ -289,6 +290,7 @@ export interface Database {
           name: string;
           is_default?: boolean;
           position?: number;
+          url_prefix?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -297,38 +299,136 @@ export interface Database {
       };
       site_members: {
         Row: {
+          access_scope: string;
+          branch_ids: string[];
           site_id: string;
           user_id: string;
           role: string;
+          language_ids: string[];
+          sections: string[];
           created_at: string;
+          updated_at: string;
         };
         Insert: {
+          access_scope?: string;
+          branch_ids?: string[];
           site_id: string;
           user_id: string;
           role?: string;
+          language_ids?: string[];
+          sections?: string[];
           created_at?: string;
+          updated_at?: string;
         };
-        Update: { role?: string };
+        Update: Partial<Database["public"]["Tables"]["site_members"]["Insert"]>;
+        Relationships: [];
+      };
+      site_invitations: {
+        Row: {
+          access_scope: string;
+          branch_ids: string[];
+          created_at: string;
+          email: string;
+          expires_at: string;
+          id: string;
+          invited_by: string;
+          language_ids: string[];
+          role: string;
+          sections: string[];
+          site_id: string;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          access_scope?: string;
+          branch_ids?: string[];
+          created_at?: string;
+          email: string;
+          expires_at?: string;
+          id?: string;
+          invited_by?: string;
+          language_ids?: string[];
+          role: string;
+          sections?: string[];
+          site_id: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["site_invitations"]["Insert"]>;
+        Relationships: [];
+      };
+      site_domains: {
+        Row: {
+          created_at: string;
+          hostname: string;
+          id: string;
+          is_primary: boolean;
+          site_id: string;
+          status: string;
+          updated_at: string;
+          verification_message: string;
+        };
+        Insert: {
+          created_at?: string;
+          hostname: string;
+          id?: string;
+          is_primary?: boolean;
+          site_id: string;
+          status?: string;
+          updated_at?: string;
+          verification_message?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["site_domains"]["Insert"]>;
+        Relationships: [];
+      };
+      site_export_requests: {
+        Row: {
+          completed_at: string | null;
+          created_at: string;
+          download_path: string | null;
+          error_message: string | null;
+          id: string;
+          requested_by: string;
+          site_id: string;
+          status: string;
+        };
+        Insert: {
+          completed_at?: string | null;
+          created_at?: string;
+          download_path?: string | null;
+          error_message?: string | null;
+          id?: string;
+          requested_by?: string;
+          site_id: string;
+          status?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["site_export_requests"]["Insert"]>;
         Relationships: [];
       };
       sites: {
         Row: {
           created_at: string;
           id: string;
+          icon_url: string | null;
           name: string;
           owner_id: string;
+          preview_url: string;
           slug: string;
+          timezone: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
+          icon_url?: string | null;
           name: string;
           owner_id: string;
+          preview_url?: string;
           slug: string;
+          timezone?: string;
           created_at?: string;
           updated_at?: string;
         };
-        Update: { name?: string; slug?: string; updated_at?: string };
+        Update: Partial<Database["public"]["Tables"]["sites"]["Insert"]>;
         Relationships: [];
       };
     };
@@ -340,6 +440,10 @@ export interface Database {
       };
       get_page_template_workspace: {
         Args: { target_language_id: string };
+        Returns: Json;
+      };
+      get_site_settings_workspace: {
+        Args: { target_site_id?: string | null };
         Returns: Json;
       };
       move_page: {
@@ -382,6 +486,30 @@ export interface Database {
       };
       set_fallback_page_template: {
         Args: { target_language_id: string; target_template_id: string };
+        Returns: undefined;
+      };
+      set_default_site_language: {
+        Args: { target_site_id: string; target_language_id: string };
+        Returns: undefined;
+      };
+      set_primary_site_domain: {
+        Args: { target_site_id: string; target_domain_id: string };
+        Returns: undefined;
+      };
+      transfer_site_ownership: {
+        Args: { target_site_id: string; target_user_id: string };
+        Returns: undefined;
+      };
+      update_site_member_access: {
+        Args: {
+          target_access_scope: string;
+          target_branch_ids: string[];
+          target_language_ids: string[];
+          target_role: string;
+          target_sections: string[];
+          target_site_id: string;
+          target_user_id: string;
+        };
         Returns: undefined;
       };
     };
