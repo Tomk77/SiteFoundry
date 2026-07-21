@@ -55,3 +55,17 @@ require an explicit baseline and should be removed as soon as their feature is r
 linting, type checking, tests, route generation, and the production build. `CONTRIBUTING.md` documents
 the workflow contributors should follow.
 
+## Implementation status
+
+All administration routes are thin URL adapters and every feature exposes a public `index.ts` entry
+point. The Page Editor is the reference implementation: its coordinator, pure block configuration,
+preview document, toolbar, preview pane, tabs, and overlays are separate focused modules. Navigation
+similarly separates its coordinator, menu cards, preview components, and pure tree operations. Page
+template preview generation and editor-only transformations are isolated from the unresolved domain
+schema model.
+
+The remaining proof-of-concept screen coordinators are feature-owned but still exceed the preferred
+size. Their exact no-growth limits are recorded in `tests/source-architecture.test.ts`; new files do
+not inherit those exceptions. Continue shrinking those entries when changing the relevant feature,
+without turning the duplicated block metadata into a domain abstraction before the schema system is
+specified.

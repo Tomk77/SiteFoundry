@@ -9,7 +9,7 @@ import {
   type NavigationItem,
   type NavigationWorkspace,
 } from "@/lib/navigation";
-import { NavigationEditor } from "@/components/navigation-editor";
+import { NavigationEditor } from "@/features/navigation/navigation-editor";
 
 const navigate = vi.fn();
 let userNumber = 0;

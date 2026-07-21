@@ -1,12 +1,15 @@
 import { useState } from "react";
-import type { TemplateFieldDefinition, TemplateValue } from "../lib/page-templates";
-import { templateFieldTypeMeta } from "../lib/page-templates";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { NativeSelect } from "./ui/native-select";
-import { Switch } from "./ui/switch";
-import { Textarea } from "./ui/textarea";
-import { cn } from "../lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { NativeSelect } from "@/components/ui/native-select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  templateFieldTypeMeta,
+  type TemplateFieldDefinition,
+  type TemplateValue,
+} from "@/lib/page-templates";
+import { cn } from "@/lib/utils";
 
 export function TemplateFieldEditor({
   field,

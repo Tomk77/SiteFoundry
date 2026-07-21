@@ -55,9 +55,9 @@ describe("administration styling contract", () => {
     }
 
     const featureOwners = [
-      "src/components/navigation-editor.tsx",
-      "src/components/page-template-editor.tsx",
-      "src/components/template-field-editor.tsx",
+      "src/features/navigation/navigation-editor.tsx",
+      "src/features/page-templates/page-template-editor.tsx",
+      "src/features/page-templates/template-field-editor.tsx",
       "src/components/ui/sonner.tsx",
       "src/routes/auth.tsx",
       "src/routes/editor.tsx",

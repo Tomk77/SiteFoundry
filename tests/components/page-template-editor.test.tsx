@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { toast } from "sonner";
 
 import type { PageTemplateDefinition } from "@/lib/page-templates";
-import { PageTemplateEditor } from "@/components/page-template-editor";
+import { PageTemplateEditor } from "@/features/page-templates/page-template-editor";
 
 vi.mock("sonner", () => ({
   toast: { warning: vi.fn() },

@@ -15,6 +15,7 @@ The CMS will serve content through REST and GraphQL. Consuming websites remain r
 - Supabase authentication and database persistence support the proof of concept.
 - Page tree, page editor, media flow, redirects, navigation, structured content, and personal settings have working UI flows.
 - Page templates are implemented as language-scoped database definitions with production editing, draft/published lifecycle, revision history, validation, fallback selection, usage reporting, and copy-on-create page creation.
+- Administration source is feature-first. Every TanStack route is a thin typed adapter importing a feature through its public `index.ts`; the Page Editor is split into focused coordinator, model, preview, toolbar, panel, tab, and overlay modules, while navigation separates tree operations, cards, and previews. Remaining oversized proof-of-concept coordinators have explicit no-growth baselines.
 - Tailwind CSS 4 is the administration styling system across the complete UI: authentication, loading states, app shell, Page Tree, Page Editor, Media, Redirects, Header Navigation, Footer, Structured Content, Page Templates, Personal Settings, Site Settings, shared dialogs, controls, and toasts. Route-owned stylesheets have been removed; `src/styles.css` now contains only the runtime theme, global element foundations, Tailwind theme registration, and shared keyframes imported from `src/animations.css`.
 - The product vision and initial architecture are documented.
 - Page-tree product discovery is complete enough for a working specification.
@@ -104,7 +105,7 @@ When asked to implement a feature:
 - Styling architecture is recorded in ADR 0002. Do not add new feature-to-feature stylesheet imports or duplicate light/dark token sets; use the semantic utilities in `src/styles.css`.
 - Tailwind class ordering is enforced by `prettier-plugin-tailwindcss`; the styling contract test prevents route-owned CSS from being reintroduced.
 - Vitest files live under the top-level `tests/` directory, mirroring `src/`; source imports in tests use the `@/` alias, and the test-layout contract prevents test files from being colocated under `src/`.
-- Administration screens are being migrated to the feature-first structure documented in `docs/architecture/frontend-structure.md`. Routes are thin URL adapters, shared UI remains feature-neutral, and source-shape/import contracts prevent new oversized modules and boundary violations.
+- The feature-first route migration documented in `docs/architecture/frontend-structure.md` is complete. Shared UI remains feature-neutral; new routes are limited to 150 lines and new React modules to 350 lines; existing feature-screen exceptions may shrink but cannot grow.
 - GitHub Actions runs formatting, linting, type checking, tests, route generation, and the production build for pushes to `main` and pull requests.
 
 ## Immediate next step

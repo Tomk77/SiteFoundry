@@ -23,19 +23,15 @@ function lineCount(path: string) {
   return readFileSync(path, "utf8").split(/\r?\n/).length;
 }
 
-const legacyRouteBaselines: Record<string, number> = {
-  "routes/auth.tsx": 319,
-  "routes/index.tsx": 1418,
-  "routes/media.tsx": 701,
-  "routes/page-templates.tsx": 854,
-  "routes/personal-settings.tsx": 604,
-  "routes/redirects.tsx": 680,
-  "routes/structured-content.tsx": 1103,
-};
-
 const legacyReactBaselines: Record<string, number> = {
-  "components/navigation-editor.tsx": 1192,
-  "components/page-template-editor.tsx": 733,
+  "features/media/media-screen.tsx": 694,
+  "features/navigation/navigation-editor.tsx": 617,
+  "features/page-templates/page-template-editor.tsx": 713,
+  "features/page-templates/page-templates-screen.tsx": 849,
+  "features/page-tree/page-tree-screen.tsx": 1416,
+  "features/personal-settings/personal-settings-screen.tsx": 599,
+  "features/redirects/redirects-screen.tsx": 677,
+  "features/structured-content/structured-content-screen.tsx": 1091,
 };
 
 describe("source architecture", () => {
@@ -46,7 +42,7 @@ describe("source architecture", () => {
       .filter((path) => sourcePath(path).startsWith("routes/"))
       .flatMap((path) => {
         const name = sourcePath(path);
-        const maximum = legacyRouteBaselines[name] ?? 150;
+        const maximum = 150;
         const lines = lineCount(path);
         return lines > maximum ? [`${name}: ${lines} lines (maximum ${maximum})`] : [];
       });
@@ -77,6 +73,10 @@ describe("source architecture", () => {
         messages.push(`${name} imports Supabase directly`);
       }
 
+      if (name.startsWith("routes/") && /@\/features\/[^/"']+\//.test(source)) {
+        messages.push(`${name} bypasses a feature public entry point`);
+      }
+
       if (
         name.startsWith("domain/") &&
         /(?:from ["'](?:react|@tanstack|@supabase)|features\/)/.test(source)
@@ -86,6 +86,13 @@ describe("source architecture", () => {
 
       if (name.startsWith("components/ui/") && /features\//.test(source)) {
         messages.push(`${name} imports feature code`);
+      }
+
+      if (name.startsWith("features/")) {
+        const owner = name.split("/")[1];
+        for (const match of source.matchAll(/@\/features\/([^/"']+)\/[^"']+/g)) {
+          if (match[1] !== owner) messages.push(`${name} imports internals from ${match[1]}`);
+        }
       }
 
       return messages;

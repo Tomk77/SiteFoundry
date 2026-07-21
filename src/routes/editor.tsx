@@ -1,4 +1,4 @@
-import { PageEditorScreen } from "@/features/page-editor/page-editor-screen";
+import { PageEditorScreen } from "@/features/page-editor";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/editor")({

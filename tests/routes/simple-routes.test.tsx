@@ -11,7 +11,7 @@ vi.mock("@/components/app-shell", () => ({
   ),
 }));
 
-vi.mock("@/components/navigation-editor", () => ({
+vi.mock("@/features/navigation/navigation-editor", () => ({
   NavigationEditor: ({ location }: { location: string }) => <div>Navigation {location}</div>,
 }));
 

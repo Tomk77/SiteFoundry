@@ -62,7 +62,7 @@ vi.mock("@/components/modal", () => ({
   ModalTitle: ({ children }: { children: React.ReactNode }) => <h2>{children}</h2>,
 }));
 
-vi.mock("@/components/page-template-editor", () => ({
+vi.mock("@/features/page-templates/page-template-editor", () => ({
   PageTemplateEditor: ({
     initialTemplate,
     onBack,

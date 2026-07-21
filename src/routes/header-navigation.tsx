@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { NavigationEditor } from "../components/navigation-editor";
+import { NavigationEditor } from "@/features/navigation";
 
 export const Route = createFileRoute("/header-navigation")({
   component: HeaderNavigation,

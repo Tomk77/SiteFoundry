@@ -1,4 +1,4 @@
-﻿import { LoadingSplash, RouteLoading } from "@/components/loading";
+import { LoadingSplash, RouteLoading } from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 import {

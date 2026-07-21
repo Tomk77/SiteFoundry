@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { TemplateFieldDefinition, TemplateValue } from "@/lib/page-templates";
-import { TemplateFieldEditor } from "@/components/template-field-editor";
+import { TemplateFieldEditor } from "@/features/page-templates/template-field-editor";
 
 afterEach(cleanup);
 
