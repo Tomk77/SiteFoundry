@@ -108,12 +108,14 @@ describe("AppShell", () => {
 
 describe("StatusPill", () => {
   it.each([
-    ["Published", "published"],
-    ["Concept", "concept"],
-    ["Needs attention", "attention"],
-  ] as const)("maps %s to its semantic class", (status, className) => {
+    ["Published", "text-published"],
+    ["Concept", "text-concept"],
+    ["Needs attention", "text-danger"],
+  ] as const)("maps %s to its semantic state", (status, className) => {
     render(<StatusPill status={status} />);
-    expect(screen.getByText(status).className).toContain(className);
+    const pill = screen.getByText(status);
+    expect(pill.getAttribute("data-status")).toBe(status);
+    expect(pill.className).toContain(className);
     cleanup();
   });
 });

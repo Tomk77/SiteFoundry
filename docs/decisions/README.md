@@ -11,6 +11,7 @@ Architecture decision records explain important technical choices and their cons
 ## Index
 
 - [ADR 0001: Use TanStack Start for the initial application](0001-tanstack-start.md)
+- [ADR 0002: Use Tailwind CSS for administration styling](0002-tailwind-admin-styling.md)
 
 ## Template
 

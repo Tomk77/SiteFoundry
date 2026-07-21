@@ -1,6 +1,6 @@
 # Project handoff
 
-- Last updated: 2026-07-15
+- Last updated: 2026-07-21
 - Project stage: Functional proof of concept
 
 ## What this project is
@@ -15,6 +15,7 @@ The CMS will serve content through REST and GraphQL. Consuming websites remain r
 - Supabase authentication and database persistence support the proof of concept.
 - Page tree, page editor, media flow, redirects, navigation, structured content, and personal settings have working UI flows.
 - Page templates are implemented as language-scoped database definitions with production editing, draft/published lifecycle, revision history, validation, fallback selection, usage reporting, and copy-on-create page creation.
+- Tailwind CSS 4 is the administration styling system across the complete UI: authentication, loading states, app shell, Page Tree, Page Editor, Media, Redirects, Header Navigation, Footer, Structured Content, Page Templates, Personal Settings, Site Settings, shared dialogs, controls, and toasts. Route-owned stylesheets have been removed; `src/styles.css` now contains only the runtime theme, global element foundations, Tailwind theme registration, and shared keyframes imported from `src/animations.css`.
 - The product vision and initial architecture are documented.
 - Page-tree product discovery is complete enough for a working specification.
 - A public REST or GraphQL content API has not yet been implemented.
@@ -71,6 +72,7 @@ Also inspect `git status` before editing. Uncommitted work may belong to another
 - PostgreSQL is the intended first database.
 - S3-compatible storage is the intended media-storage abstraction.
 - Consuming websites must not be required to use React or TanStack.
+- Administration styling uses Tailwind CSS 4 with CSS-first semantic tokens and local Base UI primitives. Tailwind remains outside the CMS domain and does not constrain consuming websites.
 
 These are current directions, not permission to choose unrecorded libraries for authentication, database access, GraphQL, rich text, or migrations.
 
@@ -99,6 +101,8 @@ When asked to implement a feature:
 - The project uses pnpm's `use-node-version` setting to ensure commands run under Node 22.19.
 - Chokidar is constrained to version 4 because the generated Router CLI CommonJS watcher was incompatible with Chokidar 5 at project creation time.
 - TanStack package versions are deliberately pinned while the framework remains close to its 1.0 transition.
+- Styling architecture is recorded in ADR 0002. Do not add new feature-to-feature stylesheet imports or duplicate light/dark token sets; use the semantic utilities in `src/styles.css`.
+- Tailwind class ordering is enforced by `prettier-plugin-tailwindcss`; the styling contract test prevents route-owned CSS from being reintroduced.
 
 ## Immediate next step
 

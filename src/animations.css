@@ -1,0 +1,70 @@
+@keyframes sf-editor-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sf-editor-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sf-editor-toast {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes sf-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes sf-navigation-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sf-template-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sf-template-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sf-structured-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sf-structured-drawer {
+  from {
+    transform: translateX(24px);
+    opacity: 0.7;
+  }
+}

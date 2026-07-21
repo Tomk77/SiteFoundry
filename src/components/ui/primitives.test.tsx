@@ -25,7 +25,7 @@ describe("UI form primitives", () => {
     const view = render(<Button onClick={click}>Save</Button>);
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
     expect(click).toHaveBeenCalledOnce();
-    expect(buttonVariants({ variant: "destructive", size: "lg" })).toContain("bg-[#b5382c]");
+    expect(buttonVariants({ variant: "destructive", size: "lg" })).toContain("bg-danger");
 
     view.rerender(
       <Button className="plain" loading unstyled>

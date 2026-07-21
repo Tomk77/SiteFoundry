@@ -38,7 +38,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex h-[38px] w-full items-center justify-between gap-2 rounded-lg border-[1.5px] border-[var(--input)] bg-[var(--sf-surface)] px-2.5 text-[13px] text-[var(--sf-ink)] whitespace-nowrap transition-[border-color,box-shadow,background-color] outline-none select-none focus-visible:border-[var(--sf-accent)] focus-visible:ring-[3px] focus-visible:ring-[var(--sf-focus-ring)] disabled:cursor-not-allowed disabled:opacity-50 data-placeholder:text-[var(--sf-ink-3)] *:data-[slot=select-value]:line-clamp-1",
+        "flex h-[38px] w-full items-center justify-between gap-2 rounded-lg border-[1.5px] border-field bg-surface px-2.5 text-[13px] whitespace-nowrap text-ink transition-[border-color,box-shadow,background-color] outline-none select-none focus-visible:border-action focus-visible:ring-[3px] focus-visible:ring-focus-ring disabled:cursor-not-allowed disabled:opacity-50 data-placeholder:text-ink-subtle *:data-[slot=select-value]:line-clamp-1",
         className,
       )}
       {...props}
@@ -46,7 +46,10 @@ function SelectTrigger({
       {children}
       <SelectPrimitive.Icon
         render={
-          <i aria-hidden className="sf-select-icon ph ph-caret-down text-[var(--sf-ink-3)]" />
+          <i
+            aria-hidden
+            className="sf-select-icon ph ph-caret-down text-ink-subtle [i&]:[font-size:0] [i&::before]:[font-size:14px]"
+          />
         }
       />
     </SelectPrimitive.Trigger>
@@ -81,7 +84,7 @@ function SelectContent({
           data-slot="select-content"
           data-align-trigger={alignItemWithTrigger}
           className={cn(
-            "relative isolate z-[80] max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg border border-[var(--sf-border)] bg-[var(--sf-surface)] p-1 text-[var(--sf-ink)] shadow-[0_10px_30px_rgb(23_35_38_/_18%)] duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:slide-in-from-top-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+            "relative isolate z-[80] max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg border border-border bg-surface p-1 text-ink shadow-[0_10px_30px_rgb(23_35_38_/_18%)] duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:slide-in-from-top-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
             className,
           )}
           {...props}
@@ -110,7 +113,7 @@ function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Prop
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex min-h-8 w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-2 text-[12.5px] outline-hidden select-none focus:bg-[var(--sf-selection)] focus:text-[var(--sf-ink)] data-disabled:pointer-events-none data-disabled:opacity-50",
+        "relative flex min-h-8 w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-2 text-[12.5px] outline-hidden select-none focus:bg-selection focus:text-ink data-disabled:pointer-events-none data-disabled:opacity-50",
         className,
       )}
       {...props}
@@ -123,7 +126,7 @@ function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Prop
           <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center" />
         }
       >
-        <i aria-hidden className="ph-bold ph-check text-[13px] text-[var(--sf-accent)]" />
+        <i aria-hidden className="ph-bold ph-check text-[13px] text-action" />
       </SelectPrimitive.ItemIndicator>
     </SelectPrimitive.Item>
   );
