@@ -103,6 +103,7 @@ When asked to implement a feature:
 - TanStack package versions are deliberately pinned while the framework remains close to its 1.0 transition.
 - Styling architecture is recorded in ADR 0002. Do not add new feature-to-feature stylesheet imports or duplicate light/dark token sets; use the semantic utilities in `src/styles.css`.
 - Tailwind class ordering is enforced by `prettier-plugin-tailwindcss`; the styling contract test prevents route-owned CSS from being reintroduced.
+- Vitest files live under the top-level `tests/` directory, mirroring `src/`; source imports in tests use the `@/` alias, and the test-layout contract prevents test files from being colocated under `src/`.
 
 ## Immediate next step
 

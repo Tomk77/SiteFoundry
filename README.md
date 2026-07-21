@@ -27,6 +27,9 @@ pnpm test
 pnpm build
 ```
 
+Tests live in the top-level `tests/` directory and mirror the structure under `src/`. Test
+imports use the `@/` source alias so moving a test does not create brittle relative paths.
+
 ## Documentation
 
 - [Specification index and roadmap](SPEC_INDEX.md)
