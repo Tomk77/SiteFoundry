@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { loadPageTemplates } from "@/lib/page-templates-data";
 import {
   deleteEditablePage,
+  discardEditablePageConcept,
   loadEditablePage,
   saveEditablePage,
   type EditablePage,
@@ -25,7 +26,12 @@ vi.mock("@tanstack/react-router", () => ({
 vi.mock("@/lib/auth", () => ({ useAuth: vi.fn() }));
 vi.mock("@/lib/page-editor", () => ({
   deleteEditablePage: vi.fn(),
+  discardEditablePageConcept: vi.fn(),
   loadEditablePage: vi.fn(),
+  pageFromRevision: (
+    page: EditablePage,
+    snapshot: NonNullable<EditablePage["publishedRevision"]>["snapshot"],
+  ) => ({ ...page, ...snapshot }),
   saveEditablePage: vi.fn(),
 }));
 vi.mock("@/lib/page-templates-data", () => ({ loadPageTemplates: vi.fn() }));
@@ -67,6 +73,8 @@ const makePage = (): EditablePage => ({
   siteName: "Acme",
   createdAt: "2026-01-01T00:00:00.000Z",
   updatedAt: "2026-07-12T00:00:00.000Z",
+  conceptRevision: null,
+  publishedRevision: null,
 });
 
 async function renderRoute() {
@@ -90,8 +98,13 @@ beforeEach(() => {
     status: "published",
     validationStatus: "ready",
     updatedAt: "2026-07-15T12:00:00.000Z",
+    conceptRevision: { id: "revision-2", version: 2, createdAt: "2026-07-15T12:00:00.000Z" },
+    publishedRevisionId: "published-1",
+    publishedRevisionVersion: 1,
+    publishedAt: "2026-07-15T12:00:00.000Z",
   });
   vi.mocked(deleteEditablePage).mockResolvedValue(undefined);
+  vi.mocked(discardEditablePageConcept).mockResolvedValue(makePage());
   Object.defineProperty(globalThis, "CSS", {
     configurable: true,
     value: { escape: (value: string) => value },
@@ -218,12 +231,67 @@ describe("page editor route", () => {
     await waitFor(() => expect(saveEditablePage).toHaveBeenCalledWith(expect.anything(), false));
     expect(await screen.findByText("Concept saved")).toBeTruthy();
 
-    fireEvent.click(screen.getByRole("button", { name: "Publish changes" }));
+    fireEvent.click(screen.getByRole("button", { name: "Publish" }));
     await waitFor(() => expect(saveEditablePage).toHaveBeenCalledWith(expect.anything(), true));
 
     vi.mocked(saveEditablePage).mockRejectedValueOnce(new Error("save exploded"));
     fireEvent.click(screen.getByRole("button", { name: "Save concept" }));
     expect(await screen.findByText("save exploded")).toBeTruthy();
+  });
+
+  it("switches between the editable concept and read-only live version", async () => {
+    const concept = makePage();
+    concept.status = "published";
+    concept.conceptRevision = {
+      id: "concept-2",
+      version: 2,
+      createdAt: "2026-07-15T12:00:00.000Z",
+    };
+    concept.publishedRevision = {
+      id: "published-1",
+      version: 1,
+      publishedAt: "2026-07-14T12:00:00.000Z",
+      sourceConceptRevisionId: "concept-1",
+      snapshot: {
+        title: concept.title,
+        slug: concept.slug,
+        path: concept.path,
+        blocks: [
+          {
+            id: "hero-1",
+            type: "hero",
+            data: { eyebrow: "News", headline: "Live headline", subheadline: "Today" },
+          },
+        ],
+        seoTitle: concept.seoTitle,
+        seoDescription: "Published description",
+        socialImage: null,
+        preferredChildTemplate: null,
+        validationStatus: "ready",
+      },
+    };
+    vi.mocked(loadEditablePage).mockResolvedValueOnce(concept);
+    vi.mocked(discardEditablePageConcept).mockResolvedValueOnce({
+      ...concept,
+      blocks: concept.publishedRevision.snapshot.blocks,
+      seoDescription: "Published description",
+      conceptRevision: { ...concept.conceptRevision, id: "concept-1" },
+    });
+
+    await renderRoute();
+    expect(await screen.findByText(/unpublished changes/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "View published" }));
+    expect(screen.getByLabelText("Published page details (read-only)")).toBeTruthy();
+    expect((screen.getByTitle("Live page preview") as HTMLIFrameElement).srcdoc).toContain(
+      "Live headline",
+    );
+    expect(screen.getByRole("button", { name: "Save concept" }).hasAttribute("disabled")).toBe(
+      true,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Edit concept" }));
+    fireEvent.click(screen.getByRole("button", { name: "Discard concept" }));
+    await waitFor(() => expect(discardEditablePageConcept).toHaveBeenCalledWith(pageId));
   });
 
   it("deletes a page and reports deletion failures", async () => {

@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createSupabaseMock, mockResult } from "../helpers/supabase-mock";
 import {
   deleteEditablePage,
+  discardEditablePageConcept,
   loadEditablePage,
   saveEditablePage,
   type EditablePage,
@@ -35,6 +36,8 @@ const pageRow = {
   site_language_id: "language-1",
   created_at: "2026-07-01T00:00:00Z",
   updated_at: "2026-07-02T00:00:00Z",
+  concept_revision_id: null,
+  published_revision_id: null,
 };
 
 const editablePage: EditablePage = {
@@ -59,6 +62,8 @@ const editablePage: EditablePage = {
   siteName: "Site one",
   createdAt: "2026-07-01T00:00:00Z",
   updatedAt: "2026-07-02T00:00:00Z",
+  conceptRevision: null,
+  publishedRevision: null,
 };
 
 beforeEach(() => {
@@ -131,6 +136,59 @@ describe("loadEditablePage", () => {
     });
   });
 
+  it("loads the current concept and immutable published version", async () => {
+    const publishedSnapshot = {
+      title: "Live launch",
+      slug: "live-launch",
+      path: "/news/live-launch",
+      blocks: [{ id: "hero-live", type: "hero", data: { headline: "Live" } }],
+      seo: { title: "Live", description: "Live page", socialImage: null },
+      preferredChildTemplate: null,
+    };
+    const { client } = createSupabaseMock({
+      tables: {
+        pages: [
+          mockResult({
+            ...pageRow,
+            concept_revision_id: "concept-2",
+            published_revision_id: "published-1",
+          }),
+          mockResult({
+            id: "news",
+            title: "News",
+            slug: "news",
+            parent_id: null,
+            is_homepage: false,
+          }),
+        ],
+        page_revisions: [
+          mockResult({ id: "concept-2", version: 2, created_at: "2026-07-03T00:00:00Z" }),
+        ],
+        page_published_revisions: [
+          mockResult({
+            id: "published-1",
+            version: 1,
+            snapshot: publishedSnapshot,
+            published_at: "2026-07-02T00:00:00Z",
+            source_concept_revision_id: "concept-1",
+          }),
+        ],
+        site_languages: [mockResult({ code: "en", name: "English", site_id: "site-1" })],
+        sites: [mockResult({ name: "Site one" })],
+      },
+    });
+    vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
+
+    await expect(loadEditablePage("page-1")).resolves.toMatchObject({
+      conceptRevision: { id: "concept-2", version: 2 },
+      publishedRevision: {
+        id: "published-1",
+        sourceConceptRevisionId: "concept-1",
+        snapshot: { title: "Live launch", path: "/news/live-launch" },
+      },
+    });
+  });
+
   it("surfaces page, language, site, and parent query failures", async () => {
     for (const tables of [
       {
@@ -164,12 +222,17 @@ describe("loadEditablePage", () => {
 describe("editable page mutations", () => {
   it("publishes a valid page and returns persisted state", async () => {
     const { client, calls } = createSupabaseMock({
-      tables: {
-        pages: [
+      rpc: {
+        save_page_revision: [
           mockResult({
-            updated_at: "2026-07-15T00:00:00Z",
+            updatedAt: "2026-07-15T00:00:00Z",
             status: "published",
-            validation_status: "ready",
+            validationStatus: "ready",
+            conceptRevisionId: "concept-2",
+            conceptRevisionVersion: 2,
+            publishedRevisionId: "published-1",
+            publishedRevisionVersion: 1,
+            publishedAt: "2026-07-15T00:00:00Z",
           }),
         ],
       },
@@ -180,21 +243,34 @@ describe("editable page mutations", () => {
       updatedAt: "2026-07-15T00:00:00Z",
       status: "published",
       validationStatus: "ready",
+      conceptRevision: {
+        id: "concept-2",
+        version: 2,
+        createdAt: "2026-07-15T00:00:00Z",
+      },
+      publishedRevisionId: "published-1",
+      publishedRevisionVersion: 1,
+      publishedAt: "2026-07-15T00:00:00Z",
     });
     expect(calls).toContainEqual({
-      method: "update",
-      args: [expect.objectContaining({ status: "published", validation_status: "ready" })],
+      method: "rpc",
+      args: [
+        "save_page_revision",
+        expect.objectContaining({ should_publish: true, target_validation_status: "ready" }),
+      ],
     });
   });
 
   it("marks missing SEO and image alt text as needing attention", async () => {
     const { client, calls } = createSupabaseMock({
-      tables: {
-        pages: [
+      rpc: {
+        save_page_revision: [
           mockResult({
-            updated_at: "now",
+            updatedAt: "now",
             status: "concept",
-            validation_status: "needs_attention",
+            validationStatus: "needs_attention",
+            conceptRevisionId: "concept-2",
+            conceptRevisionVersion: 2,
           }),
         ],
       },
@@ -207,19 +283,23 @@ describe("editable page mutations", () => {
       blocks: [{ id: "image-1", type: "image", data: { alt: " " } }],
     });
     expect(calls).toContainEqual({
-      method: "update",
-      args: [expect.objectContaining({ status: "concept", validation_status: "needs_attention" })],
+      method: "rpc",
+      args: [
+        "save_page_revision",
+        expect.objectContaining({
+          should_publish: false,
+          target_validation_status: "needs_attention",
+        }),
+      ],
     });
   });
 
   it("surfaces save and delete failures", async () => {
     const { client } = createSupabaseMock({
       tables: {
-        pages: [
-          mockResult(null, new Error("save failed")),
-          mockResult(null, new Error("delete failed")),
-        ],
+        pages: [mockResult(null, new Error("delete failed"))],
       },
+      rpc: { save_page_revision: [mockResult(null, new Error("save failed"))] },
     });
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
 
@@ -236,10 +316,27 @@ describe("editable page mutations", () => {
     expect(calls).toContainEqual({ method: "eq", args: ["id", "page-1"] });
   });
 
+  it("discards the concept and reloads the published state", async () => {
+    const { client, calls } = createSupabaseMock({
+      rpc: { discard_page_concept: [mockResult("concept-1")] },
+      tables: { pages: [mockResult(null)] },
+    });
+    vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
+
+    await expect(discardEditablePageConcept("page-1")).rejects.toThrow(
+      "not found after discarding",
+    );
+    expect(calls).toContainEqual({
+      method: "rpc",
+      args: ["discard_page_concept", { target_page_id: "page-1" }],
+    });
+  });
+
   it("rejects all operations without Supabase configuration", async () => {
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(null);
     await expect(loadEditablePage("page-1")).rejects.toThrow("not configured");
     await expect(saveEditablePage(editablePage)).rejects.toThrow("not configured");
+    await expect(discardEditablePageConcept("page-1")).rejects.toThrow("not configured");
     await expect(deleteEditablePage("page-1")).rejects.toThrow("not configured");
   });
 });

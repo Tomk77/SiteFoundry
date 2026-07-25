@@ -17,6 +17,10 @@ The CMS will serve content through REST and GraphQL. Consuming websites remain r
 - A TanStack Start administration application is implemented and builds successfully.
 - Supabase authentication and database persistence support the proof of concept.
 - Page tree, page editor, media flow, redirects, navigation, structured content, and personal settings have working UI flows.
+- The Page Editor persists every explicit concept save as an immutable page revision, rejects stale
+  concurrent saves, keeps the selected published snapshot live until explicit publication, and can
+  switch to or restore the read-only live version. Autosave and arbitrary revision-history browsing
+  remain deferred.
 - Page templates are implemented as language-scoped database definitions with production editing, draft/published lifecycle, revision history, validation, fallback selection, usage reporting, and copy-on-create page creation.
 - Site Settings has a Supabase-backed Tailwind implementation covering General, People & access, Languages, Domains & preview, and Advanced. It includes URL-restorable navigation, real accounts and memberships, role presets, scoped access, responsive layouts, persisted invitations, guarded ownership transfer and deletion, domain verification requests, and queued exports. RLS limits settings mutations to owners and administrators and limits other roles to a conservative view of their own access. Invitation delivery/acceptance, DNS verification, export generation, and the final formal permission contract remain unresolved.
 - Administration source is feature-first. Every TanStack route is a thin typed adapter importing a feature through its public `index.ts`; the Page Editor is split into focused coordinator, model, preview, toolbar, panel, tab, and overlay modules, while navigation separates tree operations, cards, and previews. Remaining oversized proof-of-concept coordinators have explicit no-growth baselines.
@@ -127,8 +131,8 @@ When asked to implement a feature:
 
 ## Immediate next step
 
-Create a publishable token and exercise the REST and GraphQL delivery endpoints against the hosted
-development project. Then finish the shared schema/field-system workflow, including an
-editor-facing publish-schema action and breaking-change preview. Persist the media domain before
-advertising media delivery, and design confidential preview tokens only alongside the full draft and
-publication workflow.
+The hosted development project has `20260725143000_page_concept_revisions.sql` applied. It was pushed
+through an isolated CLI migration view that mirrored the remote history, because a normal blanket
+push remains unsafe while older recorded versions differ from local filenames. Next, design the
+separate autosave working-copy store and confidential preview-token delivery mode before adding draft
+reads to REST or GraphQL, then add arbitrary revision-history browsing and restoration.

@@ -68,6 +68,8 @@ The order below is a dependency-aware planning order, not a release commitment.
 |       24 | Plugin and extension system                      | Deferred              | `docs/specs/plugin-system.md`                        | Stable core APIs                                                      |
 |       25 | Data migrations                                  | Deferred              | `docs/specs/data-migrations.md`                      | Schema system, revisions                                              |
 
+The page concept/published revision foundation is implemented; autosave, arbitrary history restore,
+scheduled publication, and preview-token delivery keep the Revisions row at Working specification.
 The Site Settings row remains a working specification because the formal administration authentication, permission,
 invitation-delivery, DNS-verification, and export-worker contracts are unresolved. Its approved UI and
 synchronous persistence are implemented with Supabase RLS and guarded database functions. Site-owned
@@ -96,7 +98,7 @@ The next discovery conversations should cover:
 
 1. **Schema and field system:** what developers can model and how JSON schema files behave.
 2. **Page editor and content composition:** how editors build a freely customizable page.
-3. **Persistence and revisions:** concrete page, revision, concept, and autosave storage semantics.
+3. **Persistence and revisions:** autosave working-copy semantics, history restoration, and retention.
 4. **REST and GraphQL APIs:** the contract consuming websites will depend on.
 
 These four areas determine most downstream architecture and should be understood before substantial CMS implementation begins.

@@ -4,7 +4,6 @@ import { useAuth } from "@/lib/auth";
 import {
   deleteEditablePage,
   loadEditablePage,
-  saveEditablePage,
   type BlockType,
   type ContentBlock,
   type EditablePage,
@@ -17,8 +16,10 @@ import { EditorPanel } from "./components/editor-panel";
 import { EditorOverlays } from "./components/editor-overlays";
 import { EditorToolbar } from "./components/editor-toolbar";
 import { PreviewPane } from "./components/preview-pane";
+import { VersionContextBar } from "./components/version-context-bar";
 import { blockDefinitions, defaults, nextBlockId, type Device, type Tab } from "./editor-model";
 import { previewDocument } from "./preview-document";
+import { usePageVersions } from "./use-page-versions";
 
 const editorPageCache = new Map<string, EditablePage>();
 
@@ -40,7 +41,7 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [addMenu, setAddMenu] = useState(false);
   const [savingAction, setSavingAction] = useState<"concept" | "publish" | "delete" | null>(null);
-  const [savedLabel, setSavedLabel] = useState("Autosaved just now");
+  const [savedLabel, setSavedLabel] = useState("All changes saved");
   const [refreshing, setRefreshing] = useState(false);
   const [previewKey, setPreviewKey] = useState(0);
   const [toast, setToast] = useState("");
@@ -52,6 +53,15 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
   const pendingPreviewScroll = useRef<number | null>(null);
 
   const saving = savingAction !== null;
+  const { changeCount, discardConcept, displayedPage, save, setView, viewingPublished } =
+    usePageVersions({
+      page,
+      saving,
+      setPage,
+      setSavedLabel,
+      setSavingAction,
+      showToast,
+    });
 
   useEffect(() => {
     if (!authLoading && !user) void navigate({ to: "/auth" });
@@ -97,6 +107,7 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
       if (!rawMessage || typeof rawMessage !== "object") return;
       const message = rawMessage as Record<string, unknown>;
       if (
+        !viewingPublished &&
         message.source === "sc-preview" &&
         (message.type === "select" || message.type === "select-field")
       ) {
@@ -139,7 +150,7 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
     window.addEventListener("message", onMessage);
 
     return () => window.removeEventListener("message", onMessage);
-  }, [selected]);
+  }, [selected, viewingPublished]);
 
   const selectBlock = (id: string, scroll = true) => {
     setSelected(id);
@@ -152,63 +163,33 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
     window.setTimeout(notifyPreview, 150);
   };
 
-  const showToast = (message: string) => {
+  function showToast(message: string) {
     window.clearTimeout(toastTimer.current);
     setToast(message);
     toastTimer.current = window.setTimeout(() => setToast(""), 2800);
-  };
+  }
 
   const problems = useMemo(
     () =>
-      page
+      displayedPage
         ? [
-            ...(!page.seoDescription.trim() ? ["Meta description is empty."] : []),
-            ...page.blocks
+            ...(!displayedPage.seoDescription.trim() ? ["Meta description is empty."] : []),
+            ...displayedPage.blocks
               .filter((block) => block.type === "image" && !block.data.alt?.trim())
               .map(() => "An image block is missing alt text."),
           ]
         : [],
-    [page],
+    [displayedPage],
   );
 
-  const path = page ? `${page.parentPath}${page.slug}`.replace(/\/{2,}/g, "/") : "/";
+  const path = displayedPage
+    ? `${displayedPage.parentPath}${displayedPage.slug}`.replace(/\/{2,}/g, "/")
+    : "/";
 
   const update = (changes: Partial<EditablePage>) => {
+    if (viewingPublished) return;
     setPage((value) => (value ? { ...value, ...changes } : value));
     setSavedLabel("Unsaved changes");
-  };
-
-  const save = async (publish = false) => {
-    if (!page || saving) return;
-    setSavingAction(publish ? "publish" : "concept");
-    setSavedLabel("Saving…");
-    try {
-      const result = await saveEditablePage(page, publish);
-      setPage((value) =>
-        value
-          ? {
-              ...value,
-              path,
-              updatedAt: result.updatedAt,
-              status: result.status,
-              validationStatus: result.validationStatus,
-            }
-          : value,
-      );
-      setSavedLabel("Autosaved just now");
-      showToast(
-        publish
-          ? page.status === "published"
-            ? "Re-published"
-            : "Page published · now live"
-          : "Concept saved",
-      );
-    } catch (error) {
-      setSavedLabel("Save failed");
-      showToast(error instanceof Error ? error.message : "Unable to save this page");
-    } finally {
-      setSavingAction(null);
-    }
   };
 
   const editBlock = (id: string, key: string, value: string) =>
@@ -304,21 +285,32 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
       </div>
     );
 
-  const srcDoc = previewDocument(page.blocks);
+  const activePage = displayedPage ?? page;
+  const srcDoc = previewDocument(activePage.blocks);
   const deviceWidth = { desktop: "100%", tablet: "820px", mobile: "390px" }[device];
 
   return (
     <main className="sc-editor [display:flex] [height:100vh] [width:100vw] [animation:sc-route-enter_140ms_ease-out] [flex-direction:column] [overflow:hidden] bg-canvas text-ink motion-reduce:[animation:none] dark:[color:#e9ecf1] dark:[background:#15181c] [&_button]:[font-family:inherit]">
       <EditorToolbar
-        page={page}
+        page={activePage}
         path={path}
         problems={problems}
         savedLabel={savedLabel}
         saving={saving}
         savingAction={savingAction}
+        changeCount={changeCount}
+        viewingPublished={viewingPublished}
         onBack={() => void navigate({ to: "/" })}
         onSave={(publish) => void save(publish)}
         onSelectTab={setTab}
+        onViewChange={setView}
+      />
+      <VersionContextBar
+        changeCount={page.publishedRevision ? changeCount : 0}
+        viewingPublished={viewingPublished}
+        onDiscard={() => void discardConcept()}
+        onViewConcept={() => setView("concept")}
+        onViewPublished={() => setView("published")}
       />
       <div className="sc-editor-workspace [display:flex] [min-height:0] [flex:1] max-[760px]:[position:relative]">
         <PreviewPane
@@ -341,9 +333,10 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
           addMenu={addMenu}
           availableTemplates={availableTemplates}
           expanded={expanded}
-          page={page}
+          page={activePage}
           path={path}
           problems={problems}
+          readOnly={viewingPublished}
           selected={selected}
           tab={tab}
           onAddBlock={addBlock}

@@ -58,8 +58,8 @@ export function SettingsTab({
         <div>
           <dt>Last published</dt>
           <dd>
-            {page.status === "published"
-              ? new Date(page.updatedAt).toLocaleDateString()
+            {page.publishedRevision
+              ? new Date(page.publishedRevision.publishedAt).toLocaleDateString()
               : "Not yet published"}
           </dd>
         </div>

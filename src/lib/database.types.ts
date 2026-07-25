@@ -128,6 +128,7 @@ export interface Database {
       pages: {
         Row: {
           content_blocks: unknown;
+          concept_revision_id: string | null;
           created_at: string;
           created_from_template_id: string | null;
           created_from_template_key: string | null;
@@ -150,6 +151,7 @@ export interface Database {
         };
         Insert: {
           content_blocks?: unknown;
+          concept_revision_id?: string | null;
           created_from_template_id?: string | null;
           created_from_template_key?: string | null;
           id?: string;
@@ -204,6 +206,7 @@ export interface Database {
           snapshot: Json;
           published_by: string | null;
           published_at: string;
+          source_concept_revision_id: string | null;
         };
         Insert: {
           id?: string;
@@ -213,8 +216,31 @@ export interface Database {
           snapshot: Json;
           published_by?: string | null;
           published_at?: string;
+          source_concept_revision_id?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["page_published_revisions"]["Insert"]>;
+        Relationships: [];
+      };
+      page_revisions: {
+        Row: {
+          id: string;
+          page_id: string;
+          site_language_id: string;
+          version: number;
+          snapshot: Json;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          page_id: string;
+          site_language_id: string;
+          version: number;
+          snapshot: Json;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["page_revisions"]["Insert"]>;
         Relationships: [];
       };
       content_record_published_revisions: {
@@ -564,6 +590,26 @@ export interface Database {
       publish_page: {
         Args: { target_page_id: string };
         Returns: string;
+      };
+      discard_page_concept: {
+        Args: { target_page_id: string };
+        Returns: string;
+      };
+      save_page_revision: {
+        Args: {
+          target_page_id: string;
+          expected_concept_revision_id: string | null;
+          target_title: string;
+          target_slug: string;
+          target_content_blocks: Json;
+          target_seo_title: string;
+          target_seo_description: string;
+          target_social_image: string | null;
+          target_preferred_child_template: string | null;
+          target_validation_status: string;
+          should_publish: boolean;
+        };
+        Returns: Json;
       };
       publish_content_type_schema: {
         Args: { target_content_type_id: string };

@@ -1,5 +1,7 @@
 ﻿import type { BlockType, ContentBlock } from "@/lib/page-editor";
 
+import type { EditablePage, PageRevisionSnapshot } from "@/lib/page-editor";
+
 export type Tab = "content" | "seo" | "settings";
 export type Device = "desktop" | "tablet" | "mobile";
 interface FieldDefinition {
@@ -126,4 +128,42 @@ export function nextBlockId(blocks: ContentBlock[]) {
   while (blocks.some((block) => block.id === `block-${suffix}`)) suffix += 1;
 
   return `block-${suffix}`;
+}
+
+export function countPageChanges(page: EditablePage, published: PageRevisionSnapshot | null) {
+  if (!published) return 0;
+
+  const scalarChanges = [
+    page.title !== published.title,
+    page.slug !== published.slug,
+    page.seoTitle !== published.seoTitle,
+    page.seoDescription !== published.seoDescription,
+    page.socialImage !== published.socialImage,
+    page.preferredChildTemplate !== published.preferredChildTemplate,
+  ].filter(Boolean).length;
+  const blockChanges = Array.from({
+    length: Math.max(page.blocks.length, published.blocks.length),
+  }).filter(
+    (_, index) =>
+      JSON.stringify(
+        page.blocks[index]
+          ? {
+              id: page.blocks[index].id,
+              type: page.blocks[index].type,
+              data: page.blocks[index].data,
+            }
+          : null,
+      ) !==
+      JSON.stringify(
+        published.blocks[index]
+          ? {
+              id: published.blocks[index].id,
+              type: published.blocks[index].type,
+              data: published.blocks[index].data,
+            }
+          : null,
+      ),
+  ).length;
+
+  return scalarChanges + blockChanges;
 }

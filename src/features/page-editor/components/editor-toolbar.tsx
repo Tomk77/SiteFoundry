@@ -10,7 +10,10 @@ interface EditorToolbarProps {
   saving: boolean;
   savingAction: "concept" | "publish" | "delete" | null;
   savedLabel: string;
+  changeCount: number;
+  viewingPublished: boolean;
   onBack: () => void;
+  onViewChange: (view: "concept" | "published") => void;
   onSelectTab: (tab: Tab) => void;
   onSave: (publish: boolean) => void;
 }
@@ -22,7 +25,10 @@ export function EditorToolbar({
   saving,
   savingAction,
   savedLabel,
+  changeCount,
+  viewingPublished,
   onBack,
+  onViewChange,
   onSelectTab,
   onSave,
 }: EditorToolbarProps) {
@@ -66,6 +72,33 @@ export function EditorToolbar({
         </Button>
       )}
       <span className="sc-spacer [flex:1]" />
+      <div className="sc-version-switch [display:flex] [align-items:center] [gap:2px] [border-radius:8px] [padding:2px] [background:#eef1ed] dark:[background:#15181c] [&_button]:[display:inline-flex] [&_button]:[height:28px] [&_button]:[align-items:center] [&_button]:[gap:5px] [&_button]:[border-radius:6px] [&_button]:[padding:0_9px] [&_button]:[font-size:12.5px] [&_button]:[font-weight:600] [&_button]:text-ink-muted [&_button]:[background:transparent] [&_button]:[border:0] [&_button.active]:bg-surface [&_button.active]:text-action [&_button.active]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.14)] [&_button:disabled]:[cursor:not-allowed] [&_button:disabled]:[opacity:0.45]">
+        <Button
+          unstyled
+          className={viewingPublished ? "" : "active"}
+          title="Concept — editable version"
+          onClick={() => onViewChange("concept")}
+        >
+          <i className="ph ph-pencil-simple-line" />
+          {!viewingPublished && "Concept"}
+          {changeCount > 0 && (
+            <span
+              className="[height:6px] [width:6px] [border-radius:999px] [background:#d18f0c]"
+              title="Unpublished changes"
+            />
+          )}
+        </Button>
+        <Button
+          unstyled
+          className={viewingPublished ? "active" : ""}
+          disabled={!page.publishedRevision}
+          title={page.publishedRevision ? "Published — live, read-only" : "Not published yet"}
+          onClick={() => onViewChange("published")}
+        >
+          <i className="ph ph-globe-simple" />
+          {viewingPublished && "Published"}
+        </Button>
+      </div>
       <span className="sc-editor-saved [display:inline-flex] [align-items:center] [gap:6px] [font-size:12px] text-ink-subtle max-[1000px]:[display:none] [&_.ph-spinner]:[animation:sc-editor-spin_0.8s_linear_infinite] [&_.ph-spinner]:text-ink-subtle [&_i]:[font-size:14px] [&_i]:[color:#1f9d57]">
         <i
           className={`ph ${saving ? "ph-spinner" : savedLabel === "Save failed" ? "ph-warning-circle" : "ph-cloud-check"}`}
@@ -75,7 +108,7 @@ export function EditorToolbar({
       <Button
         unstyled
         className="sc-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
-        disabled={saving}
+        disabled={saving || viewingPublished}
         loading={savingAction === "concept"}
         onClick={() => onSave(false)}
       >
@@ -85,12 +118,14 @@ export function EditorToolbar({
       <Button
         unstyled
         className="sc-action primary [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
-        disabled={saving}
+        disabled={
+          saving || viewingPublished || Boolean(page.publishedRevision && changeCount === 0)
+        }
         loading={savingAction === "publish"}
         onClick={() => onSave(true)}
       >
         <i className="ph-bold ph-rocket-launch" />
-        {page.status === "published" ? "Publish changes" : "Publish"}
+        {page.publishedRevision ? "Publish concept" : "Publish"}
       </Button>
     </header>
   );
