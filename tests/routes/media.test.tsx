@@ -47,7 +47,7 @@ describe("media route", () => {
       resetScroll: false,
     });
 
-    fireEvent.click(view.container.querySelectorAll(".sf-view-toggle button")[1]!);
+    fireEvent.click(view.container.querySelectorAll(".sc-view-toggle button")[1]!);
     expect(navigate).toHaveBeenLastCalledWith(
       expect.objectContaining({ search: { view: "list" } }),
     );
@@ -77,7 +77,7 @@ describe("media route", () => {
     });
     expect(screen.queryByText(/Add alternative text/)).toBeNull();
 
-    fireEvent.change(document.querySelector(".sf-detail-field select")!, {
+    fireEvent.change(document.querySelector(".sc-detail-field select")!, {
       target: { value: "brand" },
     });
     expect(screen.getByText("File moved")).toBeTruthy();
@@ -96,14 +96,14 @@ describe("media route", () => {
     expect(screen.getByRole("dialog")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Choose files" }));
     expect(screen.getByText("File selection will be connected with uploading")).toBeTruthy();
-    fireEvent.mouseDown(view.container.querySelector(".sf-modal-backdrop")!);
+    fireEvent.mouseDown(view.container.querySelector(".sc-modal-backdrop")!);
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
   it("renders list, empty search, document, and nested-folder states", async () => {
     search = { folder: "brand", view: "list" };
     let view = await renderMedia();
-    expect(view.container.querySelector(".sf-file-list")).toBeTruthy();
+    expect(view.container.querySelector(".sc-file-list")).toBeTruthy();
     expect(screen.getByText("Document")).toBeTruthy();
     cleanup();
 

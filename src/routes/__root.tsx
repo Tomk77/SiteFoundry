@@ -1,15 +1,15 @@
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { SiteFoundryToaster } from "../components/ui/sonner";
+import { ScaffoldCmsToaster } from "../components/ui/sonner";
 import { AuthProvider } from "../lib/auth";
 import css from "../styles.css?url";
 
 const themeScript = `(() => {
   try {
-    const mode = localStorage.getItem('sf-interface-mode') || 'system';
+    const mode = localStorage.getItem('sc-interface-mode') || 'system';
     const dark = mode === 'dark' || (mode === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.dataset.sfMode = mode;
-    document.documentElement.dataset.sfTheme = dark ? 'dark' : 'light';
+    document.documentElement.dataset.scMode = mode;
+    document.documentElement.dataset.scTheme = dark ? 'dark' : 'light';
   } catch (_) {}
 })();`;
 
@@ -18,7 +18,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SiteFoundry" },
+      { title: "Scaffold CMS" },
     ],
     links: [
       { rel: "stylesheet", href: css },
@@ -48,7 +48,7 @@ function Root({ children }: { children: ReactNode }) {
       </head>
       <body>
         <AuthProvider>{children}</AuthProvider>
-        <SiteFoundryToaster />
+        <ScaffoldCmsToaster />
         <Scripts />
       </body>
     </html>

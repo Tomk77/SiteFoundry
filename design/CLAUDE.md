@@ -1,10 +1,10 @@
-# SiteFoundry project notes
+# Scaffold CMS project notes
 
-Design work for the **SiteFoundry** admin, an open-source, headless, website-native CMS. The source of truth is the codebase documentation (`SPEC_INDEX.md`, `PAGE_TREE_SPEC.md`, `PROJECT_HANDOFF.md`, and `docs/`).
+Design work for the **Scaffold CMS** admin, an open-source, headless, website-native CMS. The source of truth is the codebase documentation (`SPEC_INDEX.md`, `PAGE_TREE_SPEC.md`, `PROJECT_HANDOFF.md`, and `docs/`).
 
 ## Design system (approved)
 
-- **Palette: Foundry Amethyst and Fired Clay.**
+- **Palette: Scaffold Amethyst and Fired Clay.**
   - Canvas `#F5F7F4`, Surface `#FFFFFF`, Sunken `#EEF1ED`, Border `#E2E7E2`.
   - Ink 900 `#172326`, Ink 600 `#526366`, Ink 400 `#869693`.
   - **Amethyst** is the single interactive accent for actions and focus: 600 `#763FBA`, 700 `#5E299C`, soft `#F3ECFF`, disabled `#A693CC`, focus ring `rgba(118,63,186,.16)`. Dark-mode accent `#B994F8`, hover `#CFB3FF`, soft `#332647`, on-accent `#150C22`.
@@ -29,7 +29,7 @@ Design work for the **SiteFoundry** admin, an open-source, headless, website-nat
 - **Type:** Geist for UI and Geist Mono for paths, slugs, and IDs. Avoid Inter and Roboto.
 - **Radius:** controls 7px, cards 10px, panels 12px, and full pills where specified.
 - **Icons:** Phosphor (`@phosphor-icons/web`).
-- Use headless primitives such as Base UI, Radix Primitives, or React Aria and style them with SiteFoundry tokens. Do not introduce an off-the-shelf visual kit.
+- Use headless primitives such as Base UI, Radix Primitives, or React Aria and style them with Scaffold CMS tokens. Do not introduce an off-the-shelf visual kit.
 
 ## Build conventions
 

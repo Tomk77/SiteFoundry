@@ -3,6 +3,7 @@ export const destinations = [
   { id: "people", label: "People & access", icon: "ph-users-three" },
   { id: "languages", label: "Languages", icon: "ph-translate" },
   { id: "domains", label: "Domains & preview", icon: "ph-globe" },
+  { id: "api", label: "API access", icon: "ph-key" },
   { id: "advanced", label: "Advanced", icon: "ph-wrench" },
 ] as const;
 

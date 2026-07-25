@@ -3,16 +3,16 @@
 - Status: Working specification
 - Owner: Unassigned
 - Created: 2026-07-21
-- Last updated: 2026-07-21
+- Last updated: 2026-07-25
 - Related specifications: Personal settings, permissions, authentication and sessions, sites and languages, admin information architecture
 
 ## Implementation status
 
-The administration proof of concept is implemented at `/settings`. It includes the five settings
+The administration proof of concept is implemented at `/settings`. It includes six settings
 destinations, URL-restorable destination and People tab state, general settings editing, member search
 and role filtering, invitations, scoped member access, the role matrix, languages, domains and preview
 configuration, export requests, ownership transfer, and guarded deletion. Desktop and narrow-screen
-presentations share the existing SiteFoundry shell and Tailwind semantic tokens.
+presentations share the existing Scaffold CMS shell and Tailwind semantic tokens.
 
 The interface now loads and mutates site-scoped data through Supabase. Migration
 `20260721213000_site_settings.sql` adds the persistence model, row-level security, protected ownership
@@ -27,11 +27,11 @@ the final permission evaluation contract remain follow-up work rather than simul
 
 ## Instructions for the design agent
 
-Use this document as the complete product brief for designing SiteFoundry's Site Settings interface.
+Use this document as the complete product brief for designing Scaffold CMS's Site Settings interface.
 Produce UI designs only. Do not define database tables, API endpoints, invitation tokens, authorization
 algorithms, or implementation architecture.
 
-The designs must extend the existing SiteFoundry administration application rather than introduce a
+The designs must extend the existing Scaffold CMS administration application rather than introduce a
 new visual system. Preserve the existing application shell, typography, semantic colors, compact
 control sizing, rounded surfaces, subtle borders, and restrained editor-focused character.
 
@@ -44,9 +44,10 @@ Design the following primary deliverables:
 5. Roles and permissions comparison.
 6. Languages settings.
 7. Domains & preview settings.
-8. Advanced settings and danger zone.
-9. People & access at mobile width.
-10. Loading, empty, read-only, validation, and destructive-confirmation states where specified.
+8. API access and publishable-token management.
+9. Advanced settings and danger zone.
+10. People & access at mobile width.
+11. Loading, empty, read-only, validation, and destructive-confirmation states where specified.
 
 Use 1440 × 900 as the primary desktop frame and 390 × 844 as the primary mobile frame. Include
 annotations for behavior that cannot be communicated by a static frame.
@@ -64,6 +65,7 @@ The experience covers:
 - role presets and member access scope;
 - website languages;
 - production and preview domains;
+- publishable delivery API tokens;
 - ownership transfer, export, and deletion.
 
 The most important design outcome is confidence: a site owner must be able to answer who has access,
@@ -88,7 +90,8 @@ system.
 - Authentication provider setup, single sign-on, passkeys, or multi-factor authentication.
 - Designing invitation email messages.
 - Defining backend permission evaluation or conflict-resolution algorithms.
-- API tokens, webhooks, plugins, billing, plans, or usage metering.
+- Webhooks, plugins, billing, plans, or usage metering. Publishable delivery-token management is now
+  implemented as a dedicated API access destination.
 - A custom role builder in the initial UI. The initial design uses five role presets.
 - Approval workflows, scheduled publishing, or multi-stage editorial review.
 
@@ -153,7 +156,8 @@ Within that workspace, use a secondary settings navigation with these destinatio
 2. **People & access**
 3. **Languages**
 4. **Domains & preview**
-5. **Advanced**
+5. **API access**
+6. **Advanced**
 
 People & access contains three local tabs:
 
@@ -232,7 +236,7 @@ the value and offer “Manage languages”.
 
 ### 8.3 Appearance preview card
 
-Show how the website is represented in SiteFoundry's website selector:
+Show how the website is represented in Scaffold CMS's website selector:
 
 - icon or initials;
 - website name;
@@ -538,7 +542,7 @@ Fields:
 
 Show a preview such as:
 
-> https://preview.example.com/about?sf-preview=…
+> https://preview.example.com/about?sc-preview=…
 
 Do not display real secrets or complete preview tokens in designs.
 
@@ -547,7 +551,24 @@ Do not display real secrets or complete preview tokens in designs.
 Summarize how language prefixes and canonical URLs combine. Link to Languages for changes that belong
 there rather than duplicating controls.
 
-## 12. Advanced
+## 12. API access
+
+API access lists site-owned publishable read tokens and lets owners and administrators create and
+revoke them. Creation collects a recognizable name, optional expiration date, and optional allowed
+browser origins. The complete token is shown once with an explicit copy action. Existing rows show a
+masked identifier, status, creation time, last-used time, expiration, and origin summary.
+
+The screen must explain that publishable tokens can appear in browser code and never grant draft or
+administration access. Revocation requires deliberate confirmation and takes effect immediately.
+
+API access also includes a site-scoped GraphQL playground. It uses the site's fixed versioned endpoint,
+accepts a publishable token, and embeds Apollo Sandbox for schema browsing, autocomplete, query
+building, variables, headers, and response inspection. It does not persist the token or place it in the
+URL. A token shown immediately after creation is filled in and connected for the current page session.
+An external Apollo Sandbox link preconfigures the endpoint and sample query but deliberately omits the
+token.
+
+## 13. Advanced
 
 ### 12.1 Ownership
 
@@ -679,10 +700,10 @@ through an excessively red page.
 
 ## 17. Design language
 
-- Follow the existing SiteFoundry light and dark themes.
+- Follow the existing Scaffold CMS light and dark themes.
 - Use Geist for interface text and Geist Mono for identifiers, locale codes, and technical URLs.
 - Prefer compact 32–38 px controls consistent with the administration UI.
-- Use semantic SiteFoundry surfaces: canvas, surface, sunken, border, selection, action, published,
+- Use semantic Scaffold CMS surfaces: canvas, surface, sunken, border, selection, action, published,
   concept, danger, and muted text.
 - Cards use restrained borders and shadows; avoid floating glass effects or decorative gradients.
 - Purple/blue action color identifies selection and primary actions.
@@ -749,11 +770,11 @@ The design handoff should demonstrate these flows:
 8. Editor and Publisher are visibly different because only Publisher can publish.
 9. Full-site, selected-language, and selected-branch scopes have distinct, understandable controls.
 10. Unauthorized users receive a useful read-only view rather than a broken form.
-11. General, People & access, Languages, Domains & preview, and Advanced are usable at desktop and mobile widths.
+11. General, People & access, Languages, Domains & preview, API access, and Advanced are usable at desktop and mobile widths.
 12. Loading, empty, error, pending, expired, read-only, and unsaved states are represented.
 13. Ownership transfer and deletion require deliberate, clearly labeled confirmation.
 14. Personal account settings are never mixed into Site Settings.
-15. Designs use the existing SiteFoundry visual system rather than inventing an unrelated dashboard.
+15. Designs use the existing Scaffold CMS visual system rather than inventing an unrelated dashboard.
 
 ## 21. Deferred UI work
 
@@ -763,7 +784,7 @@ The design handoff should demonstrate these flows:
 - Group or directory synchronization.
 - Single sign-on and authentication-provider settings.
 - Session/device management.
-- API keys, webhooks, plugins, billing, and usage.
+- Webhooks, plugins, billing, and usage. API access now manages publishable delivery tokens.
 - Editorial approval workflows.
 - Audit-log browsing; changes may later expose an Activity destination.
 
@@ -784,10 +805,11 @@ design. The permissions and authentication specifications will make the final pr
 | Date | Decision | Reason |
 | --- | --- | --- |
 | 2026-07-21 | Site Settings is site-scoped and separate from Personal Settings. | Account preferences must follow a person, while these settings belong to one website. |
-| 2026-07-21 | The settings IA uses General, People & access, Languages, Domains & preview, and Advanced. | This keeps frequent configuration discoverable and isolates destructive actions. |
+| 2026-07-21 | The initial settings IA uses General, People & access, Languages, Domains & preview, and Advanced. | This keeps frequent configuration discoverable and isolates destructive actions. |
 | 2026-07-21 | The initial design uses five role presets and does not include a custom role builder. | Users need understandable access management before a fully configurable permission system. |
 | 2026-07-21 | Role defines what a person can do; access scope defines where they can do it. | Separating capability from resource scope makes permission summaries comprehensible. |
 | 2026-07-21 | Owner transfer is separate from ordinary member editing. | Ownership is a protected site-lifecycle operation. |
 | 2026-07-21 | The first implementation is an interactive in-memory proof of concept. | The approved interface can be evaluated without inventing unresolved persistence and authorization contracts. |
 | 2026-07-21 | Site Settings now persists its synchronous settings and access-management operations in Supabase. | The UI needs real account, role, language, domain, and lifecycle data; RLS and guarded database functions keep sensitive mutations server-authorized. |
 | 2026-07-21 | Invitation delivery, DNS verification, and export generation remain queued backend workflows. | Persisting a request is truthful and testable without pretending that an unavailable worker completed external work. |
+| 2026-07-22 | API access is a dedicated Site Settings destination for site-owned publishable delivery tokens. | Website builds and browser clients need revocable credentials without confusing them with personal access or future confidential preview tokens. |

@@ -8,7 +8,7 @@
 
 ## 1. Summary
 
-Personal settings let an authenticated user manage their own identity, sign-in credentials, interface language, and visual theme. These preferences belong to the user and apply across SiteFoundry rather than to one website or language tree.
+Personal settings let an authenticated user manage their own identity, sign-in credentials, interface language, and visual theme. These preferences belong to the user and apply across Scaffold CMS rather than to one website or language tree.
 
 Personal settings are separate from site-wide settings. Site-wide settings configure a selected website and will be covered by a dedicated specification.
 
@@ -41,7 +41,7 @@ Personal settings are separate from site-wide settings. Site-wide settings confi
 
 - **Personal settings:** Account-scoped settings that follow the user across accessible websites.
 - **Site-wide settings:** Settings belonging to one selected website and outside this specification.
-- **Interface language:** The language of the SiteFoundry administration interface. It does not change content language.
+- **Interface language:** The language of the Scaffold CMS administration interface. It does not change content language.
 - **Interface mode:** System preference, light, or dark appearance for the administration interface.
 - **Username:** A user-controlled identifier or display label distinct from email. Its exact role remains open.
 
@@ -51,26 +51,26 @@ Personal settings are separate from site-wide settings. Site-wide settings confi
 
 1. The user sees their card at the bottom of the left navigation.
 2. The user activates it with pointer or keyboard.
-3. SiteFoundry either opens an account menu with a Personal settings action or navigates directly to Personal settings.
+3. Scaffold CMS either opens an account menu with a Personal settings action or navigates directly to Personal settings.
 4. The screen opens without changing the selected website.
 
 ### Journey: Update profile information
 
-1. SiteFoundry loads the current first name, last name, email, and username or display name.
+1. Scaffold CMS loads the current first name, last name, email, and username or display name.
 2. The user edits one or more fields and saves.
-3. SiteFoundry validates and persists the values.
+3. Scaffold CMS validates and persists the values.
 4. The user card and visible account labels update without requiring a new sign-in.
 
 ### Journey: Change password
 
 1. A password-authenticated user enters their current password, a new password, and confirmation.
-2. SiteFoundry validates the current credential and password policy.
-3. SiteFoundry changes the password and confirms success without exposing any credential value.
+2. Scaffold CMS validates the current credential and password policy.
+3. Scaffold CMS changes the password and confirms success without exposing any credential value.
 
 ### Journey: Change interface preferences
 
 1. The user selects an interface language and interface mode.
-2. SiteFoundry applies the selected language and theme.
+2. Scaffold CMS applies the selected language and theme.
 3. Preferences persist across reloads, sign-ins, websites, and supported devices.
 
 ## 7. Functional requirements
@@ -222,7 +222,7 @@ The screen supports loading, ready, edited, saving profile, changing password, s
 - Provider identity metadata differs from the saved profile.
 - The requested email belongs to another account.
 - Email confirmation remains incomplete.
-- The system theme changes while SiteFoundry is open.
+- The system theme changes while Scaffold CMS is open.
 - A saved interface language is removed or has incomplete translations.
 - The session expires during a save.
 - Multiple tabs update preferences concurrently.
@@ -252,4 +252,4 @@ The screen supports loading, ready, edited, saving profile, changing password, s
 | Date       | Decision                                                                                                                            | Reason                                                                               |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | 2026-07-13 | Personal settings are account-scoped and separate from site-wide settings.                                                          | Identity and interface preferences must follow the user across websites.             |
-| 2026-07-13 | The initial fields follow the supplied Strapi reference: profile identity, password change, interface language, and interface mode. | The reference provides a familiar baseline while SiteFoundry retains its own design. |
+| 2026-07-13 | The initial fields follow the supplied Strapi reference: profile identity, password change, interface language, and interface mode. | The reference provides a familiar baseline while Scaffold CMS retains its own design. |

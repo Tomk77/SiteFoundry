@@ -41,8 +41,8 @@ beforeEach(() => {
 
 afterEach(() => {
   window.localStorage.clear();
-  document.documentElement.removeAttribute("data-sf-mode");
-  document.documentElement.removeAttribute("data-sf-theme");
+  document.documentElement.removeAttribute("data-sc-mode");
+  document.documentElement.removeAttribute("data-sc-theme");
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
 });
@@ -69,9 +69,9 @@ describe("applyInterfaceMode", () => {
 
     applyInterfaceMode("dark");
 
-    expect(document.documentElement.dataset.sfMode).toBe("dark");
-    expect(document.documentElement.dataset.sfTheme).toBe("dark");
-    expect(window.localStorage.getItem("sf-interface-mode")).toBe("dark");
+    expect(document.documentElement.dataset.scMode).toBe("dark");
+    expect(document.documentElement.dataset.scTheme).toBe("dark");
+    expect(window.localStorage.getItem("sc-interface-mode")).toBe("dark");
   });
 
   it("keeps explicit light mode light on a dark system", () => {
@@ -79,7 +79,7 @@ describe("applyInterfaceMode", () => {
 
     applyInterfaceMode("light");
 
-    expect(document.documentElement.dataset.sfTheme).toBe("light");
+    expect(document.documentElement.dataset.scTheme).toBe("light");
   });
 
   it("follows the operating-system preference in system mode", () => {
@@ -87,8 +87,8 @@ describe("applyInterfaceMode", () => {
 
     applyInterfaceMode("system");
 
-    expect(document.documentElement.dataset.sfMode).toBe("system");
-    expect(document.documentElement.dataset.sfTheme).toBe("dark");
+    expect(document.documentElement.dataset.scMode).toBe("system");
+    expect(document.documentElement.dataset.scTheme).toBe("dark");
   });
 });
 
@@ -171,7 +171,7 @@ describe("personal settings persistence", () => {
         },
       ],
     });
-    expect(document.documentElement.dataset.sfTheme).toBe("dark");
+    expect(document.documentElement.dataset.scTheme).toBe("dark");
   });
 
   it("does not request an email change when only casing differs", async () => {

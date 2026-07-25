@@ -79,7 +79,7 @@ export function AppShell({
   ] as const;
 
   return (
-    <div className="sf-shell flex h-screen w-screen overflow-hidden border-t-[6px] border-app-chrome bg-surface">
+    <div className="sc-shell flex h-screen w-screen overflow-hidden border-t-[6px] border-app-chrome bg-surface">
       <aside className="max-[800px]:flex-basis-[210px] flex w-[244px] flex-[0_0_244px] flex-col border-r border-border bg-[#fafcfa] max-[800px]:w-[210px] dark:bg-surface">
         <div className="relative px-3.5 pt-3.5 pb-2">
           <Button
@@ -191,7 +191,7 @@ export function AppShell({
           <i className="ph ph-sign-out" /> Sign out
         </Button>
       </aside>
-      <main className="sf-main flex min-w-0 flex-1 [animation:sf-route-enter_140ms_ease-out] flex-col bg-surface transition-colors motion-reduce:[animation:none] motion-reduce:transition-none">
+      <main className="sc-main flex min-w-0 flex-1 [animation:sc-route-enter_140ms_ease-out] flex-col bg-surface transition-colors motion-reduce:[animation:none] motion-reduce:transition-none">
         {children}
       </main>
     </div>

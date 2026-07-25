@@ -97,7 +97,7 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
       if (!rawMessage || typeof rawMessage !== "object") return;
       const message = rawMessage as Record<string, unknown>;
       if (
-        message.source === "sf-preview" &&
+        message.source === "sc-preview" &&
         (message.type === "select" || message.type === "select-field")
       ) {
         const id = typeof message.id === "string" ? message.id : "";
@@ -117,15 +117,15 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
         }
       }
 
-      if (message.source === "sf-preview" && message.type === "ready" && selected) {
+      if (message.source === "sc-preview" && message.type === "ready" && selected) {
         previewRef.current?.contentWindow?.postMessage(
-          { source: "sf-editor", type: "select", id: selected, scroll: false },
+          { source: "sc-editor", type: "select", id: selected, scroll: false },
           "*",
         );
         if (pendingPreviewScroll.current !== null) {
           previewRef.current?.contentWindow?.postMessage(
             {
-              source: "sf-editor",
+              source: "sc-editor",
               type: "restore-scroll",
               top: pendingPreviewScroll.current,
             },
@@ -145,7 +145,7 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
     setSelected(id);
     const notifyPreview = () =>
       previewRef.current?.contentWindow?.postMessage(
-        { source: "sf-editor", type: "select", id, scroll },
+        { source: "sc-editor", type: "select", id, scroll },
         "*",
       );
     notifyPreview();
@@ -288,14 +288,14 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
 
   if (loadError || !page)
     return (
-      <div className="sf-loading [display:grid] [height:100vh] [width:100vw] [place-items:center] bg-canvas [font-size:13px] text-ink-muted [transition:background-color_140ms_ease,_color_140ms_ease,_border-color_140ms_ease] motion-reduce:[transition:none] dark:[color:#a7aeb8] dark:[background:#15181c]">
-        <div className="sf-editor-load-error [display:flex] [flex-direction:column] [align-items:center] [gap:8px] [&>i]:[font-size:28px] [&>span]:[margin-bottom:8px]">
+      <div className="sc-loading [display:grid] [height:100vh] [width:100vw] [place-items:center] bg-canvas [font-size:13px] text-ink-muted [transition:background-color_140ms_ease,_color_140ms_ease,_border-color_140ms_ease] motion-reduce:[transition:none] dark:[color:#a7aeb8] dark:[background:#15181c]">
+        <div className="sc-editor-load-error [display:flex] [flex-direction:column] [align-items:center] [gap:8px] [&>i]:[font-size:28px] [&>span]:[margin-bottom:8px]">
           <i className="ph ph-warning-circle" />
           <strong>Couldn’t open this page</strong>
           <span>{loadError || "The page was not found."}</span>
           <Button
             unstyled
-            className="sf-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sf-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+            className="sc-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
             onClick={() => void navigate({ to: "/" })}
           >
             Back to pages
@@ -308,7 +308,7 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
   const deviceWidth = { desktop: "100%", tablet: "820px", mobile: "390px" }[device];
 
   return (
-    <main className="sf-editor [display:flex] [height:100vh] [width:100vw] [animation:sf-route-enter_140ms_ease-out] [flex-direction:column] [overflow:hidden] bg-canvas text-ink motion-reduce:[animation:none] dark:[color:#e9ecf1] dark:[background:#15181c] [&_button]:[font-family:inherit]">
+    <main className="sc-editor [display:flex] [height:100vh] [width:100vw] [animation:sc-route-enter_140ms_ease-out] [flex-direction:column] [overflow:hidden] bg-canvas text-ink motion-reduce:[animation:none] dark:[color:#e9ecf1] dark:[background:#15181c] [&_button]:[font-family:inherit]">
       <EditorToolbar
         page={page}
         path={path}
@@ -320,7 +320,7 @@ export function PageEditorScreen({ pageId }: PageEditorScreenProps) {
         onSave={(publish) => void save(publish)}
         onSelectTab={setTab}
       />
-      <div className="sf-editor-workspace [display:flex] [min-height:0] [flex:1] max-[760px]:[position:relative]">
+      <div className="sc-editor-workspace [display:flex] [min-height:0] [flex:1] max-[760px]:[position:relative]">
         <PreviewPane
           device={device}
           deviceWidth={deviceWidth}

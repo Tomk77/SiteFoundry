@@ -173,32 +173,32 @@ export function PersonalSettingsScreen() {
   if (loading) return <PersonalSettingsLoading />;
   if (!user)
     return (
-      <div className="sf-loading [display:grid] [height:100vh] [width:100vw] [place-items:center] bg-canvas [font-size:13px] text-ink-muted [transition:background-color_140ms_ease,_color_140ms_ease,_border-color_140ms_ease] motion-reduce:[transition:none] dark:[color:#a7aeb8] dark:[background:#15181c]">
+      <div className="sc-loading [display:grid] [height:100vh] [width:100vw] [place-items:center] bg-canvas [font-size:13px] text-ink-muted [transition:background-color_140ms_ease,_color_140ms_ease,_border-color_140ms_ease] motion-reduce:[transition:none] dark:[color:#a7aeb8] dark:[background:#15181c]">
         Redirecting to sign in...
       </div>
     );
 
   return (
-    <main className="sf-personal-settings [display:flex] [height:100vh] [width:100vw] [animation:sf-route-enter_140ms_ease-out] [flex-direction:column] [overflow:hidden] bg-canvas text-ink [transition:background_160ms_ease,_color_160ms_ease] motion-reduce:[animation:none] motion-reduce:[transition:none]">
-      <header className="sf-personal-top [display:flex] [min-height:58px] [flex:none] [align-items:center] [gap:12px] bg-surface [padding:0_20px] [border-bottom:1px_solid_var(--sf-border)] [&>button:first-child]:[display:inline-flex] [&>button:first-child]:[height:34px] [&>button:first-child]:[cursor:pointer] [&>button:first-child]:[align-items:center] [&>button:first-child]:[gap:7px] [&>button:first-child]:[border-radius:8px] [&>button:first-child]:[padding:0_11px] [&>button:first-child]:[font-size:13px] [&>button:first-child]:[font-weight:600] [&>button:first-child]:text-ink-muted [&>button:first-child]:[background:transparent] [&>button:first-child]:[border:1px_solid_var(--sf-field)] [&>div]:[display:flex] [&>div]:[flex-direction:column] [&>div_small]:[font-size:11.5px] [&>div_small]:text-ink-subtle max-[720px]:[&>div_small]:[display:none] [&>div_strong]:[font-size:14px]">
+    <main className="sc-personal-settings [display:flex] [height:100vh] [width:100vw] [animation:sc-route-enter_140ms_ease-out] [flex-direction:column] [overflow:hidden] bg-canvas text-ink [transition:background_160ms_ease,_color_160ms_ease] motion-reduce:[animation:none] motion-reduce:[transition:none]">
+      <header className="sc-personal-top [display:flex] [min-height:58px] [flex:none] [align-items:center] [gap:12px] bg-surface [padding:0_20px] [border-bottom:1px_solid_var(--sc-border)] [&>button:first-child]:[display:inline-flex] [&>button:first-child]:[height:34px] [&>button:first-child]:[cursor:pointer] [&>button:first-child]:[align-items:center] [&>button:first-child]:[gap:7px] [&>button:first-child]:[border-radius:8px] [&>button:first-child]:[padding:0_11px] [&>button:first-child]:[font-size:13px] [&>button:first-child]:[font-weight:600] [&>button:first-child]:text-ink-muted [&>button:first-child]:[background:transparent] [&>button:first-child]:[border:1px_solid_var(--sc-field)] [&>div]:[display:flex] [&>div]:[flex-direction:column] [&>div_small]:[font-size:11.5px] [&>div_small]:text-ink-subtle max-[720px]:[&>div_small]:[display:none] [&>div_strong]:[font-size:14px]">
         <Button unstyled onClick={leave} type="button">
           <i className="ph-bold ph-arrow-left" /> Back to app
         </Button>
-        <span className="sf-personal-mark [display:grid] [height:34px] [width:34px] [place-items:center] [border-radius:9px] bg-selection text-action">
+        <span className="sc-personal-mark [display:grid] [height:34px] [width:34px] [place-items:center] [border-radius:9px] bg-selection text-action">
           <i className="ph-bold ph-hammer" />
         </span>
         <div>
           <strong>Personal settings</strong>
           <small>Applies to your account across every website</small>
         </div>
-        <span className="sf-spacer [flex:1]" />
-        <span className="sf-personal-saved [font-size:12px] text-ink-subtle max-[720px]:[display:none]">
+        <span className="sc-spacer [flex:1]" />
+        <span className="sc-personal-saved [font-size:12px] text-ink-subtle max-[720px]:[display:none]">
           {saving ? "Saving..." : dirty ? "Unsaved changes" : "All changes saved"}
         </span>
         {dirty ? (
           <Button
             unstyled
-            className="sf-personal-discard [height:34px] [cursor:pointer] [border-radius:8px] [padding:0_14px] [font-size:13px] [font-weight:600] text-ink-muted [background:transparent] [border:1px_solid_var(--sf-field)]"
+            className="sc-personal-discard [height:34px] [cursor:pointer] [border-radius:8px] [padding:0_14px] [font-size:13px] [font-weight:600] text-ink-muted [background:transparent] [border:1px_solid_var(--sc-field)]"
             onClick={() => {
               setForm(saved);
               applyInterfaceMode(saved.interfaceMode);
@@ -210,7 +210,7 @@ export function PersonalSettingsScreen() {
         ) : null}
         <Button
           unstyled
-          className="sf-personal-save [height:34px] [cursor:pointer] [border-radius:8px] bg-action [padding:0_14px] [font-size:13px] [font-weight:600] [color:var(--sf-on-accent)] [border:0] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] [&:hover:not(:disabled)]:bg-action-hover"
+          className="sc-personal-save [height:34px] [cursor:pointer] [border-radius:8px] bg-action [padding:0_14px] [font-size:13px] [font-weight:600] [color:var(--sc-on-accent)] [border:0] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] [&:hover:not(:disabled)]:bg-action-hover"
           disabled={!dirty || !valid || saving}
           loading={saving}
           onClick={() => void save()}
@@ -220,17 +220,17 @@ export function PersonalSettingsScreen() {
         </Button>
       </header>
 
-      <div className="sf-personal-scroll sf-scroll [flex:1] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [overflow:auto] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff]">
-        <div className="sf-personal-content [margin:26px_auto_60px] [display:flex] [width:min(680px,_calc(100%_-_40px))] [flex-direction:column] [gap:18px] max-[720px]:[margin-top:12px] max-[720px]:[width:min(100%_-_24px,_680px)]">
-          <section className="sf-account-summary [display:flex] [min-height:90px] [align-items:center] [gap:14px] [border-radius:12px] bg-surface [padding:18px_20px] [border:1px_solid_var(--sf-border)] [&>b]:[border-radius:999px] [&>b]:bg-sunken [&>b]:[padding:6px_12px] [&>b]:[font-size:11px] [&>b]:[font-weight:600] [&>b]:text-ink-muted [&>div]:[display:flex] [&>div]:[flex-direction:column] [&>div]:[gap:3px] [&>div_small]:text-ink-subtle [&>div_small]:[font:12px_'Geist_Mono',_monospace] [&>div_strong]:[font-size:16px]">
-            <span className="sf-personal-avatar [display:grid] [height:50px] [width:50px] [flex:none] [place-items:center] [border-radius:50%] bg-selection [font-size:18px] [font-weight:700] text-action">
+      <div className="sc-personal-scroll sc-scroll [flex:1] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [overflow:auto] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff]">
+        <div className="sc-personal-content [margin:26px_auto_60px] [display:flex] [width:min(680px,_calc(100%_-_40px))] [flex-direction:column] [gap:18px] max-[720px]:[margin-top:12px] max-[720px]:[width:min(100%_-_24px,_680px)]">
+          <section className="sc-account-summary [display:flex] [min-height:90px] [align-items:center] [gap:14px] [border-radius:12px] bg-surface [padding:18px_20px] [border:1px_solid_var(--sc-border)] [&>b]:[border-radius:999px] [&>b]:bg-sunken [&>b]:[padding:6px_12px] [&>b]:[font-size:11px] [&>b]:[font-weight:600] [&>b]:text-ink-muted [&>div]:[display:flex] [&>div]:[flex-direction:column] [&>div]:[gap:3px] [&>div_small]:text-ink-subtle [&>div_small]:[font:12px_'Geist_Mono',_monospace] [&>div_strong]:[font-size:16px]">
+            <span className="sc-personal-avatar [display:grid] [height:50px] [width:50px] [flex:none] [place-items:center] [border-radius:50%] bg-selection [font-size:18px] [font-weight:700] text-action">
               {initials}
             </span>
             <div>
               <strong>{displayName}</strong>
               <small>{form.email}</small>
             </div>
-            <span className="sf-spacer [flex:1]" />
+            <span className="sc-spacer [flex:1]" />
             <b>Account-wide</b>
           </section>
 
@@ -239,7 +239,7 @@ export function PersonalSettingsScreen() {
             title="Profile"
             description="Your name and sign-in identity"
           >
-            <div className="sf-profile-grid [display:grid] [grid-template-columns:1fr_1fr] [gap:16px_14px] max-[720px]:[grid-template-columns:1fr]">
+            <div className="sc-profile-grid [display:grid] [grid-template-columns:1fr_1fr] [gap:16px_14px] max-[720px]:[grid-template-columns:1fr]">
               <SettingField label="First name" required dirty={form.firstName !== saved.firstName}>
                 <Input
                   unstyled
@@ -301,7 +301,7 @@ export function PersonalSettingsScreen() {
             description="Update the password you use to sign in"
           >
             {hasPassword ? (
-              <div className="sf-password-grid [display:grid] [grid-template-columns:1fr_1fr] [gap:16px_14px] max-[720px]:[grid-template-columns:1fr] [&>.wide]:[grid-column:1_/_-1] max-[720px]:[&>.wide]:[grid-column:auto]">
+              <div className="sc-password-grid [display:grid] [grid-template-columns:1fr_1fr] [gap:16px_14px] max-[720px]:[grid-template-columns:1fr] [&>.wide]:[grid-column:1_/_-1] max-[720px]:[&>.wide]:[grid-column:auto]">
                 <PasswordField
                   className="wide"
                   label="Current password"
@@ -342,7 +342,7 @@ export function PersonalSettingsScreen() {
                     }))
                   }
                 />
-                <div className="sf-password-policy [grid-column:1_/_-1] [display:flex] [align-items:center] [gap:14px] max-[720px]:[grid-column:auto] max-[720px]:[flex-wrap:wrap] [&_button]:[height:34px] [&_button]:[cursor:pointer] [&_button]:[border-radius:7px] [&_button]:bg-action [&_button]:[padding:0_12px] [&_button]:[font-size:12px] [&_button]:[font-weight:600] [&_button]:[color:var(--sf-on-accent)] [&_button]:[border:0] [&_button:disabled]:[cursor:not-allowed] [&_button:disabled]:[opacity:0.45] [&>span.error]:text-danger [&>span.valid]:text-published [&>span:not(.sf-spacer)]:[display:inline-flex] [&>span:not(.sf-spacer)]:[align-items:center] [&>span:not(.sf-spacer)]:[gap:5px] [&>span:not(.sf-spacer)]:[font-size:11.5px] [&>span:not(.sf-spacer)]:text-ink-subtle">
+                <div className="sc-password-policy [grid-column:1_/_-1] [display:flex] [align-items:center] [gap:14px] max-[720px]:[grid-column:auto] max-[720px]:[flex-wrap:wrap] [&_button]:[height:34px] [&_button]:[cursor:pointer] [&_button]:[border-radius:7px] [&_button]:bg-action [&_button]:[padding:0_12px] [&_button]:[font-size:12px] [&_button]:[font-weight:600] [&_button]:[color:var(--sc-on-accent)] [&_button]:[border:0] [&_button:disabled]:[cursor:not-allowed] [&_button:disabled]:[opacity:0.45] [&>span.error]:text-danger [&>span.valid]:text-published [&>span:not(.sc-spacer)]:[display:inline-flex] [&>span:not(.sc-spacer)]:[align-items:center] [&>span:not(.sc-spacer)]:[gap:5px] [&>span:not(.sc-spacer)]:[font-size:11.5px] [&>span:not(.sc-spacer)]:text-ink-subtle">
                   <span className={password.next.length >= 10 ? "valid" : ""}>
                     <i
                       className={`ph-fill ${password.next.length >= 10 ? "ph-check-circle" : "ph-circle"}`}
@@ -359,7 +359,7 @@ export function PersonalSettingsScreen() {
                         : "Passwords do not match"}
                     </span>
                   ) : null}
-                  <span className="sf-spacer [flex:1]" />
+                  <span className="sc-spacer [flex:1]" />
                   <Button
                     unstyled
                     disabled={!passwordValid || passwordSaving}
@@ -371,21 +371,21 @@ export function PersonalSettingsScreen() {
                   </Button>
                 </div>
                 {passwordError ? (
-                  <p className="sf-personal-error wide [display:flex] [align-items:flex-start] [gap:8px] [border-radius:9px] [padding:12px_14px] [font-size:12.5px] [line-height:1.45] text-danger [background:color-mix(in_srgb,_var(--sf-danger)_10%,_var(--sf-surface))] [border:1px_solid_color-mix(in_srgb,_var(--sf-danger)_30%,_transparent)] [&.wide]:[grid-column:1_/_-1] [&.wide]:[margin:0]">
+                  <p className="sc-personal-error wide [display:flex] [align-items:flex-start] [gap:8px] [border-radius:9px] [padding:12px_14px] [font-size:12.5px] [line-height:1.45] text-danger [background:color-mix(in_srgb,_var(--sc-danger)_10%,_var(--sc-surface))] [border:1px_solid_color-mix(in_srgb,_var(--sc-danger)_30%,_transparent)] [&.wide]:[grid-column:1_/_-1] [&.wide]:[margin:0]">
                     {passwordError}
                   </p>
                 ) : null}
               </div>
             ) : (
-              <div className="sf-provider-guidance [display:flex] [align-items:flex-start] [gap:13px] [border-radius:9px] bg-sunken [padding:14px] [&_p]:[margin:0] [&_p]:[font-size:12px] [&_p]:[line-height:1.5] [&_p]:text-ink-muted [&_strong]:[font-size:13px] [&>div]:[display:flex] [&>div]:[flex-direction:column] [&>div]:[gap:4px] [&>span]:[display:grid] [&>span]:[height:34px] [&>span]:[width:34px] [&>span]:[flex:none] [&>span]:[place-items:center] [&>span]:[border-radius:8px] [&>span]:bg-surface [&>span]:[font-size:18px] [&>span]:text-ink">
+              <div className="sc-provider-guidance [display:flex] [align-items:flex-start] [gap:13px] [border-radius:9px] bg-sunken [padding:14px] [&_p]:[margin:0] [&_p]:[font-size:12px] [&_p]:[line-height:1.5] [&_p]:text-ink-muted [&_strong]:[font-size:13px] [&>div]:[display:flex] [&>div]:[flex-direction:column] [&>div]:[gap:4px] [&>span]:[display:grid] [&>span]:[height:34px] [&>span]:[width:34px] [&>span]:[flex:none] [&>span]:[place-items:center] [&>span]:[border-radius:8px] [&>span]:bg-surface [&>span]:[font-size:18px] [&>span]:text-ink">
                 <span>
                   <i className="ph-fill ph-google-logo" />
                 </span>
                 <div>
                   <strong>Password managed by Google</strong>
                   <p>
-                    You signed in with Google, so there is no SiteFoundry password to change. Manage
-                    your sign-in security in your Google account.
+                    You signed in with Google, so there is no Scaffold CMS password to change.
+                    Manage your sign-in security in your Google account.
                   </p>
                 </div>
               </div>
@@ -397,7 +397,7 @@ export function PersonalSettingsScreen() {
             title="Experience"
             description="Language and appearance for your admin interface"
           >
-            <div className="sf-experience-grid [display:grid] [grid-template-columns:1fr_1fr] [gap:16px_14px] max-[720px]:[grid-template-columns:1fr]">
+            <div className="sc-experience-grid [display:grid] [grid-template-columns:1fr_1fr] [gap:16px_14px] max-[720px]:[grid-template-columns:1fr]">
               <SettingField
                 label="Interface language"
                 dirty={form.interfaceLanguage !== saved.interfaceLanguage}
@@ -414,14 +414,14 @@ export function PersonalSettingsScreen() {
                   ))}
                 </NativeSelect>
                 <small>
-                  Changes only your SiteFoundry interface, never website content language.
+                  Changes only your Scaffold CMS interface, never website content language.
                 </small>
               </SettingField>
               <SettingField
                 label="Interface mode"
                 dirty={form.interfaceMode !== saved.interfaceMode}
               >
-                <div className="sf-mode-options [display:grid] [grid-template-columns:repeat(3,_1fr)] [gap:6px] [&_button]:[display:flex] [&_button]:[height:40px] [&_button]:[cursor:pointer] [&_button]:[align-items:center] [&_button]:[justify-content:center] [&_button]:[gap:6px] [&_button]:[border-radius:8px] [&_button]:bg-surface [&_button]:[font-size:12px] [&_button]:[font-weight:600] [&_button]:text-ink-muted [&_button]:[border:1px_solid_var(--sf-field)] [&_button.active]:border-action [&_button.active]:bg-selection [&_button.active]:text-action [&_button.active]:[box-shadow:0_0_0_2px_var(--sf-focus-ring)]">
+                <div className="sc-mode-options [display:grid] [grid-template-columns:repeat(3,_1fr)] [gap:6px] [&_button]:[display:flex] [&_button]:[height:40px] [&_button]:[cursor:pointer] [&_button]:[align-items:center] [&_button]:[justify-content:center] [&_button]:[gap:6px] [&_button]:[border-radius:8px] [&_button]:bg-surface [&_button]:[font-size:12px] [&_button]:[font-weight:600] [&_button]:text-ink-muted [&_button]:[border:1px_solid_var(--sc-field)] [&_button.active]:border-action [&_button.active]:bg-selection [&_button.active]:text-action [&_button.active]:[box-shadow:0_0_0_2px_var(--sc-focus-ring)]">
                   {(
                     [
                       ["system", "System", "ph-desktop"],
@@ -447,13 +447,13 @@ export function PersonalSettingsScreen() {
           </SettingsSection>
 
           {notice ? (
-            <div className="sf-personal-notice [display:flex] [align-items:flex-start] [gap:8px] [border-radius:9px] bg-selection [padding:12px_14px] [font-size:12.5px] [line-height:1.45] text-action [border:1px_solid_color-mix(in_srgb,_var(--sf-accent)_25%,_transparent)]">
+            <div className="sc-personal-notice [display:flex] [align-items:flex-start] [gap:8px] [border-radius:9px] bg-selection [padding:12px_14px] [font-size:12.5px] [line-height:1.45] text-action [border:1px_solid_color-mix(in_srgb,_var(--sc-accent)_25%,_transparent)]">
               <i className="ph-fill ph-envelope-simple" />
               {notice}
             </div>
           ) : null}
           {error ? (
-            <div className="sf-personal-error [display:flex] [align-items:flex-start] [gap:8px] [border-radius:9px] [padding:12px_14px] [font-size:12.5px] [line-height:1.45] text-danger [background:color-mix(in_srgb,_var(--sf-danger)_10%,_var(--sf-surface))] [border:1px_solid_color-mix(in_srgb,_var(--sf-danger)_30%,_transparent)] [&.wide]:[grid-column:1_/_-1] [&.wide]:[margin:0]">
+            <div className="sc-personal-error [display:flex] [align-items:flex-start] [gap:8px] [border-radius:9px] [padding:12px_14px] [font-size:12.5px] [line-height:1.45] text-danger [background:color-mix(in_srgb,_var(--sc-danger)_10%,_var(--sc-surface))] [border:1px_solid_color-mix(in_srgb,_var(--sc-danger)_30%,_transparent)] [&.wide]:[grid-column:1_/_-1] [&.wide]:[margin:0]">
               <i className="ph-fill ph-warning-circle" />
               {error}
             </div>
@@ -477,13 +477,13 @@ function PersonalSettingsLoading() {
   return (
     <main
       aria-busy="true"
-      className="sf-personal-settings [display:flex] [height:100vh] [width:100vw] [animation:sf-route-enter_140ms_ease-out] [flex-direction:column] [overflow:hidden] bg-canvas text-ink [transition:background_160ms_ease,_color_160ms_ease] motion-reduce:[animation:none] motion-reduce:[transition:none]"
+      className="sc-personal-settings [display:flex] [height:100vh] [width:100vw] [animation:sc-route-enter_140ms_ease-out] [flex-direction:column] [overflow:hidden] bg-canvas text-ink [transition:background_160ms_ease,_color_160ms_ease] motion-reduce:[animation:none] motion-reduce:[transition:none]"
     >
-      <header className="sf-personal-top [display:flex] [min-height:58px] [flex:none] [align-items:center] [gap:12px] bg-surface [padding:0_20px] [border-bottom:1px_solid_var(--sf-border)] [&>button:first-child]:[display:inline-flex] [&>button:first-child]:[height:34px] [&>button:first-child]:[cursor:pointer] [&>button:first-child]:[align-items:center] [&>button:first-child]:[gap:7px] [&>button:first-child]:[border-radius:8px] [&>button:first-child]:[padding:0_11px] [&>button:first-child]:[font-size:13px] [&>button:first-child]:[font-weight:600] [&>button:first-child]:text-ink-muted [&>button:first-child]:[background:transparent] [&>button:first-child]:[border:1px_solid_var(--sf-field)] [&>div]:[display:flex] [&>div]:[flex-direction:column] [&>div_small]:[font-size:11.5px] [&>div_small]:text-ink-subtle max-[720px]:[&>div_small]:[display:none] [&>div_strong]:[font-size:14px]">
+      <header className="sc-personal-top [display:flex] [min-height:58px] [flex:none] [align-items:center] [gap:12px] bg-surface [padding:0_20px] [border-bottom:1px_solid_var(--sc-border)] [&>button:first-child]:[display:inline-flex] [&>button:first-child]:[height:34px] [&>button:first-child]:[cursor:pointer] [&>button:first-child]:[align-items:center] [&>button:first-child]:[gap:7px] [&>button:first-child]:[border-radius:8px] [&>button:first-child]:[padding:0_11px] [&>button:first-child]:[font-size:13px] [&>button:first-child]:[font-weight:600] [&>button:first-child]:text-ink-muted [&>button:first-child]:[background:transparent] [&>button:first-child]:[border:1px_solid_var(--sc-field)] [&>div]:[display:flex] [&>div]:[flex-direction:column] [&>div_small]:[font-size:11.5px] [&>div_small]:text-ink-subtle max-[720px]:[&>div_small]:[display:none] [&>div_strong]:[font-size:14px]">
         <Button unstyled disabled type="button">
           <i className="ph-bold ph-arrow-left" /> Back to app
         </Button>
-        <span className="sf-personal-mark [display:grid] [height:34px] [width:34px] [place-items:center] [border-radius:9px] bg-selection text-action">
+        <span className="sc-personal-mark [display:grid] [height:34px] [width:34px] [place-items:center] [border-radius:9px] bg-selection text-action">
           <i className="ph-bold ph-hammer" />
         </span>
         <div>
@@ -508,7 +508,7 @@ function SettingsSection({
   children: ReactNode;
 }) {
   return (
-    <section className="sf-settings-card [overflow:hidden] [border-radius:12px] bg-surface [border:1px_solid_var(--sf-border)] [&>header]:[display:flex] [&>header]:[min-height:64px] [&>header]:[align-items:center] [&>header]:[gap:11px] [&>header]:[padding:14px_20px] [&>header]:[border-bottom:1px_solid_var(--sf-border)] [&>header_small]:[font-size:11.5px] [&>header_small]:text-ink-subtle [&>header_strong]:[font-size:14px] [&>header>div]:[display:flex] [&>header>div]:[flex-direction:column] [&>header>span]:[display:grid] [&>header>span]:[height:30px] [&>header>span]:[width:30px] [&>header>span]:[flex:none] [&>header>span]:[place-items:center] [&>header>span]:[border-radius:8px] [&>header>span]:bg-selection [&>header>span]:text-action">
+    <section className="sc-settings-card [overflow:hidden] [border-radius:12px] bg-surface [border:1px_solid_var(--sc-border)] [&>header]:[display:flex] [&>header]:[min-height:64px] [&>header]:[align-items:center] [&>header]:[gap:11px] [&>header]:[padding:14px_20px] [&>header]:[border-bottom:1px_solid_var(--sc-border)] [&>header_small]:[font-size:11.5px] [&>header_small]:text-ink-subtle [&>header_strong]:[font-size:14px] [&>header>div]:[display:flex] [&>header>div]:[flex-direction:column] [&>header>span]:[display:grid] [&>header>span]:[height:30px] [&>header>span]:[width:30px] [&>header>span]:[flex:none] [&>header>span]:[place-items:center] [&>header>span]:[border-radius:8px] [&>header>span]:bg-selection [&>header>span]:text-action">
       <header>
         <span>
           <i className={`ph ${icon}`} />
@@ -518,7 +518,7 @@ function SettingsSection({
           <small>{description}</small>
         </div>
       </header>
-      <div className="sf-settings-card-body [padding:18px_20px]">{children}</div>
+      <div className="sc-settings-card-body [padding:18px_20px]">{children}</div>
     </section>
   );
 }
@@ -538,7 +538,7 @@ function SettingField({
 }) {
   return (
     <label
-      className={`sf-setting-field [display:flex] [min-width:0] [flex-direction:column] [gap:6px] [&_input]:[height:40px] [&_input]:[width:100%] [&_input]:[border-radius:8px] [&_input]:bg-surface [&_input]:[padding:0_12px] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[border:1px_solid_var(--sf-field)] [&_input:focus]:border-action [&_input:focus]:[box-shadow:0_0_0_3px_var(--sf-focus-ring)] [&_input[aria-invalid='true']]:border-danger [&_select]:[height:40px] [&_select]:[width:100%] [&_select]:[border-radius:8px] [&_select]:bg-surface [&_select]:[padding:0_12px] [&_select]:[font-size:13px] [&_select]:text-ink [&_select]:[outline:0] [&_select]:[border:1px_solid_var(--sf-field)] [&_select:focus]:border-action [&_select:focus]:[box-shadow:0_0_0_3px_var(--sf-focus-ring)] [&_small]:[font-size:11.5px] [&_small]:[line-height:1.45] [&_small]:text-ink-subtle [&_small.error]:text-danger [&.wide]:[grid-column:1_/_-1] max-[720px]:[&.wide]:[grid-column:auto] [&>span]:[display:flex] [&>span]:[align-items:center] [&>span]:[gap:5px] [&>span]:[font-size:12px] [&>span]:[font-weight:600] [&>span]:text-ink-muted [&>span_b]:text-action [&>span_i]:[height:6px] [&>span_i]:[width:6px] [&>span_i]:[border-radius:999px] [&>span_i]:[background:var(--sf-warning)] ${className}`}
+      className={`sc-setting-field [display:flex] [min-width:0] [flex-direction:column] [gap:6px] [&_input]:[height:40px] [&_input]:[width:100%] [&_input]:[border-radius:8px] [&_input]:bg-surface [&_input]:[padding:0_12px] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[border:1px_solid_var(--sc-field)] [&_input:focus]:border-action [&_input:focus]:[box-shadow:0_0_0_3px_var(--sc-focus-ring)] [&_input[aria-invalid='true']]:border-danger [&_select]:[height:40px] [&_select]:[width:100%] [&_select]:[border-radius:8px] [&_select]:bg-surface [&_select]:[padding:0_12px] [&_select]:[font-size:13px] [&_select]:text-ink [&_select]:[outline:0] [&_select]:[border:1px_solid_var(--sc-field)] [&_select:focus]:border-action [&_select:focus]:[box-shadow:0_0_0_3px_var(--sc-focus-ring)] [&_small]:[font-size:11.5px] [&_small]:[line-height:1.45] [&_small]:text-ink-subtle [&_small.error]:text-danger [&.wide]:[grid-column:1_/_-1] max-[720px]:[&.wide]:[grid-column:auto] [&>span]:[display:flex] [&>span]:[align-items:center] [&>span]:[gap:5px] [&>span]:[font-size:12px] [&>span]:[font-weight:600] [&>span]:text-ink-muted [&>span_b]:text-action [&>span_i]:[height:6px] [&>span_i]:[width:6px] [&>span_i]:[border-radius:999px] [&>span_i]:[background:var(--sc-warning)] ${className}`}
     >
       <span>
         {label}
@@ -569,10 +569,10 @@ function PasswordField({
 }) {
   return (
     <label
-      className={`sf-setting-field [display:flex] [min-width:0] [flex-direction:column] [gap:6px] [&_input]:[height:40px] [&_input]:[width:100%] [&_input]:[border-radius:8px] [&_input]:bg-surface [&_input]:[padding:0_12px] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[border:1px_solid_var(--sf-field)] [&_input:focus]:border-action [&_input:focus]:[box-shadow:0_0_0_3px_var(--sf-focus-ring)] [&_input[aria-invalid='true']]:border-danger [&_select]:[height:40px] [&_select]:[width:100%] [&_select]:[border-radius:8px] [&_select]:bg-surface [&_select]:[padding:0_12px] [&_select]:[font-size:13px] [&_select]:text-ink [&_select]:[outline:0] [&_select]:[border:1px_solid_var(--sf-field)] [&_select:focus]:border-action [&_select:focus]:[box-shadow:0_0_0_3px_var(--sf-focus-ring)] [&_small]:[font-size:11.5px] [&_small]:[line-height:1.45] [&_small]:text-ink-subtle [&_small.error]:text-danger [&.wide]:[grid-column:1_/_-1] max-[720px]:[&.wide]:[grid-column:auto] [&>span]:[display:flex] [&>span]:[align-items:center] [&>span]:[gap:5px] [&>span]:[font-size:12px] [&>span]:[font-weight:600] [&>span]:text-ink-muted [&>span_b]:text-action [&>span_i]:[height:6px] [&>span_i]:[width:6px] [&>span_i]:[border-radius:999px] [&>span_i]:[background:var(--sf-warning)] ${className}`}
+      className={`sc-setting-field [display:flex] [min-width:0] [flex-direction:column] [gap:6px] [&_input]:[height:40px] [&_input]:[width:100%] [&_input]:[border-radius:8px] [&_input]:bg-surface [&_input]:[padding:0_12px] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[border:1px_solid_var(--sc-field)] [&_input:focus]:border-action [&_input:focus]:[box-shadow:0_0_0_3px_var(--sc-focus-ring)] [&_input[aria-invalid='true']]:border-danger [&_select]:[height:40px] [&_select]:[width:100%] [&_select]:[border-radius:8px] [&_select]:bg-surface [&_select]:[padding:0_12px] [&_select]:[font-size:13px] [&_select]:text-ink [&_select]:[outline:0] [&_select]:[border:1px_solid_var(--sc-field)] [&_select:focus]:border-action [&_select:focus]:[box-shadow:0_0_0_3px_var(--sc-focus-ring)] [&_small]:[font-size:11.5px] [&_small]:[line-height:1.45] [&_small]:text-ink-subtle [&_small.error]:text-danger [&.wide]:[grid-column:1_/_-1] max-[720px]:[&.wide]:[grid-column:auto] [&>span]:[display:flex] [&>span]:[align-items:center] [&>span]:[gap:5px] [&>span]:[font-size:12px] [&>span]:[font-weight:600] [&>span]:text-ink-muted [&>span_b]:text-action [&>span_i]:[height:6px] [&>span_i]:[width:6px] [&>span_i]:[border-radius:999px] [&>span_i]:[background:var(--sc-warning)] ${className}`}
     >
       <span>{label}</span>
-      <div className="sf-password-input [position:relative] [&_button]:[position:absolute] [&_button]:[top:0] [&_button]:[right:0] [&_button]:[display:grid] [&_button]:[height:40px] [&_button]:[width:40px] [&_button]:[cursor:pointer] [&_button]:[place-items:center] [&_button]:[padding:0] [&_button]:text-ink-subtle [&_button]:[background:transparent] [&_button]:[border:0] [&_input]:[padding-right:42px]">
+      <div className="sc-password-input [position:relative] [&_button]:[position:absolute] [&_button]:[top:0] [&_button]:[right:0] [&_button]:[display:grid] [&_button]:[height:40px] [&_button]:[width:40px] [&_button]:[cursor:pointer] [&_button]:[place-items:center] [&_button]:[padding:0] [&_button]:text-ink-subtle [&_button]:[background:transparent] [&_button]:[border:0] [&_input]:[padding-right:42px]">
         <Input
           unstyled
           autoComplete={name === "current" ? "current-password" : "new-password"}

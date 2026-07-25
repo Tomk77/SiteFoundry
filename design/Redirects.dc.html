@@ -22,14 +22,14 @@
   ::selection{background:#DFE3E8}
   input{font-family:inherit}
   i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
-  .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
-  .sf-scroll::-webkit-scrollbar{width:10px;height:10px}
-  .sf-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #fff}
-  @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
-  @keyframes sfFade{from{opacity:0}to{opacity:1}}
-  @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
-  @keyframes sfFlash{0%{background:#ECEEF1}100%{background:transparent}}
-  @keyframes sfMenu{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  .sc-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
+  .sc-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .sc-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #fff}
+  @keyframes scPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes scFade{from{opacity:0}to{opacity:1}}
+  @keyframes scToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+  @keyframes scFlash{0%{background:#ECEEF1}100%{background:transparent}}
+  @keyframes scMenu{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 </style>
 </helmet>
 
@@ -108,7 +108,7 @@
 
     <!-- attention banner -->
     <sc-if value="{{ showBanner }}" hint-placeholder-val="{{ false }}">
-      <div style="display:flex;align-items:center;gap:11px;padding:10px 22px;background:#F8E6E3;border-bottom:1px solid #F0D2CC;animation:sfMenu .16s ease">
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 22px;background:#F8E6E3;border-bottom:1px solid #F0D2CC;animation:scMenu .16s ease">
         <span style="display:flex;color:#B5382C;flex:none"><i class="ph-fill ph-warning-octagon" style="font-size:17px"></i></span>
         <span style="font-size:13px;color:#7C2A21;font-weight:500">{{ bannerText }}</span>
         <span style="flex:1"></span>
@@ -117,7 +117,7 @@
     </sc-if>
 
     <!-- table (header + body share one scroll so columns stay aligned) -->
-    <div class="sf-scroll" style="flex:1;overflow:auto">
+    <div class="sc-scroll" style="flex:1;overflow:auto">
       <div style="min-width:900px">
       <!-- table header -->
       <div style="position:sticky;top:0;z-index:3;display:grid;grid-template-columns:minmax(150px,1.4fr) 22px minmax(150px,1.4fr) 92px 176px 96px 80px;align-items:center;gap:12px;padding:9px 22px;border-bottom:1px solid #E2E7E2;background:#fff;font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#A5B0AD;white-space:nowrap">
@@ -130,7 +130,7 @@
         <span></span>
       </div>
       <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:16px;padding:40px;text-align:center;animation:sfFade .2s ease">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:16px;padding:40px;text-align:center;animation:scFade .2s ease">
           <div style="width:64px;height:64px;border-radius:16px;background:{{ emptyIconBg }};display:flex;align-items:center;justify-content:center;color:{{ emptyIconFg }}"><i class="ph {{ emptyIcon }}" style="font-size:30px"></i></div>
           <div style="display:flex;flex-direction:column;gap:6px;max-width:380px">
             <span style="font-size:16px;font-weight:600;color:#172326">{{ emptyTitle }}</span>
@@ -197,8 +197,8 @@
 
 <!-- ================= CREATE / EDIT MODAL ================= -->
 <sc-if value="{{ showEdit }}" hint-placeholder-val="{{ false }}">
-  <div onClick="{{ closeAll }}" style="position:fixed;inset:0;z-index:60;background:rgba(23,35,38,0.28);display:flex;align-items:center;justify-content:center;padding:24px;animation:sfFade .12s ease">
-    <div onClick="{{ stop }}" style="width:520px;max-width:100%;background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(23,35,38,0.28);overflow:hidden;animation:sfPop .16s ease">
+  <div onClick="{{ closeAll }}" style="position:fixed;inset:0;z-index:60;background:rgba(23,35,38,0.28);display:flex;align-items:center;justify-content:center;padding:24px;animation:scFade .12s ease">
+    <div onClick="{{ stop }}" style="width:520px;max-width:100%;background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(23,35,38,0.28);overflow:hidden;animation:scPop .16s ease">
       <div style="display:flex;align-items:flex-start;gap:12px;padding:20px 22px 16px;border-bottom:1px solid #EEF1ED">
         <div style="width:36px;height:36px;border-radius:9px;background:#ECEEF1;color:#763FBA;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph {{ editIcon }}" style="font-size:19px"></i></div>
         <div style="display:flex;flex-direction:column;gap:2px">
@@ -252,8 +252,8 @@
 
 <!-- ================= DELETE MODAL ================= -->
 <sc-if value="{{ showDelete }}" hint-placeholder-val="{{ false }}">
-  <div onClick="{{ closeAll }}" style="position:fixed;inset:0;z-index:60;background:rgba(23,35,38,0.28);display:flex;align-items:center;justify-content:center;padding:24px;animation:sfFade .12s ease">
-    <div onClick="{{ stop }}" style="width:440px;max-width:100%;background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(23,35,38,0.28);overflow:hidden;animation:sfPop .16s ease">
+  <div onClick="{{ closeAll }}" style="position:fixed;inset:0;z-index:60;background:rgba(23,35,38,0.28);display:flex;align-items:center;justify-content:center;padding:24px;animation:scFade .12s ease">
+    <div onClick="{{ stop }}" style="width:440px;max-width:100%;background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(23,35,38,0.28);overflow:hidden;animation:scPop .16s ease">
       <div style="padding:22px 22px 6px;display:flex;gap:14px">
         <div style="width:38px;height:38px;border-radius:9px;background:#F8E6E3;color:#B5382C;display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-trash" style="font-size:20px"></i></div>
         <div style="display:flex;flex-direction:column;gap:6px">
@@ -276,7 +276,7 @@
 
 <!-- ================= TOAST ================= -->
 <sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
-  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:12px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:sfToast .2s cubic-bezier(.2,.8,.2,1);max-width:520px">
+  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:12px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:scToast .2s cubic-bezier(.2,.8,.2,1);max-width:520px">
     <span style="display:flex;color:{{ toastIconColor }};flex:none"><i class="ph {{ toastIcon }}" style="font-size:18px"></i></span>
     <div style="display:flex;flex-direction:column;gap:1px">
       <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
@@ -491,7 +491,7 @@ class Component extends DCLogic {
         oIcon: o.icon, oBg: o.bg, oFg: o.fg, oLabel: o.label, oSub: sub,
         date: r.date,
         bg: s.flashId === r.id ? "transparent" : "transparent",
-        anim: s.flashId === r.id ? "sfFlash 1.1s ease" : "none",
+        anim: s.flashId === r.id ? "scFlash 1.1s ease" : "none",
         onEdit: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.openEdit(r.id); },
         onDelete: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ del: r.id }); },
       };

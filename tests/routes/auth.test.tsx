@@ -87,14 +87,14 @@ describe("auth route", () => {
     expect(await screen.findByRole("heading", { name: "Check your inbox" })).toBeTruthy();
     expect(screen.getByText(/ada@example.com/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Back to sign in" }));
-    expect(screen.getByRole("heading", { name: "Sign in to SiteFoundry" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Sign in to Scaffold CMS" })).toBeTruthy();
   });
 
   it("returns from registration without submitting", async () => {
     await renderAuth();
     fireEvent.click(screen.getByRole("button", { name: "Create an account" }));
     fireEvent.click(screen.getByRole("button", { name: "Back to sign in" }));
-    expect(screen.getByRole("heading", { name: "Sign in to SiteFoundry" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Sign in to Scaffold CMS" })).toBeTruthy();
   });
 
   it("requests a password reset and shows confirmation", async () => {

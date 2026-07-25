@@ -5,13 +5,13 @@
 
 ## Context
 
-The administration application began with screen-specific global `.sf-*` styles copied from
+The administration application began with screen-specific global `.sc-*` styles copied from
 interactive design prototypes. Tailwind CSS 4 and local Base UI primitives were later introduced,
 leaving two parallel styling systems: reusable Tailwind primitives and several thousand lines of
 global feature CSS. The duplicated light and dark palettes, cross-feature stylesheet imports, and
 unstyled primitive escape hatches make visual changes difficult to apply consistently.
 
-SiteFoundry has an approved visual language built around Foundry Amethyst, Fired Clay, Geist,
+Scaffold CMS has an approved visual language built around Scaffold Amethyst, Fired Clay, Geist,
 neutral selection colors, explicit status colors, and light, dark, and system themes. The styling
 implementation must preserve that visual language rather than adopt a generic component theme.
 
@@ -20,7 +20,7 @@ implementation must preserve that visual language rather than adopt a generic co
 Use Tailwind CSS 4 as the styling system for the administration application.
 
 - Configure Tailwind through the CSS-first `@theme inline` API and the Vite plugin.
-- Keep SiteFoundry semantic CSS variables as the source of truth for runtime light and dark themes.
+- Keep Scaffold CMS semantic CSS variables as the source of truth for runtime light and dark themes.
 - Expose those variables as named Tailwind colors, fonts, radii, and shadows.
 - Keep Base UI as the headless interaction layer and keep UI component source in this repository.
 - Compose conditional classes with `cn` and finite component variants with CVA.
@@ -48,7 +48,7 @@ delivery APIs, frontend SDK protocol, or impose a framework or styling choice on
 The administration migration was completed on 2026-07-21. All product screens now use Tailwind
 utilities in their React owners. The former route-owned stylesheets were deleted; only theme and
 global element foundations remain in `src/styles.css`, with shared keyframes isolated in
-`src/animations.css`. Semantic `sf-*` class names may remain in markup as stable interaction and
+`src/animations.css`. Semantic `sc-*` class names may remain in markup as stable interaction and
 test hooks, but no longer own CSS declarations.
 
 ## Revisit when

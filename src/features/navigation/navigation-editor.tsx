@@ -238,17 +238,17 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
   if (authLoading || !user) return <LoadingSplash />;
   if (loading && !workspace)
     return (
-      <main className="sf-navigation-editor sf-navigation-loading [display:flex] [height:100vh] [width:100vw] [animation:sf-route-enter_140ms_ease-out] [flex-direction:column] [overflow:hidden] bg-surface motion-reduce:[animation:none] dark:[color:#e9ecf1] dark:[background:#15181c] [&_.sf-route-loading]:[width:100%]">
-        <header className="sf-navigation-top [display:flex] [height:56px] [flex:none] [align-items:center] [gap:12px] bg-surface [padding:0_16px] [border-bottom:1px_solid_var(--sf-border)] dark:[border-color:#323841] dark:[background:#1d2126]">
+      <main className="sc-navigation-editor sc-navigation-loading [display:flex] [height:100vh] [width:100vw] [animation:sc-route-enter_140ms_ease-out] [flex-direction:column] [overflow:hidden] bg-surface motion-reduce:[animation:none] dark:[color:#e9ecf1] dark:[background:#15181c] [&_.sc-route-loading]:[width:100%]">
+        <header className="sc-navigation-top [display:flex] [height:56px] [flex:none] [align-items:center] [gap:12px] bg-surface [padding:0_16px] [border-bottom:1px_solid_var(--sc-border)] dark:[border-color:#323841] dark:[background:#1d2126]">
           <Button
             unstyled
-            className="sf-back-button [display:inline-flex] [height:34px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_11px] [font-size:13px] [font-weight:600] [color:#33474a] [border:1px_solid_var(--sf-field)] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&:hover]:bg-canvas dark:[&:hover]:[background:#242930]"
+            className="sc-back-button [display:inline-flex] [height:34px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_11px] [font-size:13px] [font-weight:600] [color:#33474a] [border:1px_solid_var(--sc-field)] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&:hover]:bg-canvas dark:[&:hover]:[background:#242930]"
             disabled
             type="button"
           >
             <i className="ph-bold ph-arrow-left" /> Back
           </Button>
-          <div className="sf-navigation-title [display:grid] [grid-template-columns:auto_auto] [align-items:center] [gap:0_16px] [font-size:12px] max-[760px]:[display:flex] max-[760px]:[flex-direction:column] max-[760px]:[align-items:flex-start] max-[760px]:[gap:1px] [&>small]:[grid-column:1_/_-1] [&>small]:[font-size:11px] [&>small]:text-action [&>span]:text-ink-subtle max-[760px]:[&>span]:[display:none] [&>strong]:[font-weight:600]">
+          <div className="sc-navigation-title [display:grid] [grid-template-columns:auto_auto] [align-items:center] [gap:0_16px] [font-size:12px] max-[760px]:[display:flex] max-[760px]:[flex-direction:column] max-[760px]:[align-items:flex-start] max-[760px]:[gap:1px] [&>small]:[grid-column:1_/_-1] [&>small]:[font-size:11px] [&>small]:text-action [&>span]:text-ink-subtle max-[760px]:[&>span]:[display:none] [&>strong]:[font-weight:600]">
             <span>Navigation</span>
             <strong>{isFooter ? "Footer" : "Header"}</strong>
             <small>Loading workspace</small>
@@ -262,46 +262,46 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
     );
   if (!workspace)
     return (
-      <div className="sf-loading [display:grid] [height:100vh] [width:100vw] [place-items:center] bg-canvas [font-size:13px] text-ink-muted [transition:background-color_140ms_ease,_color_140ms_ease,_border-color_140ms_ease] motion-reduce:[transition:none] dark:[color:#a7aeb8] dark:[background:#15181c]">
+      <div className="sc-loading [display:grid] [height:100vh] [width:100vw] [place-items:center] bg-canvas [font-size:13px] text-ink-muted [transition:background-color_140ms_ease,_color_140ms_ease,_border-color_140ms_ease] motion-reduce:[transition:none] dark:[color:#a7aeb8] dark:[background:#15181c]">
         {error || "No website is available."}
       </div>
     );
 
   return (
-    <main className="sf-navigation-editor [display:flex] [height:100vh] [width:100vw] [animation:sf-route-enter_140ms_ease-out] [flex-direction:column] [overflow:hidden] bg-surface motion-reduce:[animation:none] dark:[color:#e9ecf1] dark:[background:#15181c]">
-      <header className="sf-navigation-top [display:flex] [height:56px] [flex:none] [align-items:center] [gap:12px] bg-surface [padding:0_16px] [border-bottom:1px_solid_var(--sf-border)] dark:[border-color:#323841] dark:[background:#1d2126]">
+    <main className="sc-navigation-editor [display:flex] [height:100vh] [width:100vw] [animation:sc-route-enter_140ms_ease-out] [flex-direction:column] [overflow:hidden] bg-surface motion-reduce:[animation:none] dark:[color:#e9ecf1] dark:[background:#15181c]">
+      <header className="sc-navigation-top [display:flex] [height:56px] [flex:none] [align-items:center] [gap:12px] bg-surface [padding:0_16px] [border-bottom:1px_solid_var(--sc-border)] dark:[border-color:#323841] dark:[background:#1d2126]">
         <Button
           unstyled
-          className="sf-back-button [display:inline-flex] [height:34px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_11px] [font-size:13px] [font-weight:600] [color:#33474a] [border:1px_solid_var(--sf-field)] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&:hover]:bg-canvas dark:[&:hover]:[background:#242930]"
+          className="sc-back-button [display:inline-flex] [height:34px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_11px] [font-size:13px] [font-weight:600] [color:#33474a] [border:1px_solid_var(--sc-field)] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&:hover]:bg-canvas dark:[&:hover]:[background:#242930]"
           onClick={() => void navigate({ to: "/" })}
           type="button"
         >
           <i className="ph-bold ph-arrow-left" /> Back
         </Button>
-        <div className="sf-navigation-title [display:grid] [grid-template-columns:auto_auto] [align-items:center] [gap:0_16px] [font-size:12px] max-[760px]:[display:flex] max-[760px]:[flex-direction:column] max-[760px]:[align-items:flex-start] max-[760px]:[gap:1px] [&>small]:[grid-column:1_/_-1] [&>small]:[font-size:11px] [&>small]:text-action [&>span]:text-ink-subtle max-[760px]:[&>span]:[display:none] [&>strong]:[font-weight:600]">
+        <div className="sc-navigation-title [display:grid] [grid-template-columns:auto_auto] [align-items:center] [gap:0_16px] [font-size:12px] max-[760px]:[display:flex] max-[760px]:[flex-direction:column] max-[760px]:[align-items:flex-start] max-[760px]:[gap:1px] [&>small]:[grid-column:1_/_-1] [&>small]:[font-size:11px] [&>small]:text-action [&>span]:text-ink-subtle max-[760px]:[&>span]:[display:none] [&>strong]:[font-weight:600]">
           <span>Navigation</span>
           <strong>{isFooter ? "Footer" : "Header"}</strong>
-          <small className="sf-mono [font-family:'Geist_Mono',_monospace]">
+          <small className="sc-mono [font-family:'Geist_Mono',_monospace]">
             {isFooter ? "Site footer" : "Primary menu"} · {workspace.language.code.toUpperCase()}
           </small>
         </div>
-        <span className={`sf-editor-status ${published ? "Published" : "Concept"}`}>
+        <span className={`sc-editor-status ${published ? "Published" : "Concept"}`}>
           {published ? "Published" : "Draft"}
         </span>
         {brokenItems.length ? (
-          <span className="sf-navigation-broken [display:inline-flex] [height:22px] [align-items:center] [gap:5px] [border-radius:5px] bg-danger-soft [padding:0_8px] [font-size:11.5px] [font-weight:600] text-danger max-[760px]:[display:none]">
+          <span className="sc-navigation-broken [display:inline-flex] [height:22px] [align-items:center] [gap:5px] [border-radius:5px] bg-danger-soft [padding:0_8px] [font-size:11.5px] [font-weight:600] text-danger max-[760px]:[display:none]">
             <i className="ph-fill ph-warning" /> {brokenItems.length} broken{" "}
             {brokenItems.length === 1 ? "link" : "links"}
           </span>
         ) : null}
-        <span className="sf-spacer [flex:1]" />
-        <span className="sf-navigation-saved [display:inline-flex] [align-items:center] [gap:6px] [font-size:12px] text-ink-subtle max-[980px]:[display:none] dark:[color:#79808b] [&_.ph-spinner]:[animation:sf-navigation-spin_700ms_linear_infinite] [&_i]:[font-size:14px]">
+        <span className="sc-spacer [flex:1]" />
+        <span className="sc-navigation-saved [display:inline-flex] [align-items:center] [gap:6px] [font-size:12px] text-ink-subtle max-[980px]:[display:none] dark:[color:#79808b] [&_.ph-spinner]:[animation:sc-navigation-spin_700ms_linear_infinite] [&_i]:[font-size:14px]">
           <i className={`ph ${saving ? "ph-spinner" : dirty ? "ph-cloud" : "ph-cloud-check"}`} />
           {saving ? "Saving..." : dirty ? "Unsaved changes" : "All changes saved"}
         </span>
         <Button
           unstyled
-          className="sf-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.danger]:[border-color:#eec6bc] [&.danger]:bg-surface [&.danger]:text-danger [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+          className="sc-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.danger]:[border-color:#eec6bc] [&.danger]:bg-surface [&.danger]:text-danger [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
           disabled={!dirty || saving}
           loading={savingAction === "draft"}
           onClick={() => void save()}
@@ -311,7 +311,7 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
         </Button>
         <Button
           unstyled
-          className="sf-action primary [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.danger]:[border-color:#eec6bc] [&.danger]:bg-surface [&.danger]:text-danger [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+          className="sc-action primary [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.danger]:[border-color:#eec6bc] [&.danger]:bg-surface [&.danger]:text-danger [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
           disabled={saving}
           loading={savingAction === "publish"}
           onClick={() => (brokenItems.length ? setPublishConfirm(true) : void publish())}
@@ -321,10 +321,10 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
         </Button>
       </header>
 
-      <div className="sf-navigation-workspace [display:flex] [min-height:0] [flex:1] max-[760px]:[flex-direction:column]">
-        <section className="sf-navigation-preview [display:flex] [min-width:0] [flex:1] [flex-direction:column] bg-sunken [border-right:1px_solid_var(--sf-border)] max-[760px]:[min-height:48%] max-[760px]:[border-bottom:1px_solid_var(--sf-border)] max-[760px]:[border-right:0] dark:[border-color:#323841] dark:[background:#15181c] [&_.sf-preview-tools]:[height:48px] [&_.sf-preview-tools]:[flex:none] [&_.sf-preview-tools]:[padding:0_16px] [&_.sf-preview-tools]:[background:#fafcfa] dark:[&_.sf-preview-tools]:[border-color:#323841] dark:[&_.sf-preview-tools]:[background:#1d2126] [&_.sf-preview-tools>button]:[display:grid] [&_.sf-preview-tools>button]:[height:32px] [&_.sf-preview-tools>button]:[width:32px] [&_.sf-preview-tools>button]:[cursor:pointer] [&_.sf-preview-tools>button]:[place-items:center] [&_.sf-preview-tools>button]:[border-radius:8px] [&_.sf-preview-tools>button]:[padding:0] [&_.sf-preview-tools>button]:text-ink-muted [&_.sf-preview-tools>button]:[background:transparent] [&_.sf-preview-tools>button]:[border:0] [&_.sf-preview-tools>button.spin_i]:[animation:sf-navigation-spin_500ms_linear] [&_.sf-preview-tools>button:hover]:bg-sunken [&_.sf-preview-tools>button:hover]:text-ink dark:[&_.sf-preview-tools>button:hover]:[color:#b994f8] dark:[&_.sf-preview-tools>button:hover]:[background:#2c333b]">
-          <div className="sf-preview-tools flex h-12 shrink-0 items-center gap-3 border-b border-border bg-[#fafcfa] px-4 dark:bg-surface">
-            <div className="sf-device-toggle flex gap-0.5 rounded-lg bg-[#eaeeea] p-0.5 dark:bg-canvas [&_button]:grid [&_button]:h-7 [&_button]:w-[30px] [&_button]:cursor-pointer [&_button]:place-items-center [&_button]:rounded-md [&_button]:border-0 [&_button]:bg-transparent [&_button]:text-base [&_button]:text-ink-subtle [&_button.active]:bg-surface [&_button.active]:text-action [&_button.active]:shadow-[0_1px_2px_rgb(23_35_38_/_14%)] dark:[&_button.active]:bg-selection dark:[&_button.active]:text-action dark:[&_button.active]:shadow-none">
+      <div className="sc-navigation-workspace [display:flex] [min-height:0] [flex:1] max-[760px]:[flex-direction:column]">
+        <section className="sc-navigation-preview [display:flex] [min-width:0] [flex:1] [flex-direction:column] bg-sunken [border-right:1px_solid_var(--sc-border)] max-[760px]:[min-height:48%] max-[760px]:[border-bottom:1px_solid_var(--sc-border)] max-[760px]:[border-right:0] dark:[border-color:#323841] dark:[background:#15181c] [&_.sc-preview-tools]:[height:48px] [&_.sc-preview-tools]:[flex:none] [&_.sc-preview-tools]:[padding:0_16px] [&_.sc-preview-tools]:[background:#fafcfa] dark:[&_.sc-preview-tools]:[border-color:#323841] dark:[&_.sc-preview-tools]:[background:#1d2126] [&_.sc-preview-tools>button]:[display:grid] [&_.sc-preview-tools>button]:[height:32px] [&_.sc-preview-tools>button]:[width:32px] [&_.sc-preview-tools>button]:[cursor:pointer] [&_.sc-preview-tools>button]:[place-items:center] [&_.sc-preview-tools>button]:[border-radius:8px] [&_.sc-preview-tools>button]:[padding:0] [&_.sc-preview-tools>button]:text-ink-muted [&_.sc-preview-tools>button]:[background:transparent] [&_.sc-preview-tools>button]:[border:0] [&_.sc-preview-tools>button.spin_i]:[animation:sc-navigation-spin_500ms_linear] [&_.sc-preview-tools>button:hover]:bg-sunken [&_.sc-preview-tools>button:hover]:text-ink dark:[&_.sc-preview-tools>button:hover]:[color:#b994f8] dark:[&_.sc-preview-tools>button:hover]:[background:#2c333b]">
+          <div className="sc-preview-tools flex h-12 shrink-0 items-center gap-3 border-b border-border bg-[#fafcfa] px-4 dark:bg-surface">
+            <div className="sc-device-toggle flex gap-0.5 rounded-lg bg-[#eaeeea] p-0.5 dark:bg-canvas [&_button]:grid [&_button]:h-7 [&_button]:w-[30px] [&_button]:cursor-pointer [&_button]:place-items-center [&_button]:rounded-md [&_button]:border-0 [&_button]:bg-transparent [&_button]:text-base [&_button]:text-ink-subtle [&_button.active]:bg-surface [&_button.active]:text-action [&_button.active]:shadow-[0_1px_2px_rgb(23_35_38_/_14%)] dark:[&_button.active]:bg-selection dark:[&_button.active]:text-action dark:[&_button.active]:shadow-none">
               {(
                 [
                   ["desktop", "ph-monitor", "Desktop"],
@@ -344,9 +344,9 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
                 </Button>
               ))}
             </div>
-            <div className="sf-preview-url flex h-8 max-w-[440px] min-w-0 flex-1 items-center gap-2 rounded-full border border-border bg-surface px-3 dark:border-field [&>b]:rounded-full [&>b]:bg-concept-soft [&>b]:px-1.5 [&>b]:py-px [&>b]:text-[10px] [&>b]:text-concept [&>i]:text-xs [&>i]:text-published [&>span]:flex-1 [&>span]:overflow-hidden [&>span]:font-mono [&>span]:text-xs [&>span]:text-ellipsis [&>span]:whitespace-nowrap [&>span]:text-ink-muted">
+            <div className="sc-preview-url flex h-8 max-w-[440px] min-w-0 flex-1 items-center gap-2 rounded-full border border-border bg-surface px-3 dark:border-field [&>b]:rounded-full [&>b]:bg-concept-soft [&>b]:px-1.5 [&>b]:py-px [&>b]:text-[10px] [&>b]:text-concept [&>i]:text-xs [&>i]:text-published [&>span]:flex-1 [&>span]:overflow-hidden [&>span]:font-mono [&>span]:text-xs [&>span]:text-ellipsis [&>span]:whitespace-nowrap [&>span]:text-ink-muted">
               <i className="ph-fill ph-lock-simple" />
-              <span className="sf-mono [font-family:'Geist_Mono',_monospace]">
+              <span className="sc-mono [font-family:'Geist_Mono',_monospace]">
                 {workspace.site.slug}.com
               </span>
               <b>Preview</b>
@@ -364,9 +364,9 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
               <i className="ph ph-arrow-square-out" />
             </Button>
           </div>
-          <div className="sf-navigation-stage sf-scroll [display:flex] [flex:1] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [align-items:flex-start] [justify-content:flex-start] [overflow:auto] [padding:24px] dark:[border-color:#323841] dark:[background:#15181c] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff]">
+          <div className="sc-navigation-stage sc-scroll [display:flex] [flex:1] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [align-items:flex-start] [justify-content:flex-start] [overflow:auto] [padding:24px] dark:[border-color:#323841] dark:[background:#15181c] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff]">
             <div
-              className={`sf-site-preview [flex:none] [overflow:hidden] [border-radius:10px] bg-surface [box-shadow:0_14px_34px_rgb(23_35_38_/_10%)] [transition:width_200ms_ease] dark:[color:#141a2e] dark:[box-shadow:0_16px_42px_rgb(0_0_0_/_32%)] dark:[outline:1px_solid_#323841] [&.desktop]:[width:100%] [&.desktop]:[min-width:720px] [&.mobile]:[width:390px] [&.tablet]:[width:800px] ${device}`}
+              className={`sc-site-preview [flex:none] [overflow:hidden] [border-radius:10px] bg-surface [box-shadow:0_14px_34px_rgb(23_35_38_/_10%)] [transition:width_200ms_ease] dark:[color:#141a2e] dark:[box-shadow:0_16px_42px_rgb(0_0_0_/_32%)] dark:[outline:1px_solid_#323841] [&.desktop]:[width:100%] [&.desktop]:[min-width:720px] [&.mobile]:[width:390px] [&.tablet]:[width:800px] ${device}`}
             >
               {isFooter ? (
                 <FooterPreview
@@ -401,20 +401,20 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
           </div>
         </section>
 
-        <aside className="sf-navigation-builder [display:flex] [width:404px] [flex:0_0_404px] [flex-direction:column] bg-surface max-[980px]:[width:360px] max-[980px]:[flex-basis:360px] max-[760px]:[min-height:52%] max-[760px]:[width:100%] max-[760px]:[flex:1] dark:[border-color:#323841] dark:[background:#1d2126]">
-          <div className="sf-builder-head [display:flex] [height:45px] [flex:none] [align-items:center] [gap:9px] [padding:0_16px] [border-bottom:1px_solid_var(--sf-sunken)] dark:[border-color:#323841] [&_small]:[display:inline-flex] [&_small]:[align-items:center] [&_small]:[gap:5px] [&_small]:[font-size:11.5px] [&_small]:text-ink-subtle dark:[&_small]:[color:#79808b] [&_strong]:[font-size:13.5px] [&>span:not(.sf-spacer)]:[font-size:11.5px] [&>span:not(.sf-spacer)]:[color:#a5b0ad] dark:[&>span:not(.sf-spacer)]:[color:#79808b]">
+        <aside className="sc-navigation-builder [display:flex] [width:404px] [flex:0_0_404px] [flex-direction:column] bg-surface max-[980px]:[width:360px] max-[980px]:[flex-basis:360px] max-[760px]:[min-height:52%] max-[760px]:[width:100%] max-[760px]:[flex:1] dark:[border-color:#323841] dark:[background:#1d2126]">
+          <div className="sc-builder-head [display:flex] [height:45px] [flex:none] [align-items:center] [gap:9px] [padding:0_16px] [border-bottom:1px_solid_var(--sc-sunken)] dark:[border-color:#323841] [&_small]:[display:inline-flex] [&_small]:[align-items:center] [&_small]:[gap:5px] [&_small]:[font-size:11.5px] [&_small]:text-ink-subtle dark:[&_small]:[color:#79808b] [&_strong]:[font-size:13.5px] [&>span:not(.sc-spacer)]:[font-size:11.5px] [&>span:not(.sc-spacer)]:[color:#a5b0ad] dark:[&>span:not(.sc-spacer)]:[color:#79808b]">
             <strong>{isFooter ? "Footer content" : "Menu structure"}</strong>
-            <span className="sf-mono [font-family:'Geist_Mono',_monospace]">
+            <span className="sc-mono [font-family:'Geist_Mono',_monospace]">
               {items.length} items
             </span>
-            <span className="sf-spacer [flex:1]" />
+            <span className="sc-spacer [flex:1]" />
             <small>
               <i className="ph ph-arrows-out-cardinal" /> Drag to reorder
             </small>
           </div>
-          <div className="sf-builder-scroll sf-scroll [flex:1] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [overflow:auto] [padding:14px_16px_80px] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff]">
+          <div className="sc-builder-scroll sc-scroll [flex:1] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [overflow:auto] [padding:14px_16px_80px] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff]">
             {items.length ? (
-              <div className="sf-menu-items [display:flex] [flex-direction:column] [gap:9px]">
+              <div className="sc-menu-items [display:flex] [flex-direction:column] [gap:9px]">
                 {items.map((item, index) => (
                   <MenuCard
                     broken={
@@ -469,7 +469,7 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
                 ))}
               </div>
             ) : (
-              <div className="sf-builder-empty [display:flex] [flex-direction:column] [align-items:center] [gap:10px] [border-radius:12px] [padding:30px_20px] [text-align:center] [background:#fafcfa] [border:1.5px_dashed_#dce3de] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&_p]:[margin:0] [&_p]:[font-size:12px] [&_p]:[line-height:1.5] [&_p]:text-ink-subtle dark:[&_p]:[color:#79808b] [&_strong]:[font-size:14px] [&>span]:[display:grid] [&>span]:[height:44px] [&>span]:[width:44px] [&>span]:[place-items:center] [&>span]:[border-radius:11px] [&>span]:bg-selection [&>span]:[font-size:22px] [&>span]:text-action">
+              <div className="sc-builder-empty [display:flex] [flex-direction:column] [align-items:center] [gap:10px] [border-radius:12px] [padding:30px_20px] [text-align:center] [background:#fafcfa] [border:1.5px_dashed_#dce3de] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&_p]:[margin:0] [&_p]:[font-size:12px] [&_p]:[line-height:1.5] [&_p]:text-ink-subtle dark:[&_p]:[color:#79808b] [&_strong]:[font-size:14px] [&>span]:[display:grid] [&>span]:[height:44px] [&>span]:[width:44px] [&>span]:[place-items:center] [&>span]:[border-radius:11px] [&>span]:bg-selection [&>span]:[font-size:22px] [&>span]:text-action">
                 <span>
                   <i className={`ph ${isFooter ? "ph-columns" : "ph-list-plus"}`} />
                 </span>
@@ -477,12 +477,12 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
                 <p>Add links, groups, and a call-to-action. You can reorder everything later.</p>
               </div>
             )}
-            <div className="sf-add-navigation [position:relative] [margin-top:10px] [&>button]:[display:inline-flex] [&>button]:[height:44px] [&>button]:[width:100%] [&>button]:[cursor:pointer] [&>button]:[align-items:center] [&>button]:[justify-content:center] [&>button]:[gap:7px] [&>button]:[border-radius:10px] [&>button]:[font-size:13px] [&>button]:[font-weight:600] [&>button]:text-action [&>button]:[background:#fafcfa] [&>button]:[border:1.5px_dashed_#c2ccc4] dark:[&>button]:[border-color:#3d444e] dark:[&>button]:[color:#e9ecf1] dark:[&>button]:[background:#1d2126] [&>button:hover]:border-selection-border [&>button:hover]:bg-selection dark:[&>button:hover]:[color:#b994f8] dark:[&>button:hover]:[background:#2c333b]">
+            <div className="sc-add-navigation [position:relative] [margin-top:10px] [&>button]:[display:inline-flex] [&>button]:[height:44px] [&>button]:[width:100%] [&>button]:[cursor:pointer] [&>button]:[align-items:center] [&>button]:[justify-content:center] [&>button]:[gap:7px] [&>button]:[border-radius:10px] [&>button]:[font-size:13px] [&>button]:[font-weight:600] [&>button]:text-action [&>button]:[background:#fafcfa] [&>button]:[border:1.5px_dashed_#c2ccc4] dark:[&>button]:[border-color:#3d444e] dark:[&>button]:[color:#e9ecf1] dark:[&>button]:[background:#1d2126] [&>button:hover]:border-selection-border [&>button:hover]:bg-selection dark:[&>button:hover]:[color:#b994f8] dark:[&>button:hover]:[background:#2c333b]">
               <Button unstyled onClick={() => setAddOpen((value) => !value)} type="button">
                 <i className="ph-bold ph-plus" /> {isFooter ? "Add to footer" : "Add menu item"}
               </Button>
               {addOpen ? (
-                <div className="sf-add-navigation-menu [position:absolute] [right:0] [bottom:50px] [left:0] [z-index:10] [display:grid] [gap:3px] [border-radius:10px] bg-surface [padding:7px] [box-shadow:0_16px_36px_rgb(23_35_38_/_18%)] [border:1px_solid_#dce3de] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&_small]:[font-size:11px] [&_small]:text-ink-subtle dark:[&_small]:[color:#79808b] [&_strong]:[font-size:12.5px] [&>button]:[display:flex] [&>button]:[cursor:pointer] [&>button]:[align-items:center] [&>button]:[gap:11px] [&>button]:[border-radius:7px] [&>button]:[padding:9px] [&>button]:[text-align:left] [&>button]:[background:transparent] [&>button]:[border:0] [&>button:hover]:bg-canvas dark:[&>button:hover]:[background:#242930] [&>button>span.button]:bg-clay-soft [&>button>span.button]:text-clay-dark [&>button>span.group]:[color:#5b4b8a] [&>button>span.group]:[background:#ede7f5] [&>button>span:first-child]:[display:grid] [&>button>span:first-child]:[height:32px] [&>button>span:first-child]:[width:32px] [&>button>span:first-child]:[flex:none] [&>button>span:first-child]:[place-items:center] [&>button>span:first-child]:[border-radius:8px] [&>button>span:first-child]:bg-selection [&>button>span:first-child]:text-action [&>button>span:last-child]:[display:flex] [&>button>span:last-child]:[flex-direction:column]">
+                <div className="sc-add-navigation-menu [position:absolute] [right:0] [bottom:50px] [left:0] [z-index:10] [display:grid] [gap:3px] [border-radius:10px] bg-surface [padding:7px] [box-shadow:0_16px_36px_rgb(23_35_38_/_18%)] [border:1px_solid_#dce3de] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&_small]:[font-size:11px] [&_small]:text-ink-subtle dark:[&_small]:[color:#79808b] [&_strong]:[font-size:12.5px] [&>button]:[display:flex] [&>button]:[cursor:pointer] [&>button]:[align-items:center] [&>button]:[gap:11px] [&>button]:[border-radius:7px] [&>button]:[padding:9px] [&>button]:[text-align:left] [&>button]:[background:transparent] [&>button]:[border:0] [&>button:hover]:bg-canvas dark:[&>button:hover]:[background:#242930] [&>button>span.button]:bg-clay-soft [&>button>span.button]:text-clay-dark [&>button>span.group]:[color:#5b4b8a] [&>button>span.group]:[background:#ede7f5] [&>button>span:first-child]:[display:grid] [&>button>span:first-child]:[height:32px] [&>button>span:first-child]:[width:32px] [&>button>span:first-child]:[flex:none] [&>button>span:first-child]:[place-items:center] [&>button>span:first-child]:[border-radius:8px] [&>button>span:first-child]:bg-selection [&>button>span:first-child]:text-action [&>button>span:last-child]:[display:flex] [&>button>span:last-child]:[flex-direction:column]">
                   {(
                     (isFooter
                       ? [
@@ -559,7 +559,7 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
               ) : null}
             </div>
             {error ? (
-              <p className="sf-navigation-error [border-radius:8px] bg-danger-soft [padding:10px] [font-size:12px] text-danger">
+              <p className="sc-navigation-error [border-radius:8px] bg-danger-soft [padding:10px] [font-size:12px] text-danger">
                 {error}
               </p>
             ) : null}
@@ -572,7 +572,7 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
         onOpenChange={setPublishConfirm}
         className="!w-[min(460px,100%)]"
       >
-        <div className="sf-modal-head dark:[border-color:#323841]">
+        <div className="sc-modal-head dark:[border-color:#323841]">
           <span className="grid size-9 shrink-0 place-items-center rounded-[9px] bg-danger-soft text-[19px] text-danger">
             <i className="ph-fill ph-warning" />
           </span>
@@ -584,21 +584,21 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
             </ModalDescription>
           </div>
         </div>
-        <div className="sf-publish-warning-list [display:grid] [max-height:240px] [gap:6px] [overflow:auto] [padding:16px_22px] [&_div]:[display:flex] [&_div]:[flex-direction:column] [&_div]:[gap:2px] [&_div]:[border-radius:7px] [&_div]:bg-danger-soft [&_div]:[padding:9px_10px] [&_span]:[font-size:11px] [&_span]:text-danger [&_strong]:[font-size:12px]">
+        <div className="sc-publish-warning-list [display:grid] [max-height:240px] [gap:6px] [overflow:auto] [padding:16px_22px] [&_div]:[display:flex] [&_div]:[flex-direction:column] [&_div]:[gap:2px] [&_div]:[border-radius:7px] [&_div]:bg-danger-soft [&_div]:[padding:9px_10px] [&_span]:[font-size:11px] [&_span]:text-danger [&_strong]:[font-size:12px]">
           {brokenItems.map((item) => (
             <div key={item.id}>
               <strong>{item.label}</strong>
-              <span className="sf-mono [font-family:'Geist_Mono',_monospace]">{item.target}</span>
+              <span className="sc-mono [font-family:'Geist_Mono',_monospace]">{item.target}</span>
             </div>
           ))}
         </div>
-        <div className="sf-modal-actions dark:[border-color:#323841] dark:[background:#242930]">
-          <ModalClose className="sf-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.danger]:[border-color:#eec6bc] [&.danger]:bg-surface [&.danger]:text-danger [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]">
+        <div className="sc-modal-actions dark:[border-color:#323841] dark:[background:#242930]">
+          <ModalClose className="sc-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.danger]:[border-color:#eec6bc] [&.danger]:bg-surface [&.danger]:text-danger [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]">
             Keep editing
           </ModalClose>
           <Button
             unstyled
-            className="sf-action primary [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.danger]:[border-color:#eec6bc] [&.danger]:bg-surface [&.danger]:text-danger [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+            className="sc-action primary [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.danger]:[border-color:#eec6bc] [&.danger]:bg-surface [&.danger]:text-danger [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
             disabled={saving}
             loading={savingAction === "publish"}
             onClick={() => void publish()}

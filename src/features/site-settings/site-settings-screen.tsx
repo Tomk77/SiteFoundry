@@ -4,14 +4,6 @@ import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import { RouteLoading } from "@/components/loading";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useAuth } from "@/lib/auth";
 import {
   addSiteDomain,
@@ -30,6 +22,7 @@ import {
 } from "@/lib/site-settings";
 
 import { AdvancedSettings } from "./advanced-settings";
+import { ApiAccessSettings } from "./api-access-settings";
 import { DomainsSettings } from "./domains-settings";
 import { GeneralSettings } from "./general-settings";
 import { InvitePersonDialog } from "./invite-person-dialog";
@@ -51,6 +44,7 @@ import {
   type SettingsDestination,
 } from "./site-settings-model";
 import { SettingsHeader, SettingsNavigation } from "./settings-layout";
+import { SettingsConfirmDialog } from "./settings-confirm-dialog";
 import { useSiteSettingsWorkspace } from "./use-site-settings-workspace";
 
 export function SiteSettingsScreen({
@@ -266,6 +260,13 @@ export function SiteSettingsScreen({
                 siteName={workspace.site.name}
               />
             ) : null}
+            {destination === "api" ? (
+              <ApiAccessSettings
+                canManage={!readOnly}
+                siteId={workspace.site.id}
+                siteKey={workspace.site.slug}
+              />
+            ) : null}
           </div>
         </div>
       </section>
@@ -285,7 +286,7 @@ export function SiteSettingsScreen({
         onSave={saveMember}
         readOnly={readOnly}
       />
-      <ConfirmDialog
+      <SettingsConfirmDialog
         confirmLabel="Revoke invitation"
         description={
           revokeTarget
@@ -306,7 +307,7 @@ export function SiteSettingsScreen({
         open={Boolean(revokeTarget)}
         title="Revoke invitation?"
       />
-      <ConfirmDialog
+      <SettingsConfirmDialog
         confirmLabel="Change role"
         description={
           demotion
@@ -319,44 +320,6 @@ export function SiteSettingsScreen({
         title={demotion ? `Reduce ${demotion.name}'s access?` : "Reduce access?"}
       />
     </AppShell>
-  );
-}
-
-function ConfirmDialog({
-  open,
-  title,
-  description,
-  confirmLabel,
-  onOpenChange,
-  onConfirm,
-}: {
-  open: boolean;
-  title: string;
-  description: string;
-  confirmLabel: string;
-  onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
-}) {
-  return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogContent>
-        <DialogHeader className="p-5 pr-12">
-          <span className="mb-2 grid size-10 place-items-center rounded-full bg-danger-soft text-lg text-danger">
-            <i aria-hidden className="ph ph-warning" />
-          </span>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription className="text-[12px] leading-5 text-ink-muted">
-            {description}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex justify-end gap-2 border-t border-border p-4">
-          <DialogClose render={<Button type="button" variant="outline" />}>Cancel</DialogClose>
-          <Button onClick={onConfirm} type="button" variant="destructive">
-            {confirmLabel}
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
   );
 }
 

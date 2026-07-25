@@ -1,6 +1,6 @@
-# SiteFoundry
+# Scaffold CMS
 
-An early planning and implementation workspace for SiteFoundry, an open-source, website-native headless CMS.
+An early planning and implementation workspace for Scaffold CMS, an open-source, website-native headless CMS.
 
 The project currently contains a minimal TanStack Start application and the first product and architecture documents. It intentionally does not include a database, authentication, or CMS domain implementation yet; those choices should follow the product definition.
 

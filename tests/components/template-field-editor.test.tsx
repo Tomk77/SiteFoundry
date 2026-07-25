@@ -29,7 +29,7 @@ describe("TemplateFieldEditor", () => {
     expect(change).toHaveBeenLastCalledWith("New");
 
     view.rerender(<TemplateFieldEditor field={field("url")} value={42} onChange={change} />);
-    expect(view.container.querySelector(".sf-mono")).toBeTruthy();
+    expect(view.container.querySelector(".sc-mono")).toBeTruthy();
 
     view.rerender(<TemplateFieldEditor field={field("date")} value={null} onChange={change} />);
     expect(view.container.querySelector('input[type="date"]')).toBeTruthy();
@@ -83,11 +83,11 @@ describe("TemplateFieldEditor", () => {
     fireEvent.keyDown(input, { key: "Enter" });
     expect(change).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(view.container.querySelector(".sf-template-tags button")!);
+    fireEvent.click(view.container.querySelector(".sc-template-tags button")!);
     expect(change).toHaveBeenLastCalledWith([]);
     fireEvent.change(input, { target: { value: " " } });
     fireEvent.keyDown(input, { key: "Enter" });
-    expect(view.container.querySelector(".sf-template-tags")).toBeTruthy();
+    expect(view.container.querySelector(".sc-template-tags")).toBeTruthy();
   });
 
   it("shows required, help, and validation copy", () => {

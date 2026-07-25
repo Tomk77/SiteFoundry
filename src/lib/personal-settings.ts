@@ -21,12 +21,12 @@ export const interfaceLanguages = [
 
 export function applyInterfaceMode(mode: InterfaceMode) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem("sf-interface-mode", mode);
-  document.documentElement.dataset.sfMode = mode;
+  window.localStorage.setItem("sc-interface-mode", mode);
+  document.documentElement.dataset.scMode = mode;
   const dark =
     mode === "dark" ||
     (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
-  document.documentElement.dataset.sfTheme = dark ? "dark" : "light";
+  document.documentElement.dataset.scTheme = dark ? "dark" : "light";
 }
 
 export async function loadPersonalSettings(user: User): Promise<PersonalSettings> {

@@ -27,7 +27,7 @@ set
   first_name = coalesce(
     nullif(first_name, ''),
     nullif(split_part(trim(coalesce(full_name, '')), ' ', 1), ''),
-    'SiteFoundry'
+    'Scaffold CMS'
   ),
   last_name = coalesce(
     last_name,
@@ -37,7 +37,7 @@ set
       else null
     end
   ),
-  display_name = coalesce(nullif(display_name, ''), nullif(full_name, ''), 'SiteFoundry user');
+  display_name = coalesce(nullif(display_name, ''), nullif(full_name, ''), 'Scaffold CMS user');
 
 create table if not exists public.navigation_menus (
   id uuid primary key default gen_random_uuid(),

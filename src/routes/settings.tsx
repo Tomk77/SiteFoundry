@@ -11,6 +11,7 @@ const destinationValues: SettingsDestination[] = [
   "people",
   "languages",
   "domains",
+  "api",
   "advanced",
 ];
 const peopleTabValues: PeopleTab[] = ["members", "invitations", "roles"];

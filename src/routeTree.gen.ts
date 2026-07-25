@@ -20,6 +20,9 @@ import { Route as FooterRouteImport } from './routes/footer'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiV1SitesSiteKeyRouteImport } from './routes/api/v1/sites/$siteKey'
+import { Route as ApiV1SitesSiteKeyGraphqlRouteImport } from './routes/api/v1/sites/$siteKey/graphql'
+import { Route as ApiV1SitesSiteKeySplatRouteImport } from './routes/api/v1/sites/$siteKey/$'
 
 const StructuredContentRoute = StructuredContentRouteImport.update({
   id: '/structured-content',
@@ -76,6 +79,22 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1SitesSiteKeyRoute = ApiV1SitesSiteKeyRouteImport.update({
+  id: '/api/v1/sites/$siteKey',
+  path: '/api/v1/sites/$siteKey',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1SitesSiteKeyGraphqlRoute =
+  ApiV1SitesSiteKeyGraphqlRouteImport.update({
+    id: '/graphql',
+    path: '/graphql',
+    getParentRoute: () => ApiV1SitesSiteKeyRoute,
+  } as any)
+const ApiV1SitesSiteKeySplatRoute = ApiV1SitesSiteKeySplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => ApiV1SitesSiteKeyRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +108,9 @@ export interface FileRoutesByFullPath {
   '/redirects': typeof RedirectsRoute
   '/settings': typeof SettingsRoute
   '/structured-content': typeof StructuredContentRoute
+  '/api/v1/sites/$siteKey': typeof ApiV1SitesSiteKeyRouteWithChildren
+  '/api/v1/sites/$siteKey/$': typeof ApiV1SitesSiteKeySplatRoute
+  '/api/v1/sites/$siteKey/graphql': typeof ApiV1SitesSiteKeyGraphqlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,6 +124,9 @@ export interface FileRoutesByTo {
   '/redirects': typeof RedirectsRoute
   '/settings': typeof SettingsRoute
   '/structured-content': typeof StructuredContentRoute
+  '/api/v1/sites/$siteKey': typeof ApiV1SitesSiteKeyRouteWithChildren
+  '/api/v1/sites/$siteKey/$': typeof ApiV1SitesSiteKeySplatRoute
+  '/api/v1/sites/$siteKey/graphql': typeof ApiV1SitesSiteKeyGraphqlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,6 +141,9 @@ export interface FileRoutesById {
   '/redirects': typeof RedirectsRoute
   '/settings': typeof SettingsRoute
   '/structured-content': typeof StructuredContentRoute
+  '/api/v1/sites/$siteKey': typeof ApiV1SitesSiteKeyRouteWithChildren
+  '/api/v1/sites/$siteKey/$': typeof ApiV1SitesSiteKeySplatRoute
+  '/api/v1/sites/$siteKey/graphql': typeof ApiV1SitesSiteKeyGraphqlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +159,9 @@ export interface FileRouteTypes {
     | '/redirects'
     | '/settings'
     | '/structured-content'
+    | '/api/v1/sites/$siteKey'
+    | '/api/v1/sites/$siteKey/$'
+    | '/api/v1/sites/$siteKey/graphql'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +175,9 @@ export interface FileRouteTypes {
     | '/redirects'
     | '/settings'
     | '/structured-content'
+    | '/api/v1/sites/$siteKey'
+    | '/api/v1/sites/$siteKey/$'
+    | '/api/v1/sites/$siteKey/graphql'
   id:
     | '__root__'
     | '/'
@@ -157,6 +191,9 @@ export interface FileRouteTypes {
     | '/redirects'
     | '/settings'
     | '/structured-content'
+    | '/api/v1/sites/$siteKey'
+    | '/api/v1/sites/$siteKey/$'
+    | '/api/v1/sites/$siteKey/graphql'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -171,6 +208,7 @@ export interface RootRouteChildren {
   RedirectsRoute: typeof RedirectsRoute
   SettingsRoute: typeof SettingsRoute
   StructuredContentRoute: typeof StructuredContentRoute
+  ApiV1SitesSiteKeyRoute: typeof ApiV1SitesSiteKeyRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -252,8 +290,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/sites/$siteKey': {
+      id: '/api/v1/sites/$siteKey'
+      path: '/api/v1/sites/$siteKey'
+      fullPath: '/api/v1/sites/$siteKey'
+      preLoaderRoute: typeof ApiV1SitesSiteKeyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/sites/$siteKey/graphql': {
+      id: '/api/v1/sites/$siteKey/graphql'
+      path: '/graphql'
+      fullPath: '/api/v1/sites/$siteKey/graphql'
+      preLoaderRoute: typeof ApiV1SitesSiteKeyGraphqlRouteImport
+      parentRoute: typeof ApiV1SitesSiteKeyRoute
+    }
+    '/api/v1/sites/$siteKey/$': {
+      id: '/api/v1/sites/$siteKey/$'
+      path: '/$'
+      fullPath: '/api/v1/sites/$siteKey/$'
+      preLoaderRoute: typeof ApiV1SitesSiteKeySplatRouteImport
+      parentRoute: typeof ApiV1SitesSiteKeyRoute
+    }
   }
 }
+
+interface ApiV1SitesSiteKeyRouteChildren {
+  ApiV1SitesSiteKeySplatRoute: typeof ApiV1SitesSiteKeySplatRoute
+  ApiV1SitesSiteKeyGraphqlRoute: typeof ApiV1SitesSiteKeyGraphqlRoute
+}
+
+const ApiV1SitesSiteKeyRouteChildren: ApiV1SitesSiteKeyRouteChildren = {
+  ApiV1SitesSiteKeySplatRoute: ApiV1SitesSiteKeySplatRoute,
+  ApiV1SitesSiteKeyGraphqlRoute: ApiV1SitesSiteKeyGraphqlRoute,
+}
+
+const ApiV1SitesSiteKeyRouteWithChildren =
+  ApiV1SitesSiteKeyRoute._addFileChildren(ApiV1SitesSiteKeyRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -267,6 +339,7 @@ const rootRouteChildren: RootRouteChildren = {
   RedirectsRoute: RedirectsRoute,
   SettingsRoute: SettingsRoute,
   StructuredContentRoute: StructuredContentRoute,
+  ApiV1SitesSiteKeyRoute: ApiV1SitesSiteKeyRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

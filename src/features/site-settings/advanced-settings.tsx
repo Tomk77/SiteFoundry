@@ -155,7 +155,7 @@ export function AdvancedSettings({
               <strong className="text-[13px]">Delete this website</strong>
               <p className="mt-1 mb-0 max-w-[560px] text-[11.5px] leading-5 text-ink-muted">
                 {siteName}, its language trees, content, navigation, redirects, and settings will be
-                permanently deleted from SiteFoundry.
+                permanently deleted from Scaffold CMS.
               </p>
             </div>
             <Button

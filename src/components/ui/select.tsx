@@ -48,7 +48,7 @@ function SelectTrigger({
         render={
           <i
             aria-hidden
-            className="sf-select-icon ph ph-caret-down text-ink-subtle [i&]:[font-size:0] [i&::before]:[font-size:14px]"
+            className="sc-select-icon ph ph-caret-down text-ink-subtle [i&]:[font-size:0] [i&::before]:[font-size:14px]"
           />
         }
       />

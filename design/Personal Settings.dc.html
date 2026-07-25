@@ -22,15 +22,15 @@
   ::selection{background:#DFE3E8}
   input,select{font-family:inherit}
   i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
-  .sf-scroll{scrollbar-width:thin;scrollbar-color:#9AA8A4 transparent}
-  .sf-scroll::-webkit-scrollbar{width:10px;height:10px}
-  .sf-scroll::-webkit-scrollbar-thumb{background:rgba(140,150,147,0.4);border-radius:8px;border:3px solid transparent;background-clip:padding-box}
-  .sf-f{width:100%;height:40px;padding:0 12px;border-radius:8px;border:1.5px solid var(--field);background:var(--surface);font-size:13.5px;color:var(--ink);outline:none;transition:border-color .12s,box-shadow .12s}
-  .sf-f:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
-  .sf-f::placeholder{color:var(--ink3)}
-  @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
-  @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
-  @keyframes sfSpin{to{transform:rotate(360deg)}}
+  .sc-scroll{scrollbar-width:thin;scrollbar-color:#9AA8A4 transparent}
+  .sc-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .sc-scroll::-webkit-scrollbar-thumb{background:rgba(140,150,147,0.4);border-radius:8px;border:3px solid transparent;background-clip:padding-box}
+  .sc-f{width:100%;height:40px;padding:0 12px;border-radius:8px;border:1.5px solid var(--field);background:var(--surface);font-size:13.5px;color:var(--ink);outline:none;transition:border-color .12s,box-shadow .12s}
+  .sc-f:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
+  .sc-f::placeholder{color:var(--ink3)}
+  @keyframes scPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes scToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+  @keyframes scSpin{to{transform:rotate(360deg)}}
 </style>
 </helmet>
 
@@ -56,7 +56,7 @@
   </div>
 
   <!-- ===== CONTENT ===== -->
-  <div class="sf-scroll" style="flex:1;overflow:auto">
+  <div class="sc-scroll" style="flex:1;overflow:auto">
     <div style="max-width:720px;margin:0 auto;padding:26px 24px 60px;display:flex;flex-direction:column;gap:18px">
 
       <!-- identity strip -->
@@ -80,24 +80,24 @@
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <div style="display:flex;flex-direction:column;gap:6px">
               <label style="font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px">First name<span style="color:var(--accent)">*</span><sc-if value="{{ dFirst }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:999px;background:var(--warn)"></span></sc-if></label>
-              <input class="sf-f" value="{{ fFirst }}" onInput="{{ onFirst }}" placeholder="First name" autocomplete="given-name"/>
+              <input class="sc-f" value="{{ fFirst }}" onInput="{{ onFirst }}" placeholder="First name" autocomplete="given-name"/>
               <sc-if value="{{ eFirst }}" hint-placeholder-val="x"><span style="font-size:11.5px;color:var(--danger);display:inline-flex;align-items:center;gap:4px"><i class="ph-fill ph-warning-circle" style="font-size:12px"></i>{{ eFirst }}</span></sc-if>
             </div>
             <div style="display:flex;flex-direction:column;gap:6px">
               <label style="font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px">Last name<sc-if value="{{ dLast }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:999px;background:var(--warn)"></span></sc-if></label>
-              <input class="sf-f" value="{{ fLast }}" onInput="{{ onLast }}" placeholder="Last name" autocomplete="family-name"/>
+              <input class="sc-f" value="{{ fLast }}" onInput="{{ onLast }}" placeholder="Last name" autocomplete="family-name"/>
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px">
             <label style="font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px">Email<span style="color:var(--accent)">*</span><sc-if value="{{ dEmail }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:999px;background:var(--warn)"></span></sc-if></label>
-            <input class="sf-f" value="{{ fEmail }}" onInput="{{ onEmail }}" placeholder="you@company.com" autocomplete="email" style="font-family:'Geist Mono',monospace;font-size:13px"/>
+            <input class="sc-f" value="{{ fEmail }}" onInput="{{ onEmail }}" placeholder="you@company.com" autocomplete="email" style="font-family:'Geist Mono',monospace;font-size:13px"/>
             <sc-if value="{{ eEmail }}" hint-placeholder-val="x"><span style="font-size:11.5px;color:var(--danger);display:inline-flex;align-items:center;gap:4px"><i class="ph-fill ph-warning-circle" style="font-size:12px"></i>{{ eEmail }}</span></sc-if>
             <sc-if value="{{ emailChanged }}" hint-placeholder-val="{{ false }}"><span style="font-size:11.5px;color:var(--ink2);display:inline-flex;align-items:center;gap:5px;padding:8px 10px;border-radius:7px;background:var(--infoSoft)"><i class="ph-fill ph-envelope-simple" style="font-size:13px;color:var(--accent)"></i>You'll confirm this change from a link sent to the new address before it takes effect.</span></sc-if>
           </div>
           <sc-if value="{{ showUsername }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;flex-direction:column;gap:6px">
               <label style="font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px">Display name<sc-if value="{{ dUser }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:999px;background:var(--warn)"></span></sc-if></label>
-              <input class="sf-f" value="{{ fUser }}" onInput="{{ onUser }}" placeholder="How your name appears in the admin" autocomplete="nickname"/>
+              <input class="sc-f" value="{{ fUser }}" onInput="{{ onUser }}" placeholder="How your name appears in the admin" autocomplete="nickname"/>
               <span style="font-size:11.5px;color:var(--ink3)">Shown on your user card and in activity logs. Not your public author name.</span>
             </div>
           </sc-if>
@@ -116,7 +116,7 @@
             <span style="width:40px;height:40px;border-radius:10px;background:var(--sunken);display:flex;align-items:center;justify-content:center;flex:none"><i class="ph ph-google-logo" style="font-size:20px;color:var(--ink2)"></i></span>
             <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
               <span style="font-size:13.5px;font-weight:600;color:var(--ink)">You sign in with Google</span>
-              <span style="font-size:12.5px;color:var(--ink3);line-height:1.5">There's no SiteFoundry password to change. Manage your credentials in your Google account.</span>
+              <span style="font-size:12.5px;color:var(--ink3);line-height:1.5">There's no Scaffold CMS password to change. Manage your credentials in your Google account.</span>
             </div>
             <a href="#" onClick="{{ noop }}" style="display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border:1px solid var(--field);border-radius:8px;color:var(--ink2);font-size:12.5px;font-weight:600;white-space:nowrap;flex:none" style-hover="background:var(--sunken)">Manage in Google<i class="ph ph-arrow-square-out" style="font-size:14px"></i></a>
           </div>
@@ -127,7 +127,7 @@
             <div style="display:flex;flex-direction:column;gap:6px">
               <label style="font-size:12px;font-weight:600;color:var(--ink2)">Current password</label>
               <div style="position:relative;display:flex;align-items:center">
-                <input class="sf-f" type="{{ curType }}" value="{{ pCur }}" onInput="{{ onCur }}" placeholder="Enter current password" autocomplete="current-password" style="padding-right:40px"/>
+                <input class="sc-f" type="{{ curType }}" value="{{ pCur }}" onInput="{{ onCur }}" placeholder="Enter current password" autocomplete="current-password" style="padding-right:40px"/>
                 <span onClick="{{ toggleCur }}" title="Show or hide" style="position:absolute;right:10px;display:flex;color:var(--ink3);cursor:pointer" style-hover="color:var(--ink)"><i class="ph {{ curEye }}" style="font-size:17px"></i></span>
               </div>
             </div>
@@ -135,14 +135,14 @@
               <div style="display:flex;flex-direction:column;gap:6px">
                 <label style="font-size:12px;font-weight:600;color:var(--ink2)">New password</label>
                 <div style="position:relative;display:flex;align-items:center">
-                  <input class="sf-f" type="{{ newType }}" value="{{ pNew }}" onInput="{{ onNew }}" placeholder="New password" autocomplete="new-password" style="padding-right:40px"/>
+                  <input class="sc-f" type="{{ newType }}" value="{{ pNew }}" onInput="{{ onNew }}" placeholder="New password" autocomplete="new-password" style="padding-right:40px"/>
                   <span onClick="{{ toggleNew }}" title="Show or hide" style="position:absolute;right:10px;display:flex;color:var(--ink3);cursor:pointer" style-hover="color:var(--ink)"><i class="ph {{ newEye }}" style="font-size:17px"></i></span>
                 </div>
               </div>
               <div style="display:flex;flex-direction:column;gap:6px">
                 <label style="font-size:12px;font-weight:600;color:var(--ink2)">Confirm new password</label>
                 <div style="position:relative;display:flex;align-items:center">
-                  <input class="sf-f" type="{{ confType }}" value="{{ pConf }}" onInput="{{ onConf }}" placeholder="Repeat new password" autocomplete="new-password" style="padding-right:40px"/>
+                  <input class="sc-f" type="{{ confType }}" value="{{ pConf }}" onInput="{{ onConf }}" placeholder="Repeat new password" autocomplete="new-password" style="padding-right:40px"/>
                   <span onClick="{{ toggleConf }}" title="Show or hide" style="position:absolute;right:10px;display:flex;color:var(--ink3);cursor:pointer" style-hover="color:var(--ink)"><i class="ph {{ confEye }}" style="font-size:17px"></i></span>
                 </div>
               </div>
@@ -169,7 +169,7 @@
         <div style="padding:18px 20px;display:flex;flex-direction:column;gap:18px">
           <div style="display:flex;flex-direction:column;gap:6px">
             <label style="font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px">Interface language<sc-if value="{{ dLang }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:999px;background:var(--warn)"></span></sc-if></label>
-            <select value="{{ fLang }}" onChange="{{ onLang }}" class="sf-f" style="cursor:pointer;max-width:320px">
+            <select value="{{ fLang }}" onChange="{{ onLang }}" class="sc-f" style="cursor:pointer;max-width:320px">
               <sc-for list="{{ langs }}" as="l" hint-placeholder-count="4"><option value="{{ l.code }}">{{ l.name }}</option></sc-for>
             </select>
             <span style="font-size:11.5px;color:var(--ink3)">Only changes the admin interface — never your websites' content language.</span>
@@ -201,7 +201,7 @@
 </div>
 
 <sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
-  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:sfToast .2s cubic-bezier(.2,.8,.2,1)">
+  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:scToast .2s cubic-bezier(.2,.8,.2,1)">
     <i class="ph {{ toastIcon }}" style="font-size:18px;color:#B994F8"></i>
     <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
   </div>
@@ -381,7 +381,7 @@ class Component extends DCLogic {
       pwError: ps.error, pwDone: s.pwDone,
       pwCursor: ps.canSave ? "pointer" : "not-allowed", pwOpacity: ps.canSave ? "1" : "0.55",
       pwBtnLabel: s.pwSaving ? "Updating…" : "Update password",
-      pwBtnIcon: s.pwSaving ? "ph-spinner" : "ph-check", pwBtnAnim: s.pwSaving ? "sfSpin .6s linear infinite" : "none",
+      pwBtnIcon: s.pwSaving ? "ph-spinner" : "ph-check", pwBtnAnim: s.pwSaving ? "scSpin .6s linear infinite" : "none",
       updatePw: () => this.updatePw(),
 
       // experience

@@ -155,7 +155,7 @@ describe("page editor route", () => {
     expect(
       screen.getByText("Public preview will open when the frontend is connected"),
     ).toBeTruthy();
-    expect(container.querySelector(".sf-editor-problems")?.textContent).toContain("2 problems");
+    expect(container.querySelector(".sc-editor-problems")?.textContent).toContain("2 problems");
   });
 
   it("edits SEO and page information", async () => {
@@ -201,12 +201,12 @@ describe("page editor route", () => {
     await screen.findByText("Product launch");
     window.dispatchEvent(
       new MessageEvent("message", {
-        data: { source: "sf-preview", type: "select-field", id: "quote-1", fieldKey: "cite" },
+        data: { source: "sc-preview", type: "select-field", id: "quote-1", fieldKey: "cite" },
       }),
     );
     await waitFor(() => expect(container.querySelector("[data-editor-field='cite']")).toBeTruthy());
     window.dispatchEvent(
-      new MessageEvent("message", { data: { source: "sf-preview", type: "ready" } }),
+      new MessageEvent("message", { data: { source: "sc-preview", type: "ready" } }),
     );
     window.dispatchEvent(new MessageEvent("message", { data: null }));
   });

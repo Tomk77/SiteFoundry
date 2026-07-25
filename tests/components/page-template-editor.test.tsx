@@ -181,7 +181,7 @@ describe("PageTemplateEditor", () => {
 
     window.dispatchEvent(
       new MessageEvent("message", {
-        data: { source: "sf-template-preview", type: "select", id: "rich-1" },
+        data: { source: "sc-template-preview", type: "select", id: "rich-1" },
       }),
     );
     await waitFor(() =>
@@ -190,7 +190,7 @@ describe("PageTemplateEditor", () => {
       ),
     );
     window.dispatchEvent(
-      new MessageEvent("message", { data: { source: "sf-template-preview", type: "ready" } }),
+      new MessageEvent("message", { data: { source: "sc-template-preview", type: "ready" } }),
     );
     window.dispatchEvent(new MessageEvent("message", { data: "ignored" }));
   });

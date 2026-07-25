@@ -1,5 +1,5 @@
 {
-  "name": "sitefoundry",
+  "name": "scaffold-cms",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@9.1.4",
@@ -29,6 +29,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@apollo/sandbox": "2.7.4",
     "@base-ui/react": "^1.6.0",
     "@fontsource/geist": "5.2.9",
     "@fontsource/geist-mono": "5.2.8",
@@ -43,6 +44,7 @@
     "@tanstack/router-plugin": "1.168.19",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "graphql": "16.14.1",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "shadcn": "^4.13.0",

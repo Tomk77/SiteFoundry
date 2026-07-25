@@ -1,10 +1,10 @@
-@keyframes sf-editor-spin {
+@keyframes sc-editor-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes sf-editor-pop {
+@keyframes sc-editor-pop {
   from {
     opacity: 0;
     transform: translateY(6px) scale(0.985);
@@ -15,7 +15,7 @@
   }
 }
 
-@keyframes sf-editor-toast {
+@keyframes sc-editor-toast {
   from {
     opacity: 0;
     transform: translate(-50%, 10px);
@@ -26,20 +26,20 @@
   }
 }
 
-@keyframes sf-slide-in {
+@keyframes sc-slide-in {
   from {
     opacity: 0;
     transform: translateY(-4px);
   }
 }
 
-@keyframes sf-navigation-spin {
+@keyframes sc-navigation-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes sf-template-pop {
+@keyframes sc-template-pop {
   from {
     opacity: 0;
     transform: translateY(6px) scale(0.985);
@@ -50,19 +50,19 @@
   }
 }
 
-@keyframes sf-template-spin {
+@keyframes sc-template-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes sf-structured-fade {
+@keyframes sc-structured-fade {
   from {
     opacity: 0;
   }
 }
 
-@keyframes sf-structured-drawer {
+@keyframes sc-structured-drawer {
   from {
     transform: translateX(24px);
     opacity: 0.7;

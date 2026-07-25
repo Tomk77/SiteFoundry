@@ -46,6 +46,7 @@ export interface Database {
           updated_by: string | null;
           created_at: string;
           updated_at: string;
+          published_revision_id: string | null;
         };
         Insert: {
           id?: string;
@@ -57,6 +58,7 @@ export interface Database {
           updated_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          published_revision_id?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["content_records"]["Insert"]>;
         Relationships: [];
@@ -75,6 +77,9 @@ export interface Database {
           position: number;
           created_at: string;
           updated_at: string;
+          published_schema: Json | null;
+          published_schema_version: number;
+          schema_published_at: string | null;
         };
         Insert: {
           id?: string;
@@ -89,6 +94,9 @@ export interface Database {
           position?: number;
           created_at?: string;
           updated_at?: string;
+          published_schema?: Json | null;
+          published_schema_version?: number;
+          schema_published_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["content_types"]["Insert"]>;
         Relationships: [];
@@ -128,6 +136,7 @@ export interface Database {
           parent_id: string | null;
           position: number;
           preferred_child_template: string | null;
+          published_revision_id: string | null;
           seo_description: string;
           seo_title: string;
           site_language_id: string;
@@ -153,6 +162,7 @@ export interface Database {
           validation_status?: string;
           position?: number;
           preferred_child_template?: string | null;
+          published_revision_id?: string | null;
           seo_description?: string;
           seo_title?: string;
           is_homepage?: boolean;
@@ -183,6 +193,54 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["page_template_revisions"]["Insert"]>;
+        Relationships: [];
+      };
+      page_published_revisions: {
+        Row: {
+          id: string;
+          page_id: string;
+          site_language_id: string;
+          version: number;
+          snapshot: Json;
+          published_by: string | null;
+          published_at: string;
+        };
+        Insert: {
+          id?: string;
+          page_id: string;
+          site_language_id: string;
+          version: number;
+          snapshot: Json;
+          published_by?: string | null;
+          published_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["page_published_revisions"]["Insert"]>;
+        Relationships: [];
+      };
+      content_record_published_revisions: {
+        Row: {
+          id: string;
+          record_id: string;
+          content_type_id: string;
+          site_language_id: string;
+          version: number;
+          snapshot: Json;
+          published_by: string | null;
+          published_at: string;
+        };
+        Insert: {
+          id?: string;
+          record_id: string;
+          content_type_id: string;
+          site_language_id: string;
+          version: number;
+          snapshot: Json;
+          published_by?: string | null;
+          published_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["content_record_published_revisions"]["Insert"]
+        >;
         Relationships: [];
       };
       page_templates: {
@@ -405,6 +463,46 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["site_export_requests"]["Insert"]>;
         Relationships: [];
       };
+      site_api_tokens: {
+        Row: {
+          id: string;
+          site_id: string;
+          name: string;
+          token_hash: string;
+          token_prefix: string;
+          token_suffix: string;
+          scopes: string[];
+          allowed_origins: string[];
+          expires_at: string | null;
+          last_used_at: string | null;
+          revoked_at: string | null;
+          rate_limit_per_minute: number;
+          rate_window_started_at: string;
+          rate_request_count: number;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          site_id: string;
+          name: string;
+          token_hash: string;
+          token_prefix: string;
+          token_suffix: string;
+          scopes?: string[];
+          allowed_origins?: string[];
+          expires_at?: string | null;
+          last_used_at?: string | null;
+          revoked_at?: string | null;
+          rate_limit_per_minute?: number;
+          rate_window_started_at?: string;
+          rate_request_count?: number;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["site_api_tokens"]["Insert"]>;
+        Relationships: [];
+      };
       sites: {
         Row: {
           created_at: string;
@@ -434,6 +532,14 @@ export interface Database {
     };
     Views: Record<string, never>;
     Functions: {
+      get_delivery_bundle: {
+        Args: {
+          target_site_key: string;
+          target_token_hash: string;
+          target_origin?: string | null;
+        };
+        Returns: Json;
+      };
       delete_page_template: {
         Args: { target_language_id: string; target_template_id: string };
         Returns: undefined;
@@ -454,6 +560,14 @@ export interface Database {
           create_redirects: boolean;
         };
         Returns: unknown;
+      };
+      publish_page: {
+        Args: { target_page_id: string };
+        Returns: string;
+      };
+      publish_content_type_schema: {
+        Args: { target_content_type_id: string };
+        Returns: number;
       };
       save_content_type: {
         Args: {

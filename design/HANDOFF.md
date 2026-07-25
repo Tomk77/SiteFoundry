@@ -1,6 +1,6 @@
-# SiteFoundry admin — design handoff
+# Scaffold CMS admin — design handoff
 
-Session output: interactive design prototypes built as Design Components (`*.dc.html`), inline-styled, with Phosphor icons, Geist / Geist Mono, and the approved Foundry Amethyst and Fired Clay palette. Each is a clickable spec — open it and interact; every state below is reachable in the prototype.
+Session output: interactive design prototypes built as Design Components (`*.dc.html`), inline-styled, with Phosphor icons, Geist / Geist Mono, and the approved Scaffold Amethyst and Fired Clay palette. Each is a clickable spec — open it and interact; every state below is reachable in the prototype.
 
 **Intended real stack:** headless primitives (Radix Primitives or React Aria) styled with the Amethyst/Clay tokens on the TanStack Start / React + Supabase codebase. The prototypes are HTML for review only — do not ship them; rebuild in the app stack using the tokens in `CLAUDE.md`.
 

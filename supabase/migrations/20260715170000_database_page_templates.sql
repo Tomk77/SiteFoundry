@@ -133,9 +133,9 @@ cross join (
       'ph-newspaper',
       'published',
       false,
-      '{"seoTitle":"","seoDescription":"Read the latest from SiteFoundry."}'::jsonb,
+      '{"seoTitle":"","seoDescription":"Read the latest from Scaffold CMS."}'::jsonb,
       '/preview/news',
-      '[{"type":"hero","values":{"eyebrow":"Product news","headline":"Introducing SiteFoundry 1.0","subheadline":"The website-native, headless CMS is now generally available.","align":"Left","media":"news-hero.jpg","fullBleed":true}},{"type":"richtext","values":{"body":"Today we''re making SiteFoundry generally available.\n\nIt rethinks the headless CMS around a canonical page tree."}},{"type":"quote","values":{"text":"Finally, a CMS our editors actually understand.","cite":"Early-access customer","variant":"Bar"}},{"type":"image","values":{"media":"news-hero.jpg","alt":"The page tree in the SiteFoundry admin","caption":"The page tree is how editors navigate a site.","width":"Wide"}},{"type":"cta","values":{"heading":"Ready to build?","body":"Self-host in minutes.","buttonLabel":"Get started","buttonHref":"/contact","style":"Primary","newTab":false}}]'::jsonb,
+      '[{"type":"hero","values":{"eyebrow":"Product news","headline":"Introducing Scaffold CMS 1.0","subheadline":"The website-native, headless CMS is now generally available.","align":"Left","media":"news-hero.jpg","fullBleed":true}},{"type":"richtext","values":{"body":"Today we''re making Scaffold CMS generally available.\n\nIt rethinks the headless CMS around a canonical page tree."}},{"type":"quote","values":{"text":"Finally, a CMS our editors actually understand.","cite":"Early-access customer","variant":"Bar"}},{"type":"image","values":{"media":"news-hero.jpg","alt":"The page tree in the Scaffold CMS admin","caption":"The page tree is how editors navigate a site.","width":"Wide"}},{"type":"cta","values":{"heading":"Ready to build?","body":"Self-host in minutes.","buttonLabel":"Get started","buttonHref":"/contact","style":"Primary","newTab":false}}]'::jsonb,
       '2026-02-01T09:00:00.000Z'::timestamptz
     ),
     (

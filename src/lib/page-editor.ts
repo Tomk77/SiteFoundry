@@ -141,10 +141,14 @@ export async function saveEditablePage(page: EditablePage, publish = false) {
     .select("updated_at, status, validation_status")
     .single();
   if (error) throw error;
+  if (publish) {
+    const { error: publishError } = await client.rpc("publish_page", { target_page_id: page.id });
+    if (publishError) throw publishError;
+  }
 
   return {
     updatedAt: data.updated_at,
-    status: data.status as EditablePage["status"],
+    status: publish ? "published" : (data.status as EditablePage["status"]),
     validationStatus: data.validation_status as EditablePage["validationStatus"],
   };
 }

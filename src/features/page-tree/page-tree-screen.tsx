@@ -260,7 +260,7 @@ export function PageTreeScreen({
           siteId: workspace.site.id,
           languageId: workspace.language.id,
         });
-        const key = `sf-tree:${workspace.language.id}`;
+        const key = `sc-tree:${workspace.language.id}`;
         const saved = sessionStorage.getItem(key);
         if (saved) {
           const state = JSON.parse(saved) as {
@@ -300,7 +300,7 @@ export function PageTreeScreen({
     if (!data || !restored.current) return;
     const persist = () =>
       sessionStorage.setItem(
-        `sf-tree:${data.language.id}`,
+        `sc-tree:${data.language.id}`,
         JSON.stringify({
           expanded: [...expanded],
           selected,
@@ -651,8 +651,8 @@ export function PageTreeScreen({
       workspaces={data?.workspaces}
       onWorkspaceSelect={switchWorkspace}
     >
-      <header className="sf-tree-head [display:flex] [align-items:center] [gap:12px] [padding:16px_22px_14px] [border-bottom:1px_solid_#eef1ed]">
-        <div className="sf-tree-title [display:flex] [flex-direction:column] [gap:1px] [&_b]:text-ink-subtle [&_b]:[font:500_12px_'Geist_Mono'] [&_div]:[display:flex] [&_div]:[align-items:center] [&_div]:[gap:9px] [&_h1]:[margin:0] [&_h1]:[font-size:19px] [&_h1]:[font-weight:600] [&_h1]:[letter-spacing:-0.015em] [&>span]:[font-size:12px] [&>span]:text-ink-subtle">
+      <header className="sc-tree-head [display:flex] [align-items:center] [gap:12px] [padding:16px_22px_14px] [border-bottom:1px_solid_#eef1ed]">
+        <div className="sc-tree-title [display:flex] [flex-direction:column] [gap:1px] [&_b]:text-ink-subtle [&_b]:[font:500_12px_'Geist_Mono'] [&_div]:[display:flex] [&_div]:[align-items:center] [&_div]:[gap:9px] [&_h1]:[margin:0] [&_h1]:[font-size:19px] [&_h1]:[font-weight:600] [&_h1]:[letter-spacing:-0.015em] [&>span]:[font-size:12px] [&>span]:text-ink-subtle">
           <div>
             <h1>Pages</h1>
             <b>{data?.pageCount ?? 0} pages</b>
@@ -662,9 +662,9 @@ export function PageTreeScreen({
             {(data?.language.code ?? "en").toUpperCase()}
           </span>
         </div>
-        <span className="sf-spacer [flex:1]" />
+        <span className="sc-spacer [flex:1]" />
         <label
-          className="sf-search [display:flex] [height:36px] [width:248px] [align-items:center] [gap:8px] [border-radius:8px] bg-surface [padding:0_12px] [border:1.5px_solid_#cfd6d0] max-[800px]:[width:190px] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&_i]:[font-size:15px] [&_i]:text-ink-subtle [&_input]:[width:100%] [&_input]:[padding:0] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[background:transparent] [&_input]:[border:0] dark:[&_input]:[color:#e9ecf1] [&:focus-within]:border-action [&:focus-within]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)]"
+          className="sc-search [display:flex] [height:36px] [width:248px] [align-items:center] [gap:8px] [border-radius:8px] bg-surface [padding:0_12px] [border:1.5px_solid_#cfd6d0] max-[800px]:[width:190px] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&_i]:[font-size:15px] [&_i]:text-ink-subtle [&_input]:[width:100%] [&_input]:[padding:0] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[background:transparent] [&_input]:[border:0] dark:[&_input]:[color:#e9ecf1] [&:focus-within]:border-action [&:focus-within]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)]"
           htmlFor="page-search"
         >
           <i className="ph ph-magnifying-glass" />
@@ -679,13 +679,13 @@ export function PageTreeScreen({
         </label>
         <Button
           unstyled
-          className={`sf-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sf-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126] ${filtersOpen || filtering ? "active" : ""}`}
+          className={`sc-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126] ${filtersOpen || filtering ? "active" : ""}`}
           onClick={() => setFiltersOpen((value) => !value)}
         >
           <i className="ph ph-funnel" />
           Filters
           {filtering ? (
-            <b className="sf-filter-count [display:grid] [height:17px] [min-width:17px] [place-items:center] [border-radius:999px] bg-action [font-size:10px] [color:#fff]">
+            <b className="sc-filter-count [display:grid] [height:17px] [min-width:17px] [place-items:center] [border-radius:999px] bg-action [font-size:10px] [color:#fff]">
               {
                 [
                   query,
@@ -699,7 +699,7 @@ export function PageTreeScreen({
         </Button>
         <Button
           unstyled
-          className="sf-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sf-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+          className="sc-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
           disabled={filtering || expandableIds.size === 0}
           onClick={() => setExpanded(allExpanded ? new Set() : new Set(expandableIds))}
           title={filtering ? "Clear search and filters to change the tree expansion" : undefined}
@@ -709,7 +709,7 @@ export function PageTreeScreen({
         </Button>
         <Button
           unstyled
-          className="sf-action primary [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sf-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+          className="sc-action primary [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
           onClick={() => openAdd()}
         >
           <i className="ph-bold ph-plus" />
@@ -718,7 +718,7 @@ export function PageTreeScreen({
       </header>
       {filtering && (
         <div
-          className="sf-active-filters [display:flex] [min-height:42px] [align-items:center] [gap:7px] [padding:7px_22px] [background:#fafcfa] [border-bottom:1px_solid_#e7ece8] dark:[border-color:#323841] dark:[background:#1d2126] [&>.sf-reset-filters]:[margin-left:auto] [&>.sf-reset-filters]:[border-color:transparent] [&>.sf-reset-filters]:[font-weight:650] [&>.sf-reset-filters]:text-action [&>.sf-reset-filters]:[background:transparent] dark:[&>.sf-reset-filters]:[border-color:transparent] dark:[&>.sf-reset-filters]:[color:#b994f8] dark:[&>.sf-reset-filters]:[background:transparent] dark:[&>.sf-reset-filters:hover]:[background:#2c333b] [&>button]:[display:inline-flex] [&>button]:[height:27px] [&>button]:[cursor:pointer] [&>button]:[align-items:center] [&>button]:[gap:5px] [&>button]:[border-radius:999px] [&>button]:[padding:0_8px] [&>button]:[font-size:11px] [&>button]:[font-weight:500] [&>button]:[color:#315b5e] [&>button]:[background:#f0f7f5] [&>button]:[border:1px_solid_#cfe1dd] dark:[&>button]:[border-color:#3d444e] dark:[&>button]:[color:#a9d7d5] dark:[&>button]:[background:#2c333b] [&>button_i]:[font-size:11px] [&>button_i]:[color:#6d8d89] dark:[&>button_i]:[color:#b994f8] [&>button:hover]:[border-color:#9fc9c2] [&>button:hover]:[background:#e4f1ee] dark:[&>button:hover]:[border-color:#515a65] dark:[&>button:hover]:[background:#2c333b] [&>span]:[margin-right:2px] [&>span]:[font-size:10.5px] [&>span]:[font-weight:600] [&>span]:[letter-spacing:0.04em] [&>span]:text-ink-subtle [&>span]:[text-transform:uppercase] dark:[&>span]:[color:#79808b]"
+          className="sc-active-filters [display:flex] [min-height:42px] [align-items:center] [gap:7px] [padding:7px_22px] [background:#fafcfa] [border-bottom:1px_solid_#e7ece8] dark:[border-color:#323841] dark:[background:#1d2126] [&>.sc-reset-filters]:[margin-left:auto] [&>.sc-reset-filters]:[border-color:transparent] [&>.sc-reset-filters]:[font-weight:650] [&>.sc-reset-filters]:text-action [&>.sc-reset-filters]:[background:transparent] dark:[&>.sc-reset-filters]:[border-color:transparent] dark:[&>.sc-reset-filters]:[color:#b994f8] dark:[&>.sc-reset-filters]:[background:transparent] dark:[&>.sc-reset-filters:hover]:[background:#2c333b] [&>button]:[display:inline-flex] [&>button]:[height:27px] [&>button]:[cursor:pointer] [&>button]:[align-items:center] [&>button]:[gap:5px] [&>button]:[border-radius:999px] [&>button]:[padding:0_8px] [&>button]:[font-size:11px] [&>button]:[font-weight:500] [&>button]:[color:#315b5e] [&>button]:[background:#f0f7f5] [&>button]:[border:1px_solid_#cfe1dd] dark:[&>button]:[border-color:#3d444e] dark:[&>button]:[color:#a9d7d5] dark:[&>button]:[background:#2c333b] [&>button_i]:[font-size:11px] [&>button_i]:[color:#6d8d89] dark:[&>button_i]:[color:#b994f8] [&>button:hover]:[border-color:#9fc9c2] [&>button:hover]:[background:#e4f1ee] dark:[&>button:hover]:[border-color:#515a65] dark:[&>button:hover]:[background:#2c333b] [&>span]:[margin-right:2px] [&>span]:[font-size:10.5px] [&>span]:[font-weight:600] [&>span]:[letter-spacing:0.04em] [&>span]:text-ink-subtle [&>span]:[text-transform:uppercase] dark:[&>span]:[color:#79808b]"
           aria-label="Active filters"
         >
           <span>Active filters</span>
@@ -747,7 +747,7 @@ export function PageTreeScreen({
           ) : null}
           <Button
             unstyled
-            className="sf-reset-filters"
+            className="sc-reset-filters"
             onClick={() => updateUrlView("", defaultFilters)}
           >
             Reset all
@@ -755,7 +755,7 @@ export function PageTreeScreen({
         </div>
       )}
       {filtersOpen && (
-        <div className="sf-filter-bar [display:flex] [align-items:flex-end] [gap:12px] [padding:11px_22px] [background:#fafcfa] [border-bottom:1px_solid_var(--sf-sunken)] max-[900px]:[flex-wrap:wrap] dark:[border-color:#323841] dark:[background:#1d2126] [&_label]:[display:flex] [&_label]:[flex-direction:column] [&_label]:[gap:4px] max-[900px]:[&_label]:[flex:1] [&_label>span]:[font-size:10px] [&_label>span]:[font-weight:600] [&_label>span]:[letter-spacing:0.05em] [&_label>span]:text-ink-subtle [&_label>span]:[text-transform:uppercase] dark:[&_label>span]:[color:#79808b] [&_select]:[height:32px] [&_select]:[min-width:140px] [&_select]:[border-radius:7px] [&_select]:bg-surface [&_select]:[padding:0_28px_0_9px] [&_select]:[font-size:12px] [&_select]:[color:#33474a] [&_select]:[border:1px_solid_var(--sf-field)] max-[900px]:[&_select]:[width:100%] dark:[&_select]:[border-color:#3d444e] dark:[&_select]:[color:#e9ecf1] dark:[&_select]:[background:#15181c] dark:[&_select:focus]:[border-color:#b994f8] dark:[&_select:focus]:[outline:3px_solid_rgb(185_148_248_/_16%)] [&>button]:[height:32px] [&>button]:[cursor:pointer] [&>button]:[padding:0_10px] [&>button]:[font-size:12px] [&>button]:[font-weight:600] [&>button]:text-action [&>button]:[background:transparent] [&>button]:[border:0] dark:[&>button]:[border-color:transparent] dark:[&>button]:[color:#b994f8] dark:[&>button]:[background:transparent] dark:[&>button:hover]:[background:#2c333b]">
+        <div className="sc-filter-bar [display:flex] [align-items:flex-end] [gap:12px] [padding:11px_22px] [background:#fafcfa] [border-bottom:1px_solid_var(--sc-sunken)] max-[900px]:[flex-wrap:wrap] dark:[border-color:#323841] dark:[background:#1d2126] [&_label]:[display:flex] [&_label]:[flex-direction:column] [&_label]:[gap:4px] max-[900px]:[&_label]:[flex:1] [&_label>span]:[font-size:10px] [&_label>span]:[font-weight:600] [&_label>span]:[letter-spacing:0.05em] [&_label>span]:text-ink-subtle [&_label>span]:[text-transform:uppercase] dark:[&_label>span]:[color:#79808b] [&_select]:[height:32px] [&_select]:[min-width:140px] [&_select]:[border-radius:7px] [&_select]:bg-surface [&_select]:[padding:0_28px_0_9px] [&_select]:[font-size:12px] [&_select]:[color:#33474a] [&_select]:[border:1px_solid_var(--sc-field)] max-[900px]:[&_select]:[width:100%] dark:[&_select]:[border-color:#3d444e] dark:[&_select]:[color:#e9ecf1] dark:[&_select]:[background:#15181c] dark:[&_select:focus]:[border-color:#b994f8] dark:[&_select:focus]:[outline:3px_solid_rgb(185_148_248_/_16%)] [&>button]:[height:32px] [&>button]:[cursor:pointer] [&>button]:[padding:0_10px] [&>button]:[font-size:12px] [&>button]:[font-weight:600] [&>button]:text-action [&>button]:[background:transparent] [&>button]:[border:0] dark:[&>button]:[border-color:transparent] dark:[&>button]:[color:#b994f8] dark:[&>button]:[background:transparent] dark:[&>button:hover]:[background:#2c333b]">
           <label htmlFor="page-status-filter">
             <span>Status</span>
             <NativeSelect
@@ -820,12 +820,12 @@ export function PageTreeScreen({
         </div>
       )}
       <div
-        className="sf-tree-scroll sf-scroll [position:relative] [flex:1] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [overflow:auto] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff]"
+        className="sc-tree-scroll sc-scroll [position:relative] [flex:1] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [overflow:auto] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff]"
         ref={scrollRef}
       >
         {error ? (
           <div
-            className="sf-loading [display:grid] [height:100vh] [width:100vw] [place-items:center] bg-canvas [font-size:13px] text-ink-muted [transition:background-color_140ms_ease,_color_140ms_ease,_border-color_140ms_ease] motion-reduce:[transition:none] dark:[color:#a7aeb8] dark:[background:#15181c]"
+            className="sc-loading [display:grid] [height:100vh] [width:100vw] [place-items:center] bg-canvas [font-size:13px] text-ink-muted [transition:background-color_140ms_ease,_color_140ms_ease,_border-color_140ms_ease] motion-reduce:[transition:none] dark:[color:#a7aeb8] dark:[background:#15181c]"
             style={{ width: "100%", height: "100%" }}
           >
             {error}
@@ -836,7 +836,7 @@ export function PageTreeScreen({
               aria-level={page.depth + 1}
               aria-selected={selected === page.id}
               className={cn(
-                "sf-tree-row [position:relative] [z-index:0] [display:flex] [height:47px] [cursor:pointer] [align-items:center] [gap:8px] bg-surface [padding-right:14px] [border-bottom:1px_solid_#f5f7f4] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&.dragging]:[opacity:0.4] [&.drop-after::after]:[position:absolute] [&.drop-after::after]:[right:14px] [&.drop-after::after]:[bottom:-1px] [&.drop-after::after]:[left:inherit] [&.drop-after::after]:[z-index:4] [&.drop-after::after]:[height:2px] [&.drop-after::after]:[width:calc(100%_-_var(--drop-indent,_14px)_-_14px)] [&.drop-after::after]:[border-radius:2px] [&.drop-after::after]:bg-action [&.drop-after::after]:[content:''] [&.drop-before::before]:[position:absolute] [&.drop-before::before]:[top:-1px] [&.drop-before::before]:[right:14px] [&.drop-before::before]:[left:inherit] [&.drop-before::before]:[z-index:4] [&.drop-before::before]:[height:2px] [&.drop-before::before]:[width:calc(100%_-_var(--drop-indent,_14px)_-_14px)] [&.drop-before::before]:[border-radius:2px] [&.drop-before::before]:bg-action [&.drop-before::before]:[content:''] [&.drop-inside]:[z-index:2] [&.drop-inside]:bg-selection [&.drop-inside]:[box-shadow:inset_3px_0_var(--sf-accent)] [&.menu-open]:[z-index:30] [&.menu-open]:[filter:none] [&.muted]:[opacity:0.55] [&.selected]:bg-selection [&.selected]:[box-shadow:inset_3px_0_#96a0ac] dark:[&.selected]:[color:#b994f8] dark:[&.selected]:[background:#2c333b] [&:hover]:[filter:brightness(0.975)]",
+                "sc-tree-row [position:relative] [z-index:0] [display:flex] [height:47px] [cursor:pointer] [align-items:center] [gap:8px] bg-surface [padding-right:14px] [border-bottom:1px_solid_#f5f7f4] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&.dragging]:[opacity:0.4] [&.drop-after::after]:[position:absolute] [&.drop-after::after]:[right:14px] [&.drop-after::after]:[bottom:-1px] [&.drop-after::after]:[left:inherit] [&.drop-after::after]:[z-index:4] [&.drop-after::after]:[height:2px] [&.drop-after::after]:[width:calc(100%_-_var(--drop-indent,_14px)_-_14px)] [&.drop-after::after]:[border-radius:2px] [&.drop-after::after]:bg-action [&.drop-after::after]:[content:''] [&.drop-before::before]:[position:absolute] [&.drop-before::before]:[top:-1px] [&.drop-before::before]:[right:14px] [&.drop-before::before]:[left:inherit] [&.drop-before::before]:[z-index:4] [&.drop-before::before]:[height:2px] [&.drop-before::before]:[width:calc(100%_-_var(--drop-indent,_14px)_-_14px)] [&.drop-before::before]:[border-radius:2px] [&.drop-before::before]:bg-action [&.drop-before::before]:[content:''] [&.drop-inside]:[z-index:2] [&.drop-inside]:bg-selection [&.drop-inside]:[box-shadow:inset_3px_0_var(--sc-accent)] [&.menu-open]:[z-index:30] [&.menu-open]:[filter:none] [&.muted]:[opacity:0.55] [&.selected]:bg-selection [&.selected]:[box-shadow:inset_3px_0_#96a0ac] dark:[&.selected]:[color:#b994f8] dark:[&.selected]:[background:#2c333b] [&:hover]:[filter:brightness(0.975)]",
                 selected === page.id && "selected",
                 page.muted && "muted",
                 actionPage?.id === page.id && "menu-open",
@@ -886,7 +886,7 @@ export function PageTreeScreen({
               <Button
                 unstyled
                 className={cn(
-                  "sf-tree-chevron [display:grid] [height:17px] [width:17px] [flex:none] [cursor:pointer] [place-items:center] [border-radius:4px] [color:#8a9895] [background:transparent] [border:0] [&.hidden]:[visibility:hidden]",
+                  "sc-tree-chevron [display:grid] [height:17px] [width:17px] [flex:none] [cursor:pointer] [place-items:center] [border-radius:4px] [color:#8a9895] [background:transparent] [border:0] [&.hidden]:[visibility:hidden]",
                   !page.hasChildren && "hidden",
                 )}
                 onClick={(event) => {
@@ -904,25 +904,25 @@ export function PageTreeScreen({
                   className={`ph-bold ph-caret-${visibleExpanded.has(page.id) ? "down" : "right"}`}
                 />
               </Button>
-              <span className="sf-tree-icon [display:flex] [width:17px] [flex:none] [font-size:16px] [color:#718784]">
+              <span className="sc-tree-icon [display:flex] [width:17px] [flex:none] [font-size:16px] [color:#718784]">
                 <i
                   className={`ph ${page.depth === 0 ? "ph-house" : page.hasChildren ? "ph-folder" : "ph-file-text"}`}
                 />
               </span>
-              <span className="sf-tree-name [font-size:13.5px] [font-weight:500] [white-space:nowrap] text-ink dark:[color:#e9ecf1]">
+              <span className="sc-tree-name [font-size:13.5px] [font-weight:500] [white-space:nowrap] text-ink dark:[color:#e9ecf1]">
                 {page.title}
               </span>
-              <span className="sf-tree-slug [white-space:nowrap] [color:#9aa8a4] [font:400_12px_'Geist_Mono'] dark:[color:#79808b]">
+              <span className="sc-tree-slug [white-space:nowrap] [color:#9aa8a4] [font:400_12px_'Geist_Mono'] dark:[color:#79808b]">
                 {ownSlug(page.slug)}
               </span>
-              <span className="sf-spacer [flex:1]" />
-              <span className="sf-template [border-radius:5px] bg-sunken [padding:2px_8px] [font-size:11.5px] [white-space:nowrap] text-ink-muted max-[800px]:[display:none] dark:[color:#a7aeb8] dark:[background:#263336]">
+              <span className="sc-spacer [flex:1]" />
+              <span className="sc-template [border-radius:5px] bg-sunken [padding:2px_8px] [font-size:11.5px] [white-space:nowrap] text-ink-muted max-[800px]:[display:none] dark:[color:#a7aeb8] dark:[background:#263336]">
                 {templateForPage(page)?.name ?? page.template}
               </span>
               <StatusPill status={page.status} />
               {page.validation === "Needs attention" ? (
                 <span
-                  className="sf-validation-badge [display:inline-flex] [height:22px] [align-items:center] [gap:4px] [border-radius:5px] bg-danger-soft [padding:0_7px] [font-size:11px] [font-weight:700] text-danger dark:[color:#f0857a] dark:[background:#321f1e]"
+                  className="sc-validation-badge [display:inline-flex] [height:22px] [align-items:center] [gap:4px] [border-radius:5px] bg-danger-soft [padding:0_7px] [font-size:11px] [font-weight:700] text-danger dark:[color:#f0857a] dark:[background:#321f1e]"
                   title="Needs attention"
                 >
                   <i className="ph-fill ph-warning" />1
@@ -931,7 +931,7 @@ export function PageTreeScreen({
               <Button
                 unstyled
                 aria-label={`Add under ${page.title}`}
-                className="sf-row-icon [display:grid] [height:26px] [width:26px] [flex:none] [cursor:pointer] [place-items:center] [border-radius:6px] [color:#aebab6] [background:transparent] [border:0] [&.active]:bg-selection [&.active]:text-action [&:hover]:bg-selection [&:hover]:text-action"
+                className="sc-row-icon [display:grid] [height:26px] [width:26px] [flex:none] [cursor:pointer] [place-items:center] [border-radius:6px] [color:#aebab6] [background:transparent] [border:0] [&.active]:bg-selection [&.active]:text-action [&:hover]:bg-selection [&:hover]:text-action"
                 onClick={(event) => {
                   event.stopPropagation();
                   setAddQuickParent((current) => (current?.id === page.id ? null : page));
@@ -941,7 +941,7 @@ export function PageTreeScreen({
               </Button>
               {addQuickParent?.id === page.id ? (
                 <div
-                  className="sf-add-page-quick-menu [position:absolute] [top:37px] [right:44px] [z-index:18] [display:flex] [width:286px] [animation:sf-overview-menu_0.13s_ease] [flex-direction:column] [gap:2px] [border-radius:10px] bg-surface [padding:6px] [box-shadow:0_12px_32px_rgb(23_35_38_/_18%)] [border:1px_solid_var(--sf-border)] [&_small]:[font-size:11.5px] [&_small]:text-ink-subtle [&_strong]:[font-size:13px] [&_strong]:text-ink [&>button]:[display:flex] [&>button]:[width:100%] [&>button]:[cursor:pointer] [&>button]:[align-items:center] [&>button]:[gap:10px] [&>button]:[border-radius:7px] [&>button]:[padding:9px] [&>button]:[text-align:left] [&>button]:[background:transparent] [&>button]:[border:0] [&>button:hover]:bg-selection [&>button>i]:[display:grid] [&>button>i]:[height:30px] [&>button>i]:[width:30px] [&>button>i]:[flex:none] [&>button>i]:[place-items:center] [&>button>i]:[border-radius:7px] [&>button>i]:bg-sunken [&>button>i]:[font-size:16px] [&>button>i]:text-action [&>button>span]:[display:flex] [&>button>span]:[min-width:0] [&>button>span]:[flex-direction:column] [&>button>span]:[gap:2px]"
+                  className="sc-add-page-quick-menu [position:absolute] [top:37px] [right:44px] [z-index:18] [display:flex] [width:286px] [animation:sc-overview-menu_0.13s_ease] [flex-direction:column] [gap:2px] [border-radius:10px] bg-surface [padding:6px] [box-shadow:0_12px_32px_rgb(23_35_38_/_18%)] [border:1px_solid_var(--sc-border)] [&_small]:[font-size:11.5px] [&_small]:text-ink-subtle [&_strong]:[font-size:13px] [&_strong]:text-ink [&>button]:[display:flex] [&>button]:[width:100%] [&>button]:[cursor:pointer] [&>button]:[align-items:center] [&>button]:[gap:10px] [&>button]:[border-radius:7px] [&>button]:[padding:9px] [&>button]:[text-align:left] [&>button]:[background:transparent] [&>button]:[border:0] [&>button:hover]:bg-selection [&>button>i]:[display:grid] [&>button>i]:[height:30px] [&>button>i]:[width:30px] [&>button>i]:[flex:none] [&>button>i]:[place-items:center] [&>button>i]:[border-radius:7px] [&>button>i]:bg-sunken [&>button>i]:[font-size:16px] [&>button>i]:text-action [&>button>span]:[display:flex] [&>button>span]:[min-width:0] [&>button>span]:[flex-direction:column] [&>button>span]:[gap:2px]"
                   onClick={(event) => event.stopPropagation()}
                   role="presentation"
                 >
@@ -969,7 +969,7 @@ export function PageTreeScreen({
                 unstyled
                 aria-label={`More actions for ${page.title}`}
                 className={cn(
-                  "sf-row-icon [display:grid] [height:26px] [width:26px] [flex:none] [cursor:pointer] [place-items:center] [border-radius:6px] [color:#aebab6] [background:transparent] [border:0] [&.active]:bg-selection [&.active]:text-action [&:hover]:bg-selection [&:hover]:text-action",
+                  "sc-row-icon [display:grid] [height:26px] [width:26px] [flex:none] [cursor:pointer] [place-items:center] [border-radius:6px] [color:#aebab6] [background:transparent] [border:0] [&.active]:bg-selection [&.active]:text-action [&:hover]:bg-selection [&:hover]:text-action",
                   actionPage?.id === page.id && "active",
                 )}
                 onClick={(event) => {
@@ -981,7 +981,7 @@ export function PageTreeScreen({
               </Button>
               {actionPage?.id === page.id ? (
                 <div
-                  className="sf-row-menu [position:absolute] [top:calc(100%_-_4px)] [right:8px] [z-index:25] [width:178px] [border-radius:9px] bg-surface [padding:5px] [box-shadow:0_12px_28px_rgba(23,_35,_38,_0.16)] [border:1px_solid_#dfe5df] [&_button]:[display:flex] [&_button]:[width:100%] [&_button]:[cursor:pointer] [&_button]:[align-items:center] [&_button]:[gap:8px] [&_button]:[border-radius:6px] [&_button]:[padding:8px_9px] [&_button]:[text-align:left] [&_button]:[font-size:12px] [&_button]:[color:#33474a] [&_button]:[background:transparent] [&_button]:[border:0] [&_button.danger]:text-danger [&_button:disabled]:[cursor:not-allowed] [&_button:disabled]:[opacity:0.42] [&_button:disabled:hover]:[background:transparent] [&_button:hover]:[background:#f2f6f3]"
+                  className="sc-row-menu [position:absolute] [top:calc(100%_-_4px)] [right:8px] [z-index:25] [width:178px] [border-radius:9px] bg-surface [padding:5px] [box-shadow:0_12px_28px_rgba(23,_35,_38,_0.16)] [border:1px_solid_#dfe5df] [&_button]:[display:flex] [&_button]:[width:100%] [&_button]:[cursor:pointer] [&_button]:[align-items:center] [&_button]:[gap:8px] [&_button]:[border-radius:6px] [&_button]:[padding:8px_9px] [&_button]:[text-align:left] [&_button]:[font-size:12px] [&_button]:[color:#33474a] [&_button]:[background:transparent] [&_button]:[border:0] [&_button.danger]:text-danger [&_button:disabled]:[cursor:not-allowed] [&_button:disabled]:[opacity:0.42] [&_button:disabled:hover]:[background:transparent] [&_button:hover]:[background:#f2f6f3]"
                   onClick={(event) => event.stopPropagation()}
                   onKeyDown={(event) => event.stopPropagation()}
                   role="presentation"
@@ -1041,7 +1041,7 @@ export function PageTreeScreen({
             </div>
           ))
         ) : (
-          <div className="sf-tree-empty [display:flex] [height:100%] [min-height:300px] [flex-direction:column] [align-items:center] [justify-content:center] text-ink-subtle [&_button]:[margin-top:12px] [&_button]:[cursor:pointer] [&_button]:[font-size:12px] [&_button]:[font-weight:600] [&_button]:text-action [&_button]:[background:transparent] [&_button]:[border:0] [&_span]:[margin-top:4px] [&_span]:[font-size:12px] [&_strong]:[margin-top:10px] [&_strong]:[font-size:14px] [&_strong]:[color:#33474a] [&>i]:[font-size:25px]">
+          <div className="sc-tree-empty [display:flex] [height:100%] [min-height:300px] [flex-direction:column] [align-items:center] [justify-content:center] text-ink-subtle [&_button]:[margin-top:12px] [&_button]:[cursor:pointer] [&_button]:[font-size:12px] [&_button]:[font-weight:600] [&_button]:text-action [&_button]:[background:transparent] [&_button]:[border:0] [&_span]:[margin-top:4px] [&_span]:[font-size:12px] [&_strong]:[margin-top:10px] [&_strong]:[font-size:14px] [&_strong]:[color:#33474a] [&>i]:[font-size:25px]">
             <i className="ph ph-magnifying-glass" />
             <strong>No pages found</strong>
             <span>Try a different search or clear your filters.</span>
@@ -1051,16 +1051,16 @@ export function PageTreeScreen({
           </div>
         )}
       </div>
-      <footer className="sf-tree-foot [display:flex] [align-items:center] [gap:14px] [padding:9px_22px] [font-size:12px] text-ink-subtle [background:#fafcfa] [border-top:1px_solid_#eef1ed] dark:[border-color:#323841] dark:[color:#79808b] dark:[background:#1d2126] [&_i]:[font-size:15px] [&_i]:text-action">
+      <footer className="sc-tree-foot [display:flex] [align-items:center] [gap:14px] [padding:9px_22px] [font-size:12px] text-ink-subtle [background:#fafcfa] [border-top:1px_solid_#eef1ed] dark:[border-color:#323841] dark:[color:#79808b] dark:[background:#1d2126] [&_i]:[font-size:15px] [&_i]:text-action">
         <i className="ph ph-arrows-out-cardinal" />
         Drag a row to reorder, or onto another page to reparent
-        <span className="sf-spacer [flex:1]" />
-        <span className="sf-mono [font-family:'Geist_Mono',_monospace]">
+        <span className="sc-spacer [flex:1]" />
+        <span className="sc-mono [font-family:'Geist_Mono',_monospace]">
           {rows.filter((row) => !row.muted).length} matching · {rows.length} shown
         </span>
       </footer>
       <Modal
-        className="sf-create-page-modal [width:min(760px,_calc(100vw_-_40px))]"
+        className="sc-create-page-modal [width:min(760px,_calc(100vw_-_40px))]"
         open={Boolean(addParent)}
         onOpenChange={(open) => !open && !creating && setAddParent(null)}
       >
@@ -1077,22 +1077,22 @@ export function PageTreeScreen({
                 <i className="ph ph-x" />
               </ModalClose>
             </header>
-            <div className="sf-overview-modal-body sf-create-page-body [display:flex] [max-height:min(680px,_calc(100vh_-_190px))] [flex-direction:column] [gap:15px] [overflow:auto] [padding:20px] [&_.sf-redirect-choice_input[type='checkbox']]:[margin:1px_0_0] [&_.sf-redirect-choice_input[type='checkbox']]:[height:17px] [&_.sf-redirect-choice_input[type='checkbox']]:[width:17px] [&_.sf-redirect-choice_input[type='checkbox']]:[min-width:17px] [&_.sf-redirect-choice_input[type='checkbox']]:[flex:none] [&_.sf-redirect-choice_input[type='checkbox']]:[border-radius:3px] [&_.sf-redirect-choice_input[type='checkbox']]:[padding:0] [&_.sf-redirect-choice_input[type='checkbox']]:[accent-color:var(--sf-accent)] [&_.sf-redirect-choice_input[type='checkbox']]:[box-shadow:none] [&_.sf-redirect-choice_input[type='checkbox']]:[border:0] [&_input]:[height:38px] [&_input]:[width:100%] [&_input]:[border-radius:8px] [&_input]:bg-surface [&_input]:[padding:0_10px] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[border:1.5px_solid_var(--sf-field)] [&_input:focus]:border-action [&_input:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_label>span]:[font-size:11.5px] [&_label>span]:[font-weight:600] [&_label>span]:text-ink-muted [&_select]:[height:38px] [&_select]:[width:100%] [&_select]:[border-radius:8px] [&_select]:bg-surface [&_select]:[padding:0_10px] [&_select]:[font-size:13px] [&_select]:text-ink [&_select]:[outline:0] [&_select]:[border:1.5px_solid_var(--sf-field)] [&_select:focus]:border-action [&_select:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_small]:[font-size:11px] [&_small]:text-ink-subtle [&>label]:[display:flex] [&>label]:[flex-direction:column] [&>label]:[gap:5px]">
-              <div className="sf-create-page-context [display:flex] [align-items:center] [gap:9px] [border-radius:9px] bg-canvas [padding:9px_11px] [font-size:12px] text-ink-muted [border:1px_solid_var(--sf-border)] [&>span]:[display:inline-flex] [&>span]:[align-items:center] [&>span]:[gap:5px] [&>span+span::before]:[margin-right:4px] [&>span+span::before]:text-ink-subtle [&>span+span::before]:[content:'·']">
+            <div className="sc-overview-modal-body sc-create-page-body [display:flex] [max-height:min(680px,_calc(100vh_-_190px))] [flex-direction:column] [gap:15px] [overflow:auto] [padding:20px] [&_.sc-redirect-choice_input[type='checkbox']]:[margin:1px_0_0] [&_.sc-redirect-choice_input[type='checkbox']]:[height:17px] [&_.sc-redirect-choice_input[type='checkbox']]:[width:17px] [&_.sc-redirect-choice_input[type='checkbox']]:[min-width:17px] [&_.sc-redirect-choice_input[type='checkbox']]:[flex:none] [&_.sc-redirect-choice_input[type='checkbox']]:[border-radius:3px] [&_.sc-redirect-choice_input[type='checkbox']]:[padding:0] [&_.sc-redirect-choice_input[type='checkbox']]:[accent-color:var(--sc-accent)] [&_.sc-redirect-choice_input[type='checkbox']]:[box-shadow:none] [&_.sc-redirect-choice_input[type='checkbox']]:[border:0] [&_input]:[height:38px] [&_input]:[width:100%] [&_input]:[border-radius:8px] [&_input]:bg-surface [&_input]:[padding:0_10px] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[border:1.5px_solid_var(--sc-field)] [&_input:focus]:border-action [&_input:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_label>span]:[font-size:11.5px] [&_label>span]:[font-weight:600] [&_label>span]:text-ink-muted [&_select]:[height:38px] [&_select]:[width:100%] [&_select]:[border-radius:8px] [&_select]:bg-surface [&_select]:[padding:0_10px] [&_select]:[font-size:13px] [&_select]:text-ink [&_select]:[outline:0] [&_select]:[border:1.5px_solid_var(--sc-field)] [&_select:focus]:border-action [&_select:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_small]:[font-size:11px] [&_small]:text-ink-subtle [&>label]:[display:flex] [&>label]:[flex-direction:column] [&>label]:[gap:5px]">
+              <div className="sc-create-page-context [display:flex] [align-items:center] [gap:9px] [border-radius:9px] bg-canvas [padding:9px_11px] [font-size:12px] text-ink-muted [border:1px_solid_var(--sc-border)] [&>span]:[display:inline-flex] [&>span]:[align-items:center] [&>span]:[gap:5px] [&>span+span::before]:[margin-right:4px] [&>span+span::before]:text-ink-subtle [&>span+span::before]:[content:'·']">
                 <span>
                   <i className="ph ph-globe-hemisphere-west" /> {data?.site.name}
                 </span>
                 <span>
                   {data?.language.name} · {data?.language.code.toUpperCase()}
                 </span>
-                <span className="sf-mono [font-family:'Geist_Mono',_monospace]">
+                <span className="sc-mono [font-family:'Geist_Mono',_monospace]">
                   {addParent.slug === "/" ? "/" : `${addParent.slug}/`}
                 </span>
               </div>
-              <div className="sf-create-template-section [display:flex] [flex-direction:column] [gap:7px] [&>span]:[font-size:11px] [&>span]:[font-weight:600] [&>span]:[letter-spacing:0.04em] [&>span]:text-ink-subtle [&>span]:[text-transform:uppercase]">
+              <div className="sc-create-template-section [display:flex] [flex-direction:column] [gap:7px] [&>span]:[font-size:11px] [&>span]:[font-weight:600] [&>span]:[letter-spacing:0.04em] [&>span]:text-ink-subtle [&>span]:[text-transform:uppercase]">
                 <span>Starting template</span>
                 {templateLoadError ? (
-                  <div className="sf-create-template-state error [display:flex] [align-items:center] [gap:10px] [border-radius:10px] bg-canvas [padding:13px] [border:1px_dashed_var(--sf-border)] [&_small]:[font-size:11.5px] [&_small]:text-ink-muted [&.error>i]:text-danger [&>i]:[font-size:22px] [&>i]:text-action [&>span]:[display:flex] [&>span]:[flex:1] [&>span]:[flex-direction:column] [&>span]:[gap:2px]">
+                  <div className="sc-create-template-state error [display:flex] [align-items:center] [gap:10px] [border-radius:10px] bg-canvas [padding:13px] [border:1px_dashed_var(--sc-border)] [&_small]:[font-size:11.5px] [&_small]:text-ink-muted [&.error>i]:text-danger [&>i]:[font-size:22px] [&>i]:text-action [&>span]:[display:flex] [&>span]:[flex:1] [&>span]:[flex-direction:column] [&>span]:[gap:2px]">
                     <i className="ph ph-warning-circle" />
                     <span>
                       <strong>Templates could not be loaded</strong>
@@ -1103,7 +1103,7 @@ export function PageTreeScreen({
                     </Button>
                   </div>
                 ) : !pageTemplates.length ? (
-                  <div className="sf-create-template-state [display:flex] [align-items:center] [gap:10px] [border-radius:10px] bg-canvas [padding:13px] [border:1px_dashed_var(--sf-border)] [&_small]:[font-size:11.5px] [&_small]:text-ink-muted [&.error>i]:text-danger [&>i]:[font-size:22px] [&>i]:text-action [&>span]:[display:flex] [&>span]:[flex:1] [&>span]:[flex-direction:column] [&>span]:[gap:2px]">
+                  <div className="sc-create-template-state [display:flex] [align-items:center] [gap:10px] [border-radius:10px] bg-canvas [padding:13px] [border:1px_dashed_var(--sc-border)] [&_small]:[font-size:11.5px] [&_small]:text-ink-muted [&.error>i]:text-danger [&>i]:[font-size:22px] [&>i]:text-action [&>span]:[display:flex] [&>span]:[flex:1] [&>span]:[flex-direction:column] [&>span]:[gap:2px]">
                     <i className="ph ph-stack" />
                     <span>
                       <strong>No templates available for this site</strong>
@@ -1111,7 +1111,7 @@ export function PageTreeScreen({
                     </span>
                   </div>
                 ) : (
-                  <div className="sf-create-template-grid sf-scroll [display:grid] [max-height:330px] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [grid-template-columns:1fr_1fr] [gap:10px] [overflow:auto] [padding:2px] [&_em]:[overflow:hidden] [&_em]:[font-size:10.5px] [&_em]:[text-overflow:ellipsis] [&_em]:[white-space:nowrap] [&_em]:text-ink-subtle [&_em]:[font-style:normal] [&_em.error]:text-danger [&_small]:[display:-webkit-box] [&_small]:[overflow:hidden] [&_small]:[font-size:11.5px] [&_small]:[line-height:1.4] [&_small]:text-ink-muted [&_small]:[-webkit-box-orient:vertical] [&_small]:[-webkit-line-clamp:2] [&_strong]:[display:flex] [&_strong]:[flex-wrap:wrap] [&_strong]:[align-items:center] [&_strong]:[gap:5px] [&_strong]:[font-size:13px] [&_strong_b]:[display:inline-flex] [&_strong_b]:[height:18px] [&_strong_b]:[align-items:center] [&_strong_b]:[gap:3px] [&_strong_b]:[border-radius:999px] [&_strong_b]:[padding:0_5px] [&_strong_b]:[font-size:9.5px] [&_strong_b]:[color:#33474a] [&_strong_b]:[background:#dfe3e8] dark:[&_strong_b]:[color:#c5cdd6] dark:[&_strong_b]:[background:#333b44] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff] [&>button]:[position:relative] [&>button]:[display:flex] [&>button]:[min-width:0] [&>button]:[cursor:pointer] [&>button]:[align-items:flex-start] [&>button]:[gap:10px] [&>button]:[border-radius:10px] [&>button]:bg-surface [&>button]:[padding:11px] [&>button]:[text-align:left] [&>button]:text-ink [&>button]:[border:1.5px_solid_var(--sf-border)] [&>button.selected]:border-selection-border [&>button.selected]:bg-selection [&>button.unavailable]:[cursor:not-allowed] [&>button.unavailable]:[opacity:0.58] [&>button:hover]:border-selection-border [&>button:hover]:bg-canvas [&>button>i:first-child]:[display:grid] [&>button>i:first-child]:[height:32px] [&>button>i:first-child]:[width:32px] [&>button>i:first-child]:[flex:none] [&>button>i:first-child]:[place-items:center] [&>button>i:first-child]:[border-radius:8px] [&>button>i:first-child]:bg-sunken [&>button>i:first-child]:[font-size:17px] [&>button>i:first-child]:text-action [&>button>i:last-child]:[font-size:16px] [&>button>i:last-child]:text-action [&>button>span]:[display:flex] [&>button>span]:[min-width:0] [&>button>span]:[flex:1] [&>button>span]:[flex-direction:column] [&>button>span]:[gap:4px]">
+                  <div className="sc-create-template-grid sc-scroll [display:grid] [max-height:330px] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [grid-template-columns:1fr_1fr] [gap:10px] [overflow:auto] [padding:2px] [&_em]:[overflow:hidden] [&_em]:[font-size:10.5px] [&_em]:[text-overflow:ellipsis] [&_em]:[white-space:nowrap] [&_em]:text-ink-subtle [&_em]:[font-style:normal] [&_em.error]:text-danger [&_small]:[display:-webkit-box] [&_small]:[overflow:hidden] [&_small]:[font-size:11.5px] [&_small]:[line-height:1.4] [&_small]:text-ink-muted [&_small]:[-webkit-box-orient:vertical] [&_small]:[-webkit-line-clamp:2] [&_strong]:[display:flex] [&_strong]:[flex-wrap:wrap] [&_strong]:[align-items:center] [&_strong]:[gap:5px] [&_strong]:[font-size:13px] [&_strong_b]:[display:inline-flex] [&_strong_b]:[height:18px] [&_strong_b]:[align-items:center] [&_strong_b]:[gap:3px] [&_strong_b]:[border-radius:999px] [&_strong_b]:[padding:0_5px] [&_strong_b]:[font-size:9.5px] [&_strong_b]:[color:#33474a] [&_strong_b]:[background:#dfe3e8] dark:[&_strong_b]:[color:#c5cdd6] dark:[&_strong_b]:[background:#333b44] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff] [&>button]:[position:relative] [&>button]:[display:flex] [&>button]:[min-width:0] [&>button]:[cursor:pointer] [&>button]:[align-items:flex-start] [&>button]:[gap:10px] [&>button]:[border-radius:10px] [&>button]:bg-surface [&>button]:[padding:11px] [&>button]:[text-align:left] [&>button]:text-ink [&>button]:[border:1.5px_solid_var(--sc-border)] [&>button.selected]:border-selection-border [&>button.selected]:bg-selection [&>button.unavailable]:[cursor:not-allowed] [&>button.unavailable]:[opacity:0.58] [&>button:hover]:border-selection-border [&>button:hover]:bg-canvas [&>button>i:first-child]:[display:grid] [&>button>i:first-child]:[height:32px] [&>button>i:first-child]:[width:32px] [&>button>i:first-child]:[flex:none] [&>button>i:first-child]:[place-items:center] [&>button>i:first-child]:[border-radius:8px] [&>button>i:first-child]:bg-sunken [&>button>i:first-child]:[font-size:17px] [&>button>i:first-child]:text-action [&>button>i:last-child]:[font-size:16px] [&>button>i:last-child]:text-action [&>button>span]:[display:flex] [&>button>span]:[min-width:0] [&>button>span]:[flex:1] [&>button>span]:[flex-direction:column] [&>button>span]:[gap:4px]">
                     {pageTemplates.map((template) => {
                       const issues = validatePageTemplate(template);
                       const unavailable = template.status !== "published" || issues.length > 0;
@@ -1181,7 +1181,7 @@ export function PageTreeScreen({
               </label>
               <label htmlFor="add-page-slug">
                 <span>URL slug</span>
-                <div className="sf-add-slug [display:flex] [align-items:center] [overflow:hidden] [border-radius:8px] [border:1.5px_solid_var(--sf-field)] [&_b]:[max-width:200px] [&_b]:[overflow:hidden] [&_b]:[padding-left:10px] [&_b]:[text-overflow:ellipsis] [&_b]:[white-space:nowrap] [&_b]:[color:#a5b0ad] [&_b]:[font:12px_'Geist_Mono'] [&_input]:[min-width:80px] [&_input]:[flex:1] [&_input]:[font-family:'Geist_Mono'] [&_input]:[box-shadow:none] [&_input]:[border:0] [&:focus-within]:border-action [&:focus-within]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)]">
+                <div className="sc-add-slug [display:flex] [align-items:center] [overflow:hidden] [border-radius:8px] [border:1.5px_solid_var(--sc-field)] [&_b]:[max-width:200px] [&_b]:[overflow:hidden] [&_b]:[padding-left:10px] [&_b]:[text-overflow:ellipsis] [&_b]:[white-space:nowrap] [&_b]:[color:#a5b0ad] [&_b]:[font:12px_'Geist_Mono'] [&_input]:[min-width:80px] [&_input]:[flex:1] [&_input]:[font-family:'Geist_Mono'] [&_input]:[box-shadow:none] [&_input]:[border:0] [&:focus-within]:border-action [&:focus-within]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)]">
                   <b>{addParent.slug === "/" ? "/" : `${addParent.slug}/`}</b>
                   <Input
                     unstyled
@@ -1197,12 +1197,12 @@ export function PageTreeScreen({
               </label>
               <div
                 className={cn(
-                  "sf-resulting-url [display:grid] [grid-template-columns:110px_1fr] [align-items:center] [gap:4px_10px] [border-radius:9px] bg-canvas [padding:9px_11px] [border:1px_solid_var(--sf-border)] [&_em]:[grid-column:2] [&_em]:[font-size:11.5px] [&_em]:text-danger [&_em]:[font-style:normal] [&_strong]:[overflow:hidden] [&_strong]:[font-size:12px] [&_strong]:[text-overflow:ellipsis] [&_strong]:[white-space:nowrap] [&_strong]:text-ink [&.collision]:[border-color:#eec6bc] [&.collision]:[background:#fdf4f2] dark:[&.collision]:[border-color:#4a2e27] dark:[&.collision]:[background:#3a2320] [&>span]:[font-size:11px] [&>span]:[font-weight:600] [&>span]:[letter-spacing:0.04em] [&>span]:text-ink-subtle [&>span]:[text-transform:uppercase]",
+                  "sc-resulting-url [display:grid] [grid-template-columns:110px_1fr] [align-items:center] [gap:4px_10px] [border-radius:9px] bg-canvas [padding:9px_11px] [border:1px_solid_var(--sc-border)] [&_em]:[grid-column:2] [&_em]:[font-size:11.5px] [&_em]:text-danger [&_em]:[font-style:normal] [&_strong]:[overflow:hidden] [&_strong]:[font-size:12px] [&_strong]:[text-overflow:ellipsis] [&_strong]:[white-space:nowrap] [&_strong]:text-ink [&.collision]:[border-color:#eec6bc] [&.collision]:[background:#fdf4f2] dark:[&.collision]:[border-color:#4a2e27] dark:[&.collision]:[background:#3a2320] [&>span]:[font-size:11px] [&>span]:[font-weight:600] [&>span]:[letter-spacing:0.04em] [&>span]:text-ink-subtle [&>span]:[text-transform:uppercase]",
                   slugCollision && "collision",
                 )}
               >
                 <span>Resulting URL</span>
-                <strong className="sf-mono [font-family:'Geist_Mono',_monospace]">
+                <strong className="sc-mono [font-family:'Geist_Mono',_monospace]">
                   {addParent.slug === "/" ? "/" : `${addParent.slug}/`}
                   {normalizedAddSlug}
                 </strong>
@@ -1213,24 +1213,24 @@ export function PageTreeScreen({
                 ) : null}
               </div>
               {modalError ? (
-                <p className="sf-modal-error [margin:0] [border-radius:7px] [padding:9px_10px] [font-size:12px] [color:#a52f26] [background:#f9e8e5] [font:11.5px_'Geist']">
+                <p className="sc-modal-error [margin:0] [border-radius:7px] [padding:9px_10px] [font-size:12px] [color:#a52f26] [background:#f9e8e5] [font:11.5px_'Geist']">
                   {modalError}
                 </p>
               ) : null}
             </div>
             <footer>
-              <span className="sf-create-page-note [margin-right:auto] [max-width:270px] [font-size:11.5px] [line-height:1.4] text-ink-subtle">
+              <span className="sc-create-page-note [margin-right:auto] [max-width:270px] [font-size:11.5px] [line-height:1.4] text-ink-subtle">
                 Templates provide starting content only · the page stays fully editable.
               </span>
               <ModalClose
-                className="sf-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sf-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+                className="sc-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
                 disabled={creating}
               >
                 Cancel
               </ModalClose>
               <Button
                 unstyled
-                className="sf-action primary [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sf-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+                className="sc-action primary [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
                 disabled={
                   !addTitle.trim() ||
                   !selectedAddTemplate ||
@@ -1262,7 +1262,7 @@ export function PageTreeScreen({
                 <i className="ph ph-x" />
               </ModalClose>
             </header>
-            <div className="sf-overview-modal-body [display:flex] [flex-direction:column] [gap:15px] [padding:20px] [&_.sf-redirect-choice_input[type='checkbox']]:[margin:1px_0_0] [&_.sf-redirect-choice_input[type='checkbox']]:[height:17px] [&_.sf-redirect-choice_input[type='checkbox']]:[width:17px] [&_.sf-redirect-choice_input[type='checkbox']]:[min-width:17px] [&_.sf-redirect-choice_input[type='checkbox']]:[flex:none] [&_.sf-redirect-choice_input[type='checkbox']]:[border-radius:3px] [&_.sf-redirect-choice_input[type='checkbox']]:[padding:0] [&_.sf-redirect-choice_input[type='checkbox']]:[accent-color:var(--sf-accent)] [&_.sf-redirect-choice_input[type='checkbox']]:[box-shadow:none] [&_.sf-redirect-choice_input[type='checkbox']]:[border:0] [&_input]:[height:38px] [&_input]:[width:100%] [&_input]:[border-radius:8px] [&_input]:bg-surface [&_input]:[padding:0_10px] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[border:1.5px_solid_var(--sf-field)] [&_input:focus]:border-action [&_input:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_label>span]:[font-size:11.5px] [&_label>span]:[font-weight:600] [&_label>span]:text-ink-muted [&_select]:[height:38px] [&_select]:[width:100%] [&_select]:[border-radius:8px] [&_select]:bg-surface [&_select]:[padding:0_10px] [&_select]:[font-size:13px] [&_select]:text-ink [&_select]:[outline:0] [&_select]:[border:1.5px_solid_var(--sf-field)] [&_select:focus]:border-action [&_select:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_small]:[font-size:11px] [&_small]:text-ink-subtle [&>label]:[display:flex] [&>label]:[flex-direction:column] [&>label]:[gap:5px]">
+            <div className="sc-overview-modal-body [display:flex] [flex-direction:column] [gap:15px] [padding:20px] [&_.sc-redirect-choice_input[type='checkbox']]:[margin:1px_0_0] [&_.sc-redirect-choice_input[type='checkbox']]:[height:17px] [&_.sc-redirect-choice_input[type='checkbox']]:[width:17px] [&_.sc-redirect-choice_input[type='checkbox']]:[min-width:17px] [&_.sc-redirect-choice_input[type='checkbox']]:[flex:none] [&_.sc-redirect-choice_input[type='checkbox']]:[border-radius:3px] [&_.sc-redirect-choice_input[type='checkbox']]:[padding:0] [&_.sc-redirect-choice_input[type='checkbox']]:[accent-color:var(--sc-accent)] [&_.sc-redirect-choice_input[type='checkbox']]:[box-shadow:none] [&_.sc-redirect-choice_input[type='checkbox']]:[border:0] [&_input]:[height:38px] [&_input]:[width:100%] [&_input]:[border-radius:8px] [&_input]:bg-surface [&_input]:[padding:0_10px] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[border:1.5px_solid_var(--sc-field)] [&_input:focus]:border-action [&_input:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_label>span]:[font-size:11.5px] [&_label>span]:[font-weight:600] [&_label>span]:text-ink-muted [&_select]:[height:38px] [&_select]:[width:100%] [&_select]:[border-radius:8px] [&_select]:bg-surface [&_select]:[padding:0_10px] [&_select]:[font-size:13px] [&_select]:text-ink [&_select]:[outline:0] [&_select]:[border:1.5px_solid_var(--sc-field)] [&_select:focus]:border-action [&_select:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_small]:[font-size:11px] [&_small]:text-ink-subtle [&>label]:[display:flex] [&>label]:[flex-direction:column] [&>label]:[gap:5px]">
               <label htmlFor="rename-page-title">
                 <span>Page title</span>
                 <Input
@@ -1275,21 +1275,21 @@ export function PageTreeScreen({
                 />
               </label>
               {modalError ? (
-                <p className="sf-modal-error [margin:0] [border-radius:7px] [padding:9px_10px] [font-size:12px] [color:#a52f26] [background:#f9e8e5] [font:11.5px_'Geist']">
+                <p className="sc-modal-error [margin:0] [border-radius:7px] [padding:9px_10px] [font-size:12px] [color:#a52f26] [background:#f9e8e5] [font:11.5px_'Geist']">
                   {modalError}
                 </p>
               ) : null}
             </div>
             <footer>
               <ModalClose
-                className="sf-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sf-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+                className="sc-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
                 disabled={mutating}
               >
                 Cancel
               </ModalClose>
               <Button
                 unstyled
-                className="sf-action primary [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sf-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+                className="sc-action primary [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
                 disabled={!renameTitle.trim() || mutating}
                 loading={mutating}
                 onClick={() => void rename()}
@@ -1315,27 +1315,27 @@ export function PageTreeScreen({
                 <i className="ph ph-x" />
               </ModalClose>
             </header>
-            <div className="sf-overview-modal-body [display:flex] [flex-direction:column] [gap:15px] [padding:20px] [&_.sf-redirect-choice_input[type='checkbox']]:[margin:1px_0_0] [&_.sf-redirect-choice_input[type='checkbox']]:[height:17px] [&_.sf-redirect-choice_input[type='checkbox']]:[width:17px] [&_.sf-redirect-choice_input[type='checkbox']]:[min-width:17px] [&_.sf-redirect-choice_input[type='checkbox']]:[flex:none] [&_.sf-redirect-choice_input[type='checkbox']]:[border-radius:3px] [&_.sf-redirect-choice_input[type='checkbox']]:[padding:0] [&_.sf-redirect-choice_input[type='checkbox']]:[accent-color:var(--sf-accent)] [&_.sf-redirect-choice_input[type='checkbox']]:[box-shadow:none] [&_.sf-redirect-choice_input[type='checkbox']]:[border:0] [&_input]:[height:38px] [&_input]:[width:100%] [&_input]:[border-radius:8px] [&_input]:bg-surface [&_input]:[padding:0_10px] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[border:1.5px_solid_var(--sf-field)] [&_input:focus]:border-action [&_input:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_label>span]:[font-size:11.5px] [&_label>span]:[font-weight:600] [&_label>span]:text-ink-muted [&_select]:[height:38px] [&_select]:[width:100%] [&_select]:[border-radius:8px] [&_select]:bg-surface [&_select]:[padding:0_10px] [&_select]:[font-size:13px] [&_select]:text-ink [&_select]:[outline:0] [&_select]:[border:1.5px_solid_var(--sf-field)] [&_select:focus]:border-action [&_select:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_small]:[font-size:11px] [&_small]:text-ink-subtle [&>label]:[display:flex] [&>label]:[flex-direction:column] [&>label]:[gap:5px]">
-              <p className="sf-delete-copy [margin:0] text-ink-muted [font:13px/1.5_'Geist'] [&_strong]:text-ink">
+            <div className="sc-overview-modal-body [display:flex] [flex-direction:column] [gap:15px] [padding:20px] [&_.sc-redirect-choice_input[type='checkbox']]:[margin:1px_0_0] [&_.sc-redirect-choice_input[type='checkbox']]:[height:17px] [&_.sc-redirect-choice_input[type='checkbox']]:[width:17px] [&_.sc-redirect-choice_input[type='checkbox']]:[min-width:17px] [&_.sc-redirect-choice_input[type='checkbox']]:[flex:none] [&_.sc-redirect-choice_input[type='checkbox']]:[border-radius:3px] [&_.sc-redirect-choice_input[type='checkbox']]:[padding:0] [&_.sc-redirect-choice_input[type='checkbox']]:[accent-color:var(--sc-accent)] [&_.sc-redirect-choice_input[type='checkbox']]:[box-shadow:none] [&_.sc-redirect-choice_input[type='checkbox']]:[border:0] [&_input]:[height:38px] [&_input]:[width:100%] [&_input]:[border-radius:8px] [&_input]:bg-surface [&_input]:[padding:0_10px] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[border:1.5px_solid_var(--sc-field)] [&_input:focus]:border-action [&_input:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_label>span]:[font-size:11.5px] [&_label>span]:[font-weight:600] [&_label>span]:text-ink-muted [&_select]:[height:38px] [&_select]:[width:100%] [&_select]:[border-radius:8px] [&_select]:bg-surface [&_select]:[padding:0_10px] [&_select]:[font-size:13px] [&_select]:text-ink [&_select]:[outline:0] [&_select]:[border:1.5px_solid_var(--sc-field)] [&_select:focus]:border-action [&_select:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_small]:[font-size:11px] [&_small]:text-ink-subtle [&>label]:[display:flex] [&>label]:[flex-direction:column] [&>label]:[gap:5px]">
+              <p className="sc-delete-copy [margin:0] text-ink-muted [font:13px/1.5_'Geist'] [&_strong]:text-ink">
                 <strong>{deleteTarget.title}</strong> will be permanently deleted. This cannot be
                 undone.
               </p>
               {modalError ? (
-                <p className="sf-modal-error [margin:0] [border-radius:7px] [padding:9px_10px] [font-size:12px] [color:#a52f26] [background:#f9e8e5] [font:11.5px_'Geist']">
+                <p className="sc-modal-error [margin:0] [border-radius:7px] [padding:9px_10px] [font-size:12px] [color:#a52f26] [background:#f9e8e5] [font:11.5px_'Geist']">
                   {modalError}
                 </p>
               ) : null}
             </div>
             <footer>
               <ModalClose
-                className="sf-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sf-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+                className="sc-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
                 disabled={mutating}
               >
                 Cancel
               </ModalClose>
               <Button
                 unstyled
-                className="sf-action danger [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sf-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+                className="sc-action danger [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
                 disabled={mutating}
                 loading={mutating}
                 onClick={() => void remove()}
@@ -1347,7 +1347,7 @@ export function PageTreeScreen({
         ) : null}
       </Modal>
       <Modal
-        className="sf-impact-modal [width:min(760px,_100%)] [&_.sf-overview-modal-body]:[gap:14px]"
+        className="sc-impact-modal [width:min(760px,_100%)] [&_.sc-overview-modal-body]:[gap:14px]"
         open={Boolean(pendingMove)}
         onOpenChange={(open) => !open && !moving && setPendingMove(null)}
       >
@@ -1364,18 +1364,18 @@ export function PageTreeScreen({
                 <i className="ph ph-x" />
               </ModalClose>
             </header>
-            <div className="sf-overview-modal-body [display:flex] [flex-direction:column] [gap:15px] [padding:20px] [&_.sf-redirect-choice_input[type='checkbox']]:[margin:1px_0_0] [&_.sf-redirect-choice_input[type='checkbox']]:[height:17px] [&_.sf-redirect-choice_input[type='checkbox']]:[width:17px] [&_.sf-redirect-choice_input[type='checkbox']]:[min-width:17px] [&_.sf-redirect-choice_input[type='checkbox']]:[flex:none] [&_.sf-redirect-choice_input[type='checkbox']]:[border-radius:3px] [&_.sf-redirect-choice_input[type='checkbox']]:[padding:0] [&_.sf-redirect-choice_input[type='checkbox']]:[accent-color:var(--sf-accent)] [&_.sf-redirect-choice_input[type='checkbox']]:[box-shadow:none] [&_.sf-redirect-choice_input[type='checkbox']]:[border:0] [&_input]:[height:38px] [&_input]:[width:100%] [&_input]:[border-radius:8px] [&_input]:bg-surface [&_input]:[padding:0_10px] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[border:1.5px_solid_var(--sf-field)] [&_input:focus]:border-action [&_input:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_label>span]:[font-size:11.5px] [&_label>span]:[font-weight:600] [&_label>span]:text-ink-muted [&_select]:[height:38px] [&_select]:[width:100%] [&_select]:[border-radius:8px] [&_select]:bg-surface [&_select]:[padding:0_10px] [&_select]:[font-size:13px] [&_select]:text-ink [&_select]:[outline:0] [&_select]:[border:1.5px_solid_var(--sf-field)] [&_select:focus]:border-action [&_select:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_small]:[font-size:11px] [&_small]:text-ink-subtle [&>label]:[display:flex] [&>label]:[flex-direction:column] [&>label]:[gap:5px]">
-              <div className="sf-impact-summary [display:flex] [align-items:flex-start] [gap:10px] [border-radius:8px] [padding:11px_12px] [color:#73551a] [background:#fbf6e9] [border:1px_solid_#ead6aa] [&>i]:[margin-top:1px] [&>i]:[font-size:18px] [&>span]:[display:flex] [&>span]:[flex-direction:column] [&>span]:[gap:2px] [&>span]:[font-size:12px]">
+            <div className="sc-overview-modal-body [display:flex] [flex-direction:column] [gap:15px] [padding:20px] [&_.sc-redirect-choice_input[type='checkbox']]:[margin:1px_0_0] [&_.sc-redirect-choice_input[type='checkbox']]:[height:17px] [&_.sc-redirect-choice_input[type='checkbox']]:[width:17px] [&_.sc-redirect-choice_input[type='checkbox']]:[min-width:17px] [&_.sc-redirect-choice_input[type='checkbox']]:[flex:none] [&_.sc-redirect-choice_input[type='checkbox']]:[border-radius:3px] [&_.sc-redirect-choice_input[type='checkbox']]:[padding:0] [&_.sc-redirect-choice_input[type='checkbox']]:[accent-color:var(--sc-accent)] [&_.sc-redirect-choice_input[type='checkbox']]:[box-shadow:none] [&_.sc-redirect-choice_input[type='checkbox']]:[border:0] [&_input]:[height:38px] [&_input]:[width:100%] [&_input]:[border-radius:8px] [&_input]:bg-surface [&_input]:[padding:0_10px] [&_input]:[font-size:13px] [&_input]:text-ink [&_input]:[outline:0] [&_input]:[border:1.5px_solid_var(--sc-field)] [&_input:focus]:border-action [&_input:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_label>span]:[font-size:11.5px] [&_label>span]:[font-weight:600] [&_label>span]:text-ink-muted [&_select]:[height:38px] [&_select]:[width:100%] [&_select]:[border-radius:8px] [&_select]:bg-surface [&_select]:[padding:0_10px] [&_select]:[font-size:13px] [&_select]:text-ink [&_select]:[outline:0] [&_select]:[border:1.5px_solid_var(--sc-field)] [&_select:focus]:border-action [&_select:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)] [&_small]:[font-size:11px] [&_small]:text-ink-subtle [&>label]:[display:flex] [&>label]:[flex-direction:column] [&>label]:[gap:5px]">
+              <div className="sc-impact-summary [display:flex] [align-items:flex-start] [gap:10px] [border-radius:8px] [padding:11px_12px] [color:#73551a] [background:#fbf6e9] [border:1px_solid_#ead6aa] [&>i]:[margin-top:1px] [&>i]:[font-size:18px] [&>span]:[display:flex] [&>span]:[flex-direction:column] [&>span]:[gap:2px] [&>span]:[font-size:12px]">
                 <i className="ph ph-warning-circle" />
                 <span>
                   <strong>{pendingMove.impacts.length} URLs will change.</strong>
                   Review the old and proposed addresses before continuing.
                 </span>
               </div>
-              <div className="sf-impact-list sf-scroll [max-height:310px] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [overflow:auto] [border-radius:9px] [border:1px_solid_var(--sf-border)] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff]">
+              <div className="sc-impact-list sc-scroll [max-height:310px] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [overflow:auto] [border-radius:9px] [border:1px_solid_var(--sc-border)] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff]">
                 {pendingMove.impacts.map((impact) => (
                   <div
-                    className="sf-impact-row [display:grid] [grid-template-columns:minmax(170px,_0.8fr)_minmax(150px,_1fr)_20px_minmax(150px,_1fr)] [align-items:center] [gap:10px] [padding:10px_12px] [border-bottom:1px_solid_var(--sf-sunken)] max-[900px]:[grid-template-columns:1fr] [&_code]:[overflow:hidden] [&_code]:[text-overflow:ellipsis] [&_code]:[white-space:nowrap] [&_code]:text-ink-muted [&_code]:[font:10.5px_'Geist_Mono'] [&_code:last-child]:text-action [&_span]:[font-size:10.5px] [&_span]:text-ink-subtle [&_strong]:[overflow:hidden] [&_strong]:[font-size:11.5px] [&_strong]:[text-overflow:ellipsis] [&_strong]:[white-space:nowrap] [&:last-child]:[border-bottom:0] [&>div]:[display:flex] [&>div]:[min-width:0] [&>div]:[flex-direction:column] [&>div]:[gap:2px] [&>i]:[text-align:center] [&>i]:text-ink-subtle max-[900px]:[&>i]:[transform:rotate(90deg)] max-[900px]:[&>i]:[text-align:left]"
+                    className="sc-impact-row [display:grid] [grid-template-columns:minmax(170px,_0.8fr)_minmax(150px,_1fr)_20px_minmax(150px,_1fr)] [align-items:center] [gap:10px] [padding:10px_12px] [border-bottom:1px_solid_var(--sc-sunken)] max-[900px]:[grid-template-columns:1fr] [&_code]:[overflow:hidden] [&_code]:[text-overflow:ellipsis] [&_code]:[white-space:nowrap] [&_code]:text-ink-muted [&_code]:[font:10.5px_'Geist_Mono'] [&_code:last-child]:text-action [&_span]:[font-size:10.5px] [&_span]:text-ink-subtle [&_strong]:[overflow:hidden] [&_strong]:[font-size:11.5px] [&_strong]:[text-overflow:ellipsis] [&_strong]:[white-space:nowrap] [&:last-child]:[border-bottom:0] [&>div]:[display:flex] [&>div]:[min-width:0] [&>div]:[flex-direction:column] [&>div]:[gap:2px] [&>i]:[text-align:center] [&>i]:text-ink-subtle max-[900px]:[&>i]:[transform:rotate(90deg)] max-[900px]:[&>i]:[text-align:left]"
                     key={impact.id}
                   >
                     <div>
@@ -1388,7 +1388,7 @@ export function PageTreeScreen({
                   </div>
                 ))}
               </div>
-              <label className="sf-redirect-choice [display:flex] [cursor:pointer] [flex-direction:row] [align-items:flex-start] [gap:10px] [border-radius:8px] [padding:11px_12px] [background:#f6faf8] [border:1px_solid_#d7e3df] [&_strong]:[font-size:12px] [&_strong]:[color:#33474a] [&>span]:[display:flex] [&>span]:[flex-direction:column] [&>span]:[gap:2px] [&>span]:[font-size:11.5px] [&>span]:[font-weight:400] [&>span]:[color:#71817f]">
+              <label className="sc-redirect-choice [display:flex] [cursor:pointer] [flex-direction:row] [align-items:flex-start] [gap:10px] [border-radius:8px] [padding:11px_12px] [background:#f6faf8] [border:1px_solid_#d7e3df] [&_strong]:[font-size:12px] [&_strong]:[color:#33474a] [&>span]:[display:flex] [&>span]:[flex-direction:column] [&>span]:[gap:2px] [&>span]:[font-size:11.5px] [&>span]:[font-weight:400] [&>span]:[color:#71817f]">
                 <Input
                   unstyled
                   type="checkbox"
@@ -1406,21 +1406,21 @@ export function PageTreeScreen({
                 </span>
               </label>
               {modalError ? (
-                <p className="sf-modal-error [margin:0] [border-radius:7px] [padding:9px_10px] [font-size:12px] [color:#a52f26] [background:#f9e8e5] [font:11.5px_'Geist']">
+                <p className="sc-modal-error [margin:0] [border-radius:7px] [padding:9px_10px] [font-size:12px] [color:#a52f26] [background:#f9e8e5] [font:11.5px_'Geist']">
                   {modalError}
                 </p>
               ) : null}
             </div>
             <footer>
               <ModalClose
-                className="sf-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sf-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+                className="sc-action [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
                 disabled={moving}
               >
                 Cancel move
               </ModalClose>
               <Button
                 unstyled
-                className="sf-action primary [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sf-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
+                className="sc-action primary [display:inline-flex] [height:36px] [cursor:pointer] [align-items:center] [gap:7px] [border-radius:8px] bg-surface [padding:0_12px] [font-size:13px] [font-weight:600] [white-space:nowrap] [border:1px_solid_#cfd6d0] [&.active]:border-selection-border [&.active]:bg-selection [&.active]:text-action dark:[&.active]:[border-color:#515a65] dark:[&.active]:[color:#b994f8] dark:[&.active]:[background:#2c333b] [&.danger]:border-danger [&.danger]:[color:#fff] [&.danger]:[background:var(--sc-danger)] [&.danger:hover:not(:disabled)]:bg-danger-soft [&.primary]:border-action [&.primary]:bg-action [&.primary]:[padding:0_14px] [&.primary]:[color:#fff] [&.primary]:[box-shadow:0_1px_2px_rgba(23,_35,_38,_0.1)] [&:disabled]:[cursor:not-allowed] [&:disabled]:[opacity:0.48] dark:[&:not(.primary)]:[border-color:#3d444e] dark:[&:not(.primary)]:[color:#e9ecf1] dark:[&:not(.primary)]:[background:#1d2126]"
                 disabled={moving}
                 onClick={() => {
                   const move = pendingMove;
@@ -1443,7 +1443,7 @@ export function PageTreeScreen({
       </Modal>
       {toast ? (
         <div
-          className="sf-tree-toast [position:fixed] [right:22px] [bottom:22px] [z-index:70] [display:flex] [width:min(390px,_calc(100vw_-_44px))] [align-items:flex-start] [gap:11px] [border-radius:10px] bg-surface [padding:13px_14px] [box-shadow:0_14px_40px_rgba(23,_35,_38,_0.2)] [border:1px_solid_#d7e3df] [&_button]:[display:grid] [&_button]:[height:24px] [&_button]:[width:24px] [&_button]:[cursor:pointer] [&_button]:[place-items:center] [&_button]:[border-radius:5px] [&_button]:text-ink-subtle [&_button]:[background:transparent] [&_button]:[border:0] [&_span]:[font-size:11.5px] [&_span]:[color:#71817f] [&_strong]:[font-size:12.5px] [&>div]:[display:flex] [&>div]:[min-width:0] [&>div]:[flex:1] [&>div]:[flex-direction:column] [&>div]:[gap:2px] [&>i]:[display:grid] [&>i]:[height:27px] [&>i]:[width:27px] [&>i]:[flex:none] [&>i]:[place-items:center] [&>i]:[border-radius:7px] [&>i]:bg-selection [&>i]:[font-size:15px] [&>i]:text-action"
+          className="sc-tree-toast [position:fixed] [right:22px] [bottom:22px] [z-index:70] [display:flex] [width:min(390px,_calc(100vw_-_44px))] [align-items:flex-start] [gap:11px] [border-radius:10px] bg-surface [padding:13px_14px] [box-shadow:0_14px_40px_rgba(23,_35,_38,_0.2)] [border:1px_solid_#d7e3df] [&_button]:[display:grid] [&_button]:[height:24px] [&_button]:[width:24px] [&_button]:[cursor:pointer] [&_button]:[place-items:center] [&_button]:[border-radius:5px] [&_button]:text-ink-subtle [&_button]:[background:transparent] [&_button]:[border:0] [&_span]:[font-size:11.5px] [&_span]:[color:#71817f] [&_strong]:[font-size:12.5px] [&>div]:[display:flex] [&>div]:[min-width:0] [&>div]:[flex:1] [&>div]:[flex-direction:column] [&>div]:[gap:2px] [&>i]:[display:grid] [&>i]:[height:27px] [&>i]:[width:27px] [&>i]:[flex:none] [&>i]:[place-items:center] [&>i]:[border-radius:7px] [&>i]:bg-selection [&>i]:[font-size:15px] [&>i]:text-action"
           role="status"
         >
           <i className="ph ph-arrows-out-cardinal" />

@@ -95,7 +95,7 @@ const workspace: NavigationWorkspace = {
 
 function clickBuilderItem(label: string) {
   const button = Array.from(
-    document.querySelectorAll<HTMLButtonElement>(".sf-menu-card-copy"),
+    document.querySelectorAll<HTMLButtonElement>(".sc-menu-card-copy"),
   ).find((item) => item.textContent?.includes(label));
   if (!button) throw new Error(`No builder item found for ${label}`);
   fireEvent.click(button);
@@ -174,7 +174,7 @@ describe("NavigationEditor", () => {
     expect(screen.getByText("Unsaved changes")).toBeTruthy();
 
     fireEvent.click(screen.getAllByTitle("Move down")[0]!);
-    fireEvent.click(container.querySelector(".sf-remove-item")!);
+    fireEvent.click(container.querySelector(".sc-remove-item")!);
     expect(screen.getByRole("status").textContent).toContain("Removed");
   });
 
@@ -189,7 +189,7 @@ describe("NavigationEditor", () => {
 
     fireEvent.click(screen.getByTitle("Mobile"));
     const mobileCompany = Array.from(
-      document.querySelectorAll<HTMLButtonElement>(".sf-mobile-header-preview button"),
+      document.querySelectorAll<HTMLButtonElement>(".sc-mobile-header-preview button"),
     ).find((button) => button.textContent?.includes("Company"));
     fireEvent.click(mobileCompany!);
     expect(screen.getByText("New link")).toBeTruthy();

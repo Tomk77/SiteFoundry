@@ -10,7 +10,7 @@ vi.mock("@/lib/auth", () => ({
   AuthProvider: ({ children }: { children: React.ReactNode }) => <div data-auth>{children}</div>,
 }));
 vi.mock("@/components/ui/sonner", () => ({
-  SiteFoundryToaster: () => <div data-toaster />,
+  ScaffoldCmsToaster: () => <div data-toaster />,
 }));
 
 describe("root route", () => {
@@ -21,7 +21,7 @@ describe("root route", () => {
       shellComponent: React.ComponentType<{ children: React.ReactNode }>;
     };
     const head = root.head();
-    expect(head.meta).toContainEqual({ title: "SiteFoundry" });
+    expect(head.meta).toContainEqual({ title: "Scaffold CMS" });
     expect(head.links).toHaveLength(4);
 
     const Shell = root.shellComponent;
@@ -31,7 +31,7 @@ describe("root route", () => {
       </Shell>,
     );
     expect(html).toContain('lang="en"');
-    expect(html).toContain("sf-interface-mode");
+    expect(html).toContain("sc-interface-mode");
     expect(html).toContain("data-auth");
     expect(html).toContain("data-toaster");
     expect(html).toContain("Page content");

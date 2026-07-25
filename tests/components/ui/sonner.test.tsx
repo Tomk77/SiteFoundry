@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { SiteFoundryToaster } from "@/components/ui/sonner";
+import { ScaffoldCmsToaster } from "@/components/ui/sonner";
 
 const toaster = vi.fn((props: Record<string, unknown>) => (
   <div data-testid="toaster" data-position={String(props.position)} />
@@ -11,9 +11,9 @@ vi.mock("sonner", () => ({
   Toaster: (props: Record<string, unknown>) => toaster(props),
 }));
 
-describe("SiteFoundryToaster", () => {
+describe("ScaffoldCmsToaster", () => {
   it("configures the global notification surface", () => {
-    render(<SiteFoundryToaster />);
+    render(<ScaffoldCmsToaster />);
     expect(toaster).toHaveBeenCalledWith(
       expect.objectContaining({
         position: "bottom-right",
@@ -26,6 +26,6 @@ describe("SiteFoundryToaster", () => {
       toastOptions: { classNames: Record<string, string> };
     };
     expect(Object.keys(props.icons)).toEqual(["success", "info", "warning", "error", "loading"]);
-    expect(props.toastOptions.classNames.toast).toBe("sf-toast");
+    expect(props.toastOptions.classNames.toast).toBe("sc-toast");
   });
 });

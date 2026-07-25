@@ -180,7 +180,7 @@ export function DomainsSettings({
           title="Preview environment"
         >
           <Field
-            hint="SiteFoundry adds a short-lived preview token when opening a page."
+            hint="Scaffold CMS adds a short-lived preview token when opening a page."
             label="Preview website URL"
           >
             <Input
@@ -193,7 +193,7 @@ export function DomainsSettings({
           <div className="mt-3 rounded-lg bg-sunken p-3 text-[11px] text-ink-muted">
             <span className="font-semibold text-ink">Example preview URL</span>
             <div className="mt-1 overflow-hidden font-mono text-ellipsis whitespace-nowrap">
-              {previewUrl || "https://preview.example.com"}/about?sf-preview=••••••••
+              {previewUrl || "https://preview.example.com"}/about?sc-preview=••••••••
             </div>
           </div>
           {!readOnly ? (

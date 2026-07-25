@@ -36,7 +36,7 @@ describe("UI form primitives", () => {
     expect(loading.getAttribute("aria-busy")).toBe("true");
     expect(loading.hasAttribute("disabled")).toBe(true);
     expect(loading.className).toBe("plain");
-    expect(view.container.querySelector(".sf-button-spinner")).toBeTruthy();
+    expect(view.container.querySelector(".sc-button-spinner")).toBeTruthy();
   });
 
   it("renders styled and unstyled text controls", () => {

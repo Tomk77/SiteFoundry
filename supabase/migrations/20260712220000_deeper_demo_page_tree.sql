@@ -95,7 +95,7 @@ begin
   insert into public.pages (site_language_id, parent_id, title, slug, template_name, status, validation_status, position)
   select language_id, hosting_id, page.title, page.slug, 'Documentation page', page.status, page.validation, page.position
   from (values
-    ('SiteFoundry Cloud', 'cloud', 'published', 'ready', 0),
+    ('Scaffold CMS Cloud', 'cloud', 'published', 'ready', 0),
     ('Self-hosting', 'self-hosting', 'concept', 'needs_attention', 1),
     ('Docker setup', 'docker', 'concept', 'ready', 2)
   ) as page(title, slug, status, validation, position)

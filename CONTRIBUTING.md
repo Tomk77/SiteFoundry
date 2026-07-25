@@ -1,4 +1,4 @@
-# Contributing to SiteFoundry
+# Contributing to Scaffold CMS
 
 ## Before changing code
 

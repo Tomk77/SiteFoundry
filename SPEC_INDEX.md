@@ -1,7 +1,7 @@
 # Specification index
 
 - Status: Active
-- Last updated: 2026-07-21
+- Last updated: 2026-07-25
 
 ## Purpose
 
@@ -46,11 +46,11 @@ The order below is a dependency-aware planning order, not a release commitment.
 |        2 | Page editor and content composition              | Not started           | `docs/specs/page-editor.md`                          | Page tree, schema model                                               |
 |        3 | Schema and field system                          | Not started           | `docs/specs/schema-system.md`                        | Page tree                                                             |
 |        4 | Page templates                                   | Implemented           | [Page templates](docs/specs/page-templates.md)       | Schema system, page editor                                            |
-|        5 | Persistence and revision model                   | Not started           | `docs/specs/revisions.md`                            | Page tree, schema system                                              |
-|        6 | REST content API                                 | Not started           | `docs/specs/rest-api.md`                             | Schema system, revisions                                              |
-|        7 | GraphQL content API                              | Not started           | `docs/specs/graphql-api.md`                          | Schema system, revisions                                              |
-|        8 | Authentication and sessions                      | Not started           | `docs/specs/authentication.md`                       | Architecture overview                                                 |
-|        9 | Permissions                                      | Not started           | `docs/specs/permissions.md`                          | Authentication, page tree                                             |
+|        5 | Persistence and revision model                   | Working specification | [Revisions](docs/specs/revisions.md)                 | Page tree, schema system                                              |
+|        6 | REST content API                                 | Implemented            | [REST API](docs/specs/rest-api.md)                   | Schema system, revisions                                              |
+|        7 | GraphQL content API                              | Implemented            | [GraphQL API](docs/specs/graphql-api.md)             | Schema system, revisions                                              |
+|        8 | Authentication and sessions                      | Working specification | [Authentication](docs/specs/authentication.md)       | Architecture overview                                                 |
+|        9 | Permissions                                      | Working specification | [Permissions](docs/specs/permissions.md)             | Authentication, page tree                                             |
 |       10 | Personal settings                                | Working specification | [Personal settings](docs/specs/personal-settings.md) | Authentication, permissions                                           |
 |       11 | Site-wide settings UI                            | Working specification | [Site settings UI](docs/specs/site-settings-ui.md)   | Authentication, permissions, sites and languages, admin IA            |
 |       12 | Redirects and URL changes                        | Not started           | `docs/specs/redirects.md`                            | Page tree, permissions                                                |
@@ -68,10 +68,10 @@ The order below is a dependency-aware planning order, not a release commitment.
 |       24 | Plugin and extension system                      | Deferred              | `docs/specs/plugin-system.md`                        | Stable core APIs                                                      |
 |       25 | Data migrations                                  | Deferred              | `docs/specs/data-migrations.md`                      | Schema system, revisions                                              |
 
-The Site Settings row remains a working specification because the formal authentication, permission,
+The Site Settings row remains a working specification because the formal administration authentication, permission,
 invitation-delivery, DNS-verification, and export-worker contracts are unresolved. Its approved UI and
-synchronous persistence are implemented with Supabase RLS and guarded database functions; asynchronous
-operations remain explicitly queued.
+synchronous persistence are implemented with Supabase RLS and guarded database functions. Site-owned
+publishable delivery tokens are implemented under API access; asynchronous operations remain explicitly queued.
 
 ## Cross-cutting requirements
 
@@ -105,7 +105,7 @@ These four areas determine most downstream architecture and should be understood
 
 The frontend SDK should be developed as a separate Git package and should explore two related responsibilities:
 
-- retrieving published and authorized preview data from SiteFoundry;
+- retrieving published and authorized preview data from Scaffold CMS;
 - coupling the consuming website to editor preview behaviour such as stable block and field identifiers, block and field selection events, selection outlines, synchronized scrolling, exact editor-field focus, and secure `postMessage` communication.
 
 The eventual data-fetching API, framework-specific adapters, caching behaviour, and authentication model remain open. GraphQL consumers may initially need to provide manually written queries; whether the package later generates typed clients or query helpers will be decided when the GraphQL API is specified.

@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SiteSettingsScreen } from "@/features/site-settings";
 import type { PeopleTab, SettingsDestination } from "@/features/site-settings";
+import { createSiteApiToken, listSiteApiTokens } from "@/lib/api-tokens";
 import {
   createSiteInvitation,
   loadSiteSettingsWorkspace,
@@ -24,6 +25,12 @@ vi.mock("@/lib/site-settings", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/lib/site-settings")>()),
   createSiteInvitation: vi.fn().mockResolvedValue(undefined),
   loadSiteSettingsWorkspace: vi.fn(),
+}));
+
+vi.mock("@/lib/api-tokens", () => ({
+  createSiteApiToken: vi.fn().mockResolvedValue("scaffold_pub_created-token"),
+  listSiteApiTokens: vi.fn().mockResolvedValue([]),
+  revokeSiteApiToken: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock("sonner", () => ({
@@ -87,6 +94,7 @@ afterEach(cleanup);
 beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(loadSiteSettingsWorkspace).mockResolvedValue(workspace);
+  vi.mocked(listSiteApiTokens).mockResolvedValue([]);
 });
 
 function Harness() {
@@ -155,5 +163,32 @@ describe("site settings screen", () => {
     fireEvent.click(screen.getByRole("button", { name: "People & access" }));
     expect(screen.queryByRole("button", { name: "Invite person" })).toBeNull();
     expect(screen.getByRole("button", { name: "View access for Alex Morgan" })).toBeTruthy();
+  });
+
+  it("creates a site-owned publishable delivery token", async () => {
+    render(<Harness />);
+
+    fireEvent.click(await screen.findByRole("button", { name: "API access" }));
+    const tokenListHeading = screen.getByRole("heading", { name: "Publishable tokens" });
+    const playgroundHeading = screen.getByRole("heading", { name: "GraphQL playground" });
+    expect(
+      tokenListHeading.compareDocumentPosition(playgroundHeading) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    fireEvent.change(screen.getByLabelText("Name"), {
+      target: { value: "Production website" },
+    });
+    fireEvent.change(screen.getByLabelText(/Allowed browser origins/), {
+      target: { value: "https://northstar.example" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Create token" }));
+
+    expect(await screen.findByText("scaffold_pub_created-token")).toBeTruthy();
+    expect(createSiteApiToken).toHaveBeenCalledWith({
+      siteId: "site-1",
+      name: "Production website",
+      allowedOrigins: "https://northstar.example",
+      expiresAt: "",
+    });
   });
 });

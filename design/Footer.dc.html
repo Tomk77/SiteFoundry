@@ -22,15 +22,15 @@
   ::selection{background:#DFE3E8}
   input,textarea,select{font-family:inherit}
   i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
-  .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
-  .sf-scroll::-webkit-scrollbar{width:10px;height:10px}
-  .sf-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #F5F7F4}
-  .sf-in{width:100%;padding:8px 10px;border:1.5px solid #CFD6D0;border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none;transition:border-color .12s,box-shadow .12s}
-  .sf-in:focus{border-color:#763FBA;box-shadow:0 0 0 3px rgba(118,63,186,0.15)}
-  @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
-  @keyframes sfFade{from{opacity:0}to{opacity:1}}
-  @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
-  @keyframes sfSpin{to{transform:rotate(360deg)}}
+  .sc-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
+  .sc-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .sc-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #F5F7F4}
+  .sc-in{width:100%;padding:8px 10px;border:1.5px solid #CFD6D0;border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none;transition:border-color .12s,box-shadow .12s}
+  .sc-in:focus{border-color:#763FBA;box-shadow:0 0 0 3px rgba(118,63,186,0.15)}
+  @keyframes scPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes scFade{from{opacity:0}to{opacity:1}}
+  @keyframes scToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+  @keyframes scSpin{to{transform:rotate(360deg)}}
 </style>
 </helmet>
 
@@ -74,7 +74,7 @@
         <span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:#526366;cursor:pointer;flex:none" style-hover="background:#EEF1ED;color:#172326"><i class="ph ph-arrow-square-out" style="font-size:16px"></i></span>
       </div>
 
-      <div class="sf-scroll" style="flex:1;overflow:auto;display:flex;justify-content:flex-start;align-items:flex-start;padding:24px">
+      <div class="sc-scroll" style="flex:1;overflow:auto;display:flex;justify-content:flex-start;align-items:flex-start;padding:24px">
         <div style="width:{{ deviceW }};flex:none;margin:0 auto;background:#fff;border-radius:{{ deviceRadius }};box-shadow:0 8px 30px rgba(23,35,38,0.12);overflow:hidden;transition:width .2s ease">
 
           <!-- page-body context hint -->
@@ -184,7 +184,7 @@
         <span style="font-size:11.5px;color:#869693;display:inline-flex;align-items:center;gap:5px"><i class="ph ph-arrows-out-cardinal" style="font-size:13px;color:#AEBAB6"></i>Drag to reorder</span>
       </div>
 
-      <div class="sf-scroll" style="flex:1;overflow:auto;padding:14px 16px">
+      <div class="sc-scroll" style="flex:1;overflow:auto;padding:14px 16px">
         <div style="display:flex;flex-direction:column;gap:9px">
           <sc-for list="{{ items }}" as="it" hint-placeholder-count="6">
             <div draggable="true" onDragStart="{{ it.onDragStart }}" onDragOver="{{ it.onDragOver }}" onDragEnter="{{ it.onDragOver }}" onDrop="{{ it.onDrop }}" onDragEnd="{{ it.onDragEnd }}" style="border:1.5px solid {{ it.border }};border-radius:10px;background:#fff;overflow:hidden;opacity:{{ it.op }};box-shadow:{{ it.dropShadow }};transition:border-color .12s,box-shadow .12s">
@@ -206,7 +206,7 @@
                 <div style="display:flex;flex-direction:column;gap:13px;padding:13px 12px 14px;border-top:1px solid #EEF1ED;background:#FCFDFC">
                   <div style="display:flex;flex-direction:column;gap:5px">
                     <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">{{ it.labelCaption }}</label>
-                    <input class="sf-in" value="{{ it.fLabel }}" onInput="{{ it.onLabel }}" placeholder="Label"/>
+                    <input class="sc-in" value="{{ it.fLabel }}" onInput="{{ it.onLabel }}" placeholder="Label"/>
                   </div>
 
                   <sc-if value="{{ it.hasTarget }}" hint-placeholder-val="{{ true }}">
@@ -217,12 +217,12 @@
                         <button onClick="{{ it.setUrl }}" style="height:26px;padding:0 12px;border:none;border-radius:6px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;background:{{ it.urlSegBg }};color:{{ it.urlSegFg }};box-shadow:{{ it.urlSegSh }}">Custom URL</button>
                       </div>
                       <sc-if value="{{ it.isPage }}" hint-placeholder-val="{{ true }}">
-                        <select value="{{ it.target }}" onChange="{{ it.onPage }}" class="sf-in" style="cursor:pointer">
+                        <select value="{{ it.target }}" onChange="{{ it.onPage }}" class="sc-in" style="cursor:pointer">
                           <sc-for list="{{ pageOptions }}" as="o" hint-placeholder-count="6"><option value="{{ o.path }}">{{ o.label }}</option></sc-for>
                         </select>
                       </sc-if>
                       <sc-if value="{{ it.isUrl }}" hint-placeholder-val="{{ false }}">
-                        <input class="sf-in" value="{{ it.target }}" onInput="{{ it.onUrl }}" placeholder="https://example.com" style="font-family:'Geist Mono',monospace;font-size:12.5px"/>
+                        <input class="sc-in" value="{{ it.target }}" onInput="{{ it.onUrl }}" placeholder="https://example.com" style="font-family:'Geist Mono',monospace;font-size:12.5px"/>
                       </sc-if>
                     </div>
                     <label style="display:flex;align-items:center;gap:9px;cursor:pointer">
@@ -238,8 +238,8 @@
                         <div style="display:flex;align-items:center;gap:7px;padding:7px 8px;border:1px solid #E7ECE8;border-radius:9px;background:#fff">
                           <span style="display:flex;color:#C2CCC4"><i class="ph-bold ph-dots-six-vertical" style="font-size:14px"></i></span>
                           <div style="display:flex;flex-direction:column;gap:5px;flex:1;min-width:0">
-                            <input class="sf-in" value="{{ c.label }}" onInput="{{ c.onLabel }}" placeholder="Label" style="padding:6px 9px;font-size:12.5px"/>
-                            <select value="{{ c.target }}" onChange="{{ c.onPage }}" class="sf-in" style="cursor:pointer;padding:6px 9px;font-size:12px">
+                            <input class="sc-in" value="{{ c.label }}" onInput="{{ c.onLabel }}" placeholder="Label" style="padding:6px 9px;font-size:12.5px"/>
+                            <select value="{{ c.target }}" onChange="{{ c.onPage }}" class="sc-in" style="cursor:pointer;padding:6px 9px;font-size:12px">
                               <sc-for list="{{ pageOptions }}" as="o" hint-placeholder-count="6"><option value="{{ o.path }}">{{ o.label }}</option></sc-for>
                             </select>
                           </div>
@@ -275,7 +275,7 @@
           <div style="position:relative">
             <button onClick="{{ toggleAddMenu }}" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:44px;border:1.5px dashed #C2CCC4;border-radius:10px;background:#FAFCFA;color:#763FBA;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#ECEEF1;border-color:#CBD3DB"><i class="ph-bold ph-plus" style="font-size:15px"></i>Add to footer</button>
             <sc-if value="{{ addMenu }}" hint-placeholder-val="{{ false }}">
-              <div style="position:absolute;left:0;right:0;bottom:52px;z-index:20;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:sfPop .13s ease">
+              <div style="position:absolute;left:0;right:0;bottom:52px;z-index:20;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:scPop .13s ease">
                 <sc-for list="{{ addTypes }}" as="a" hint-placeholder-count="4">
                   <div onClick="{{ a.onClick }}" style="display:flex;align-items:center;gap:11px;padding:9px;border-radius:7px;cursor:pointer" style-hover="background:#F5F7F4">
                     <span style="width:32px;height:32px;border-radius:8px;background:{{ a.iconBg }};color:{{ a.iconFg }};display:flex;align-items:center;justify-content:center;flex:none"><i class="ph {{ a.icon }}" style="font-size:17px"></i></span>
@@ -292,7 +292,7 @@
 </div>
 
 <sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
-  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:sfToast .2s cubic-bezier(.2,.8,.2,1)">
+  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:scToast .2s cubic-bezier(.2,.8,.2,1)">
     <i class="ph {{ toastIcon }}" style="font-size:18px;color:#B994F8"></i>
     <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
   </div>
@@ -526,7 +526,7 @@ class Component extends DCLogic {
       dDesktop: () => this.setState({ device: "desktop" }), dTablet: () => this.setState({ device: "tablet" }), dMobile: () => this.setState({ device: "mobile" }),
       deskBg: dk.bg, deskFg: dk.fg, deskSh: dk.sh, tabBg: tb.bg, tabFg: tb.fg, tabSh: tb.sh, mobBg: mb.bg, mobFg: mb.fg, mobSh: mb.sh,
       refresh: () => { clearTimeout(this._r); this.setState({ refreshing: true }); this._r = setTimeout(() => this.setState({ refreshing: false }), 500); },
-      refreshIcon: s.refreshing ? "ph-spinner" : "ph-arrow-clockwise", refreshAnim: s.refreshing ? "sfSpin .6s linear infinite" : "none",
+      refreshIcon: s.refreshing ? "ph-spinner" : "ph-arrow-clockwise", refreshAnim: s.refreshing ? "scSpin .6s linear infinite" : "none",
 
       // theme tokens
       fBg: T.bg, fHeading: T.heading, fMuted: T.muted, fChip: T.chip, fDivider: T.divider,

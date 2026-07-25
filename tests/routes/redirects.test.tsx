@@ -148,7 +148,7 @@ describe("redirects route", () => {
     });
     fireEvent.change(screen.getByPlaceholderText("/new-path"), { target: { value: "/news" } });
     expect(screen.getByText("Live page")).toBeTruthy();
-    fireEvent.click(document.querySelectorAll(".sf-redirect-modal-body fieldset button")[1]!);
+    fireEvent.click(document.querySelectorAll(".sc-redirect-modal-body fieldset button")[1]!);
     fireEvent.click(screen.getAllByRole("button", { name: "Add redirect" }).at(-1)!);
     await waitFor(() =>
       expect(saveRedirect).toHaveBeenCalledWith({

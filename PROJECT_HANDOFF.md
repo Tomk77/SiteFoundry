@@ -1,16 +1,19 @@
 # Project handoff
 
-- Last updated: 2026-07-21
+- Last updated: 2026-07-25
 - Project stage: Functional proof of concept
 
 ## What this project is
 
-SiteFoundry is an open-source, headless CMS focused on real website workflows. It aims to replace the disconnected collection-first mental model of many headless CMS products with a canonical page tree that ordinary website editors can understand.
+Scaffold CMS is an open-source, headless CMS focused on real website workflows. It aims to replace the disconnected collection-first mental model of many headless CMS products with a canonical page tree that ordinary website editors can understand.
 
 The CMS will serve content through REST and GraphQL. Consuming websites remain responsible for rendering.
 
 ## Current state
 
+- The product name is **Scaffold CMS**. Administration copy, package metadata, documentation,
+  preview/theme namespaces, delivery problem URIs, demo content, and newly issued publishable token
+  prefixes use the Scaffold name.
 - A TanStack Start administration application is implemented and builds successfully.
 - Supabase authentication and database persistence support the proof of concept.
 - Page tree, page editor, media flow, redirects, navigation, structured content, and personal settings have working UI flows.
@@ -20,7 +23,16 @@ The CMS will serve content through REST and GraphQL. Consuming websites remain r
 - Tailwind CSS 4 is the administration styling system across the complete UI: authentication, loading states, app shell, Page Tree, Page Editor, Media, Redirects, Header Navigation, Footer, Structured Content, Page Templates, Personal Settings, Site Settings, shared dialogs, controls, and toasts. Route-owned stylesheets have been removed; `src/styles.css` now contains only the runtime theme, global element foundations, Tailwind theme registration, and shared keyframes imported from `src/animations.css`.
 - The product vision and initial architecture are documented.
 - Page-tree product discovery is complete enough for a working specification.
-- A public REST or GraphQL content API has not yet been implemented.
+- Versioned REST and strongly typed GraphQL delivery APIs are implemented as token-gated TanStack
+  server routes. They share a framework-neutral delivery model and expose published page/content
+  snapshots, public site/language data, navigation, and redirects. Media remains empty because its UI
+  has no persisted domain model yet.
+- Site Settings includes an API access destination for site-owned publishable read tokens with one-time
+  secret display, hashed storage, optional expiry and browser origins, last-used tracking, rate limits,
+  and revocation. It also includes a site-scoped Apollo Sandbox embed with schema introspection,
+  autocomplete, query building, response inspection, and a preconfigured hosted-Sandbox link;
+  playground tokens remain in page memory and are never placed in external URLs. Confidential preview
+  tokens and draft reads remain deferred.
 - No production deployment target has been selected.
 
 ## Start here on a new machine
@@ -65,6 +77,8 @@ Also inspect `git status` before editing. Uncommitted work may belong to another
 - Editing published content leaves its current published revision live until the concept is published.
 - Permissions must support site, language, subtree, and action scopes.
 - Templates are edited by authorized users in production and stored in Supabase with immutable revision snapshots.
+- Delivery requests require a site-owned publishable token and explicitly identify the site by stable key.
+- REST and GraphQL use one universal Page type; templates do not create frontend API types.
 - The shared schema and field registry is still code-defined and must be hardened before it becomes production-editable.
 
 ## Technical direction
@@ -109,8 +123,12 @@ When asked to implement a feature:
 - Vitest files live under the top-level `tests/` directory, mirroring `src/`; source imports in tests use the `@/` alias, and the test-layout contract prevents test files from being colocated under `src/`.
 - The feature-first route migration documented in `docs/architecture/frontend-structure.md` is complete. Shared UI remains feature-neutral; new routes are limited to 150 lines and new React modules to 350 lines; existing feature-screen exceptions may shrink but cannot grow.
 - GitHub Actions runs formatting, linting, type checking, tests, route generation, and the production build for pushes to `main` and pull requests.
-- The linked hosted Supabase project contains legacy migration-history versions that do not match several local migration filenames. Site Settings migration `20260721213000` was applied directly through the linked Management API and marked applied on 2026-07-21. Before using a future blanket `supabase db push`, reconcile the older history through schema comparison; do not blindly replay or repair those entries.
+- The linked hosted Supabase project contains migration-history versions that do not match several local migration filenames. Site Settings migration `20260721213000` was applied directly through the linked Management API on 2026-07-21. Delivery migration `20260722200000_delivery_api.sql` was applied through the project-scoped Supabase MCP on 2026-07-22 and recorded remotely as version `20260722132018`, name `delivery_api`. Before using a future blanket `supabase db push`, reconcile the history through schema comparison; do not blindly replay or repair those entries.
 
 ## Immediate next step
 
-Specify and harden the shared schema and field system, then use it to remove the remaining duplicated component metadata between page editing, structured content, and page templates. After that, define the revision and public content API contracts before treating the proof of concept as production architecture.
+Create a publishable token and exercise the REST and GraphQL delivery endpoints against the hosted
+development project. Then finish the shared schema/field-system workflow, including an
+editor-facing publish-schema action and breaking-change preview. Persist the media domain before
+advertising media delivery, and design confidential preview tokens only alongside the full draft and
+publication workflow.

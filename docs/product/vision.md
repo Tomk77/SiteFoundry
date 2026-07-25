@@ -1,6 +1,6 @@
 # Product vision
 
-Working product name: **SiteFoundry**.
+Product name: **Scaffold CMS**.
 
 ## Working statement
 

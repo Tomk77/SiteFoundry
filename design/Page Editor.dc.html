@@ -22,15 +22,15 @@
   ::selection{background:#DFE3E8}
   input,textarea,select{font-family:inherit}
   i[class^="ph-"],i[class*=" ph-"]{font-style:normal;line-height:1;display:inline-flex}
-  .sf-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
-  .sf-scroll::-webkit-scrollbar{width:10px;height:10px}
-  .sf-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #F5F7F4}
-  .sf-in{width:100%;padding:8px 10px;border:1.5px solid #CFD6D0;border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none;transition:border-color .12s,box-shadow .12s}
-  .sf-in:focus{border-color:#763FBA;box-shadow:0 0 0 3px rgba(118,63,186,0.15)}
-  textarea.sf-in{resize:vertical;line-height:1.5}
-  @keyframes sfPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
-  @keyframes sfToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
-  @keyframes sfSpin{to{transform:rotate(360deg)}}
+  .sc-scroll{scrollbar-width:thin;scrollbar-color:#CFD6D0 transparent}
+  .sc-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .sc-scroll::-webkit-scrollbar-thumb{background:#D7DDD8;border-radius:8px;border:3px solid #F5F7F4}
+  .sc-in{width:100%;padding:8px 10px;border:1.5px solid #CFD6D0;border-radius:8px;background:#fff;font-size:13px;color:#172326;outline:none;transition:border-color .12s,box-shadow .12s}
+  .sc-in:focus{border-color:#763FBA;box-shadow:0 0 0 3px rgba(118,63,186,0.15)}
+  textarea.sc-in{resize:vertical;line-height:1.5}
+  @keyframes scPop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes scToast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+  @keyframes scSpin{to{transform:rotate(360deg)}}
 </style>
 </helmet>
 
@@ -72,7 +72,7 @@
         <span onClick="{{ refresh }}" title="Refresh preview" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:#526366;cursor:pointer" style-hover="background:#EEF1ED;color:#172326"><i class="ph {{ refreshIcon }}" style="font-size:16px"></i></span>
         <span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:#526366;cursor:pointer" style-hover="background:#EEF1ED;color:#172326"><i class="ph ph-arrow-square-out" style="font-size:16px"></i></span>
       </div>
-      <div class="sf-scroll" style="flex:1;overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:24px">
+      <div class="sc-scroll" style="flex:1;overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:24px">
         <iframe ref="{{ iframeRef }}" srcdoc="{{ srcDoc }}" style="width:{{ deviceW }};max-width:100%;height:100%;min-height:100%;border:none;border-radius:{{ deviceRadius }};background:#fff;box-shadow:0 8px 30px rgba(23,35,38,0.12);transition:width .2s ease"></iframe>
       </div>
     </div>
@@ -85,7 +85,7 @@
         </sc-for>
       </div>
 
-      <div class="sf-scroll" style="flex:1;overflow:auto;padding:16px">
+      <div class="sc-scroll" style="flex:1;overflow:auto;padding:16px">
 
         <!-- CONTENT TAB -->
         <sc-if value="{{ isContent }}" hint-placeholder-val="{{ true }}">
@@ -106,8 +106,8 @@
                   <sc-for list="{{ b.fields }}" as="f" hint-placeholder-count="2">
                     <div style="display:flex;flex-direction:column;gap:5px">
                       <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">{{ f.label }}</label>
-                      <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><input class="sf-in" value="{{ f.value }}" onInput="{{ f.onInput }}" placeholder="{{ f.ph }}"/></sc-if>
-                      <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}"><textarea class="sf-in" value="{{ f.value }}" onInput="{{ f.onInput }}" placeholder="{{ f.ph }}" style="min-height:76px"></textarea></sc-if>
+                      <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><input class="sc-in" value="{{ f.value }}" onInput="{{ f.onInput }}" placeholder="{{ f.ph }}"/></sc-if>
+                      <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}"><textarea class="sc-in" value="{{ f.value }}" onInput="{{ f.onInput }}" placeholder="{{ f.ph }}" style="min-height:76px"></textarea></sc-if>
                       <sc-if value="{{ f.warn }}" hint-placeholder-val="x"><span style="display:flex;align-items:center;gap:5px;font-size:11.5px;color:#8A5A06"><i class="ph-fill ph-warning" style="font-size:12px"></i>{{ f.warn }}</span></sc-if>
                     </div>
                   </sc-for>
@@ -119,7 +119,7 @@
           <div style="position:relative">
             <button onClick="{{ toggleAddMenu }}" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:42px;border:1.5px dashed #C2CCC4;border-radius:10px;background:#FAFCFA;color:#763FBA;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#ECEEF1;border-color:#CBD3DB"><i class="ph-bold ph-plus" style="font-size:15px"></i>Add block</button>
             <sc-if value="{{ addMenu }}" hint-placeholder-val="{{ false }}">
-              <div style="position:absolute;left:0;right:0;bottom:48px;z-index:20;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:sfPop .13s ease">
+              <div style="position:absolute;left:0;right:0;bottom:48px;z-index:20;background:#fff;border:1px solid #E2E7E2;border-radius:10px;box-shadow:0 12px 32px rgba(23,35,38,0.16);padding:5px;animation:scPop .13s ease">
                 <sc-for list="{{ blockTypes }}" as="t" hint-placeholder-count="5">
                   <div onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:7px;cursor:pointer" style-hover="background:#F5F7F4">
                     <span style="width:30px;height:30px;border-radius:7px;background:{{ t.iconBg }};color:{{ t.iconFg }};display:flex;align-items:center;justify-content:center;flex:none"><i class="ph {{ t.icon }}" style="font-size:16px"></i></span>
@@ -143,12 +143,12 @@
           </sc-if>
           <div style="display:flex;flex-direction:column;gap:5px">
             <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Meta title</label>
-            <input class="sf-in" value="{{ metaTitle }}" onInput="{{ onMetaTitle }}"/>
+            <input class="sc-in" value="{{ metaTitle }}" onInput="{{ onMetaTitle }}"/>
             <span style="font-size:11px;color:#869693;text-align:right;font-family:'Geist Mono',monospace">{{ titleCount }}/60</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:5px">
             <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Meta description</label>
-            <textarea class="sf-in" value="{{ metaDesc }}" onInput="{{ onMetaDesc }}" placeholder="Summarize this page for search results" style="min-height:80px"></textarea>
+            <textarea class="sc-in" value="{{ metaDesc }}" onInput="{{ onMetaDesc }}" placeholder="Summarize this page for search results" style="min-height:80px"></textarea>
             <span style="font-size:11px;color:{{ descCountColor }};text-align:right;font-family:'Geist Mono',monospace">{{ descCount }}/160</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px">
@@ -182,7 +182,7 @@
           </div>
           <div style="display:flex;flex-direction:column;gap:6px">
             <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#A5B0AD">Preferred child template</label>
-            <select value="{{ prefChild }}" onChange="{{ onPrefChild }}" class="sf-in" style="cursor:pointer">
+            <select value="{{ prefChild }}" onChange="{{ onPrefChild }}" class="sc-in" style="cursor:pointer">
               <sc-for list="{{ templateOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for>
             </select>
             <span style="font-size:11.5px;color:#869693">Suggested first when adding a child page here.</span>
@@ -211,7 +211,7 @@
 </div>
 
 <sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
-  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:sfToast .2s cubic-bezier(.2,.8,.2,1)">
+  <div style="position:fixed;left:50%;bottom:26px;z-index:70;display:flex;align-items:center;gap:11px;padding:12px 16px;background:#172326;color:#fff;border-radius:11px;box-shadow:0 14px 40px rgba(23,35,38,0.32);animation:scToast .2s cubic-bezier(.2,.8,.2,1)">
     <i class="{{ toastIcon }}" style="font-size:18px;color:#B994F8"></i>
     <span style="font-size:13px;font-weight:600">{{ toastMsg }}</span>
   </div>
@@ -275,9 +275,9 @@ const SRCDOC = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="vie
 + 'else if(b.type==="cta"){inner="<div class=\\"cta\\"><h3>"+esc(da.heading||"Ready?")+"</h3><span class=\\"btn\\">"+esc(da.button||"Get started")+"</span></div>";}'
 + 'html+="<section class=\\"blk"+(b.id===sel?" sel":"")+"\\" data-id=\\""+b.id+"\\">"+inner+"</section>";});'
 + 'R.innerHTML="<article>"+html+"</article>";'
-+ 'Array.prototype.forEach.call(R.querySelectorAll("section"),function(s){s.addEventListener("click",function(){parent.postMessage({source:"sf-preview",type:"select",id:s.getAttribute("data-id")},"*");});});}'
-+ 'window.addEventListener("message",function(e){if(e.data&&e.data.source==="sf-editor"){render(e.data.data);}});'
-+ 'parent.postMessage({source:"sf-preview",type:"ready"},"*");'
++ 'Array.prototype.forEach.call(R.querySelectorAll("section"),function(s){s.addEventListener("click",function(){parent.postMessage({source:"sc-preview",type:"select",id:s.getAttribute("data-id")},"*");});});}'
++ 'window.addEventListener("message",function(e){if(e.data&&e.data.source==="sc-editor"){render(e.data.data);}});'
++ 'parent.postMessage({source:"sc-preview",type:"ready"},"*");'
 + S_END + '</body></html>';
 
 class Component extends DCLogic {
@@ -285,15 +285,15 @@ class Component extends DCLogic {
     tab: "content",
     meta: { category: "Product", date: "July 12, 2026", author: "Mara Jensen" },
     blocks: [
-      blk("hero", { eyebrow: "Product news", headline: "Introducing SiteFoundry 1.0", subheadline: "The website-native, headless CMS is now generally available — open source and ready to self-host." }),
-      blk("richtext", { body: "Today we're making SiteFoundry generally available. It rethinks the headless CMS around a canonical page tree, so editors always understand where a page lives and what its URL is.\n\nEvery structural change — moving, renaming, deleting — shows its impact up front and keeps redirects intact." }),
+      blk("hero", { eyebrow: "Product news", headline: "Introducing Scaffold CMS 1.0", subheadline: "The website-native, headless CMS is now generally available — open source and ready to self-host." }),
+      blk("richtext", { body: "Today we're making Scaffold CMS generally available. It rethinks the headless CMS around a canonical page tree, so editors always understand where a page lives and what its URL is.\n\nEvery structural change — moving, renaming, deleting — shows its impact up front and keeps redirects intact." }),
       blk("quote", { text: "Finally, a CMS our editors actually understand.", cite: "— Early-access customer" }),
       blk("image", { alt: "The canonical page tree in the new admin", caption: "The page tree is the primary way editors navigate a site." }),
-      blk("cta", { heading: "Ready to build something?", button: "Start with SiteFoundry" }),
+      blk("cta", { heading: "Ready to build something?", button: "Start with Scaffold CMS" }),
     ],
     selected: null,
     expanded: {},
-    seo: { title: "Introducing SiteFoundry 1.0", desc: "" },
+    seo: { title: "Introducing Scaffold CMS 1.0", desc: "" },
     slug: "product-launch",
     prefChild: "News article",
     status: "concept",
@@ -307,7 +307,7 @@ class Component extends DCLogic {
     this._ready = false;
     this._onMsg = (e) => {
       const d = e.data;
-      if (!d || d.source !== "sf-preview") return;
+      if (!d || d.source !== "sc-preview") return;
       if (d.type === "ready") { this._ready = true; this.post(); }
       else if (d.type === "select") { this.setState({ selected: d.id, tab: "content", expanded: { ...this.state.expanded, [d.id]: true } }); }
     };
@@ -318,7 +318,7 @@ class Component extends DCLogic {
   componentWillUnmount() { window.removeEventListener("message", this._onMsg); clearTimeout(this._t); clearTimeout(this._r); clearTimeout(this._sv); }
 
   setIframe = (el) => { this._iframe = el; };
-  post() { if (this._iframe && this._iframe.contentWindow && this._ready) this._iframe.contentWindow.postMessage({ source: "sf-editor", data: { meta: this.state.meta, blocks: this.state.blocks, selectedId: this.state.selected } }, "*"); }
+  post() { if (this._iframe && this._iframe.contentWindow && this._ready) this._iframe.contentWindow.postMessage({ source: "sc-editor", data: { meta: this.state.meta, blocks: this.state.blocks, selectedId: this.state.selected } }, "*"); }
 
   toast(msg, icon) { clearTimeout(this._t); this.setState({ toast: { msg, icon: icon || "ph-fill ph-check-circle" } }); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
   edit(id, key, val) { this.setState({ blocks: this.state.blocks.map(b => b.id === id ? { ...b, data: { ...b.data, [key]: val } } : b), savedLabel: "Saving…" }); this.markSaved(); }

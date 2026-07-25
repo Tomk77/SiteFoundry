@@ -108,7 +108,7 @@ async function renderRoute() {
 }
 
 function getFieldControl(label: string) {
-  const field = Array.from(document.querySelectorAll("label.sf-record-field")).find((element) =>
+  const field = Array.from(document.querySelectorAll("label.sc-record-field")).find((element) =>
     element.textContent?.includes(label),
   );
   const control = field?.querySelector("input, textarea");

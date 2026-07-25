@@ -96,7 +96,7 @@ tanstackIntent:
     for: "Programmatic route tree building as an alternative to filesystem conventions: rootRoute, index, route, layout, physical, defineVirtualSubtreeConfig. Use with TanStack Router plugin's virtualRouteConfig option."
 <!-- intent-skills:end -->
 
-# SiteFoundry project context
+# Scaffold CMS project context
 
 The repository is the source of truth across Codex sessions and machines. Do not rely on unavailable conversation history.
 

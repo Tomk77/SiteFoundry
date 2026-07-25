@@ -53,8 +53,8 @@ describe("loading states", () => {
         <LoadingBar />
       </>,
     );
-    expect(view.container.querySelector(".sf-inline-spinner.small")).toBeTruthy();
-    expect(view.container.querySelectorAll(".sf-loading-dots i")).toHaveLength(3);
-    expect(view.container.querySelector(".sf-loading-bar i")).toBeTruthy();
+    expect(view.container.querySelector(".sc-inline-spinner.small")).toBeTruthy();
+    expect(view.container.querySelectorAll(".sc-loading-dots i")).toHaveLength(3);
+    expect(view.container.querySelector(".sc-loading-bar i")).toBeTruthy();
   });
 });

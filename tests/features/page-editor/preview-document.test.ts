@@ -14,7 +14,7 @@ describe("page editor preview document", () => {
 
     expect(document).toContain("&lt;script&gt;alert(&quot;no&quot;)&lt;/script&gt;");
     expect(document).not.toContain('<script>alert("no")</script>');
-    expect(document).toContain("sf-preview");
+    expect(document).toContain("sc-preview");
     expect(document).toContain("restore-scroll");
   });
 });

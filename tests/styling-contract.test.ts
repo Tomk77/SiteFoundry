@@ -14,9 +14,9 @@ describe("administration styling contract", () => {
 
     expect(styles).toContain('@import "tailwindcss";');
     expect(styles).toContain("@theme inline");
-    expect(styles).toContain("--color-canvas: var(--sf-canvas)");
-    expect(styles).toContain("--color-action: var(--sf-accent)");
-    expect(styles).toContain("--color-published: var(--sf-published)");
+    expect(styles).toContain("--color-canvas: var(--sc-canvas)");
+    expect(styles).toContain("--color-action: var(--sc-accent)");
+    expect(styles).toContain("--color-published: var(--sc-published)");
   });
 
   it("keeps shared UI primitives on semantic utilities instead of palette literals", () => {
@@ -31,7 +31,7 @@ describe("administration styling contract", () => {
     ].map((file) => source(`src/components/ui/${file}`));
 
     for (const primitive of primitives) {
-      expect(primitive).not.toMatch(/var\(--sf-/);
+      expect(primitive).not.toMatch(/var\(--sc-/);
       expect(primitive).not.toMatch(/#[\da-f]{3,8}/i);
     }
   });
@@ -74,6 +74,6 @@ describe("administration styling contract", () => {
       expect(owner).not.toContain("--ps-");
     }
 
-    expect(source("src/styles.css")).not.toMatch(/^\s*\.sf-/m);
+    expect(source("src/styles.css")).not.toMatch(/^\s*\.sc-/m);
   });
 });

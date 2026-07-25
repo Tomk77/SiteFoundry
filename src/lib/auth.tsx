@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     let active = true;
 
-    const stored = window.localStorage.getItem("sf-interface-mode");
+    const stored = window.localStorage.getItem("sc-interface-mode");
     applyInterfaceMode(stored === "light" || stored === "dark" ? stored : "system");
 
     void client.auth
@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const { data } = client.auth.onAuthStateChange(
       (_event: AuthChangeEvent, nextSession: Session | null) => {
-        const stored = window.localStorage.getItem("sf-interface-mode");
+        const stored = window.localStorage.getItem("sc-interface-mode");
         applyInterfaceMode(stored === "light" || stored === "dark" ? stored : "system");
         setSession(nextSession);
         setLoading(false);

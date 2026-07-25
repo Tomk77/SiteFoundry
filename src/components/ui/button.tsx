@@ -63,7 +63,7 @@ function Button({
       {loading ? (
         <span
           aria-hidden="true"
-          className="sf-button-spinner [display:inline-block] [height:15px] [width:15px] [flex:none] [animation:sf-loading-spin_0.8s_linear_infinite] [border-radius:999px] [border-width:2px] [border-style:solid] [border-color:color-mix(in_srgb,_currentColor_35%,_transparent)] [border-top-color:currentColor] motion-reduce:[animation:none]"
+          className="sc-button-spinner [display:inline-block] [height:15px] [width:15px] [flex:none] [animation:sc-loading-spin_0.8s_linear_infinite] [border-radius:999px] [border-width:2px] [border-style:solid] [border-color:color-mix(in_srgb,_currentColor_35%,_transparent)] [border-top-color:currentColor] motion-reduce:[animation:none]"
         />
       ) : null}
       {children}

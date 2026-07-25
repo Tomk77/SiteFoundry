@@ -67,7 +67,7 @@ export function GeneralSettings({
       ) : null}
       <div className="flex flex-col gap-4">
         <SettingsCard
-          description="How this website is identified inside SiteFoundry and integrations."
+          description="How this website is identified inside Scaffold CMS and integrations."
           icon="ph-identification-card"
           title="Website identity"
         >
@@ -92,7 +92,7 @@ export function GeneralSettings({
                 />
               </Field>
               <Field
-                hint="Used by integrations. Changing it may require updates outside SiteFoundry."
+                hint="Used by integrations. Changing it may require updates outside Scaffold CMS."
                 label="Internal identifier"
               >
                 <Input

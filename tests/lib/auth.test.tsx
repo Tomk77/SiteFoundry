@@ -105,7 +105,7 @@ describe("AuthProvider", () => {
   it("loads a session, profile mode, and exposes successful auth actions", async () => {
     const harness = createAuthClient(session);
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(harness.client as never);
-    window.localStorage.setItem("sf-interface-mode", "light");
+    window.localStorage.setItem("sc-interface-mode", "light");
     const view = render(
       <AuthProvider>
         <AuthProbe />
@@ -165,7 +165,7 @@ describe("AuthProvider", () => {
   it("reacts to auth changes and uses system mode for invalid stored values", async () => {
     const harness = createAuthClient(null);
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(harness.client as never);
-    window.localStorage.setItem("sf-interface-mode", "invalid");
+    window.localStorage.setItem("sc-interface-mode", "invalid");
     render(
       <AuthProvider>
         <AuthProbe />

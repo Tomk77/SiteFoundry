@@ -55,7 +55,7 @@ declare
   new_site_id uuid;
   display_name text;
 begin
-  display_name := coalesce(nullif(new.raw_user_meta_data ->> 'full_name', ''), split_part(new.email, '@', 1), 'SiteFoundry user');
+  display_name := coalesce(nullif(new.raw_user_meta_data ->> 'full_name', ''), split_part(new.email, '@', 1), 'Scaffold CMS user');
 
   insert into public.profiles (id, full_name)
   values (new.id, display_name)
