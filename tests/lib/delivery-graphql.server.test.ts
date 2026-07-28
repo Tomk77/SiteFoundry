@@ -16,7 +16,49 @@ const bundle = parseDeliveryBundle({
       slug: "",
       path: "/",
       templateName: "Landing page",
-      blocks: [{ id: "hero", type: "hero", version: 1, data: { headline: "Hello" } }],
+      blocks: [
+        {
+          id: "hero",
+          type: "hero",
+          version: 1,
+          data: { headline: "Hello", highlights: "Typed API\nPage tree" },
+        },
+        {
+          id: "metrics",
+          type: "metrics",
+          version: 1,
+          data: { items: "4 | published pages\nREST + GraphQL | typed delivery" },
+        },
+        {
+          id: "steps",
+          type: "steps",
+          version: 1,
+          data: { heading: "Four moves", items: "tree | Model pages | Keep URLs aligned" },
+        },
+        {
+          id: "feature",
+          type: "feature",
+          version: 1,
+          data: {
+            title: "Redirect safely",
+            points: "Loop detection\nPublished redirects",
+            redirects: "/old | /new | 301",
+            recordFields: "Name | Amina",
+          },
+        },
+        {
+          id: "page-list",
+          type: "pageList",
+          version: 1,
+          data: { heading: "Published routes", maxItems: "6" },
+        },
+        {
+          id: "faq",
+          type: "faq",
+          version: 1,
+          data: { heading: "Questions", items: "What is it? | A website-native CMS." },
+        },
+      ],
       seo: { title: "Home", description: "", socialImage: null },
       revisionId: "revision-1",
       revisionVersion: 2,
@@ -79,7 +121,12 @@ describe("delivery GraphQL schema", () => {
       id: "page-1",
       title: "Home",
       revisionVersion: 2,
-      blocks: [{ __typename: "HeroBlock", id: "hero", headline: "Hello" }],
+    });
+    const page = result.data?.page as { blocks: Array<Record<string, unknown>> };
+    expect(page.blocks[0]).toMatchObject({
+      __typename: "HeroBlock",
+      id: "hero",
+      headline: "Hello",
     });
   });
 
@@ -92,6 +139,60 @@ describe("delivery GraphQL schema", () => {
     expect(result.errors).toBeUndefined();
     expect(result.data?.content).toMatchObject({
       colleagues: { nodes: [{ id: "person-1", name: "Mara", featured: true }], totalCount: 1 },
+    });
+  });
+
+  it("parses marketing block line fields into strongly typed values", async () => {
+    const result = await graphql({
+      schema: createDeliveryGraphQLSchema(bundle),
+      source: `{
+        page(url: "/") {
+          blocks {
+            __typename
+            ... on HeroBlock { highlights }
+            ... on MetricsBlock { metrics { value label } }
+            ... on StepsBlock { heading steps { icon title body } }
+            ... on FeatureBlock {
+              title points
+              redirects { source destination statusCode }
+              recordFields { label value }
+            }
+            ... on PageListBlock { heading maxItems }
+            ... on FaqBlock { heading questions { question answer } }
+          }
+        }
+      }`,
+    });
+
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.page).toMatchObject({
+      blocks: [
+        { __typename: "HeroBlock", highlights: ["Typed API", "Page tree"] },
+        {
+          __typename: "MetricsBlock",
+          metrics: [
+            { value: "4", label: "published pages" },
+            { value: "REST + GraphQL", label: "typed delivery" },
+          ],
+        },
+        {
+          __typename: "StepsBlock",
+          heading: "Four moves",
+          steps: [{ icon: "tree", title: "Model pages", body: "Keep URLs aligned" }],
+        },
+        {
+          __typename: "FeatureBlock",
+          points: ["Loop detection", "Published redirects"],
+          redirects: [{ source: "/old", destination: "/new", statusCode: 301 }],
+          recordFields: [{ label: "Name", value: "Amina" }],
+        },
+        { __typename: "PageListBlock", heading: "Published routes", maxItems: 6 },
+        {
+          __typename: "FaqBlock",
+          heading: "Questions",
+          questions: [{ question: "What is it?", answer: "A website-native CMS." }],
+        },
+      ],
     });
   });
 });

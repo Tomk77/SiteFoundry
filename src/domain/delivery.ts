@@ -1,6 +1,16 @@
 export type DeliveryBlock = {
   id: string;
-  type: "hero" | "richtext" | "quote" | "image" | "cta";
+  type:
+    | "hero"
+    | "richtext"
+    | "quote"
+    | "image"
+    | "cta"
+    | "metrics"
+    | "steps"
+    | "feature"
+    | "pageList"
+    | "faq";
   version: number;
   data: Record<string, string>;
 };
@@ -120,7 +130,12 @@ function blockType(value: unknown): DeliveryBlock["type"] | null {
     value === "richtext" ||
     value === "quote" ||
     value === "image" ||
-    value === "cta"
+    value === "cta" ||
+    value === "metrics" ||
+    value === "steps" ||
+    value === "feature" ||
+    value === "pageList" ||
+    value === "faq"
     ? value
     : null;
 }

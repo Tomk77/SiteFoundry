@@ -1,6 +1,6 @@
 # Project handoff
 
-- Last updated: 2026-07-25
+- Last updated: 2026-07-28
 - Project stage: Functional proof of concept
 
 ## What this project is
@@ -17,6 +17,11 @@ The CMS will serve content through REST and GraphQL. Consuming websites remain r
 - A TanStack Start administration application is implemented and builds successfully.
 - Supabase authentication and database persistence support the proof of concept.
 - Page tree, page editor, media flow, redirects, navigation, structured content, and personal settings have working UI flows.
+- The Page Editor block catalog now includes hero, rich text, quote, image, CTA, metrics, steps,
+  feature, published-page list, and FAQ blocks. Marketing blocks keep scalar persisted values for
+  simple editing while GraphQL exposes strongly typed repeated-item lists. The standalone Next.js
+  marketing website renders its published homepage in block order with no authorable marketing copy
+  left hard-coded in the website.
 - The Page Editor persists every explicit concept save as an immutable page revision, rejects stale
   concurrent saves, keeps the selected published snapshot live until explicit publication, and can
   switch to or restore the read-only live version. Autosave and arbitrary revision-history browsing
@@ -128,11 +133,14 @@ When asked to implement a feature:
 - The feature-first route migration documented in `docs/architecture/frontend-structure.md` is complete. Shared UI remains feature-neutral; new routes are limited to 150 lines and new React modules to 350 lines; existing feature-screen exceptions may shrink but cannot grow.
 - GitHub Actions runs formatting, linting, type checking, tests, route generation, and the production build for pushes to `main` and pull requests.
 - The linked hosted Supabase project contains migration-history versions that do not match several local migration filenames. Site Settings migration `20260721213000` was applied directly through the linked Management API on 2026-07-21. Delivery migration `20260722200000_delivery_api.sql` was applied through the project-scoped Supabase MCP on 2026-07-22 and recorded remotely as version `20260722132018`, name `delivery_api`. Before using a future blanket `supabase db push`, reconcile the history through schema comparison; do not blindly replay or repair those entries.
+- Marketing homepage migration `20260728152000` was applied through the same isolated CLI migration
+  view on 2026-07-28. It created new concept and published homepage revisions containing the complete
+  ordered marketing block set.
 
 ## Immediate next step
 
-The hosted development project has `20260725143000_page_concept_revisions.sql` applied. It was pushed
-through an isolated CLI migration view that mirrored the remote history, because a normal blanket
-push remains unsafe while older recorded versions differ from local filenames. Next, design the
-separate autosave working-copy store and confidential preview-token delivery mode before adding draft
-reads to REST or GraphQL, then add arbitrary revision-history browsing and restoration.
+The hosted development project has the concept/published revision model and the CMS-driven marketing
+homepage migration applied. A normal blanket migration push remains unsafe while older recorded
+versions differ from local filenames. Next, design the separate autosave working-copy store and
+confidential preview-token delivery mode before adding draft reads to REST or GraphQL, then add
+arbitrary revision-history browsing and restoration.

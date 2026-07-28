@@ -10,7 +10,18 @@ import type { EditablePage, PageRevisionSnapshot } from "@/lib/page-editor";
 
 describe("page editor model", () => {
   it("describes every supported block and creates collision-free identifiers", () => {
-    expect(Object.keys(blockDefinitions)).toEqual(["hero", "richtext", "quote", "image", "cta"]);
+    expect(Object.keys(blockDefinitions)).toEqual([
+      "hero",
+      "richtext",
+      "quote",
+      "image",
+      "cta",
+      "metrics",
+      "steps",
+      "feature",
+      "pageList",
+      "faq",
+    ]);
     expect(Object.keys(defaults)).toEqual(Object.keys(blockDefinitions));
     expect(
       nextBlockId([

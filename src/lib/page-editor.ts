@@ -1,7 +1,20 @@
 import { getSupabaseBrowserClient, getSupabaseConfigError } from "./supabase";
 import type { Json } from "./database.types";
 
-export type BlockType = "hero" | "richtext" | "quote" | "image" | "cta";
+export const blockTypes = [
+  "hero",
+  "richtext",
+  "quote",
+  "image",
+  "cta",
+  "metrics",
+  "steps",
+  "feature",
+  "pageList",
+  "faq",
+] as const;
+
+export type BlockType = (typeof blockTypes)[number];
 export interface ContentBlock {
   id: string;
   type: BlockType;
@@ -66,7 +79,7 @@ function isContentBlock(value: unknown): value is ContentBlock {
 
   return (
     typeof block.id === "string" &&
-    ["hero", "richtext", "quote", "image", "cta"].includes(String(block.type)) &&
+    blockTypes.includes(block.type as BlockType) &&
     Boolean(block.data) &&
     typeof block.data === "object"
   );
@@ -216,11 +229,16 @@ export async function loadEditablePage(pageId?: string): Promise<EditablePage | 
 export async function saveEditablePage(page: EditablePage, publish = false) {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
+  const hasAccessibleImages = page.blocks.every((block) => {
+    if (block.type === "image") return Boolean(block.data.alt?.trim());
+    if ((block.type === "hero" || block.type === "feature") && block.data.imageSrc?.trim()) {
+      return Boolean(block.data.imageAlt?.trim());
+    }
+
+    return true;
+  });
   const validationStatus =
-    page.seoDescription.trim() &&
-    page.blocks.every((block) => block.type !== "image" || block.data.alt?.trim())
-      ? "ready"
-      : "needs_attention";
+    page.seoDescription.trim() && hasAccessibleImages ? "ready" : "needs_attention";
   const { data, error } = await client.rpc("save_page_revision", {
     target_page_id: page.id,
     expected_concept_revision_id: page.conceptRevision?.id ?? null,

@@ -23,7 +23,15 @@ const rawBundle = {
       slug: "about",
       path: "/about/",
       templateName: "Standard page",
-      blocks: [{ id: "hero", type: "hero", version: 1, data: { headline: "About us" } }],
+      blocks: [
+        { id: "hero", type: "hero", version: 1, data: { headline: "About us" } },
+        {
+          id: "faq",
+          type: "faq",
+          version: 1,
+          data: { heading: "Questions", items: "Why? | Because." },
+        },
+      ],
       seo: { title: "About", description: "About Northstar", socialImage: null },
       revisionId: "revision-en",
       revisionVersion: 1,
@@ -64,6 +72,12 @@ describe("delivery domain", () => {
       type: "hero",
       version: 1,
       data: { headline: "About us" },
+    });
+    expect(bundle.pages[0]?.blocks[1]).toEqual({
+      id: "faq",
+      type: "faq",
+      version: 1,
+      data: { heading: "Questions", items: "Why? | Because." },
     });
   });
 

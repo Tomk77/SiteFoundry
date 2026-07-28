@@ -3,7 +3,7 @@
 - Status: Implemented (initial published delivery scope)
 - Owner: Unassigned
 - Created: 2026-07-22
-- Last updated: 2026-07-25
+- Last updated: 2026-07-28
 - Related specifications: REST content API, schema system, revisions, authentication
 
 ## Summary
@@ -15,8 +15,12 @@ GraphQL exposes the same token-gated published delivery data as REST at
 
 - One `Page` type represents every page. Page templates never generate GraphQL types.
 - `Page.blocks` is an ordered `PageBlock` union containing `HeroBlock`, `RichTextBlock`, `QuoteBlock`,
-  `ImageBlock`, and `CtaBlock`.
+  `ImageBlock`, `CtaBlock`, `MetricsBlock`, `StepsBlock`, `FeatureBlock`, `PageListBlock`, and
+  `FaqBlock`.
 - Each block contains stable identity and a version in addition to its strongly typed fields.
+- Line-oriented repeated editor values are exposed as typed GraphQL lists such as
+  `MetricsBlock.metrics`, `StepsBlock.steps`, and `FaqBlock.questions`, backed by `MetricItem`,
+  `StepItem`, and `FaqItem` object types. Consumers do not parse the persisted delimiter format.
 - Each published structured-content type generates a strongly typed field under `content`, such as
   `content.colleagues` or `content.jobOpenings`.
 - Site, languages, navigation, redirects, revision metadata, and the currently empty media collection

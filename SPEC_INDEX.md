@@ -1,7 +1,7 @@
 # Specification index
 
 - Status: Active
-- Last updated: 2026-07-25
+- Last updated: 2026-07-28
 
 ## Purpose
 
@@ -43,7 +43,7 @@ The order below is a dependency-aware planning order, not a release commitment.
 | Priority | Feature                                          | Status                | Specification                                        | Depends on                                                            |
 | -------: | ------------------------------------------------ | --------------------- | ---------------------------------------------------- | --------------------------------------------------------------------- |
 |        1 | Page tree and page lifecycle                     | Working specification | [Page tree specification](PAGE_TREE_SPEC.md)         | Product vision                                                        |
-|        2 | Page editor and content composition              | Not started           | `docs/specs/page-editor.md`                          | Page tree, schema model                                               |
+|        2 | Page editor and content composition              | Implemented           | [Page editor](docs/specs/page-editor.md)             | Page tree, schema model                                               |
 |        3 | Schema and field system                          | Not started           | `docs/specs/schema-system.md`                        | Page tree                                                             |
 |        4 | Page templates                                   | Implemented           | [Page templates](docs/specs/page-templates.md)       | Schema system, page editor                                            |
 |        5 | Persistence and revision model                   | Working specification | [Revisions](docs/specs/revisions.md)                 | Page tree, schema system                                              |
@@ -70,6 +70,9 @@ The order below is a dependency-aware planning order, not a release commitment.
 
 The page concept/published revision foundation is implemented; autosave, arbitrary history restore,
 scheduled publication, and preview-token delivery keep the Revisions row at Working specification.
+The initial code-defined page-block catalog, ordered editor composition, immutable save/publish
+snapshots, and typed REST/GraphQL delivery are implemented. Nested repeaters, rich text, media
+references, and user-defined components remain deferred.
 The Site Settings row remains a working specification because the formal administration authentication, permission,
 invitation-delivery, DNS-verification, and export-worker contracts are unresolved. Its approved UI and
 synchronous persistence are implemented with Supabase RLS and guarded database functions. Site-owned

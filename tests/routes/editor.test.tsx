@@ -281,7 +281,9 @@ describe("page editor route", () => {
     await renderRoute();
     expect(await screen.findByText(/unpublished changes/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "View published" }));
-    expect(screen.getByLabelText("Published page details (read-only)")).toBeTruthy();
+    expect(
+      await screen.findByLabelText("Published page details (read-only)", {}, { timeout: 5_000 }),
+    ).toBeTruthy();
     expect((screen.getByTitle("Live page preview") as HTMLIFrameElement).srcdoc).toContain(
       "Live headline",
     );

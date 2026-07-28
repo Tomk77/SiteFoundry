@@ -75,17 +75,92 @@ function blockFields(fields: Record<string, GraphQLOutputType>) {
   };
 }
 
+function lines(value: string | undefined) {
+  return (value ?? "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function columns(value: string, count: number) {
+  const parts = value.split("|").map((part) => part.trim());
+  if (parts.length <= count) return parts;
+
+  return [...parts.slice(0, count - 1), parts.slice(count - 1).join(" | ")];
+}
+
+const StringListType = new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString)));
+
+function stringListField(key: string) {
+  return {
+    type: StringListType,
+    resolve: (block: DeliveryBlock) => lines(block.data[key]),
+  };
+}
+
+const MetricItemType = new GraphQLObjectType({
+  name: "MetricItem",
+  fields: {
+    value: { type: new GraphQLNonNull(GraphQLString) },
+    label: { type: new GraphQLNonNull(GraphQLString) },
+  },
+});
+
+const StepItemType = new GraphQLObjectType({
+  name: "StepItem",
+  fields: {
+    icon: { type: new GraphQLNonNull(GraphQLString) },
+    title: { type: new GraphQLNonNull(GraphQLString) },
+    body: { type: new GraphQLNonNull(GraphQLString) },
+  },
+});
+
+const RedirectExampleType = new GraphQLObjectType({
+  name: "RedirectExample",
+  fields: {
+    source: { type: new GraphQLNonNull(GraphQLString) },
+    destination: { type: new GraphQLNonNull(GraphQLString) },
+    statusCode: { type: new GraphQLNonNull(GraphQLInt) },
+  },
+});
+
+const LabelValueType = new GraphQLObjectType({
+  name: "LabelValue",
+  fields: {
+    label: { type: new GraphQLNonNull(GraphQLString) },
+    value: { type: new GraphQLNonNull(GraphQLString) },
+  },
+});
+
+const FaqItemType = new GraphQLObjectType({
+  name: "FaqItem",
+  fields: {
+    question: { type: new GraphQLNonNull(GraphQLString) },
+    answer: { type: new GraphQLNonNull(GraphQLString) },
+  },
+});
+
 const HeroBlockType = new GraphQLObjectType({
   name: "HeroBlock",
-  fields: blockFields({
-    eyebrow: GraphQLString,
-    headline: new GraphQLNonNull(GraphQLString),
-    subheadline: GraphQLString,
-  }),
+  fields: {
+    ...blockFields({
+      eyebrow: GraphQLString,
+      headline: new GraphQLNonNull(GraphQLString),
+      subheadline: GraphQLString,
+      primaryLabel: GraphQLString,
+      primaryUrl: GraphQLString,
+      secondaryLabel: GraphQLString,
+      secondaryUrl: GraphQLString,
+      imageSrc: GraphQLString,
+      imageAlt: GraphQLString,
+      imageLabel: GraphQLString,
+    }),
+    highlights: stringListField("highlights"),
+  },
 });
 const RichTextBlockType = new GraphQLObjectType({
   name: "RichTextBlock",
-  fields: blockFields({ body: new GraphQLNonNull(GraphQLString) }),
+  fields: blockFields({ body: GraphQLString }),
 });
 const QuoteBlockType = new GraphQLObjectType({
   name: "QuoteBlock",
@@ -97,7 +172,121 @@ const ImageBlockType = new GraphQLObjectType({
 });
 const CtaBlockType = new GraphQLObjectType({
   name: "CtaBlock",
-  fields: blockFields({ heading: new GraphQLNonNull(GraphQLString), button: GraphQLString }),
+  fields: blockFields({
+    heading: new GraphQLNonNull(GraphQLString),
+    body: GraphQLString,
+    button: GraphQLString,
+    primaryLabel: GraphQLString,
+    primaryUrl: GraphQLString,
+    secondaryLabel: GraphQLString,
+    secondaryUrl: GraphQLString,
+  }),
+});
+const MetricsBlockType = new GraphQLObjectType({
+  name: "MetricsBlock",
+  fields: {
+    ...blockFields({ accessibleLabel: GraphQLString }),
+    metrics: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(MetricItemType))),
+      resolve: (block: DeliveryBlock) =>
+        lines(block.data.items).map((line) => {
+          const [value = "", label = ""] = columns(line, 2);
+
+          return { value, label };
+        }),
+    },
+  },
+});
+const StepsBlockType = new GraphQLObjectType({
+  name: "StepsBlock",
+  fields: {
+    ...blockFields({
+      eyebrow: GraphQLString,
+      heading: new GraphQLNonNull(GraphQLString),
+      introduction: GraphQLString,
+    }),
+    steps: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(StepItemType))),
+      resolve: (block: DeliveryBlock) =>
+        lines(block.data.items).map((line) => {
+          const [icon = "", title = "", body = ""] = columns(line, 3);
+
+          return { icon, title, body };
+        }),
+    },
+  },
+});
+const FeatureBlockType = new GraphQLObjectType({
+  name: "FeatureBlock",
+  fields: {
+    ...blockFields({
+      eyebrow: GraphQLString,
+      title: new GraphQLNonNull(GraphQLString),
+      body: GraphQLString,
+      icon: GraphQLString,
+      visual: GraphQLString,
+      imageSrc: GraphQLString,
+      imageAlt: GraphQLString,
+      recordTitle: GraphQLString,
+      recordStatus: GraphQLString,
+      codeLanguage: GraphQLString,
+      code: GraphQLString,
+    }),
+    points: stringListField("points"),
+    redirects: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(RedirectExampleType))),
+      resolve: (block: DeliveryBlock) =>
+        lines(block.data.redirects).map((line) => {
+          const [source = "", destination = "", statusCode = "301"] = columns(line, 3);
+
+          return { source, destination, statusCode: Number(statusCode) === 302 ? 302 : 301 };
+        }),
+    },
+    recordFields: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(LabelValueType))),
+      resolve: (block: DeliveryBlock) =>
+        lines(block.data.recordFields).map((line) => {
+          const [label = "", value = ""] = columns(line, 2);
+
+          return { label, value };
+        }),
+    },
+  },
+});
+const PageListBlockType = new GraphQLObjectType({
+  name: "PageListBlock",
+  fields: {
+    ...blockFields({
+      eyebrow: GraphQLString,
+      heading: new GraphQLNonNull(GraphQLString),
+      body: GraphQLString,
+      emptyTitle: GraphQLString,
+      emptyBody: GraphQLString,
+    }),
+    maxItems: {
+      type: new GraphQLNonNull(GraphQLInt),
+      resolve: (block: DeliveryBlock) =>
+        Math.max(1, Math.min(Number(block.data.maxItems) || 6, 24)),
+    },
+  },
+});
+const FaqBlockType = new GraphQLObjectType({
+  name: "FaqBlock",
+  fields: {
+    ...blockFields({
+      eyebrow: GraphQLString,
+      heading: new GraphQLNonNull(GraphQLString),
+    }),
+    questions: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(FaqItemType))),
+      resolve: (block: DeliveryBlock) =>
+        lines(block.data.items).map((line) => {
+          const [question = "", answer = ""] = columns(line, 2);
+
+          return { question, answer };
+        }),
+    },
+  },
 });
 
 const blockTypeNames: Record<DeliveryBlock["type"], string> = {
@@ -106,11 +295,27 @@ const blockTypeNames: Record<DeliveryBlock["type"], string> = {
   quote: "QuoteBlock",
   image: "ImageBlock",
   cta: "CtaBlock",
+  metrics: "MetricsBlock",
+  steps: "StepsBlock",
+  feature: "FeatureBlock",
+  pageList: "PageListBlock",
+  faq: "FaqBlock",
 };
 
 const PageBlockType = new GraphQLUnionType({
   name: "PageBlock",
-  types: [HeroBlockType, RichTextBlockType, QuoteBlockType, ImageBlockType, CtaBlockType],
+  types: [
+    HeroBlockType,
+    RichTextBlockType,
+    QuoteBlockType,
+    ImageBlockType,
+    CtaBlockType,
+    MetricsBlockType,
+    StepsBlockType,
+    FeatureBlockType,
+    PageListBlockType,
+    FaqBlockType,
+  ],
   resolveType: (block: DeliveryBlock) => blockTypeNames[block.type],
 });
 

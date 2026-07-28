@@ -30,7 +30,17 @@ export function previewDocument(blocks: ContentBlock[]) {
         if (block.type === "image")
           inner = `<div class="ph" data-field-key="alt">${esc(data.alt || "IMAGE")}</div>${data.caption ? `<p class="cap" data-field-key="caption">${esc(data.caption)}</p>` : ""}`;
         if (block.type === "cta")
-          inner = `<div class="cta"><h3 data-field-key="heading">${esc(data.heading || "Ready?")}</h3><span class="btn" data-field-key="button">${esc(data.button || "Get started")}</span></div>`;
+          inner = `<div class="cta"><h3 data-field-key="heading">${esc(data.heading || "Ready?")}</h3><p data-field-key="body">${esc(data.body || "")}</p><span class="btn" data-field-key="primaryLabel">${esc(data.primaryLabel || data.button || "Get started")}</span></div>`;
+        if (block.type === "metrics")
+          inner = `<div data-field-key="items">${esc(data.items || "No metrics yet").replaceAll("\n", "<br>")}</div>`;
+        if (block.type === "steps")
+          inner = `<p class="eyebrow" data-field-key="eyebrow">${esc(data.eyebrow || "Steps")}</p><h2 data-field-key="heading">${esc(data.heading || "Process")}</h2><p class="body" data-field-key="introduction">${esc(data.introduction || "")}</p><div data-field-key="items">${esc(data.items || "No steps yet").replaceAll("\n", "<br>")}</div>`;
+        if (block.type === "feature")
+          inner = `<p class="eyebrow" data-field-key="eyebrow">${esc(data.eyebrow || "Feature")}</p><h2 data-field-key="title">${esc(data.title || "Feature title")}</h2><p class="body" data-field-key="body">${esc(data.body || "")}</p><div data-field-key="points">${esc(data.points || "").replaceAll("\n", "<br>")}</div>`;
+        if (block.type === "pageList")
+          inner = `<p class="eyebrow" data-field-key="eyebrow">${esc(data.eyebrow || "Published pages")}</p><h2 data-field-key="heading">${esc(data.heading || "Page list")}</h2><p class="body" data-field-key="body">${esc(data.body || "")}</p><div class="ph">DYNAMIC PAGE CARDS</div>`;
+        if (block.type === "faq")
+          inner = `<p class="eyebrow" data-field-key="eyebrow">${esc(data.eyebrow || "FAQ")}</p><h2 data-field-key="heading">${esc(data.heading || "Questions")}</h2><div data-field-key="items">${esc(data.items || "No questions yet").replaceAll("\n", "<br>")}</div>`;
 
         return `<section class="${cls}" data-id="${block.id}">${inner}</section>`;
       })

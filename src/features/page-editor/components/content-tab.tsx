@@ -1,5 +1,6 @@
 ﻿import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NativeSelect } from "@/components/ui/native-select";
 import { Textarea } from "@/components/ui/textarea";
 import type { BlockType, EditablePage } from "@/lib/page-editor";
 
@@ -120,6 +121,24 @@ export function ContentTab({
                         }}
                         onChange={(event) => onEditBlock(block.id, field.key, event.target.value)}
                       />
+                    ) : field.type === "select" ? (
+                      <NativeSelect
+                        unstyled
+                        className="sc-editor-input [width:100%] [border-radius:8px] bg-surface [padding:8px_10px] [font-size:13px] text-ink [outline:0] [border:1.5px_solid_var(--sc-field)] dark:[border-color:#3d444e] dark:[color:#e9ecf1] dark:[background:#1d2126] [&:focus]:border-action [&:focus]:[box-shadow:0_0_0_3px_rgba(118,_63,_186,_0.15)]"
+                        value={block.data[field.key] || ""}
+                        data-editor-block={block.id}
+                        data-editor-field={field.key}
+                        onFocus={() => {
+                          if (selected !== block.id) onSelectBlock(block.id);
+                        }}
+                        onChange={(event) => onEditBlock(block.id, field.key, event.target.value)}
+                      >
+                        {(field.options ?? []).map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </NativeSelect>
                     ) : (
                       <Input
                         unstyled
@@ -134,6 +153,7 @@ export function ContentTab({
                         onChange={(event) => onEditBlock(block.id, field.key, event.target.value)}
                       />
                     )}
+                    {field.help ? <p>{field.help}</p> : null}
                     {block.type === "image" && field.key === "alt" && !block.data.alt?.trim() && (
                       <em>
                         <i className="ph-fill ph-warning" />
