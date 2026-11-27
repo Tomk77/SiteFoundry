@@ -5,6 +5,16 @@ import { toast } from "sonner";
 import type { PageTemplateDefinition } from "@/lib/page-templates";
 import { PageTemplateEditor } from "@/features/page-templates/page-template-editor";
 
+let shouldBlock: (() => boolean) | undefined;
+
+vi.mock("@tanstack/react-router", () => ({
+  useBlocker: (options: { shouldBlockFn: () => boolean }) => {
+    shouldBlock = options.shouldBlockFn;
+
+    return { status: "idle", proceed: vi.fn(), reset: vi.fn() };
+  },
+}));
+
 vi.mock("sonner", () => ({
   toast: { warning: vi.fn() },
 }));
@@ -42,7 +52,36 @@ beforeEach(() => {
 
 afterEach(cleanup);
 
+function order(container: HTMLElement) {
+  return [...container.querySelectorAll("[data-template-component]")].map((item) =>
+    item.getAttribute("data-template-component"),
+  );
+}
+
 describe("PageTemplateEditor", () => {
+  it("drops a component dragged downward onto the target's place (7.10)", () => {
+    const base = template();
+    const initial = {
+      ...base,
+      components: [...base.components, { id: "quote-1", type: "quote", values: { text: "Quote" } }],
+    };
+    const { container } = render(
+      <PageTemplateEditor
+        initialTemplate={initial}
+        onBack={vi.fn()}
+        onSave={vi.fn()}
+        saving={false}
+        siteName="Acme"
+      />,
+    );
+    const item = (id: string) => container.querySelector(`[data-template-component='${id}']`)!;
+
+    fireEvent.dragStart(item("hero-1"));
+    fireEvent.drop(item("rich-1"));
+    expect(order(container)).toEqual(["rich-1", "hero-1", "quote-1"]);
+    expect(shouldBlock?.()).toBe(true);
+  });
+
   it("renders, changes preview device, and reports editor state", () => {
     const onBack = vi.fn();
     render(

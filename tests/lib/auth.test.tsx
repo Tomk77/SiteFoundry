@@ -178,6 +178,37 @@ describe("AuthProvider", () => {
     expect(applyInterfaceMode).toHaveBeenCalledWith("system");
   });
 
+  it("keeps the user object stable across token refreshes (5.1)", async () => {
+    const harness = createAuthClient(session);
+    vi.mocked(getSupabaseBrowserClient).mockReturnValue(harness.client as never);
+    render(
+      <AuthProvider>
+        <AuthProbe />
+      </AuthProvider>,
+    );
+    await waitFor(() => expect(currentAuth?.user?.id).toBe("user-1"));
+    const before = currentAuth?.user;
+
+    await act(() =>
+      harness.emit("TOKEN_REFRESHED", {
+        ...session,
+        access_token: "new-token",
+        user: { id: "user-1" },
+      } as Session),
+    );
+    expect(currentAuth?.session?.access_token).toBe("new-token");
+    expect(currentAuth?.user).toBe(before);
+
+    await act(() =>
+      harness.emit("USER_UPDATED", {
+        ...session,
+        user: { id: "user-1", email: "new@example.com" },
+      } as Session),
+    );
+    expect(currentAuth?.user).not.toBe(before);
+    expect(currentAuth?.user?.email).toBe("new@example.com");
+  });
+
   it("recovers when initial session or optional profile loading fails", async () => {
     const sessionFailure = createAuthClient(null);
     sessionFailure.auth.getSession.mockRejectedValue(new Error("session failed"));

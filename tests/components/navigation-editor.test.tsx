@@ -14,7 +14,17 @@ import { NavigationEditor } from "@/features/navigation/navigation-editor";
 const navigate = vi.fn();
 let userNumber = 0;
 
-vi.mock("@tanstack/react-router", () => ({ useNavigate: () => navigate }));
+const blocker = { status: "idle", proceed: vi.fn(), reset: vi.fn() };
+let shouldBlock: (() => boolean) | undefined;
+
+vi.mock("@tanstack/react-router", () => ({
+  useNavigate: () => navigate,
+  useBlocker: (options: { shouldBlockFn: () => boolean }) => {
+    shouldBlock = options.shouldBlockFn;
+
+    return blocker;
+  },
+}));
 vi.mock("@/lib/auth", () => ({ useAuth: vi.fn() }));
 vi.mock("@/lib/navigation", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/lib/navigation")>()),
@@ -268,6 +278,19 @@ describe("NavigationEditor", () => {
     );
   });
 
+  it("guards unsaved menu changes against navigation (5.2)", async () => {
+    render(<NavigationEditor location="header" />);
+    await screen.findByText("Menu structure");
+    expect(shouldBlock?.()).toBe(false);
+
+    clickBuilderItem("Home");
+    fireEvent.change(document.querySelector("#navigation-label-home")!, {
+      target: { value: "Start" },
+    });
+
+    expect(shouldBlock?.()).toBe(true);
+  });
+
   it("renders footer preview and footer-specific additions", async () => {
     render(<NavigationEditor location="footer" />);
     expect(await screen.findByText("Footer content")).toBeTruthy();
@@ -275,7 +298,6 @@ describe("NavigationEditor", () => {
     fireEvent.click(screen.getByRole("button", { name: "Add to footer" }));
     fireEvent.click(screen.getByRole("button", { name: /Link column/ }));
     expect(screen.getByDisplayValue("New column")).toBeTruthy();
-    fireEvent.click(screen.getByTitle("Refresh preview"));
     fireEvent.click(screen.getByRole("button", { name: "Back" }));
     expect(navigate).toHaveBeenCalledWith({ to: "/" });
   });

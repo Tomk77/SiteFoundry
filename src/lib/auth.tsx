@@ -95,9 +95,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [client, session?.user.id]);
 
+  // Token refreshes create a new user object with the same content. Keep the identity stable so
+  // screens keyed on `user` do not refetch and overwrite drafts (finding 5.1).
+  const userKey = session?.user ? JSON.stringify(session.user) : "";
+  const user = useMemo(() => (userKey ? (JSON.parse(userKey) as User) : null), [userKey]);
+
   const value = useMemo<AuthContextValue>(
     () => ({
-      user: session?.user ?? null,
+      user,
       session,
       loading,
       passwordRecovery,
@@ -151,7 +156,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (error) throw error;
       },
     }),
-    [client, loading, passwordRecovery, session],
+    [client, loading, passwordRecovery, session, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
