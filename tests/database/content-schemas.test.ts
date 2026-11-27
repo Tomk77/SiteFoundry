@@ -69,4 +69,27 @@ describe("2.4 content type schemas reach delivery", () => {
 
     expect(await publishSchema(editorId, type.id)).toBe(type.version + 1);
   });
+
+  it("saves a content type and publishes its schema in one call", async () => {
+    const editorId = await addMember(database, site.siteId, "editor");
+    const [row] = await database.as(
+      editorId,
+      async (tx) =>
+        (
+          await tx.query<{ id: string }>(
+            `select public.save_content_type($1, null, 'partners', 'Partners', 'Partner', 'ph-users',
+             '', '[{"key":"name","label":"Name","type":"text","primary":true,"required":true}]'::jsonb) as id`,
+            [site.languageId],
+          )
+        ).rows,
+    );
+    const [type] = await database.admin<{ version: number; fields: number }>(
+      `select published_schema_version as version,
+              jsonb_array_length(published_schema -> 'fields') as fields
+       from public.content_types where id = $1`,
+      [row?.id],
+    );
+
+    expect(type).toEqual({ version: 1, fields: 1 });
+  });
 });
