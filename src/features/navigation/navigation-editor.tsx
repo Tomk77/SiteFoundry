@@ -84,6 +84,9 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
           setItems(data.items);
           setSavedSnapshot(JSON.stringify(data.items));
           setPublishedSnapshot(JSON.stringify(data.publishedItems));
+          const unread = data.invalidItemCount;
+          if (unread)
+            setError(`${unread} menu ${unread === 1 ? "item" : "items"} could not be read.`);
         }
       })
       .catch((reason: unknown) =>
@@ -197,38 +200,29 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
     setDropId(null);
   };
 
-  const save = async () => {
+  const persist = async (action: "draft" | "publish") => {
     if (!workspace || saving) return;
-    setSavingAction("draft");
+    setSavingAction(action);
     setError("");
     try {
-      await saveNavigationDraft(workspace.menuId, items);
-      setSavedSnapshot(JSON.stringify(items));
-      showToast(`${isFooter ? "Footer" : "Header navigation"} draft saved`);
+      if (action === "draft") await saveNavigationDraft(workspace.menuId, items);
+      else await publishNavigation(workspace.menuId, items);
+      const snapshot = JSON.stringify(items);
+      setSavedSnapshot(snapshot);
+      if (action === "publish") setPublishedSnapshot(snapshot);
+      setPublishConfirm(false);
+      const label = isFooter ? "Footer" : "Header navigation";
+      showToast(`${label} ${action === "draft" ? "draft saved" : "published"}`);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Could not save draft.");
+      const fallback = action === "draft" ? "Could not save draft." : "Could not publish changes.";
+      setError(reason instanceof Error ? reason.message : fallback);
     } finally {
       setSavingAction(null);
     }
   };
 
-  const publish = async () => {
-    if (!workspace || saving) return;
-    setSavingAction("publish");
-    setError("");
-    try {
-      await publishNavigation(workspace.menuId, items);
-      const snapshot = JSON.stringify(items);
-      setSavedSnapshot(snapshot);
-      setPublishedSnapshot(snapshot);
-      setPublishConfirm(false);
-      showToast(`${isFooter ? "Footer" : "Header navigation"} published`);
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Could not publish changes.");
-    } finally {
-      setSavingAction(null);
-    }
-  };
+  const save = () => persist("draft");
+  const publish = () => persist("publish");
 
   const refresh = () => {
     setRefreshing(true);

@@ -129,7 +129,7 @@ describe("navigation persistence", () => {
     await expect(loadNavigationWorkspace("header")).resolves.toBeNull();
   });
 
-  it("loads valid items, drops malformed JSON, and flattens page options", async () => {
+  it("loads valid items, reports malformed ones, and flattens page options", async () => {
     const { client } = createSupabaseMock({
       tables: {
         navigation_menus: [
@@ -144,31 +144,47 @@ describe("navigation persistence", () => {
       },
     });
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
-
     const result = await loadNavigationWorkspace("header");
-
-    expect(result).toMatchObject({ menuId: "menu-1", location: "header", items: [item] });
+    expect(result).toMatchObject({
+      menuId: "menu-1",
+      location: "header",
+      items: [{ ...item, pageId: "about" }],
+      invalidItemCount: 2,
+    });
     expect(result?.pageOptions).toEqual([
       { id: "home", title: "Home", path: "/" },
       { id: "about", title: "About", path: "/about" },
     ]);
   });
 
-  it("creates a missing menu with empty draft and published items", async () => {
+  it("follows a linked page to its current path", async () => {
+    const moved = { ...item, target: "/old-about", pageId: "about" };
     const { client } = createSupabaseMock({
       tables: {
-        navigation_menus: [mockResult(null), mockResult({ id: "menu-new", published_at: null })],
+        navigation_menus: [
+          mockResult({
+            id: "menu-1",
+            location: "header",
+            draft_items: [moved],
+            published_items: [],
+            published_at: null,
+          }),
+        ],
       },
     });
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
+    const result = await loadNavigationWorkspace("header");
+    expect(result?.items).toEqual([{ ...moved, target: "/about" }]);
+    expect(result?.invalidItemCount).toBe(0);
+  });
 
-    await expect(loadNavigationWorkspace("footer")).resolves.toMatchObject({
-      menuId: "menu-new",
-      location: "footer",
-      items: [],
-      publishedItems: [],
-      publishedAt: null,
+  it("does not create a missing menu while reading", async () => {
+    const { client, calls } = createSupabaseMock({
+      tables: { navigation_menus: [mockResult(null)] },
     });
+    vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
+    await expect(loadNavigationWorkspace("footer")).rejects.toThrow("footer menu");
+    expect(calls.some((call) => call.method === "insert")).toBe(false);
   });
 
   it("saves a draft and publishes through the database function", async () => {

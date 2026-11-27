@@ -91,6 +91,7 @@ const workspace: NavigationWorkspace = {
     { id: "page-home", title: "Home", path: "/" },
     { id: "page-about", title: "About", path: "/about" },
   ],
+  invalidItemCount: 0,
 };
 
 function clickBuilderItem(label: string) {
@@ -238,6 +239,33 @@ describe("NavigationEditor", () => {
     expect(await screen.findByText("draft failed")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Publish changes" }));
     expect(await screen.findByText("publish failed")).toBeTruthy();
+  });
+
+  it("warns when stored menu items could not be read", async () => {
+    vi.mocked(loadNavigationWorkspace).mockResolvedValueOnce({
+      ...structuredClone(workspace),
+      invalidItemCount: 2,
+    });
+    render(<NavigationEditor location="header" />);
+    expect(await screen.findByText(/2 menu items could not be read/)).toBeTruthy();
+  });
+
+  it("links a picked page by id so moves do not break the menu", async () => {
+    render(<NavigationEditor location="header" />);
+    await screen.findByText("Menu structure");
+    clickBuilderItem("Contact");
+    fireEvent.change(screen.getByDisplayValue("/missing (missing)"), {
+      target: { value: "/about" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Save draft" }));
+    await waitFor(() =>
+      expect(saveNavigationDraft).toHaveBeenCalledWith(
+        "menu-1",
+        expect.arrayContaining([
+          expect.objectContaining({ id: "contact", target: "/about", pageId: "page-about" }),
+        ]),
+      ),
+    );
   });
 
   it("renders footer preview and footer-specific additions", async () => {

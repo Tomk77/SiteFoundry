@@ -34,7 +34,7 @@ request requires a site-owned publishable token and reads published snapshots on
 | `GET /content-types` | Published structured-content schemas |
 | `GET /content-types/{slug}` | Published schema definitions by slug and locale |
 | `GET /content-types/{slug}/records` | Published structured records |
-| `GET /navigation` | Published header/footer navigation, filterable by locale and location |
+| `GET /navigation` | Published header/footer navigation, filterable by locale and location. Page items carry `pageId`; their `target` is the page's current delivered path (stored path for legacy or unpublished pages) |
 | `GET /redirects` | Redirects, optionally filtered by locale |
 | `GET /media` | Public media metadata; empty until media persistence exists |
 

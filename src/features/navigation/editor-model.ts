@@ -25,3 +25,12 @@ export function allItems(items: NavigationItem[]) {
 export function parentOf(items: NavigationItem[], childId: string) {
   return items.find((item) => item.children.some((child) => child.id === childId));
 }
+
+/** Update for a page target picked by path: stores the page id so moves keep the link working. */
+export function pageTarget(pages: { id: string; path: string }[], path: string) {
+  return {
+    target: path,
+    targetType: "page" as const,
+    pageId: pages.find((page) => page.path === path)?.id,
+  };
+}
