@@ -458,6 +458,32 @@ const recordSystemFields = new Set([
   "publishedAt",
 ]);
 
+// GraphQL names for content field keys. Ordinary keys keep their name; a key that clashes with a
+// system field becomes `<key>Field`, then `<key>Field2` and so on until it is unique, so no value is
+// ever dropped by a name collision.
+function recordFieldNames(keys: Iterable<string>) {
+  const all = [...keys];
+  const taken = new Set([
+    ...recordSystemFields,
+    ...all.filter((key) => !recordSystemFields.has(key)),
+  ]);
+  const names = new Map<string, string>();
+
+  for (const key of all) {
+    if (!recordSystemFields.has(key)) {
+      names.set(key, key);
+      continue;
+    }
+
+    let name = `${key}Field`;
+    for (let index = 2; taken.has(name); index += 1) name = `${key}Field${index}`;
+    taken.add(name);
+    names.set(key, name);
+  }
+
+  return names;
+}
+
 // Generated names get a Content prefix when they would clash with a built-in type (finding 3.4).
 const builtInTypeNames = [
   "Query",
@@ -531,12 +557,12 @@ function contentQueryType(bundle: DeliveryBundle, taken: Set<string>) {
         revisionVersion: { type: new GraphQLNonNull(GraphQLInt) },
         publishedAt: { type: new GraphQLNonNull(GraphQLString) },
         ...Object.fromEntries(
-          [...fieldDefinitions].map(([key, field]) => [
-            recordSystemFields.has(key) ? `${key}Field` : key,
+          [...recordFieldNames(fieldDefinitions.keys())].map(([key, name]) => [
+            name,
             {
-              type: contentFieldType(field),
+              type: contentFieldType(fieldDefinitions.get(key)!),
               resolve: (record: DeliveryContentRecord) =>
-                contentFieldValue(field, record.values[key]),
+                contentFieldValue(fieldDefinitions.get(key)!, record.values[key]),
             },
           ]),
         ),

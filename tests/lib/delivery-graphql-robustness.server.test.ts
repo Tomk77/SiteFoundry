@@ -129,6 +129,28 @@ describe("3.4 generated names never collide", () => {
   });
 });
 
+describe("renamed system-key fields never overwrite another field (review of #10)", () => {
+  it("keeps both values when a type has id and idField", async () => {
+    const bundle = bundleWith({
+      contentTypes: [
+        contentType("people", [field("id", "text"), field("idField", "text")], {
+          id: "custom",
+          idField: "existing",
+        }),
+      ],
+    });
+    const result = await graphql({
+      schema: createDeliveryGraphQLSchema(bundle),
+      source: "{ content { people { nodes { id idField idField2 } } } }",
+    });
+
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.content).toEqual({
+      people: { nodes: [{ id: "people-1", idField: "existing", idField2: "custom" }] },
+    });
+  });
+});
+
 describe("3.10 limits count fragments after expansion", () => {
   it("rejects a deep query hidden in fragments", () => {
     const fragments = Array.from(
