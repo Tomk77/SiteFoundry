@@ -266,8 +266,8 @@ describe("structured content persistence", () => {
   it("deletes records and content types", async () => {
     const { client } = createSupabaseMock({
       tables: {
-        content_records: [mockResult(null)],
-        content_types: [mockResult(null)],
+        content_records: [mockResult([{ id: "record-1" }])],
+        content_types: [mockResult([{ id: "type-1" }])],
       },
     });
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);

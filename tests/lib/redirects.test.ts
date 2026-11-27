@@ -165,7 +165,7 @@ describe("redirect persistence", () => {
   it("creates and updates normalized redirects", async () => {
     const { client, calls } = createSupabaseMock({
       tables: {
-        redirects: [mockResult({ id: "redirect-new" }), mockResult(null)],
+        redirects: [mockResult({ id: "redirect-new" }), mockResult([{ id: "redirect-1" }])],
       },
     });
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
@@ -204,7 +204,9 @@ describe("redirect persistence", () => {
   it("deletes redirects and surfaces database failures", async () => {
     const databaseError = new Error("delete failed");
     const { client } = createSupabaseMock({
-      tables: { redirects: [mockResult(null), mockResult(null, databaseError)] },
+      tables: {
+        redirects: [mockResult([{ id: "redirect-1" }]), mockResult(null, databaseError)],
+      },
     });
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
 

@@ -76,20 +76,11 @@ describe("loadEditablePage", () => {
       tables: {
         pages: [
           mockResult(pageRow),
-          mockResult({
-            id: "news",
-            title: "News",
-            slug: "news",
-            parent_id: "home",
-            is_homepage: false,
-          }),
-          mockResult({
-            id: "home",
-            title: "Home",
-            slug: "home",
-            parent_id: null,
-            is_homepage: true,
-          }),
+          mockResult([
+            { id: "home", title: "Home", slug: "home", parent_id: null, is_homepage: true },
+            { id: "news", title: "News", slug: "news", parent_id: "home", is_homepage: false },
+            { id: "other", title: "Other", slug: "other", parent_id: "home", is_homepage: false },
+          ]),
         ],
         site_languages: [mockResult({ code: "en", name: "English", site_id: "site-1" })],
         sites: [mockResult({ name: "Site one" })],
@@ -107,14 +98,18 @@ describe("loadEditablePage", () => {
       siteName: "Site one",
     });
     expect(calls).toContainEqual({ method: "eq", args: ["id", "page-1"] });
+    // Ancestors come from one query for the language tree, not one query per level (5.8).
+    expect(calls.filter((call) => call.method === "from" && call.args[0] === "pages")).toHaveLength(
+      2,
+    );
   });
 
-  it("uses the demo slug when no page id is supplied", async () => {
-    const { client, calls } = createSupabaseMock({ tables: { pages: [mockResult(null)] } });
+  it("returns no page without a page id instead of loading a demo page (5.8)", async () => {
+    const { client } = createSupabaseMock();
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
 
     await expect(loadEditablePage()).resolves.toBeNull();
-    expect(calls).toContainEqual({ method: "eq", args: ["slug", "product-launch"] });
+    expect(client.from).not.toHaveBeenCalled();
   });
 
   it("maps root pages and non-array content safely", async () => {
@@ -153,13 +148,9 @@ describe("loadEditablePage", () => {
             concept_revision_id: "concept-2",
             published_revision_id: "published-1",
           }),
-          mockResult({
-            id: "news",
-            title: "News",
-            slug: "news",
-            parent_id: null,
-            is_homepage: false,
-          }),
+          mockResult([
+            { id: "news", title: "News", slug: "news", parent_id: null, is_homepage: false },
+          ]),
         ],
         page_revisions: [
           mockResult({ id: "concept-2", version: 2, created_at: "2026-07-03T00:00:00Z" }),

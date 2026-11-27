@@ -86,7 +86,7 @@ describe("site settings persistence", () => {
   });
 
   it("persists general settings through the sites table", async () => {
-    const mock = createSupabaseMock({ tables: { sites: [mockResult(null)] } });
+    const mock = createSupabaseMock({ tables: { sites: [mockResult([{ id: "site-1" }])] } });
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(mock.client as never);
 
     await saveSiteGeneralSettings("site-1", {
