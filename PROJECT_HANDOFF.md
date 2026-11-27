@@ -137,6 +137,22 @@ When asked to implement a feature:
   view on 2026-07-28. It created new concept and published homepage revisions containing the complete
   ordered marketing block set.
 
+## Hosted Supabase migration audit (2026-11-27)
+
+The SiteFoundry project was resumed. The hosted database matched a fresh replay of the repository
+migrations for tables, columns, constraints, indexes, RLS policies, and triggers. Two function
+definitions differed. The legacy three-argument page move had equivalent SQL with different
+formatting. The signup fallback still used the old product name and was updated to match the repo.
+The missing rebrand migration `20260725120000` was applied and recorded with its SQL. The live
+concept and delivery functions were verified, and GraphQL returned all ten published homepage blocks.
+
+The database has 18 history rows for 19 repository files. The hosted versions of several early
+migrations differ from their filenames. The hosted history has separate page-move permission and
+redirect-index entries, and no standalone entries for the initial scaffold, template origin, or
+template setup even though their schema effects are present. The delivery SQL matches the repo under
+the hosted version documented above. Keep using targeted migrations until the ledger has been aligned
+with the repository and a dry run confirms that only intended migrations would run.
+
 ## Immediate next step
 
 The hosted development project has the concept/published revision model and the CMS-driven marketing
