@@ -39,6 +39,9 @@
 - Published schema definitions have an independent explicit schema version.
 - Setting a record back to concept clears its `published_revision_id`, which unpublishes it.
   Records have no separate concept stage: saving a published record republishes it.
+- Delivered page paths are computed at read time from the live tree and each page's published slug
+  (ADR 0006). Moves are live immediately; slug changes go live on publish. Both record redirects for
+  every affected published page, upserted and with chains collapsed.
 - Delivery only serves pages and records whose status is `published` and that have a published
   revision (defence in depth against a stale pointer).
 

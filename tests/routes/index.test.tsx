@@ -348,6 +348,45 @@ describe("page tree route", () => {
     expect((await screen.findByRole("status")).textContent).toContain("Moved");
   });
 
+  it("reviews the URL change when a published leaf page moves to a new parent", async () => {
+    const products: PageNode = {
+      ...home,
+      id: "products",
+      title: "Products",
+      slug: "/products",
+      isHomepage: false,
+      children: [],
+    };
+    vi.mocked(loadPageTreeWorkspace).mockResolvedValue({
+      ...workspace,
+      pageCount: 3,
+      pages: [{ ...home, children: [{ ...child, status: "Published" }] }, products],
+    });
+    await renderRoute();
+    const articleRow = await screen.findByRole("treeitem", { name: /Article/ });
+    const productsRow = screen.getByRole("treeitem", { name: /Products/ });
+    const data = new Map<string, string>();
+    const dataTransfer = {
+      effectAllowed: "none",
+      dropEffect: "none",
+      setData: (type: string, value: string) => data.set(type, value),
+      getData: (type: string) => data.get(type) ?? "",
+    };
+    fireEvent.dragStart(articleRow, { dataTransfer });
+    Object.defineProperty(productsRow, "getBoundingClientRect", {
+      value: () => ({ top: 0, height: 100 }),
+    });
+    fireEvent.dragOver(productsRow, { dataTransfer, clientY: 50 });
+    fireEvent.drop(productsRow, { dataTransfer });
+
+    expect(await screen.findByRole("heading", { name: "Review URL changes" })).toBeTruthy();
+    expect(movePage).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Confirm move" }));
+    await waitFor(() =>
+      expect(movePage).toHaveBeenCalledWith(expect.objectContaining({ createRedirects: true })),
+    );
+  });
+
   it("reports create, rename, delete, and move failures", async () => {
     vi.mocked(createChildPage).mockRejectedValueOnce(new Error("create failed"));
     vi.mocked(renamePage).mockRejectedValueOnce(new Error("rename failed"));
