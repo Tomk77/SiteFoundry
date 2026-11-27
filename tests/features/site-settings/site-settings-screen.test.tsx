@@ -64,7 +64,7 @@ const workspace: SiteSettingsWorkspace = {
       name: "Dutch",
       isDefault: false,
       position: 1,
-      urlPrefix: "nl/",
+      urlPrefix: "nl",
       pageCount: 4,
     },
   ],

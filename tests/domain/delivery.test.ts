@@ -96,6 +96,18 @@ describe("delivery domain", () => {
     expect(resolvePage(bundle, "https://attacker.example/about")).toBeNull();
   });
 
+  it("normalizes a legacy language prefix stored with slashes (3.2)", () => {
+    const bundle = parseDeliveryBundle({
+      ...rawBundle,
+      languages: rawBundle.languages.map((language) =>
+        language.id === "nl" ? { ...language, urlPrefix: "/nl/" } : language,
+      ),
+    });
+
+    expect(bundle.languages.find((language) => language.id === "nl")?.urlPrefix).toBe("nl");
+    expect(resolvePage(bundle, "/nl/over-ons")?.id).toBe("page-nl");
+  });
+
   it("creates bounded cursor connections", () => {
     const first = connection(["a", "b", "c"], 2);
     const second = connection(["a", "b", "c"], 2, first.pageInfo.endCursor);

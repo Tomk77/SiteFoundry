@@ -260,7 +260,8 @@ export function parseDeliveryBundle(value: unknown): DeliveryBundle {
         code: text(language.code),
         name: text(language.name),
         default: Boolean(language.default),
-        urlPrefix: text(language.urlPrefix),
+        // Legacy rows stored `nl/`; the canonical prefix has no slashes (finding 3.2).
+        urlPrefix: text(language.urlPrefix).replace(/^\/+|\/+$/g, ""),
       };
     }),
     pages: list(payload.pages)

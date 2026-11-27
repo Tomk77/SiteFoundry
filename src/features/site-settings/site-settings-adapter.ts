@@ -102,7 +102,7 @@ export function languagesFromWorkspace(workspace: SiteSettingsWorkspace): SiteLa
     id: language.id,
     code: language.code.toUpperCase(),
     name: language.name,
-    url: `${primaryDomain ?? fallbackHost}/${language.urlPrefix}`,
+    url: `${primaryDomain ?? fallbackHost}/${language.urlPrefix ? `${language.urlPrefix}/` : ""}`,
     pages: language.pageCount,
     default: language.isDefault,
   }));
