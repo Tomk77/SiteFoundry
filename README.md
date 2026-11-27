@@ -16,7 +16,16 @@ pnpm install
 pnpm dev
 ```
 
-The app runs at [http://localhost:3000](http://localhost:3000).
+The app runs at [http://localhost:4000](http://localhost:4000) against the Supabase project in
+`.env.local`. To work against a disposable local database instead (Docker required):
+
+```bash
+pnpm db:start
+pnpm db:reset
+pnpm dev:local
+```
+
+[docs/SETUP.md](docs/SETUP.md) covers setup, environment variables, test data and testing.
 
 ## Checks
 

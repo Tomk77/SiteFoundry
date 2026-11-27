@@ -13,3 +13,4 @@ coverage
 __unconfig*
 todos.json
 supabase/.temp/
+supabase/.branches/

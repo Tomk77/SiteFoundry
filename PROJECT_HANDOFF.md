@@ -55,6 +55,9 @@ The CMS will serve content through REST and GraphQL. Consuming websites remain r
 
 ## Start here on a new machine
 
+For a disposable local database (Docker), see [docs/SETUP.md](docs/SETUP.md): `pnpm db:start`,
+`pnpm db:reset`, `pnpm dev:local`.
+
 ```bash
 git pull
 pnpm install

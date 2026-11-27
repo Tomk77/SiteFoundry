@@ -15,6 +15,10 @@
   },
   "scripts": {
     "dev": "vite dev --port 4000",
+    "dev:local": "vite dev --port 4000 --mode localdb",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset && node scripts/local-db-reset.mjs",
     "generate-routes": "tsr generate",
     "build": "vite build",
     "preview": "vite preview",
@@ -74,6 +78,7 @@
     "jsdom": "28.1.0",
     "prettier": "^3.9.5",
     "prettier-plugin-tailwindcss": "^0.8.1",
+    "supabase": "3.4.0",
     "typescript": "6.0.3",
     "typescript-eslint": "^8.64.0",
     "vite": "8.1.4",
