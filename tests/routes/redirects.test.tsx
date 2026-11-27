@@ -48,6 +48,7 @@ vi.mock("@/components/app-shell", () => ({
 
 vi.mock("@/components/loading", () => ({
   AppShellSkeleton: ({ label }: { label: string }) => <div>{label}</div>,
+  LoadingSplash: () => <div>Auth loading</div>,
 }));
 
 vi.mock("@/components/modal", () => ({
@@ -178,6 +179,18 @@ describe("redirects route", () => {
     vi.mocked(deleteRedirect).mockResolvedValueOnce(undefined);
     fireEvent.click(screen.getByRole("button", { name: "Delete redirect" }));
     expect(await screen.findByText("Redirect deleted")).toBeTruthy();
+  });
+
+  it("waits for auth and sends a signed-out visitor to sign in (5.6)", async () => {
+    vi.mocked(useAuth).mockReturnValue({ user: null, loading: true } as never);
+    const view = await renderRoute();
+    expect(screen.getByText("Auth loading")).toBeTruthy();
+    expect(loadRedirectWorkspace).not.toHaveBeenCalled();
+    view.unmount();
+
+    vi.mocked(useAuth).mockReturnValue({ user: null, loading: false } as never);
+    await renderRoute();
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith({ to: "/auth", replace: true }));
   });
 
   it("shows empty and failed workspace states", async () => {

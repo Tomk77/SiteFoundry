@@ -2,7 +2,7 @@ import { LoadingSplash, RouteLoading } from "@/components/loading";
 import { Modal, ModalClose, ModalDescription, ModalTitle } from "@/components/modal";
 import { UnsavedChangesGuard } from "@/components/unsaved-changes-guard";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/lib/auth";
+import { useRequireAuth } from "@/lib/use-require-auth";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -26,7 +26,7 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
   const navigate = useNavigate({
     from: location === "header" ? "/header-navigation" : "/footer",
   });
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useRequireAuth();
   const cacheKey = user ? `${user.id}:${location}` : "";
   const cachedWorkspace = cacheKey ? (navigationWorkspaceCache.get(cacheKey) ?? null) : null;
   const [workspace, setWorkspace] = useState<NavigationWorkspace | null>(cachedWorkspace);
@@ -68,10 +68,6 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
       ),
     [items, livePaths],
   );
-
-  useEffect(() => {
-    if (!authLoading && !user) void navigate({ to: "/auth" });
-  }, [authLoading, user, navigate]);
 
   useEffect(() => {
     if (!user) return;

@@ -3,9 +3,9 @@ import { Input } from "@/components/ui/input";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppShell } from "@/components/app-shell";
-import { AppShellSkeleton } from "@/components/loading";
+import { AppShellSkeleton, LoadingSplash } from "@/components/loading";
 import { Modal, ModalClose, ModalDescription, ModalTitle } from "@/components/modal";
-import { useAuth } from "@/lib/auth";
+import { useRequireAuth } from "@/lib/use-require-auth";
 import {
   deleteRedirect,
   getRedirectHealth,
@@ -52,15 +52,12 @@ export function RedirectsScreen({
 }: {
   urlSearch: ReturnType<typeof parseRedirectsUrlSearch>;
 }) {
-  const { user } = useAuth();
+  const { user, ready } = useRequireAuth();
   const navigate = useNavigate({ from: "/redirects" });
   const cacheKey = user?.id ?? "";
   const cachedWorkspace = cacheKey ? (redirectWorkspaceCache.get(cacheKey) ?? null) : null;
   const [workspace, setWorkspace] = useState<RedirectWorkspace | null>(cachedWorkspace);
-  const [selection, setSelection] = useState<{
-    siteId?: string;
-    languageId?: string;
-  }>({});
+  const [selection, setSelection] = useState<{ siteId?: string; languageId?: string }>({});
   const [loading, setLoading] = useState(!cachedWorkspace);
   const [error, setError] = useState("");
   const [form, setForm] = useState<RedirectForm | null>(null);
@@ -255,6 +252,7 @@ export function RedirectsScreen({
     void load(next);
   };
 
+  if (!ready) return <LoadingSplash />;
   if (!workspace && loading)
     return <AppShellSkeleton active="redirects" label="Loading redirects" variant="table" />;
   if (!workspace)

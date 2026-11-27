@@ -14,7 +14,7 @@ import {
 import { AppShell, StatusPill } from "@/components/app-shell";
 import { AppShellSkeleton, LoadingSplash } from "@/components/loading";
 import { Modal, ModalClose, ModalDescription, ModalTitle } from "@/components/modal";
-import { useAuth } from "@/lib/auth";
+import { useRequireAuth } from "@/lib/use-require-auth";
 import {
   slugifyTemplateKey,
   templateComponentSummary,
@@ -161,7 +161,7 @@ export function PageTreeScreen({
   urlSearch: ReturnType<typeof parsePageTreeUrlSearch>;
 }) {
   const navigate = useNavigate({ from: "/" });
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useRequireAuth();
   const cachedWorkspace = user ? (pageTreeWorkspaceCache.get(user.id) ?? null) : null;
   const [data, setData] = useState<PageTreeWorkspace | null>(cachedWorkspace);
   const [loading, setLoading] = useState(!cachedWorkspace);
@@ -296,11 +296,6 @@ export function PageTreeScreen({
     // The loader intentionally uses the initial workspace selection for each signed-in user.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
-  useEffect(() => {
-    if (!authLoading && !user) {
-      void navigate({ to: "/auth", replace: true });
-    }
-  }, [authLoading, navigate, user]);
   useEffect(() => {
     if (!data || !restored.current) return;
     const persist = () =>

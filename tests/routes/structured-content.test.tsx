@@ -140,6 +140,13 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe("structured content route", () => {
+  it("sends a signed-out visitor to sign in instead of an endless splash (5.6)", async () => {
+    vi.mocked(useAuth).mockReturnValue({ user: null, loading: false } as never);
+    await renderRoute();
+
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith({ to: "/auth", replace: true }));
+  });
+
   it("shows authentication, workspace loading, and failure states", async () => {
     vi.mocked(useAuth).mockReturnValue({ user: null, loading: true } as never);
     const auth = await renderRoute();

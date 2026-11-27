@@ -39,7 +39,7 @@ import {
   slugifyContentType,
   type StructuredContentWorkspace,
 } from "@/lib/structured-content-data";
-import { useAuth } from "@/lib/auth";
+import { useRequireAuth } from "@/lib/use-require-auth";
 
 export interface StructuredSearch {
   q?: string;
@@ -79,7 +79,7 @@ const typeIcons = [
 
 export function StructuredContentScreen({ search }: { search: StructuredSearch }) {
   const navigate = useNavigate({ from: "/structured-content" });
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useRequireAuth();
   const [workspace, setWorkspace] = useState<StructuredContentWorkspace | null>(null);
   const [types, setTypes] = useState<StructuredType[]>([]);
   const [loading, setLoading] = useState(true);

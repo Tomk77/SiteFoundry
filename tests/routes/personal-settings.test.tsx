@@ -97,7 +97,7 @@ describe("personal settings route", () => {
     vi.mocked(useAuth).mockReturnValue({ user: null, loading: false } as never);
     await renderRoute();
     expect(screen.getByText("Loading settings")).toBeTruthy();
-    await waitFor(() => expect(navigate).toHaveBeenCalledWith({ to: "/auth" }));
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith({ to: "/auth", replace: true }));
   });
 
   it("edits, discards, changes appearance, and saves the profile", async () => {
