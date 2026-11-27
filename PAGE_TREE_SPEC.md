@@ -294,6 +294,9 @@ The operation is blocked when:
 - the user lacks permission for the source, destination, page, or affected descendants.
 
 For previously published URLs, successful moves and renames automatically create redirects from every affected old URL to its new URL.
+Implementation (2026-11-27): moves create them immediately; a slug change creates them when the page is
+published. A redirect whose source becomes a live URL again is removed, and older redirects are pointed
+at the newest URL, so moving a page back and forth never creates loops (ADR 0006).
 
 Redirects are managed in their own application section and may also be created manually.
 

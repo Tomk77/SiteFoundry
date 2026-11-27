@@ -40,6 +40,7 @@ import { PageActionsMenu } from "./page-actions-menu";
 import { PageConfirmDialog } from "./page-confirm-dialog";
 
 const pageTreeWorkspaceCache = new Map<string, PageTreeWorkspace>();
+const countUrls = (count: number) => (count === 1 ? "1 URL" : `${count} URLs`);
 
 type Flat = PageNode & { depth: number; hasChildren: boolean; muted?: boolean };
 interface Filters {
@@ -561,7 +562,7 @@ export function PageTreeScreen({
     const source = findNode(data.pages, sourceId);
     if (!source) return;
     const impacts = moveImpacts(data.pages, source, destination);
-    if (impacts.some((impact) => impact.id !== source.id)) {
+    if (impacts.some((impact) => impact.id !== source.id || impact.published)) {
       setCreateMoveRedirects(true);
       setModalError("");
       setPendingMove({ source, destination, impacts });
@@ -1332,7 +1333,8 @@ export function PageTreeScreen({
               <div>
                 <ModalTitle>Review URL changes</ModalTitle>
                 <ModalDescription>
-                  Moving {pendingMove.source.title} also changes descendant URLs
+                  Moving {pendingMove.source.title} changes{" "}
+                  {pendingMove.impacts.length === 1 ? "its URL" : "these URLs"}
                 </ModalDescription>
               </div>
               <ModalClose disabled={moving}>
@@ -1343,7 +1345,7 @@ export function PageTreeScreen({
               <div className="sc-impact-summary [display:flex] [align-items:flex-start] [gap:10px] [border-radius:8px] [padding:11px_12px] [color:#73551a] [background:#fbf6e9] [border:1px_solid_#ead6aa] [&>i]:[margin-top:1px] [&>i]:[font-size:18px] [&>span]:[display:flex] [&>span]:[flex-direction:column] [&>span]:[gap:2px] [&>span]:[font-size:12px]">
                 <i className="ph ph-warning-circle" />
                 <span>
-                  <strong>{pendingMove.impacts.length} URLs will change.</strong>
+                  <strong>{countUrls(pendingMove.impacts.length)} will change.</strong>
                   Review the old and proposed addresses before continuing.
                 </span>
               </div>
@@ -1373,11 +1375,8 @@ export function PageTreeScreen({
                 />
                 <span>
                   <strong>Create redirects from published URLs</strong>
-                  {pendingMove.impacts.filter((item) => item.published).length} old published URL
-                  {pendingMove.impacts.filter((item) => item.published).length === 1
-                    ? ""
-                    : "s"}{" "}
-                  will continue to work.
+                  {countUrls(pendingMove.impacts.filter((item) => item.published).length)} will keep
+                  working.
                 </span>
               </label>
               {modalError ? (
