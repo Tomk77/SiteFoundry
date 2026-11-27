@@ -88,7 +88,7 @@ describe("1.5 API tokens", () => {
     expect(created.token).toMatch(/^scaffold_pub_[A-Za-z0-9_-]{43}$/);
     expect(row).toEqual({
       matches: true,
-      token_prefix: created.token.slice(0, 13),
+      token_prefix: created.token.slice(0, 17),
       token_suffix: created.token.slice(-4),
       created_by: adminId,
       allowed_origins: ["https://example.test"],
@@ -99,10 +99,7 @@ describe("1.5 API tokens", () => {
     const created = await createToken(adminId);
     const deliver = () =>
       database.as(null, (tx) =>
-        tx.query(
-          "select public.get_delivery_bundle($1, encode(sha256(convert_to($2, 'utf8')), 'hex'), null)",
-          [site.siteSlug, created.token],
-        ),
+        tx.query("select public.get_delivery_bundle($1, $2, null)", [site.siteSlug, created.token]),
       );
 
     await deliver();
@@ -110,6 +107,30 @@ describe("1.5 API tokens", () => {
       tx.query("select public.revoke_site_api_token($1)", [created.id]),
     );
     expect(await expectDenied(deliver)).toContain("Invalid delivery token");
+  });
+
+  it("3.5 rejects a leaked token hash in place of the token", async () => {
+    const created = await createToken(adminId);
+    const message = await expectDenied(() =>
+      database.as(null, (tx) =>
+        tx.query(
+          "select public.get_delivery_bundle($1, encode(sha256(convert_to($2, 'utf8')), 'hex'), null)",
+          [site.siteSlug, created.token],
+        ),
+      ),
+    );
+
+    expect(message).toContain("Invalid delivery token");
+  });
+
+  it("3.9 stores a prefix that tells tokens apart", async () => {
+    const created = await createToken(adminId);
+    const [row] = await database.admin<{ token_prefix: string }>(
+      "select token_prefix from public.site_api_tokens where id = $1",
+      [created.id],
+    );
+
+    expect(row?.token_prefix).toBe(created.token.slice(0, 17));
   });
 
   it("only lets settings managers create and revoke tokens", async () => {

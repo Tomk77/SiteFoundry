@@ -68,7 +68,8 @@ of the broader schema-system work.
 ## Errors and caching
 
 Authentication and HTTP-level failures use the REST problem format. GraphQL parsing, validation, and
-execution failures use standard GraphQL `errors`. Responses include `ETag` and shared-cache directives.
+execution failures use standard GraphQL `errors`. Responses are `private, no-cache` with an `ETag` and `Vary: Authorization, Origin` (ADR 0007).
+Invalid `variables` JSON and non-JSON bodies are `400`; bodies over 100 kB are `413`.
 
 ## Deferred work
 

@@ -15,6 +15,7 @@ Architecture decision records explain important technical choices and their cons
 - [ADR 0003: Share one published delivery layer between REST and GraphQL](0003-shared-delivery-layer.md)
 - [ADR 0005: Test the database with PGlite replaying the repository migrations](0005-local-database-tests.md)
 - [ADR 0006: Compute delivered page paths at read time](0006-delivered-page-paths.md)
+- [ADR 0007: Delivery responses are private and revalidated](0007-delivery-caching.md)
 
 ## Template
 

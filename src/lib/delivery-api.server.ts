@@ -5,6 +5,7 @@ export class DeliveryHttpError extends Error {
     message: string,
     readonly status: number,
     readonly code: string,
+    readonly allow?: string,
   ) {
     super(message);
   }
@@ -38,10 +39,20 @@ function bearerToken(request: Request) {
   return token;
 }
 
+// Postgres SQLSTATE codes raised by get_delivery_bundle (finding 3.7).
+const deliveryFailures: Record<string, DeliveryHttpError> = {
+  "28000": new DeliveryHttpError("The site or delivery token is invalid.", 401, "unauthorized"),
+  "42501": new DeliveryHttpError("This browser origin is not allowed.", 403, "origin_forbidden"),
+  "54000": new DeliveryHttpError("The delivery rate limit was exceeded.", 429, "rate_limited"),
+};
+
+const upstreamFailure = () =>
+  new DeliveryHttpError("The content database is unavailable.", 502, "upstream_error");
+
 export async function loadDeliveryBundle(request: Request, siteKey: string) {
   const token = bearerToken(request);
-  const tokenHash = await sha256(token);
   const { url, publishableKey } = serverEnvironment();
+  // The raw token goes to the database, which hashes it; a leaked hash is useless (finding 3.5).
   const response = await fetch(`${url}/rest/v1/rpc/get_delivery_bundle`, {
     method: "POST",
     headers: {
@@ -50,41 +61,37 @@ export async function loadDeliveryBundle(request: Request, siteKey: string) {
     },
     body: JSON.stringify({
       target_site_key: siteKey,
-      target_token_hash: tokenHash,
+      target_token: token,
       target_origin: request.headers.get("origin"),
     }),
+  }).catch(() => {
+    throw upstreamFailure();
   });
 
   if (!response.ok) {
     const failure: unknown = await response.json().catch(() => null);
-    const message =
-      failure && typeof failure === "object" && "message" in failure
-        ? String(failure.message)
-        : "The delivery request was rejected.";
-    if (/origin/i.test(message)) {
-      throw new DeliveryHttpError("This browser origin is not allowed.", 403, "origin_forbidden");
-    }
+    const code =
+      failure && typeof failure === "object" && "code" in failure ? String(failure.code) : "";
 
-    if (/rate|limit/i.test(message)) {
-      throw new DeliveryHttpError("The delivery rate limit was exceeded.", 429, "rate_limited");
-    }
-
-    throw new DeliveryHttpError("The site or delivery token is invalid.", 401, "unauthorized");
+    throw deliveryFailures[code] ?? upstreamFailure();
   }
 
   return parseDeliveryBundle(await response.json());
 }
 
+// Responses depend on the token and the origin, so caches must key on both (finding 3.1).
 function corsHeaders(request: Request): Record<string, string> {
   const origin = request.headers.get("origin");
 
-  return origin
-    ? {
-        "Access-Control-Allow-Origin": origin,
-        "Access-Control-Expose-Headers": "ETag, X-Request-Id",
-        Vary: "Origin",
-      }
-    : {};
+  return {
+    ...(origin
+      ? {
+          "Access-Control-Allow-Origin": origin,
+          "Access-Control-Expose-Headers": "ETag, X-Request-Id",
+        }
+      : {}),
+    Vary: "Authorization, Origin",
+  };
 }
 
 export function preflightResponse(request: Request) {
@@ -112,8 +119,8 @@ export async function jsonDeliveryResponse(
   const etag = `"${await sha256(body)}"`;
   const headers = {
     ...corsHeaders(request),
-    "Cache-Control":
-      init.cacheControl ?? "public, max-age=0, s-maxage=60, stale-while-revalidate=300",
+    // Token-gated: browsers may keep a copy but must revalidate with the ETag (ADR 0007).
+    "Cache-Control": init.cacheControl ?? "private, no-cache",
     "Content-Type": "application/json; charset=utf-8",
     ETag: etag,
   };
@@ -137,6 +144,7 @@ export function problemResponse(request: Request, reason: unknown) {
   });
 
   const headers = new Headers(corsHeaders(request));
+  if (error.status === 405) headers.set("Allow", error.allow ?? "GET, OPTIONS");
   headers.set("Cache-Control", "no-store");
   headers.set("Content-Type", "application/problem+json; charset=utf-8");
   if (error.status === 401) headers.set("WWW-Authenticate", "Bearer");

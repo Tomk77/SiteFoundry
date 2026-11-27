@@ -22,7 +22,7 @@ export async function deliver(
   const token = created.rows[0]?.created.token;
   const result = await database.as(null, (tx) =>
     tx.query<{ bundle: DeliveryBundle }>(
-      "select public.get_delivery_bundle($1, encode(sha256(convert_to($2, 'utf8')), 'hex'), null) as bundle",
+      "select public.get_delivery_bundle($1, $2, null) as bundle",
       [siteSlug, token],
     ),
   );

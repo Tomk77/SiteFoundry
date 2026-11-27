@@ -16,7 +16,9 @@ request requires a site-owned publishable token and reads published snapshots on
 - Base path: `/api/v1/sites/{siteKey}`.
 - Authentication: `Authorization: Bearer scaffold_pub_...`.
 - Responses use JSON; errors use `application/problem+json`.
-- Successful responses include `ETag` and shared-cache directives and accept `If-None-Match`.
+- Successful responses are `private, no-cache` with an `ETag`, accept `If-None-Match`, and every
+  response sends `Vary: Authorization, Origin` (ADR 0007). Upstream failures are `502`, malformed
+  paths and cursors `400`, other methods `405` with `Allow`.
 - Collections use `first` (1–100) and opaque `after` cursors.
 - Optional `locale` filters collection resources.
 - Browser requests are checked against the token's allowed origins. Origin-less server/build requests

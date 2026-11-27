@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { connection, parseDeliveryBundle, resolvePage } from "@/domain/delivery";
+import {
+  connection,
+  InvalidCursorError,
+  parseDeliveryBundle,
+  resolvePage,
+} from "@/domain/delivery";
 
 const rawBundle = {
   site: {
@@ -99,5 +104,10 @@ describe("delivery domain", () => {
     expect(first.pageInfo.hasNextPage).toBe(true);
     expect(second).toMatchObject({ nodes: ["c"], totalCount: 3 });
     expect(second.pageInfo.hasNextPage).toBe(false);
+  });
+
+  it("rejects a cursor it did not issue instead of restarting at the first page", () => {
+    expect(() => connection(["a"], 1, "not-a-cursor")).toThrow(InvalidCursorError);
+    expect(() => connection(["a"], 1, btoa("-4"))).toThrow(InvalidCursorError);
   });
 });
