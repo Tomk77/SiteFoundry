@@ -205,19 +205,12 @@ describe("1.2 access scope", () => {
     });
 
     await database.as(editorId, async (tx) => {
-      await tx.query("update public.pages set title = 'Renamed' where id = $1", [post]);
+      await tx.query("select public.rename_page($1, 'Renamed')", [post]);
       await insertPage(tx, site.languageId, blog, "second-post");
       await savePage(tx, post, "first-post", false);
     });
     await expectDenied(() =>
-      database.as(editorId, async (tx) => {
-        const result = await tx.query(
-          "update public.pages set title = 'Hijacked' where id = $1 returning id",
-          [about],
-        );
-
-        if (result.rows.length === 0) throw new Error("no rows updated");
-      }),
+      database.as(editorId, (tx) => tx.query("select public.rename_page($1, 'Hijacked')", [about])),
     );
     await expectDenied(() =>
       database.as(editorId, (tx) => insertPage(tx, site.languageId, about, "team")),

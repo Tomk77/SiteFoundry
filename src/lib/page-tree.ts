@@ -158,6 +158,8 @@ function slugify(value: string) {
   );
 }
 
+const duplicateChildUrl = "A page with this URL already exists under this parent.";
+
 export async function createChildPage(input: {
   languageId: string;
   parentId: string;
@@ -175,7 +177,7 @@ export async function createChildPage(input: {
     .eq("parent_id", input.parentId);
   if (siblingError) throw siblingError;
   const used = new Set((siblings ?? []).map((item) => item.slug));
-  if (used.has(base)) throw new Error("A page with this URL already exists under this parent.");
+  if (used.has(base)) throw new Error(duplicateChildUrl);
   const slug = base;
   const position = (siblings ?? []).reduce((max, item) => Math.max(max, item.position), -1) + 1;
   const { data, error } = await client
@@ -197,6 +199,8 @@ export async function createChildPage(input: {
     })
     .select("id")
     .single();
+  // A sibling with the same slug can be created between the check above and this insert.
+  if (error?.code === "23505") throw new Error(duplicateChildUrl);
   if (error) throw error;
 
   return data.id;
@@ -207,7 +211,11 @@ export async function renamePage(pageId: string, title: string) {
   if (!client) throw getSupabaseConfigError();
   const nextTitle = title.trim();
   if (!nextTitle) throw new Error("A page title is required.");
-  const { error } = await client.from("pages").update({ title: nextTitle }).eq("id", pageId);
+  // Renaming creates a concept revision, like any other save.
+  const { error } = await client.rpc("rename_page", {
+    target_page_id: pageId,
+    target_title: nextTitle,
+  });
   if (error) throw error;
 }
 
@@ -219,23 +227,11 @@ export async function unpublishPage(pageId: string) {
   if (error) throw error;
 }
 
+/** Deletes a leaf page. The database refuses the homepage and pages with children. */
 export async function deletePage(pageId: string) {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
-  const { data: page, error: pageError } = await client
-    .from("pages")
-    .select("id, title, is_homepage")
-    .eq("id", pageId)
-    .single();
-  if (pageError) throw pageError;
-  if (page.is_homepage) throw new Error("The homepage cannot be deleted.");
-  const { count, error: childError } = await client
-    .from("pages")
-    .select("id", { count: "exact", head: true })
-    .eq("parent_id", pageId);
-  if (childError) throw childError;
-  if (count) throw new Error("This page has child pages. Move or delete those pages first.");
-  const { error } = await client.from("pages").delete().eq("id", pageId);
+  const { error } = await client.rpc("delete_page", { target_page_id: pageId });
   if (error) throw error;
 }
 

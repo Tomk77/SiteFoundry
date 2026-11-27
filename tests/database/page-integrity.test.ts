@@ -119,7 +119,7 @@ describe("1.6 function-managed page and record columns", () => {
     const about = await publishedPage("about");
 
     await database.as(editorId, (tx) =>
-      tx.query("update public.pages set title = 'About us' where id = $1", [about]),
+      tx.query("select public.rename_page($1, 'About us')", [about]),
     );
   });
 

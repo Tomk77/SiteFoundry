@@ -251,43 +251,39 @@ describe("page tree mutations", () => {
     ).rejects.toThrow("siblings failed");
   });
 
-  it("renames trimmed titles and rejects empty titles", async () => {
-    const { client, calls } = createSupabaseMock({ tables: { pages: [mockResult(null)] } });
+  it("renames through the database function and rejects empty titles", async () => {
+    const { client } = createSupabaseMock();
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
     await expect(renamePage("page-1", "  Better title  ")).resolves.toBeUndefined();
-    expect(calls).toContainEqual({ method: "update", args: [{ title: "Better title" }] });
+    expect(client.rpc).toHaveBeenCalledWith("rename_page", {
+      target_page_id: "page-1",
+      target_title: "Better title",
+    });
     await expect(renamePage("page-1", "   ")).rejects.toThrow("title is required");
   });
 
-  it("blocks homepage and parent deletion, then deletes a leaf", async () => {
-    const homepage = createSupabaseMock({
-      tables: { pages: [mockResult({ id: "home", title: "Home", is_homepage: true })] },
-    });
-    vi.mocked(getSupabaseBrowserClient).mockReturnValue(homepage.client as never);
-    await expect(deletePage("home")).rejects.toThrow("homepage cannot be deleted");
-
-    const parent = createSupabaseMock({
-      tables: {
-        pages: [
-          mockResult({ id: "parent", title: "Parent", is_homepage: false }),
-          { data: null, error: null, count: 2 },
-        ],
+  it("deletes through the guarded database function", async () => {
+    const { client } = createSupabaseMock({
+      rpc: {
+        delete_page: [mockResult(null, new Error("This page has child pages.")), mockResult(null)],
       },
     });
-    vi.mocked(getSupabaseBrowserClient).mockReturnValue(parent.client as never);
+    vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
     await expect(deletePage("parent")).rejects.toThrow("has child pages");
-
-    const leaf = createSupabaseMock({
-      tables: {
-        pages: [
-          mockResult({ id: "leaf", title: "Leaf", is_homepage: false }),
-          { data: null, error: null, count: 0 },
-          mockResult(null),
-        ],
-      },
-    });
-    vi.mocked(getSupabaseBrowserClient).mockReturnValue(leaf.client as never);
     await expect(deletePage("leaf")).resolves.toBeUndefined();
+    expect(client.rpc).toHaveBeenLastCalledWith("delete_page", { target_page_id: "leaf" });
+    expect(client.from).not.toHaveBeenCalled();
+  });
+
+  it("reports a sibling created at the same time as a duplicate URL", async () => {
+    const race = Object.assign(new Error("duplicate key value"), { code: "23505" });
+    const { client } = createSupabaseMock({
+      tables: { pages: [mockResult([]), mockResult(null, race)] },
+    });
+    vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
+    await expect(
+      createChildPage({ languageId: "language-1", parentId: "home", title: "News", template }),
+    ).rejects.toThrow("A page with this URL already exists under this parent.");
   });
 
   it("moves pages through the database function", async () => {
