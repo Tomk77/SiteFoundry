@@ -14,8 +14,10 @@ import {
   GraphQLUnionType,
   parse,
   validate,
+  Kind,
   valueFromASTUntyped,
-  visit,
+  type FragmentDefinitionNode,
+  type SelectionSetNode,
   type GraphQLFieldConfigMap,
   type GraphQLOutputType,
 } from "graphql";
@@ -69,7 +71,12 @@ function blockFields(fields: Record<string, GraphQLOutputType>) {
     ...Object.fromEntries(
       Object.entries(fields).map(([key, type]) => [
         key,
-        { type, resolve: (block: DeliveryBlock) => block.data[key] ?? null },
+        {
+          type,
+          // A missing required value must not null the whole page (finding 3.3).
+          resolve: (block: DeliveryBlock) =>
+            block.data[key] ?? (type instanceof GraphQLNonNull ? "" : null),
+        },
       ]),
     ),
   };
@@ -418,17 +425,111 @@ function camelCase(value: string) {
   return `${name[0]?.toLowerCase() ?? "content"}${name.slice(1)}`;
 }
 
+// Content values are not validated against the published schema, so every field is nullable and
+// coerced; one bad value yields null for that field instead of failing the response (finding 3.3).
 function contentFieldType(field: DeliveryContentField): GraphQLOutputType {
-  let type: GraphQLOutputType;
-  if (field.type === "number") type = GraphQLFloat;
-  else if (field.type === "toggle") type = GraphQLBoolean;
-  else if (field.type === "tags") type = new GraphQLList(new GraphQLNonNull(GraphQLString));
-  else type = GraphQLString;
+  if (field.type === "number") return GraphQLFloat;
+  if (field.type === "toggle") return GraphQLBoolean;
+  if (field.type === "tags") return new GraphQLList(new GraphQLNonNull(GraphQLString));
 
-  return field.required ? new GraphQLNonNull(type) : type;
+  return GraphQLString;
 }
 
-function contentQueryType(bundle: DeliveryBundle) {
+function contentFieldValue(field: DeliveryContentField, value: unknown) {
+  if (field.type === "number") {
+    const number = typeof value === "string" && value.trim() ? Number(value) : value;
+
+    return typeof number === "number" && Number.isFinite(number) ? number : null;
+  }
+
+  if (field.type === "toggle") return typeof value === "boolean" ? value : null;
+  if (field.type === "tags") {
+    return Array.isArray(value) ? value.filter((item) => typeof item === "string") : null;
+  }
+
+  return typeof value === "string" || typeof value === "number" ? String(value) : null;
+}
+
+const recordSystemFields = new Set([
+  "id",
+  "locale",
+  "revisionId",
+  "revisionVersion",
+  "publishedAt",
+]);
+
+// GraphQL names for content field keys. Ordinary keys keep their name; a key that clashes with a
+// system field becomes `<key>Field`, then `<key>Field2` and so on until it is unique, so no value is
+// ever dropped by a name collision.
+function recordFieldNames(keys: Iterable<string>) {
+  const all = [...keys];
+  const taken = new Set([
+    ...recordSystemFields,
+    ...all.filter((key) => !recordSystemFields.has(key)),
+  ]);
+  const names = new Map<string, string>();
+
+  for (const key of all) {
+    if (!recordSystemFields.has(key)) {
+      names.set(key, key);
+      continue;
+    }
+
+    let name = `${key}Field`;
+    for (let index = 2; taken.has(name); index += 1) name = `${key}Field${index}`;
+    taken.add(name);
+    names.set(key, name);
+  }
+
+  return names;
+}
+
+// Generated names get a Content prefix when they would clash with a built-in type (finding 3.4).
+const builtInTypeNames = [
+  "Query",
+  "ContentQueries",
+  "Site",
+  "PublicDomain",
+  "Language",
+  "Page",
+  "PageConnection",
+  "PageInfo",
+  "PageBlock",
+  "Seo",
+  "NavigationMenu",
+  "Redirect",
+  "JSON",
+  "MetricItem",
+  "StepItem",
+  "RedirectExample",
+  "LabelValue",
+  "FaqItem",
+  "HeroBlock",
+  "RichTextBlock",
+  "QuoteBlock",
+  "ImageBlock",
+  "CtaBlock",
+  "MetricsBlock",
+  "StepsBlock",
+  "FeatureBlock",
+  "PageListBlock",
+  "FaqBlock",
+  "String",
+  "Int",
+  "Float",
+  "Boolean",
+  "ID",
+];
+
+function generatedTypeName(name: string, taken: Set<string>) {
+  let candidate = taken.has(name) ? `Content${name}` : name;
+  for (let index = 2; taken.has(candidate); index += 1) candidate = `Content${name}${index}`;
+  taken.add(candidate);
+
+  return candidate;
+}
+
+function contentQueryType(bundle: DeliveryBundle, taken: Set<string>) {
   const grouped = new Map<string, typeof bundle.contentTypes>();
   for (const contentType of bundle.contentTypes) {
     const definitions = grouped.get(contentType.slug) ?? [];
@@ -448,7 +549,7 @@ function contentQueryType(bundle: DeliveryBundle) {
       definitions.flatMap((definition) => definition.fields.map((field) => [field.key, field])),
     );
     const recordType = new GraphQLObjectType({
-      name: `${pascalCase(slug)}Record`,
+      name: generatedTypeName(`${pascalCase(slug)}Record`, taken),
       fields: {
         id: { type: new GraphQLNonNull(GraphQLID) },
         locale: { type: new GraphQLNonNull(GraphQLString) },
@@ -456,18 +557,19 @@ function contentQueryType(bundle: DeliveryBundle) {
         revisionVersion: { type: new GraphQLNonNull(GraphQLInt) },
         publishedAt: { type: new GraphQLNonNull(GraphQLString) },
         ...Object.fromEntries(
-          [...fieldDefinitions].map(([key, field]) => [
-            key,
+          [...recordFieldNames(fieldDefinitions.keys())].map(([key, name]) => [
+            name,
             {
-              type: contentFieldType(field),
-              resolve: (record: DeliveryContentRecord) => record.values[key] ?? null,
+              type: contentFieldType(fieldDefinitions.get(key)!),
+              resolve: (record: DeliveryContentRecord) =>
+                contentFieldValue(fieldDefinitions.get(key)!, record.values[key]),
             },
           ]),
         ),
       },
     });
     const connectionType = new GraphQLObjectType({
-      name: `${pascalCase(slug)}Connection`,
+      name: generatedTypeName(`${pascalCase(slug)}Connection`, taken),
       fields: {
         nodes: { type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(recordType))) },
         pageInfo: { type: new GraphQLNonNull(PageInfoType) },
@@ -495,7 +597,7 @@ function contentQueryType(bundle: DeliveryBundle) {
 }
 
 export function createDeliveryGraphQLSchema(bundle: DeliveryBundle) {
-  const ContentQueriesType = contentQueryType(bundle);
+  const ContentQueriesType = contentQueryType(bundle, new Set(builtInTypeNames));
   const QueryType = new GraphQLObjectType({
     name: "Query",
     fields: {
@@ -556,29 +658,51 @@ export function createDeliveryGraphQLSchema(bundle: DeliveryBundle) {
   return new GraphQLSchema({ query: QueryType });
 }
 
-function enforceQueryLimits(source: string) {
+const maxQueryDepth = 12;
+const maxQueryFields = 250;
+
+// Counts depth and fields with fragment spreads expanded, so fragments cannot hide cost
+// (finding 3.10). Stops as soon as a limit is exceeded.
+export function enforceQueryLimits(source: string) {
   const document = parse(source);
-  let depth = 0;
-  let maximumDepth = 0;
+  const fragments = new Map(
+    document.definitions
+      .filter(
+        (definition): definition is FragmentDefinitionNode =>
+          definition.kind === Kind.FRAGMENT_DEFINITION,
+      )
+      .map((fragment) => [fragment.name.value, fragment]),
+  );
   let fields = 0;
-  visit(document, {
-    SelectionSet: {
-      enter: () => {
-        depth += 1;
-        maximumDepth = Math.max(maximumDepth, depth);
-      },
-      leave: () => {
-        depth -= 1;
-      },
-    },
-    Field: () => {
-      fields += 1;
-    },
-  });
-  if (maximumDepth > 12)
-    throw new DeliveryHttpError("GraphQL query is too deep.", 400, "query_too_deep");
-  if (fields > 250)
-    throw new DeliveryHttpError("GraphQL query is too complex.", 400, "query_too_complex");
+
+  const walk = (
+    selectionSet: SelectionSetNode | undefined,
+    depth: number,
+    active: ReadonlySet<string> = new Set(),
+  ) => {
+    if (!selectionSet) return;
+    if (depth > maxQueryDepth)
+      throw new DeliveryHttpError("GraphQL query is too deep.", 400, "query_too_deep");
+
+    for (const selection of selectionSet.selections) {
+      if (selection.kind === Kind.FIELD) {
+        fields += 1;
+        if (fields > maxQueryFields)
+          throw new DeliveryHttpError("GraphQL query is too complex.", 400, "query_too_complex");
+        walk(selection.selectionSet, depth + 1, active);
+      } else if (selection.kind === Kind.INLINE_FRAGMENT) {
+        walk(selection.selectionSet, depth, active);
+      } else if (!active.has(selection.name.value)) {
+        // A fragment that spreads itself is rejected by validation; just do not recurse here.
+        const name = selection.name.value;
+        walk(fragments.get(name)?.selectionSet, depth, new Set([...active, name]));
+      }
+    }
+  };
+
+  for (const definition of document.definitions) {
+    if (definition.kind === Kind.OPERATION_DEFINITION) walk(definition.selectionSet, 1);
+  }
 
   return document;
 }

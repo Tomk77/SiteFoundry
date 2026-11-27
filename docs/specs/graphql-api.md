@@ -65,6 +65,17 @@ every content type save, seeded types of a new language are published immediatel
 published every type whose schema had drifted (finding 2.4). A breaking-change preview remains part
 of the broader schema-system work.
 
+## Robustness (2026-11-27)
+
+- Structured-content fields are nullable and coerced to their declared type; a missing or malformed
+  value yields `null` for that field only. Missing required block strings resolve to `""`.
+- Generated record and connection types get a `Content` prefix when they would clash with a built-in
+  type (for example a content type called `page`). A content field whose key is a system field
+  (`id`, `locale`, `revisionId`, `revisionVersion`, `publishedAt`) is exposed as `<key>Field`.
+- Depth (12) and field (250) limits are counted with fragment spreads expanded.
+- Introspection stays enabled: the schema is not confidential (tokens are publishable) and the
+  Site Settings GraphQL playground depends on it.
+
 ## Errors and caching
 
 Authentication and HTTP-level failures use the REST problem format. GraphQL parsing, validation, and
