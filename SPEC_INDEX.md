@@ -1,7 +1,7 @@
 # Specification index
 
 - Status: Active
-- Last updated: 2026-07-28
+- Last updated: 2026-11-27
 
 ## Purpose
 
@@ -75,7 +75,11 @@ snapshots, and typed REST/GraphQL delivery are implemented. Nested repeaters, ri
 references, and user-defined components remain deferred.
 The Site Settings row remains a working specification because the formal administration authentication, permission,
 invitation-delivery, DNS-verification, and export-worker contracts are unresolved. Its approved UI and
-synchronous persistence are implemented with Supabase RLS and guarded database functions. Site-owned
+synchronous persistence are implemented with Supabase RLS and guarded database functions. Since
+2026-11-27 the role presets, access scopes, product sections and the publish capability are enforced in
+the database (see [Permissions](docs/specs/permissions.md)); the Permissions row stays a working
+specification because branch-scope reads, menu and template publishing, and invitation acceptance are
+still open. Site-owned
 publishable delivery tokens are implemented under API access; asynchronous operations remain explicitly queued.
 
 ## Cross-cutting requirements
