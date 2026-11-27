@@ -5,7 +5,7 @@ import type { NavigationItem, NavigationLocation } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 import type { DragEvent } from "react";
 
-import { itemTheme } from "../editor-model";
+import { itemTheme, pageTarget } from "../editor-model";
 
 export function MenuCard({
   item,
@@ -167,10 +167,7 @@ export function MenuCard({
                       aria-label="Link target"
                       value={child.target}
                       onChange={(event) =>
-                        onUpdate(child.id, {
-                          target: event.target.value,
-                          targetType: "page",
-                        })
+                        onUpdate(child.id, pageTarget(pageOptions, event.target.value))
                       }
                     >
                       {!pageOptions.some((page) => page.path === child.target) ? (
@@ -230,10 +227,7 @@ export function MenuCard({
                     unstyled
                     className={item.targetType === "page" ? "active" : ""}
                     onClick={() =>
-                      onUpdate(item.id, {
-                        targetType: "page",
-                        target: pageOptions[0]?.path ?? "/",
-                      })
+                      onUpdate(item.id, pageTarget(pageOptions, pageOptions[0]?.path ?? "/"))
                     }
                     type="button"
                   >
@@ -260,7 +254,9 @@ export function MenuCard({
                   <NativeSelect
                     unstyled
                     value={item.target}
-                    onChange={(event) => onUpdate(item.id, { target: event.target.value })}
+                    onChange={(event) =>
+                      onUpdate(item.id, pageTarget(pageOptions, event.target.value))
+                    }
                   >
                     {!pageOptions.some((page) => page.path === item.target) ? (
                       <option value={item.target}>{item.target} (missing)</option>

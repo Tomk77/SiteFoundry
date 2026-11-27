@@ -12,6 +12,8 @@ export type NavigationItem = {
   label: string;
   target: string;
   targetType: NavigationTargetType;
+  /** For page targets: the linked page. Delivery resolves its current path from this id. */
+  pageId?: string;
   newTab: boolean;
   children: NavigationItem[];
 };
@@ -22,10 +24,14 @@ export type NavigationWorkspace = PageTreeWorkspace & {
   items: NavigationItem[];
   publishedItems: NavigationItem[];
   publishedAt: string | null;
-  pageOptions: { id: string; title: string; path: string }[];
+  pageOptions: PageOption[];
+  /** Draft items that could not be read. They are not shown and a save would drop them. */
+  invalidItemCount: number;
 };
 
-function flattenPages(nodes: PageNode[]): { id: string; title: string; path: string }[] {
+type PageOption = { id: string; title: string; path: string };
+
+function flattenPages(nodes: PageNode[]): PageOption[] {
   return nodes.flatMap((node) => [
     { id: node.id, title: node.title, path: node.slug },
     ...flattenPages(node.children),
@@ -42,6 +48,7 @@ function isNavigationItem(value: unknown): value is NavigationItem {
     typeof item.label === "string" &&
     typeof item.target === "string" &&
     ["page", "url"].includes(String(item.targetType)) &&
+    (item.pageId === undefined || typeof item.pageId === "string") &&
     typeof item.newTab === "boolean" &&
     Array.isArray(item.children) &&
     item.children.every(isNavigationItem)
@@ -50,6 +57,23 @@ function isNavigationItem(value: unknown): value is NavigationItem {
 
 function parseItems(value: unknown): NavigationItem[] {
   return Array.isArray(value) ? value.filter(isNavigationItem) : [];
+}
+
+function countInvalidItems(value: unknown): number {
+  return Array.isArray(value) ? value.filter((item) => !isNavigationItem(item)).length : 0;
+}
+
+/** Points page items at their page's current path, and links legacy path-only items to a page. */
+function resolvePageTargets(items: NavigationItem[], pages: PageOption[]): NavigationItem[] {
+  return items.map((item) => {
+    const children = resolvePageTargets(item.children, pages);
+    if (item.targetType !== "page") return { ...item, children };
+    const page = item.pageId
+      ? pages.find((option) => option.id === item.pageId)
+      : pages.find((option) => option.path === item.target);
+
+    return page ? { ...item, target: page.path, pageId: page.id, children } : { ...item, children };
+  });
 }
 
 export function createNavigationItem(
@@ -105,33 +129,19 @@ export async function loadNavigationWorkspace(
     .eq("location", location)
     .maybeSingle();
   if (error) throw error;
-  if (!data) {
-    const { data: created, error: createError } = await client
-      .from("navigation_menus")
-      .insert({ site_language_id: workspace.language.id, location })
-      .select("id, location, draft_items, published_items, published_at, updated_at")
-      .single();
-    if (createError) throw createError;
-
-    return {
-      ...workspace,
-      menuId: created.id,
-      location,
-      items: [],
-      publishedItems: [],
-      publishedAt: created.published_at,
-      pageOptions: flattenPages(workspace.pages),
-    };
-  }
+  // Menus are created with their language; reading never writes.
+  if (!data) throw new Error(`This language has no ${location} menu. Ask an administrator.`);
+  const pageOptions = flattenPages(workspace.pages);
 
   return {
     ...workspace,
     menuId: data.id,
     location,
-    items: parseItems(data.draft_items),
-    publishedItems: parseItems(data.published_items),
+    items: resolvePageTargets(parseItems(data.draft_items), pageOptions),
+    publishedItems: resolvePageTargets(parseItems(data.published_items), pageOptions),
     publishedAt: data.published_at,
-    pageOptions: flattenPages(workspace.pages),
+    pageOptions,
+    invalidItemCount: countInvalidItems(data.draft_items),
   };
 }
 

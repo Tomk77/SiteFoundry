@@ -95,7 +95,7 @@ describe("2.5 delete_page", () => {
 describe("2.5 publish_navigation_menu", () => {
   it("publishes draft items with the server clock", async () => {
     const [menu] = await database.admin<{ id: string }>(
-      "insert into public.navigation_menus (site_language_id, location) values ($1, 'header') returning id",
+      "select id from public.navigation_menus where site_language_id = $1 and location = 'header'",
       [site.languageId],
     );
     const items = JSON.stringify([{ label: "Blog", type: "page", path: "/blog" }]);
