@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { deliver, publishPage } from "./delivery";
 import { addPage, createOwnerSite, type SiteFixture } from "./fixtures";
-import { createMigratedDatabase, type TestDatabase } from "./harness";
+import { createMigratedDatabase, expectDenied, type TestDatabase } from "./harness";
 
 let database: TestDatabase;
 let site: SiteFixture;
@@ -81,6 +81,39 @@ describe("2.2 delivered paths follow the live tree", () => {
       { source_path: "/about", destination_path: "/company" },
       { source_path: "/about/team", destination_path: "/company/team" },
     ]);
+  });
+});
+
+describe("published URLs stay unique (review of #4)", () => {
+  it("does not let another page take a slug that is still published", async () => {
+    const about = await addPage(database, site.languageId, site.homepageId, "about");
+
+    await publishPage(database, site.ownerId, about, "about");
+    await saveSlug(about, "company", false);
+
+    await expectDenied(() => addPage(database, site.languageId, site.homepageId, "about"));
+  });
+
+  it("does not let a page publish or move onto a sibling's published slug", async () => {
+    const about = await addPage(database, site.languageId, site.homepageId, "about");
+    const team = await addPage(database, site.languageId, site.homepageId, "team");
+    const news = await addPage(database, site.languageId, site.homepageId, "news");
+    const nested = await addPage(database, site.languageId, news, "about");
+
+    await publishPage(database, site.ownerId, about, "about");
+    await saveSlug(about, "company", false);
+
+    await expectDenied(() => saveSlug(team, "about", true));
+    await expectDenied(() => move(nested, site.homepageId));
+  });
+
+  it("frees the old slug once the new one is published", async () => {
+    const about = await addPage(database, site.languageId, site.homepageId, "about");
+
+    await publishPage(database, site.ownerId, about, "about");
+    await saveSlug(about, "company", true);
+
+    await addPage(database, site.languageId, site.homepageId, "about");
   });
 });
 
