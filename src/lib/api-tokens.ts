@@ -19,19 +19,6 @@ function requireClient() {
   return client;
 }
 
-function base64Url(bytes: Uint8Array) {
-  let binary = "";
-  for (const byte of bytes) binary += String.fromCharCode(byte);
-
-  return btoa(binary).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
-}
-
-async function sha256(value: string) {
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
-
-  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
-}
-
 export function normalizeAllowedOrigins(value: string) {
   return [
     ...new Set(
@@ -73,39 +60,33 @@ export async function listSiteApiTokens(siteId: string): Promise<SiteApiToken[]>
   }));
 }
 
+// The database generates the secret, stores only its SHA-256 hash and returns the secret once.
 export async function createSiteApiToken(input: {
   siteId: string;
   name: string;
   allowedOrigins: string;
   expiresAt: string;
 }) {
-  const random = crypto.getRandomValues(new Uint8Array(32));
-  const secret = `scaffold_pub_${base64Url(random)}`;
-  const tokenHash = await sha256(secret);
   const allowedOrigins = normalizeAllowedOrigins(input.allowedOrigins);
   const expiresAt = input.expiresAt
     ? new Date(`${input.expiresAt}T23:59:59.999Z`).toISOString()
     : null;
-  const { error } = await requireClient()
-    .from("site_api_tokens")
-    .insert({
-      site_id: input.siteId,
-      name: input.name.trim(),
-      token_hash: tokenHash,
-      token_prefix: secret.slice(0, 13),
-      token_suffix: secret.slice(-4),
-      allowed_origins: allowedOrigins,
-      expires_at: expiresAt,
-    });
+  const { data, error } = await requireClient().rpc("create_site_api_token", {
+    target_site_id: input.siteId,
+    target_name: input.name.trim(),
+    target_allowed_origins: allowedOrigins,
+    target_expires_at: expiresAt,
+  });
   if (error) throw error;
+  const token = data && typeof data === "object" && !Array.isArray(data) ? data.token : null;
+  if (typeof token !== "string" || !token) throw new Error("The database did not return a token.");
 
-  return secret;
+  return token;
 }
 
 export async function revokeSiteApiToken(tokenId: string) {
-  const { error } = await requireClient()
-    .from("site_api_tokens")
-    .update({ revoked_at: new Date().toISOString() })
-    .eq("id", tokenId);
+  const { error } = await requireClient().rpc("revoke_site_api_token", {
+    target_token_id: tokenId,
+  });
   if (error) throw error;
 }

@@ -42,6 +42,11 @@ tested without rendering React.
 Tests live under `tests/` and mirror `src/`. Use the `@/` alias for source imports. Add focused tests
 for extracted pure logic and retain route-level coverage for URL and integration behavior.
 
+Database behaviour (RLS policies, grants, SQL functions, triggers, constraints) is tested in
+`tests/database/`. Those tests replay every file in `supabase/migrations` into an in-process PGlite
+database and act as different users; they run with `pnpm test`, or alone with `pnpm test:db`. Every
+new migration that changes authorization or integrity rules needs a test there. See ADR 0005.
+
 Before committing, run:
 
 ```bash

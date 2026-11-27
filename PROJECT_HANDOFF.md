@@ -1,6 +1,6 @@
 # Project handoff
 
-- Last updated: 2026-07-28
+- Last updated: 2026-11-27
 - Project stage: Functional proof of concept
 
 ## What this project is
@@ -42,6 +42,15 @@ The CMS will serve content through REST and GraphQL. Consuming websites remain r
   autocomplete, query building, response inspection, and a preconfigured hosted-Sandbox link;
   playground tokens remain in page memory and are never placed in external URLs. Confidential preview
   tokens and draft reads remain deferred.
+- Access control (review WP1) is enforced in the database by migration
+  `20261127120000_access_control.sql`: role presets including Publisher, access scopes, product
+  sections and a separate publish capability; ownership tied to one owner membership; memberships and
+  sites no longer insertable from the browser; API tokens generated, hashed and revoked by database
+  functions; function-managed page and record columns locked; no page-tree cycles; URL-safe slugs; the
+  legacy three-argument `move_page` removed. See [Permissions](docs/specs/permissions.md). **This
+  migration is committed but not applied to the hosted project.**
+- Database behaviour is tested: `tests/database/` replays every migration into in-process PGlite and
+  runs RLS, grants, functions and triggers as different users (ADR 0005).
 - No production deployment target has been selected.
 
 ## Start here on a new machine
@@ -131,6 +140,9 @@ When asked to implement a feature:
 - ESLint keeps imports at the top of TypeScript modules, requires one declaration per statement, and enforces semantic padding around block statements and returns. Architecture size limits count non-empty lines so readability spacing is not penalized.
 - Vitest files live under the top-level `tests/` directory, mirroring `src/`; source imports in tests use the `@/` alias, and the test-layout contract prevents test files from being colocated under `src/`.
 - The feature-first route migration documented in `docs/architecture/frontend-structure.md` is complete. Shared UI remains feature-neutral; new routes are limited to 150 lines and new React modules to 350 lines; existing feature-screen exceptions may shrink but cannot grow.
+- Database tests use PGlite pinned to `0.3.16` (PostgreSQL 17.5). Keep its major version close to the
+  hosted project. PGlite ignores `statement_timeout`, so an unguarded infinite recursive query hangs
+  the test run rather than failing.
 - GitHub Actions runs formatting, linting, type checking, tests, route generation, and the production build for pushes to `main` and pull requests.
 - The linked hosted Supabase project contains migration-history versions that do not match several local migration filenames. Site Settings migration `20260721213000` was applied directly through the linked Management API on 2026-07-21. Delivery migration `20260722200000_delivery_api.sql` was applied through the project-scoped Supabase MCP on 2026-07-22 and recorded remotely as version `20260722132018`, name `delivery_api`. Before using a future blanket `supabase db push`, reconcile the history through schema comparison; do not blindly replay or repair those entries.
 - Marketing homepage migration `20260728152000` was applied through the same isolated CLI migration
@@ -153,10 +165,31 @@ template setup even though their schema effects are present. The delivery SQL ma
 the hosted version documented above. Keep using targeted migrations until the ledger has been aligned
 with the repository and a dry run confirms that only intended migrations would run.
 
+## Applying the access control migration to the hosted project
+
+This is a human step. Do not use `supabase db push` (the ledger is out of line, see above).
+
+1. Check the hosted PostgreSQL major version is 15 or later (`select version();`). The migration uses
+   `on delete set null (column)` and recursive `cycle` clauses.
+2. Run the read-only pre-flight queries from the `do $preflight$` block at the top of the migration
+   (owner consistency, slug format, revision ownership). Fix any offending rows by hand first; the
+   migration raises and changes nothing if one exists.
+3. Deploy the application build from this branch in the same window. The new Site Settings token
+   flow calls `create_site_api_token` and `revoke_site_api_token`; an old build would fail to create
+   or revoke tokens after the migration, and a new build fails before it.
+4. Apply `supabase/migrations/20261127120000_access_control.sql` and then
+   `20261127130000_navigation_publish_permission.sql` through the same isolated route used
+   for earlier migrations (Management API, project-scoped MCP or an isolated CLI migration view), in
+   one transaction, and record the remotely assigned version here.
+5. Smoke test: sign in as owner, edit and publish a page, publish a header menu, move a page with redirects, create and
+   revoke an API token, and fetch a delivery URL with a new token.
+
 ## Immediate next step
 
-The hosted development project has the concept/published revision model and the CMS-driven marketing
-homepage migration applied. A normal blanket migration push remains unsafe while older recorded
+Apply the WP1 access control migrations to the hosted project (steps above). Invitation acceptance is
+on the to-do list (direction in [Permissions](docs/specs/permissions.md)). Then continue with WP2
+from `docs/reviews/2026-11-27-code-review-handover.md`. The hosted development project has the
+concept/published revision model and the CMS-driven marketing homepage migration applied. A normal blanket migration push remains unsafe while older recorded
 versions differ from local filenames. Next, design the separate autosave working-copy store and
 confidential preview-token delivery mode before adding draft reads to REST or GraphQL, then add
 arbitrary revision-history browsing and restoration.

@@ -558,6 +558,19 @@ export interface Database {
     };
     Views: Record<string, never>;
     Functions: {
+      create_site_api_token: {
+        Args: {
+          target_site_id: string;
+          target_name: string;
+          target_allowed_origins?: string[];
+          target_expires_at?: string | null;
+        };
+        Returns: Json;
+      };
+      revoke_site_api_token: {
+        Args: { target_token_id: string };
+        Returns: undefined;
+      };
       get_delivery_bundle: {
         Args: {
           target_site_key: string;
