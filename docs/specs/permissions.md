@@ -75,6 +75,7 @@ Rules:
 | Can branch-scoped members manage redirects, menus, structured content or templates? | Deferred. Denied until defined. |
 | Can editors delete published content? | Yes. Already enforced. |
 | Is publishing a menu a publish permission? | Yes. Enforced by `20261127130000`. |
+| Can editors publish? | No. Only owners, administrators and publishers publish. Already enforced. |
 
 ## Planned: invitation acceptance (to do)
 
@@ -90,7 +91,6 @@ already exists. Until then invitations stay pending and grant no access.
 
 ## Open questions
 
-- Can editors publish, or only publishers? The approved preset matrix says only publishers; confirm.
 - Should sections also restrict reads, and should viewers have sections at all (Site Settings UI
   open question)?
 - Is changing a page template's status to `published` a publish capability?
