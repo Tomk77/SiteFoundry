@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { useAuth } from "@/lib/auth";
+import { useRequireAuth } from "@/lib/use-require-auth";
 import {
   applyInterfaceMode,
   changePassword,
@@ -26,7 +26,7 @@ const emptySettings: PersonalSettingsValue = {
 
 export function PersonalSettingsScreen() {
   const navigate = useNavigate({ from: "/personal-settings" });
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useRequireAuth();
   const [settingsUser, setSettingsUser] = useState(() => user);
   const [saved, setSaved] = useState(emptySettings);
   const [form, setForm] = useState(emptySettings);
@@ -68,10 +68,6 @@ export function PersonalSettingsScreen() {
     .map((part) => part[0])
     .join("")
     .toUpperCase();
-
-  useEffect(() => {
-    if (!authLoading && !user) void navigate({ to: "/auth" });
-  }, [authLoading, user, navigate]);
 
   useEffect(() => {
     if (!settingsUser) return;

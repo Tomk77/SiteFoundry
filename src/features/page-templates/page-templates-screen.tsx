@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useAuth } from "@/lib/auth";
+import { useRequireAuth } from "@/lib/use-require-auth";
 import {
   slugifyTemplateKey,
   templateComponentSummary,
@@ -57,7 +57,7 @@ const icons = [
 
 export function PageTemplatesScreen({ search }: { search: PageTemplatesSearch }) {
   const navigate = useNavigate({ from: "/page-templates" });
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useRequireAuth();
   const [workspace, setWorkspace] = useState<PageTemplateWorkspace | null>(null);
   const [templates, setTemplates] = useState<PageTemplateDefinition[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,9 +97,6 @@ export function PageTemplatesScreen({ search }: { search: PageTemplatesSearch })
     // Site selection is intentionally initialized once for the signed-in user.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
-  useEffect(() => {
-    if (!authLoading && !user) void navigate({ to: "/auth" });
-  }, [authLoading, navigate, user]);
   const updateSearch = (next: { q?: string; template?: string }) =>
     void navigate({
       to: "/page-templates",

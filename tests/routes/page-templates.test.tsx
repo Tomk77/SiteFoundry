@@ -157,7 +157,7 @@ describe("page templates route", () => {
 
     vi.mocked(useAuth).mockReturnValue({ user: null, loading: false } as never);
     await renderRoute();
-    await waitFor(() => expect(navigate).toHaveBeenCalledWith({ to: "/auth" }));
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith({ to: "/auth", replace: true }));
   });
 
   it("loads, filters, opens, and switches a template workspace", async () => {
