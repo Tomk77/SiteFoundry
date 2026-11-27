@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { useAuth } from "@/lib/auth";
+import { SetPasswordForm } from "./set-password-form";
 
 type Mode = "signin" | "register" | "forgot" | "verify";
 
@@ -13,9 +14,12 @@ function formString(form: FormData, key: string) {
   return typeof value === "string" ? value : "";
 }
 
-export function AuthScreen() {
+export function AuthScreen({ resetRequested = false }: { resetRequested?: boolean }) {
   const navigate = useNavigate({ from: "/auth" });
-  const { user, loading, signIn, signUp, signInWithProvider, requestPasswordReset } = useAuth();
+  const auth = useAuth();
+  const { user, loading, signIn, signUp, signInWithProvider, requestPasswordReset } = auth;
+  // A reset link signs the user in; they must set a password before going on (finding 5.4).
+  const recovering = resetRequested || auth.passwordRecovery;
   const [mode, setMode] = useState<Mode>("signin");
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -23,8 +27,8 @@ export function AuthScreen() {
   const [notice, setNotice] = useState("");
   const [email, setEmail] = useState("");
   useEffect(() => {
-    if (!loading && user) void navigate({ to: "/" });
-  }, [loading, user, navigate]);
+    if (!loading && user && !recovering) void navigate({ to: "/" });
+  }, [loading, user, navigate, recovering]);
   async function run(action: () => Promise<void>) {
     setBusy(true);
     setError("");
@@ -103,7 +107,20 @@ export function AuthScreen() {
               {notice}
             </div>
           ) : null}
-          {mode === "verify" ? (
+          {recovering && user ? (
+            <SetPasswordForm
+              onSave={async (password) => {
+                await auth.updatePassword(password);
+                await navigate({ to: "/" });
+              }}
+            />
+          ) : recovering && !notice ? (
+            <div className="rounded-lg bg-sunken px-3 py-2 text-[13px] text-ink-muted">
+              This reset link has expired or was already used. Use "Forgot password?" to request a
+              new one.
+            </div>
+          ) : null}
+          {recovering && user ? null : mode === "verify" ? (
             <div className="sc-auth-terminal [display:flex] [flex-direction:column] [align-items:center] [gap:18px] [padding:20px_0] [text-align:center] [&_h2]:[margin:0_0_7px] [&_h2]:[font-size:20px] dark:[&_h2]:[color:#e9ecf1] [&_i]:[display:grid] [&_i]:[height:60px] [&_i]:[width:60px] [&_i]:[place-items:center] [&_i]:[border-radius:16px] [&_i]:bg-selection [&_i]:[font-size:32px] [&_i]:text-action dark:[&_i]:[color:#b994f8] dark:[&_i]:[background:#2c333b] [&_p]:[margin:0] [&_p]:[font-size:14px] [&_p]:[line-height:1.55] [&_p]:text-ink-muted dark:[&_p]:[color:#a7aeb8]">
               <i className="ph ph-envelope-simple" />
               <div>

@@ -4,9 +4,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuth } from "@/lib/auth";
 
 const navigate = vi.fn();
+let search: Record<string, unknown> = {};
 
 vi.mock("@tanstack/react-router", () => ({
-  createFileRoute: () => (options: Record<string, unknown>) => ({ ...options }),
+  createFileRoute: () => (options: Record<string, unknown>) => ({
+    ...options,
+    useSearch: () => search,
+  }),
   useNavigate: () => navigate,
 }));
 
@@ -17,6 +21,7 @@ const actions = {
   signUp: vi.fn().mockResolvedValue({ needsEmailConfirmation: false }),
   signInWithProvider: vi.fn().mockResolvedValue(undefined),
   requestPasswordReset: vi.fn().mockResolvedValue(undefined),
+  updatePassword: vi.fn().mockResolvedValue(undefined),
 };
 
 function authValue(overrides = {}) {
@@ -32,6 +37,7 @@ async function renderAuth() {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  search = {};
   vi.mocked(useAuth).mockReturnValue(authValue() as never);
 });
 
@@ -105,5 +111,52 @@ describe("auth route", () => {
     fireEvent.submit(screen.getByRole("button", { name: "Send reset link" }).closest("form")!);
     expect(await screen.findByText(/reset link is on its way/)).toBeTruthy();
     expect(actions.requestPasswordReset).toHaveBeenCalledWith("ada@example.com");
+  });
+
+  it("lets a user arriving from a reset link set a new password (5.4)", async () => {
+    search = { mode: "reset" };
+    vi.mocked(useAuth).mockReturnValue(authValue({ user: { id: "user-1" } }) as never);
+    await renderAuth();
+
+    expect(screen.getByRole("heading", { name: "Set a new password" })).toBeTruthy();
+    expect(navigate).not.toHaveBeenCalled();
+    fireEvent.change(screen.getByLabelText("New password"), { target: { value: "long-password" } });
+    fireEvent.change(screen.getByLabelText("Repeat new password"), {
+      target: { value: "long-password" },
+    });
+    fireEvent.submit(screen.getByRole("button", { name: "Save new password" }).closest("form")!);
+
+    await waitFor(() => expect(actions.updatePassword).toHaveBeenCalledWith("long-password"));
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith({ to: "/" }));
+  });
+
+  it("also shows the form on the Supabase password recovery event", async () => {
+    vi.mocked(useAuth).mockReturnValue(
+      authValue({ user: { id: "user-1" }, passwordRecovery: true }) as never,
+    );
+    await renderAuth();
+
+    expect(screen.getByRole("heading", { name: "Set a new password" })).toBeTruthy();
+  });
+
+  it("rejects mismatched or short passwords without calling Supabase", async () => {
+    search = { mode: "reset" };
+    vi.mocked(useAuth).mockReturnValue(authValue({ user: { id: "user-1" } }) as never);
+    await renderAuth();
+    fireEvent.change(screen.getByLabelText("New password"), { target: { value: "long-password" } });
+    fireEvent.change(screen.getByLabelText("Repeat new password"), {
+      target: { value: "other-password" },
+    });
+    fireEvent.submit(screen.getByRole("button", { name: "Save new password" }).closest("form")!);
+
+    expect(await screen.findByText("The passwords do not match.")).toBeTruthy();
+    expect(actions.updatePassword).not.toHaveBeenCalled();
+  });
+
+  it("explains an expired reset link when nobody is signed in", async () => {
+    search = { mode: "reset" };
+    await renderAuth();
+
+    expect(screen.getByText(/reset link has expired/)).toBeTruthy();
   });
 });
