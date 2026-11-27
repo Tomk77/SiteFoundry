@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import { toast } from "sonner";
 import { Modal, ModalClose, ModalDescription, ModalTitle } from "@/components/modal";
+import { UnsavedChangesGuard } from "@/components/unsaved-changes-guard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -16,7 +17,7 @@ import {
 } from "@/lib/page-templates";
 import { TemplateFieldEditor } from "./template-field-editor";
 
-import { ensureIds, type Device, type Tab, withoutComponentId } from "./editor-model";
+import { ensureIds, moveToTarget, type Device, type Tab, withoutComponentId } from "./editor-model";
 import { previewDocument } from "./preview-document";
 
 export function PageTemplateEditor({
@@ -111,13 +112,7 @@ export function PageTemplateEditor({
 
   const drop = (event: DragEvent<HTMLDivElement>, id: string) => {
     event.preventDefault();
-    if (!dragId || dragId === id) return setDropId("");
-    const components = [...template.components];
-    const from = components.findIndex((item) => item.id === dragId);
-    const [moved] = components.splice(from, 1);
-    const to = components.findIndex((item) => item.id === id);
-    if (moved) components.splice(to, 0, moved);
-    patch({ ...template, components });
+    patch({ ...template, components: moveToTarget(template.components, dragId, id) });
     setDragId("");
     setDropId("");
   };
@@ -175,13 +170,13 @@ export function PageTemplateEditor({
       await onSave(template);
       setDirty(false);
     } catch {
-      // The route owns the user-facing error toast. Keep the editor dirty so
-      // the author can retry without losing their changes.
+      // The route shows the error; the editor stays dirty so the author can retry.
     }
   };
 
   return (
     <main className="sc-template-editor [display:flex] [height:100vh] [width:100vw] [flex-direction:column] [overflow:hidden] bg-canvas text-ink">
+      <UnsavedChangesGuard dirty={dirty} />
       <header className="sc-template-editor-top [display:flex] [height:56px] [flex:none] [align-items:center] [gap:10px] bg-surface [padding:0_14px] [border-bottom:1px_solid_var(--sc-border)]">
         <Button onClick={onBack} size="sm" type="button" variant="outline">
           <i className="ph ph-arrow-left" /> Back to templates

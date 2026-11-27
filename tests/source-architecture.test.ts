@@ -28,8 +28,8 @@ function logicalLineCount(path: string) {
 
 const legacyReactBaselines: Record<string, number> = {
   "features/media/media-screen.tsx": 690,
-  "features/navigation/navigation-editor.tsx": 586,
-  "features/page-templates/page-template-editor.tsx": 710,
+  "features/navigation/navigation-editor.tsx": 571,
+  "features/page-templates/page-template-editor.tsx": 705,
   "features/page-templates/page-templates-screen.tsx": 836,
   "features/page-tree/page-tree-screen.tsx": 1384,
   "features/personal-settings/personal-settings-screen.tsx": 574,

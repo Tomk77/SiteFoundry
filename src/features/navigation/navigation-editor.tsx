@@ -1,5 +1,6 @@
 import { LoadingSplash, RouteLoading } from "@/components/loading";
 import { Modal, ModalClose, ModalDescription, ModalTitle } from "@/components/modal";
+import { UnsavedChangesGuard } from "@/components/unsaved-changes-guard";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 import { useNavigate } from "@tanstack/react-router";
@@ -46,7 +47,6 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
   const [dragId, setDragId] = useState<string | null>(null);
   const [dropId, setDropId] = useState<string | null>(null);
   const [savingAction, setSavingAction] = useState<"draft" | "publish" | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
   const [publishConfirm, setPublishConfirm] = useState(false);
   const [toast, setToast] = useState("");
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -224,11 +224,6 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
   const save = () => persist("draft");
   const publish = () => persist("publish");
 
-  const refresh = () => {
-    setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 500);
-  };
-
   if (authLoading || !user) return <LoadingSplash />;
   if (loading && !workspace)
     return (
@@ -263,6 +258,7 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
 
   return (
     <main className="sc-navigation-editor [display:flex] [height:100vh] [width:100vw] [animation:sc-route-enter_140ms_ease-out] [flex-direction:column] [overflow:hidden] bg-surface motion-reduce:[animation:none] dark:[color:#e9ecf1] dark:[background:#15181c]">
+      <UnsavedChangesGuard dirty={dirty} />
       <header className="sc-navigation-top [display:flex] [height:56px] [flex:none] [align-items:center] [gap:12px] bg-surface [padding:0_16px] [border-bottom:1px_solid_var(--sc-border)] dark:[border-color:#323841] dark:[background:#1d2126]">
         <Button
           unstyled
@@ -345,18 +341,6 @@ export function NavigationEditor({ location }: { location: NavigationLocation })
               </span>
               <b>Preview</b>
             </div>
-            <Button
-              unstyled
-              className={refreshing ? "spin" : ""}
-              onClick={refresh}
-              title="Refresh preview"
-              type="button"
-            >
-              <i className="ph ph-arrow-clockwise" />
-            </Button>
-            <Button unstyled title="Open preview" type="button">
-              <i className="ph ph-arrow-square-out" />
-            </Button>
           </div>
           <div className="sc-navigation-stage sc-scroll [display:flex] [flex:1] [scrollbar-width:thin] [scrollbar-color:#cfd6d0_transparent] [align-items:flex-start] [justify-content:flex-start] [overflow:auto] [padding:24px] dark:[border-color:#323841] dark:[background:#15181c] [&::-webkit-scrollbar]:[height:10px] [&::-webkit-scrollbar]:[width:10px] [&::-webkit-scrollbar-thumb]:[border-radius:8px] [&::-webkit-scrollbar-thumb]:[background:#d7ddd8] [&::-webkit-scrollbar-thumb]:[border:3px_solid_#fff]">
             <div
