@@ -143,6 +143,8 @@ When asked to implement a feature:
 - ESLint keeps imports at the top of TypeScript modules, requires one declaration per statement, and enforces semantic padding around block statements and returns. Architecture size limits count non-empty lines so readability spacing is not penalized.
 - Vitest files live under the top-level `tests/` directory, mirroring `src/`; source imports in tests use the `@/` alias, and the test-layout contract prevents test files from being colocated under `src/`.
 - The feature-first route migration documented in `docs/architecture/frontend-structure.md` is complete. Shared UI remains feature-neutral; new routes are limited to 150 lines and new React modules to 350 lines; existing feature-screen exceptions may shrink but cannot grow.
+- Database types are generated (`pnpm db:types`, CI job `database-types`). Do not edit
+  `src/lib/database.generated.ts` by hand; widen nullable RPC arguments in `database.types.ts`.
 - Database tests use PGlite pinned to `0.3.16` (PostgreSQL 17.5). Keep its major version close to the
   hosted project. PGlite ignores `statement_timeout`, so an unguarded infinite recursive query hangs
   the test run rather than failing.

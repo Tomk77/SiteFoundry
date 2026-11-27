@@ -200,7 +200,7 @@ export async function saveStructuredRecord(input: {
     content_type_id: input.contentTypeId,
     site_language_id: input.languageId,
     status: input.status,
-    values: input.values as Json,
+    values: input.values as Record<string, Json>,
   };
   const result = input.id
     ? await client

@@ -28,6 +28,9 @@ pnpm dev:local
 - Sign in with the local account. Its email and password are the defaults at the top of
   `scripts/local-db-reset.mjs` (override with `LOCAL_DEV_EMAIL` and `LOCAL_DEV_PASSWORD`).
 - `pnpm db:stop` stops the containers.
+- `pnpm db:types` regenerates `src/lib/database.generated.ts` from the local database. Run it after
+  adding a migration and commit the result; CI fails when it is out of date. Nullable RPC arguments
+  are declared in `src/lib/database.types.ts`, which the application imports.
 
 The CLI applies neither migrations nor seeds itself (`db.migrations.enabled` and `db.seed.enabled`
 are false); always reset through `pnpm db:reset`.

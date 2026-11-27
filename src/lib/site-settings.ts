@@ -182,7 +182,7 @@ function normalizeWorkspace(value: Json): SiteSettingsWorkspace | null {
 
 export async function loadSiteSettingsWorkspace(siteId?: string) {
   const { data, error } = await requireClient().rpc("get_site_settings_workspace", {
-    target_site_id: siteId ?? null,
+    target_site_id: siteId,
   });
   if (error) throw error;
 

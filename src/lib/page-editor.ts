@@ -211,7 +211,9 @@ export async function loadEditablePage(pageId?: string): Promise<EditablePage | 
     templateKey: page.created_from_template_key,
     status: page.status as EditablePage["status"],
     validationStatus: page.validation_status as EditablePage["validationStatus"],
-    blocks: Array.isArray(page.content_blocks) ? page.content_blocks.filter(isContentBlock) : [],
+    blocks: Array.isArray(page.content_blocks)
+      ? (page.content_blocks as unknown[]).filter(isContentBlock)
+      : [],
     seoTitle: page.seo_title,
     seoDescription: page.seo_description,
     socialImage: page.social_image,

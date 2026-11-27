@@ -15,6 +15,7 @@ export default defineConfig(
       ".tanstack/**",
       "design/**",
       "node_modules/**",
+      "src/lib/database.generated.ts",
       "src/routeTree.gen.ts",
       "supabase/.temp/**",
     ],

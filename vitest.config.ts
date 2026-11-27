@@ -10,7 +10,12 @@ export default defineConfig({
       reporter: ["text", "html", "lcov", "json-summary"],
       reportsDirectory: "coverage",
       include: ["src/**/*.{ts,tsx}"],
-      exclude: ["src/**/*.test.{ts,tsx}", "src/lib/database.types.ts", "src/routeTree.gen.ts"],
+      exclude: [
+        "src/**/*.test.{ts,tsx}",
+        "src/lib/database.types.ts",
+        "src/lib/database.generated.ts",
+        "src/routeTree.gen.ts",
+      ],
       thresholds: {
         statements: 84,
         branches: 77,
