@@ -1,4 +1,4 @@
-import { connection, resolvePage } from "@/domain/delivery";
+import { connection as domainConnection, InvalidCursorError, resolvePage } from "@/domain/delivery";
 
 import {
   DeliveryHttpError,
@@ -9,8 +9,29 @@ import {
   publicSite,
 } from "./delivery-api.server";
 
-function routeSegments(url: URL) {
-  return url.pathname.split("/").filter(Boolean).slice(4).map(decodeURIComponent);
+// Segments after /api/v1/sites/{siteKey}/, located by the site key instead of a fixed offset.
+function routeSegments(url: URL, siteKey: string) {
+  const segments = url.pathname.split("/").filter(Boolean);
+  const start = segments.findIndex(
+    (segment, index) => segments[index - 1] === "sites" && segment === encodeURIComponent(siteKey),
+  );
+
+  try {
+    return segments.slice(start + 1).map(decodeURIComponent);
+  } catch {
+    throw new DeliveryHttpError("The request path is not valid.", 400, "invalid_url");
+  }
+}
+
+function connection<T>(values: T[], first: number, after: string | null) {
+  try {
+    return domainConnection(values, first, after);
+  } catch (reason) {
+    if (reason instanceof InvalidCursorError)
+      throw new DeliveryHttpError(reason.message, 400, "invalid_cursor");
+
+    throw reason;
+  }
 }
 
 function numberParameter(value: string | null, fallback: number) {
@@ -24,14 +45,19 @@ export async function handleDeliveryRestRequest(request: Request, siteKey: strin
   if (request.method !== "GET") {
     return problemResponse(
       request,
-      new DeliveryHttpError("The delivery API is read-only.", 405, "method_not_allowed"),
+      new DeliveryHttpError(
+        "The delivery API is read-only.",
+        405,
+        "method_not_allowed",
+        "GET, OPTIONS",
+      ),
     );
   }
 
   try {
     const bundle = await loadDeliveryBundle(request, siteKey);
     const url = new URL(request.url);
-    const [resource, identifier, extra] = routeSegments(url);
+    const [resource, identifier, extra] = routeSegments(url, siteKey);
     let result: unknown;
 
     if (!resource || resource === "site") {
@@ -57,12 +83,12 @@ export async function handleDeliveryRestRequest(request: Request, siteKey: strin
       );
     } else if (resource === "content-types" && identifier && extra === "records") {
       const locale = url.searchParams.get("locale");
-      const records = bundle.contentTypes
-        .filter(
-          (contentType) =>
-            contentType.slug === identifier && (!locale || contentType.locale === locale),
-        )
-        .flatMap((contentType) => contentType.records);
+      const types = bundle.contentTypes.filter(
+        (contentType) =>
+          contentType.slug === identifier && (!locale || contentType.locale === locale),
+      );
+      if (!types.length) throw new DeliveryHttpError("Content type not found.", 404, "not_found");
+      const records = types.flatMap((contentType) => contentType.records);
       result = connection(
         records,
         numberParameter(url.searchParams.get("first"), 20),

@@ -45,4 +45,4 @@ The administration application's feature-first source layout and dependency dire
 - Database access and migration library.
 - Rich-text representation and editor.
 - Event, webhook, and background-job infrastructure.
-- Public API shape and caching model.
+- Public API shape. (Caching while tokens are required: ADR 0007.)

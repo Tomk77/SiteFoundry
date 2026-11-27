@@ -320,16 +320,25 @@ export function resolvePage(bundle: DeliveryBundle, value: string) {
   return bundle.pages.find((page) => page.locale === locale && page.path === path) ?? null;
 }
 
+export class InvalidCursorError extends Error {
+  constructor() {
+    super("The pagination cursor is invalid.");
+  }
+}
+
 function decodeCursor(cursor?: string | null) {
   if (!cursor) return 0;
+  let value = Number.NaN;
 
   try {
-    const value = Number(atob(cursor.replace(/-/g, "+").replace(/_/g, "/")));
-
-    return Number.isSafeInteger(value) && value >= 0 ? value : 0;
+    value = Number(atob(cursor.replace(/-/g, "+").replace(/_/g, "/")));
   } catch {
-    return 0;
+    throw new InvalidCursorError();
   }
+
+  if (!Number.isSafeInteger(value) || value < 0) throw new InvalidCursorError();
+
+  return value;
 }
 
 function encodeCursor(offset: number) {

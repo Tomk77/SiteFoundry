@@ -589,13 +589,59 @@ type GraphQLRequestInput = {
   variables?: Record<string, unknown>;
 };
 
+const maxRequestBytes = 100_000;
+
+function parseJson(value: string, problem: DeliveryHttpError): unknown {
+  try {
+    return JSON.parse(value) as unknown;
+  } catch {
+    throw problem;
+  }
+}
+
 function variablesFromJson(value: string | null) {
   if (!value) return undefined;
-  const parsed = JSON.parse(value) as unknown;
+  const parsed = parseJson(
+    value,
+    new DeliveryHttpError("The variables parameter is not valid JSON.", 400, "invalid_variables"),
+  );
 
   return parsed && typeof parsed === "object" && !Array.isArray(parsed)
     ? (parsed as Record<string, unknown>)
     : undefined;
+}
+
+// Reads at most maxRequestBytes, whatever Content-Length claims (finding 3.7).
+async function readLimitedBody(request: Request) {
+  const tooLarge = new DeliveryHttpError("GraphQL request is too large.", 413, "request_too_large");
+  if (Number(request.headers.get("content-length")) > maxRequestBytes) throw tooLarge;
+  const reader = request.body?.getReader();
+  if (!reader) return "";
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > maxRequestBytes) {
+      await reader.cancel();
+
+      throw tooLarge;
+    }
+
+    chunks.push(value);
+  }
+
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+
+  return new TextDecoder().decode(bytes);
 }
 
 async function graphQLInput(request: Request): Promise<GraphQLRequestInput> {
@@ -616,14 +662,14 @@ async function graphQLInput(request: Request): Promise<GraphQLRequestInput> {
       "GraphQL accepts GET and POST requests only.",
       405,
       "method_not_allowed",
+      "GET, POST, OPTIONS",
     );
   }
 
-  if (Number(request.headers.get("content-length")) > 100_000) {
-    throw new DeliveryHttpError("GraphQL request is too large.", 413, "request_too_large");
-  }
-
-  const input = (await request.json()) as unknown;
+  const input = parseJson(
+    await readLimitedBody(request),
+    new DeliveryHttpError("GraphQL request body is not valid JSON.", 400, "invalid_request"),
+  );
   if (!input || typeof input !== "object") {
     throw new DeliveryHttpError("GraphQL request body must be an object.", 400, "invalid_request");
   }
