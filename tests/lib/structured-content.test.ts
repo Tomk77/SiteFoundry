@@ -260,6 +260,7 @@ describe("structured content persistence", () => {
       "save_content_type",
       expect.objectContaining({ target_type_id: null, target_slug: "articles" }),
     );
+    expect(client.rpc).toHaveBeenCalledTimes(1);
   });
 
   it("deletes records and content types", async () => {

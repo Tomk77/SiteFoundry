@@ -280,6 +280,7 @@ export async function saveStructuredType(input: {
       options: field.options ?? [],
     })) as Json,
   });
+  // The database saves the type and publishes its schema in one transaction.
   if (error) throw error;
 
   return data;
