@@ -8,6 +8,8 @@ interface AuthContextValue {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  /** True after Supabase signed the user in from a password reset link. */
+  passwordRecovery: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (
     fullName: string,
@@ -28,6 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const client = getSupabaseBrowserClient();
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [passwordRecovery, setPasswordRecovery] = useState(false);
 
   useEffect(() => {
     if (!client) {
@@ -56,7 +59,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
     const { data } = client.auth.onAuthStateChange(
-      (_event: AuthChangeEvent, nextSession: Session | null) => {
+      (event: AuthChangeEvent, nextSession: Session | null) => {
+        if (event === "PASSWORD_RECOVERY") setPasswordRecovery(true);
         const stored = window.localStorage.getItem("sc-interface-mode");
         applyInterfaceMode(stored === "light" || stored === "dark" ? stored : "system");
         setSession(nextSession);
@@ -96,6 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user: session?.user ?? null,
       session,
       loading,
+      passwordRecovery,
       async signIn(email, password) {
         if (!client) throw getSupabaseConfigError();
         const { error } = await client.auth.signInWithPassword({
@@ -138,6 +143,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!client) throw getSupabaseConfigError();
         const { error } = await client.auth.updateUser({ password });
         if (error) throw error;
+        setPasswordRecovery(false);
       },
       async signOut() {
         if (!client) throw getSupabaseConfigError();
@@ -145,7 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (error) throw error;
       },
     }),
-    [client, loading, session],
+    [client, loading, passwordRecovery, session],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
