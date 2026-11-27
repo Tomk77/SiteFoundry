@@ -177,15 +177,17 @@ This is a human step. Do not use `supabase db push` (the ledger is out of line, 
 3. Deploy the application build from this branch in the same window. The new Site Settings token
    flow calls `create_site_api_token` and `revoke_site_api_token`; an old build would fail to create
    or revoke tokens after the migration, and a new build fails before it.
-4. Apply `supabase/migrations/20261127120000_access_control.sql` through the same isolated route used
+4. Apply `supabase/migrations/20261127120000_access_control.sql` and then
+   `20261127130000_navigation_publish_permission.sql` through the same isolated route used
    for earlier migrations (Management API, project-scoped MCP or an isolated CLI migration view), in
    one transaction, and record the remotely assigned version here.
-5. Smoke test: sign in as owner, edit and publish a page, move a page with redirects, create and
+5. Smoke test: sign in as owner, edit and publish a page, publish a header menu, move a page with redirects, create and
    revoke an API token, and fetch a delivery URL with a new token.
 
 ## Immediate next step
 
-Apply the WP1 access control migration to the hosted project (steps above), then continue with WP2
+Apply the WP1 access control migrations to the hosted project (steps above). Invitation acceptance is
+on the to-do list (direction in [Permissions](docs/specs/permissions.md)). Then continue with WP2
 from `docs/reviews/2026-11-27-code-review-handover.md`. The hosted development project has the
 concept/published revision model and the CMS-driven marketing homepage migration applied. A normal blanket migration push remains unsafe while older recorded
 versions differ from local filenames. Next, design the separate autosave working-copy store and

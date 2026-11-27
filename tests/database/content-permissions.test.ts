@@ -104,6 +104,65 @@ describe("1.3 publisher and editor roles", () => {
   });
 });
 
+describe("menu publishing", () => {
+  async function headerMenu() {
+    const [menu] = await database.admin<{ id: string }>(
+      `insert into public.navigation_menus (site_language_id, location)
+       values ($1, 'header')
+       on conflict (site_language_id, location) do update set location = excluded.location
+       returning id`,
+      [site.languageId],
+    );
+
+    if (!menu) throw new Error("No menu");
+
+    return menu.id;
+  }
+
+  const items = JSON.stringify([{ label: "Blog", type: "page", path: "/blog" }]);
+
+  it("lets an editor save a draft menu but not publish it", async () => {
+    const editorId = await addMember(database, site.siteId, "editor");
+    const menuId = await headerMenu();
+
+    await database.as(editorId, (tx) =>
+      tx.query("update public.navigation_menus set draft_items = $1 where id = $2", [
+        items,
+        menuId,
+      ]),
+    );
+    await expectDenied(() =>
+      database.as(editorId, (tx) =>
+        tx.query(
+          "update public.navigation_menus set published_items = $1, published_at = now() where id = $2",
+          [items, menuId],
+        ),
+      ),
+    );
+    await expectDenied(() =>
+      database.as(editorId, (tx) =>
+        tx.query(
+          `insert into public.navigation_menus (site_language_id, location, published_items)
+           values ($1, 'footer', $2)`,
+          [site.languageId, items],
+        ),
+      ),
+    );
+  });
+
+  it("lets a publisher publish a menu", async () => {
+    const publisherId = await addMember(database, site.siteId, "publisher");
+    const menuId = await headerMenu();
+
+    await database.as(publisherId, (tx) =>
+      tx.query(
+        "update public.navigation_menus set published_items = $1, published_at = now() where id = $2",
+        [items, menuId],
+      ),
+    );
+  });
+});
+
 describe("1.2 access scope", () => {
   it("limits a language-scoped editor to their languages", async () => {
     const dutch = await addLanguage(database, site.siteId, "nl");

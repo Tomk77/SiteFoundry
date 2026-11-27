@@ -49,6 +49,10 @@ Rules:
   structured record in `published` status, and `publish_content_type_schema` need the publish
   capability. Because editing a published record republishes it, editors cannot edit published
   records until records get a separate concept stage (WP2, finding 2.1).
+- Publishing a header or footer menu (changing `published_items` or `published_at`) needs the
+  publish capability; saving draft items needs only edit access for the `navigation` or `footer`
+  section (migration `20261127130000_navigation_publish_permission.sql`).
+- Editors may delete content in their scope, including published pages and records.
 - Moving a page needs edit access to the page and to its new parent. Redirects created by a move do
   not need the `redirects` section.
 - `sites.owner_id` and the single `owner` membership always agree (checked at commit). Ownership
@@ -63,22 +67,32 @@ Rules:
   `published_revision_id` change only through the database functions. Revision pointers must refer to
   a revision of the same page or record.
 
+## Decisions (2026-11-27)
+
+| Question | Decision |
+| --- | --- |
+| Does a branch-scoped member see the whole language tree? | Yes. Already enforced. |
+| Can branch-scoped members manage redirects, menus, structured content or templates? | Deferred. Denied until defined. |
+| Can editors delete published content? | Yes. Already enforced. |
+| Is publishing a menu a publish permission? | Yes. Enforced by `20261127130000`. |
+
+## Planned: invitation acceptance (to do)
+
+Intended direction, not yet specified or implemented:
+
+- Invitees from the same workspace are added to the site automatically.
+- Other invitees accept by signing in with SSO or by registering a new account.
+
+Open before this can be specified: what "workspace" means in Scaffold (there is no workspace entity
+today; sites are the only tenant), how SSO providers are configured, how the invitee's email is
+verified before membership is granted, and what happens to pending invitations for an account that
+already exists. Until then invitations stay pending and grant no access.
+
 ## Open questions
 
-- Should a branch-scoped member see the whole language tree, or only their branches and the
-  ancestors needed to reach them?
-- Can branch-scoped members ever manage redirects, menus, structured content or templates? If so,
-  which ones belong to a branch?
+- Can editors publish, or only publishers? The approved preset matrix says only publishers; confirm.
 - Should sections also restrict reads, and should viewers have sections at all (Site Settings UI
   open question)?
-- Should editors be able to delete published pages and records, concepts only, or neither?
-- Is publishing a header or footer menu a publish capability? Today any member with the
-  `navigation` or `footer` section can publish menus.
 - Is changing a page template's status to `published` a publish capability?
-- Membership rows without explicit sections default to `pages` and `media`. A publisher or editor
-  with that default can no longer edit redirects, menus, structured content or templates. Is that
-  narrower default intended, or should existing rows be widened?
-- Invitation acceptance: how does an invitee prove their email, and what happens to pending
-  invitations for an existing account?
 
 Preview-token scopes remain unresolved.
