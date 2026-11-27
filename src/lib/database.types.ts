@@ -600,6 +600,10 @@ export interface Database {
         };
         Returns: unknown;
       };
+      unpublish_page: {
+        Args: { target_page_id: string };
+        Returns: undefined;
+      };
       publish_page: {
         Args: { target_page_id: string };
         Returns: string;

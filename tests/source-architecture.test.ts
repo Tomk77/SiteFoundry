@@ -31,7 +31,7 @@ const legacyReactBaselines: Record<string, number> = {
   "features/navigation/navigation-editor.tsx": 592,
   "features/page-templates/page-template-editor.tsx": 710,
   "features/page-templates/page-templates-screen.tsx": 836,
-  "features/page-tree/page-tree-screen.tsx": 1411,
+  "features/page-tree/page-tree-screen.tsx": 1385,
   "features/personal-settings/personal-settings-screen.tsx": 574,
   "features/redirects/redirects-screen.tsx": 652,
   "features/structured-content/structured-content-screen.tsx": 1062,

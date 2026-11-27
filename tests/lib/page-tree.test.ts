@@ -8,6 +8,7 @@ import {
   loadPageTreeWorkspace,
   movePage,
   renamePage,
+  unpublishPage,
 } from "@/lib/page-tree";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 
@@ -316,5 +317,23 @@ describe("page tree mutations", () => {
     await expect(
       movePage({ pageId: "page-1", targetId: "page-2", position: "after" }),
     ).rejects.toThrow("not configured");
+  });
+
+  it("unpublishes through the database function", async () => {
+    const mock = createSupabaseMock();
+    vi.mocked(getSupabaseBrowserClient).mockReturnValue(mock.client as never);
+
+    await unpublishPage("page-1");
+
+    expect(mock.client.rpc).toHaveBeenCalledWith("unpublish_page", { target_page_id: "page-1" });
+  });
+
+  it("surfaces unpublish errors", async () => {
+    const mock = createSupabaseMock({
+      rpc: { unpublish_page: [mockResult(null, new Error("permission denied"))] },
+    });
+    vi.mocked(getSupabaseBrowserClient).mockReturnValue(mock.client as never);
+
+    await expect(unpublishPage("page-1")).rejects.toThrow("permission denied");
   });
 });
