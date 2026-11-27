@@ -49,7 +49,7 @@ export function LanguagesSettings({
     void onAdd({
       code: option.code,
       name: option.name,
-      urlPrefix: `${option.code.toLowerCase()}/`,
+      urlPrefix: option.code.toLowerCase(),
       position: languages.length,
     })
       .then(() => {

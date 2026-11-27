@@ -229,7 +229,7 @@ export function DomainsSettings({
               <div className="contents" key={language.id}>
                 <span className="text-ink-subtle">{language.name}</span>
                 <code>
-                  https://{primaryHost}/{language.urlPrefix}about
+                  https://{primaryHost}/{language.urlPrefix ? `${language.urlPrefix}/` : ""}about
                 </code>
               </div>
             ))}
