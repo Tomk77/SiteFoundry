@@ -281,6 +281,11 @@ export async function saveStructuredType(input: {
     })) as Json,
   });
   if (error) throw error;
+  // Delivery reads the published schema; saving a type publishes its new structure.
+  const { error: publishError } = await client.rpc("publish_content_type_schema", {
+    target_content_type_id: data,
+  });
+  if (publishError) throw publishError;
 
   return data;
 }

@@ -60,7 +60,9 @@ there and allow `https://studio.apollographql.com` on an origin-restricted token
 
 Editable content-field definitions do not immediately alter GraphQL. The initial migration snapshots
 existing definitions as schema version 1. `publish_content_type_schema` creates a new published schema
-version after authorization. A dedicated schema-publication UI and breaking-change preview remain part
+version after authorization, and only when the fields changed. Since 2026-11-27 the admin calls it on
+every content type save, seeded types of a new language are published immediately, and a migration
+published every type whose schema had drifted (finding 2.4). A breaking-change preview remains part
 of the broader schema-system work.
 
 ## Errors and caching

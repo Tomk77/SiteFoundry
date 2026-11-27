@@ -45,9 +45,10 @@ Rules:
 - Product sections gate writes: `pages` (pages and page functions), `redirects`, `navigation`
   (header menu), `footer` (footer menu), `structured` (content types, fields, records), `templates`
   (page templates). `media` has no persisted data yet. Sections do not restrict reads.
-- Publishing a page (`publish_page`, `save_page_revision` with publish), creating or keeping a
-  structured record in `published` status, and `publish_content_type_schema` need the publish
-  capability. Because editing a published record republishes it, editors cannot edit published
+- Publishing a page (`publish_page`, `save_page_revision` with publish) and creating or keeping a
+  structured record in `published` status need the publish capability. Publishing a content type
+  schema (`publish_content_type_schema`) is structure, not content, and needs only `structured` edit
+  access; the admin publishes it on every save. Because editing a published record republishes it, editors cannot edit published
   records until records get a separate concept stage (WP2, finding 2.1).
 - Publishing a header or footer menu (changing `published_items` or `published_at`) needs the
   publish capability; saving draft items needs only edit access for the `navigation` or `footer`
