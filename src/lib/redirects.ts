@@ -1,4 +1,5 @@
 import { loadPageTreeWorkspace, type PageNode, type PageTreeWorkspace } from "./page-tree";
+import { assertChanged } from "./mutations";
 import { getSupabaseBrowserClient, getSupabaseConfigError } from "./supabase";
 
 export interface RedirectRecord {
@@ -125,8 +126,13 @@ export async function saveRedirect(input: {
     status_code: input.statusCode,
   };
   if (input.id) {
-    const { error } = await client.from("redirects").update(payload).eq("id", input.id);
+    const { data, error } = await client
+      .from("redirects")
+      .update(payload)
+      .eq("id", input.id)
+      .select("id");
     if (error) throw error;
+    assertChanged(data, "The redirect");
 
     return input.id;
   }
@@ -148,6 +154,7 @@ export async function saveRedirect(input: {
 export async function deleteRedirect(id: string) {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
-  const { error } = await client.from("redirects").delete().eq("id", id);
+  const { data, error } = await client.from("redirects").delete().eq("id", id).select("id");
   if (error) throw error;
+  assertChanged(data, "The redirect");
 }

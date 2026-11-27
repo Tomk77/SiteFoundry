@@ -1,4 +1,5 @@
 import type { Json } from "./database.types";
+import { assertChanged } from "./mutations";
 import { getSupabaseBrowserClient, getSupabaseConfigError } from "./supabase";
 
 export type PersistedSiteRole = "owner" | "admin" | "publisher" | "editor" | "viewer";
@@ -193,7 +194,7 @@ export async function saveSiteGeneralSettings(
   siteId: string,
   input: { name: string; slug: string; timezone: string; previewUrl: string },
 ) {
-  const { error } = await requireClient()
+  const { data, error } = await requireClient()
     .from("sites")
     .update({
       name: input.name.trim(),
@@ -201,8 +202,10 @@ export async function saveSiteGeneralSettings(
       timezone: input.timezone,
       preview_url: input.previewUrl.trim(),
     })
-    .eq("id", siteId);
+    .eq("id", siteId)
+    .select("id");
   if (error) throw error;
+  assertChanged(data, "The site");
 }
 
 export async function createSiteInvitation(
@@ -229,11 +232,13 @@ export async function createSiteInvitation(
 }
 
 export async function revokeSiteInvitation(invitationId: string) {
-  const { error } = await requireClient()
+  const { data, error } = await requireClient()
     .from("site_invitations")
     .update({ status: "revoked" })
-    .eq("id", invitationId);
+    .eq("id", invitationId)
+    .select("id");
   if (error) throw error;
+  assertChanged(data, "The invitation");
 }
 
 export async function saveSiteMemberAccess(
@@ -282,8 +287,13 @@ export async function setDefaultSiteLanguage(siteId: string, languageId: string)
 }
 
 export async function deleteSiteLanguage(languageId: string) {
-  const { error } = await requireClient().from("site_languages").delete().eq("id", languageId);
+  const { data, error } = await requireClient()
+    .from("site_languages")
+    .delete()
+    .eq("id", languageId)
+    .select("id");
   if (error) throw error;
+  assertChanged(data, "The language");
 }
 
 export async function addSiteDomain(siteId: string, hostname: string) {
@@ -295,11 +305,13 @@ export async function addSiteDomain(siteId: string, hostname: string) {
 }
 
 export async function requestDomainVerification(domainId: string) {
-  const { error } = await requireClient()
+  const { data, error } = await requireClient()
     .from("site_domains")
     .update({ status: "verification_pending", verification_message: "Verification requested" })
-    .eq("id", domainId);
+    .eq("id", domainId)
+    .select("id");
   if (error) throw error;
+  assertChanged(data, "The domain");
 }
 
 export async function setPrimarySiteDomain(siteId: string, domainId: string) {
@@ -324,6 +336,11 @@ export async function transferSiteOwnership(siteId: string, userId: string) {
 }
 
 export async function deleteSite(siteId: string) {
-  const { error } = await requireClient().from("sites").delete().eq("id", siteId);
+  const { data, error } = await requireClient()
+    .from("sites")
+    .delete()
+    .eq("id", siteId)
+    .select("id");
   if (error) throw error;
+  assertChanged(data, "The site");
 }

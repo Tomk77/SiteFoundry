@@ -1,4 +1,5 @@
 import type { Json } from "./database.types";
+import { assertChanged } from "./mutations";
 import { getSupabaseBrowserClient, getSupabaseConfigError } from "./supabase";
 import type {
   StructuredField,
@@ -227,8 +228,9 @@ export async function saveStructuredRecord(input: {
 
 export async function deleteStructuredRecord(id: string) {
   const client = requireClient();
-  const { error } = await client.from("content_records").delete().eq("id", id);
+  const { data, error } = await client.from("content_records").delete().eq("id", id).select("id");
   if (error) throw error;
+  assertChanged(data, "The record");
 }
 
 export function slugifyContentType(value: string) {
@@ -288,6 +290,7 @@ export async function saveStructuredType(input: {
 
 export async function deleteStructuredType(id: string) {
   const client = requireClient();
-  const { error } = await client.from("content_types").delete().eq("id", id);
+  const { data, error } = await client.from("content_types").delete().eq("id", id).select("id");
   if (error) throw error;
+  assertChanged(data, "The content type");
 }

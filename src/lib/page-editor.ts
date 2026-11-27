@@ -120,14 +120,17 @@ export function pageFromRevision(page: EditablePage, snapshot: PageRevisionSnaps
 export async function loadEditablePage(pageId?: string): Promise<EditablePage | null> {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
+  // Without a page id there is no page to edit; never fall back to a demo slug (finding 5.8).
+  if (!pageId) return null;
 
-  let query = client
+  const { data: page, error } = await client
     .from("pages")
     .select(
       "id, title, slug, parent_id, template_name, created_from_template_key, status, validation_status, content_blocks, seo_title, seo_description, social_image, preferred_child_template, site_language_id, created_at, updated_at, concept_revision_id, published_revision_id",
-    );
-  query = pageId ? query.eq("id", pageId) : query.eq("slug", "product-launch");
-  const { data: page, error } = await query.limit(1).maybeSingle();
+    )
+    .eq("id", pageId)
+    .limit(1)
+    .maybeSingle();
   if (error) throw error;
   if (!page) return null;
 
@@ -179,19 +182,21 @@ export async function loadEditablePage(pageId?: string): Promise<EditablePage | 
     }
   }
 
+  // One query for the language tree, then walk up in memory (finding 5.8).
+  const { data: treeRows, error: treeError } = await client
+    .from("pages")
+    .select("id, title, slug, parent_id, is_homepage")
+    .eq("site_language_id", page.site_language_id);
+  if (treeError) throw treeError;
+  const byId = new Map((treeRows ?? []).map((row) => [row.id, row]));
   const ancestors: { title: string; slug: string }[] = [];
+  const visited = new Set<string>();
   let parentId = page.parent_id;
-  while (parentId) {
-    const { data: parent, error: parentError } = await client
-      .from("pages")
-      .select("id, title, slug, parent_id, is_homepage")
-      .eq("id", parentId)
-      .single();
-    if (parentError) throw parentError;
-    ancestors.unshift({
-      title: parent.title,
-      slug: parent.is_homepage ? "" : parent.slug,
-    });
+  while (parentId && !visited.has(parentId)) {
+    visited.add(parentId);
+    const parent = byId.get(parentId);
+    if (!parent) break;
+    ancestors.unshift({ title: parent.title, slug: parent.is_homepage ? "" : parent.slug });
     parentId = parent.parent_id;
   }
 
