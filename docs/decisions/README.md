@@ -16,6 +16,7 @@ Architecture decision records explain important technical choices and their cons
 - [ADR 0005: Test the database with PGlite replaying the repository migrations](0005-local-database-tests.md)
 - [ADR 0006: Compute delivered page paths at read time](0006-delivered-page-paths.md)
 - [ADR 0007: Delivery responses are private and revalidated](0007-delivery-caching.md)
+- [ADR 0008 (Proposed): Replace the migration chain with a baseline and a seed](0008-migration-baseline.md)
 
 ## Template
 
