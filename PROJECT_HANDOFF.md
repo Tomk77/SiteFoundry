@@ -170,28 +170,53 @@ template setup even though their schema effects are present. The delivery SQL ma
 the hosted version documented above. Keep using targeted migrations until the ledger has been aligned
 with the repository and a dry run confirms that only intended migrations would run.
 
-## Applying the access control migration to the hosted project
+## Applying the 2026-11-27 migrations to the hosted project
 
-This is a human step. Do not use `supabase db push` (the ledger is out of line, see above).
+The code review fixes (PRs #1 to #16) added twelve migrations, `20261127120000_access_control.sql`
+to `20261127210000_stop_seeding_demo_people.sql`. They are merged but **not applied**. This is a human
+step. Do not use `supabase db push` (the ledger is out of line, see above).
 
-1. Check the hosted PostgreSQL major version is 15 or later (`select version();`). The migration uses
+1. **Rehearse on a copy first.** Restore a recent backup of the hosted database into a scratch
+   Supabase project (or a local stack), apply all twelve in filename order, and run the smoke test
+   below against it.
+2. Check the hosted PostgreSQL major version is 15 or later (`select version();`). The migrations use
    `on delete set null (column)` and recursive `cycle` clauses.
-2. Run the read-only pre-flight queries from the `do $preflight$` block at the top of the migration
-   (owner consistency, slug format, revision ownership). Fix any offending rows by hand first; the
-   migration raises and changes nothing if one exists.
-3. Deploy the application build from this branch in the same window. The new Site Settings token
-   flow calls `create_site_api_token` and `revoke_site_api_token`; an old build would fail to create
-   or revoke tokens after the migration, and a new build fails before it.
-4. Apply `supabase/migrations/20261127120000_access_control.sql` and then
-   `20261127130000_navigation_publish_permission.sql` through the same isolated route used
-   for earlier migrations (Management API, project-scoped MCP or an isolated CLI migration view), in
-   one transaction, and record the remotely assigned version here.
-5. Smoke test: sign in as owner, edit and publish a page, publish a header menu, move a page with redirects, create and
-   revoke an API token, and fetch a delivery URL with a new token.
+3. Run the read-only pre-flight queries from the `do $preflight$` block at the top of
+   `20261127120000_access_control.sql` (owner consistency, slug format, revision ownership). Fix any
+   offending rows first; the migration raises and changes nothing if one exists.
+4. Review what `20261127160000_publish_content_type_schemas.sql` will publish. It publishes every
+   content type whose fields drifted from its published schema, so those field changes go live:
+
+   ```sql
+   select site.slug, language.code, type.slug, type.published_schema_version
+   from public.content_types type
+   join public.site_languages language on language.id = type.site_language_id
+   join public.sites site on site.id = language.site_id
+   where type.published_schema_version = 0
+      or type.published_schema is distinct from jsonb_build_object('fields', coalesce((
+        select jsonb_agg(jsonb_build_object(
+          'key', field.key, 'label', field.label, 'type', field.field_type,
+          'required', field.is_required, 'primary', field.is_primary, 'options', field.options
+        ) order by field.position)
+        from public.content_fields field where field.content_type_id = type.id), '[]'::jsonb));
+   ```
+
+5. **Cut over app and database together.** `20261127190000_delivery_token_hashing.sql` changes the
+   signature of `get_delivery_bundle` (raw token instead of hash), and the token, page and menu
+   screens call functions that only exist after the migrations. Deploy the build from `main` in the
+   same window as the migrations; an old build fails against the new database and the reverse.
+6. Apply the twelve migrations in filename order through the same isolated route used for earlier
+   migrations (Management API, project-scoped MCP or an isolated CLI migration view), and record the
+   remotely assigned versions here. Keep using targeted migrations while the hosted ledger differs from
+   the repository (ADR 0008).
+7. Smoke test: sign in as owner, edit and publish a page, unpublish it, move a page and check its
+   redirect, publish a header menu, create a content type, create and revoke an API token, fetch the
+   delivery REST and GraphQL endpoints with the new token, and run the marketing website's GraphQL
+   queries.
 
 ## Immediate next step
 
-Apply the WP1 access control migrations to the hosted project (steps above). Invitation acceptance is
+Apply the 2026-11-27 migrations to the hosted project (steps above). Invitation acceptance is
 on the to-do list (direction in [Permissions](docs/specs/permissions.md)). Then continue with WP2
 from `docs/reviews/2026-11-27-code-review-handover.md`. The hosted development project has the
 concept/published revision model and the CMS-driven marketing homepage migration applied. A normal blanket migration push remains unsafe while older recorded
