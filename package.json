@@ -19,6 +19,7 @@
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset && node scripts/local-db-reset.mjs",
+    "db:types": "node scripts/db-types.mjs",
     "generate-routes": "tsr generate",
     "build": "vite build",
     "preview": "vite preview",

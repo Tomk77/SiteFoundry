@@ -81,7 +81,7 @@ describe("site settings persistence", () => {
     expect(workspace?.members[0]?.email).toBe("alex@example.com");
     expect(workspace?.domains[0]?.status).toBe("verified");
     expect(mock.client.rpc).toHaveBeenCalledWith("get_site_settings_workspace", {
-      target_site_id: null,
+      target_site_id: undefined,
     });
   });
 

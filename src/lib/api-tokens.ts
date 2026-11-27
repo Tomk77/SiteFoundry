@@ -75,7 +75,7 @@ export async function createSiteApiToken(input: {
     target_site_id: input.siteId,
     target_name: input.name.trim(),
     target_allowed_origins: allowedOrigins,
-    target_expires_at: expiresAt,
+    target_expires_at: expiresAt ?? undefined,
   });
   if (error) throw error;
   const token = data && typeof data === "object" && !Array.isArray(data) ? data.token : null;

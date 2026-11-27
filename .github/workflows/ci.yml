@@ -33,3 +33,28 @@ jobs:
       - run: pnpm test
       - run: pnpm generate-routes
       - run: pnpm build
+
+  database-types:
+    # Replays the migrations into a local Supabase stack and fails when the committed generated
+    # types no longer match (review finding 4.5).
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.1.4
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.19.0
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec supabase start -x studio,mailpit,imgproxy,vector,logflare,realtime,storage-api,edge-runtime,supavisor
+      - run: node scripts/local-db-reset.mjs
+      - run: pnpm db:types
+      - run: git diff --exit-code -- src/lib/database.generated.ts

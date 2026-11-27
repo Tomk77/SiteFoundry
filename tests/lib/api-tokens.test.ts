@@ -66,7 +66,7 @@ describe("API token lifecycle", () => {
     ).rejects.toThrow("did not return a token");
     expect(mock.client.rpc).toHaveBeenCalledWith(
       "create_site_api_token",
-      expect.objectContaining({ target_allowed_origins: [], target_expires_at: null }),
+      expect.objectContaining({ target_allowed_origins: [], target_expires_at: undefined }),
     );
   });
 
