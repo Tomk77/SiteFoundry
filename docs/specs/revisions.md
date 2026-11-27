@@ -3,7 +3,7 @@
 - Status: Working specification
 - Owner: Unassigned
 - Created: 2026-07-22
-- Last updated: 2026-07-25
+- Last updated: 2026-11-27
 - Related specifications: REST content API, GraphQL content API, page tree, schema system
 
 ## Implemented page concept and publication model
@@ -24,6 +24,9 @@
 - Editors can switch between the editable concept and the read-only live version. The editor counts
   changed fields and blocks, disables redundant publication, and can discard a concept by restoring
   the published snapshot.
+- **Unpublish** (`unpublish_page`, page tree row menu, publish capability) sets the page back to
+  concept and clears `published_revision_id`. The concept and all revisions stay. The homepage
+  cannot be unpublished.
 - Existing pages are backfilled with concept revision 1. Existing published snapshots are linked to
   that concept only when their stored content matches, preserving ambiguity rather than claiming a
   false origin.
@@ -34,6 +37,10 @@
   `content_records.published_revision_id`.
 - Existing published structured records are backfilled as version 1.
 - Published schema definitions have an independent explicit schema version.
+- Setting a record back to concept clears its `published_revision_id`, which unpublishes it.
+  Records have no separate concept stage: saving a published record republishes it.
+- Delivery only serves pages and records whose status is `published` and that have a published
+  revision (defence in depth against a stale pointer).
 
 ## Explicitly deferred
 

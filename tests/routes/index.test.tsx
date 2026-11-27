@@ -10,6 +10,7 @@ import {
   loadPageTreeWorkspace,
   movePage,
   renamePage,
+  unpublishPage,
   type PageNode,
   type PageTreeWorkspace,
 } from "@/lib/page-tree";
@@ -34,6 +35,7 @@ vi.mock("@/lib/page-tree", () => ({
   loadPageTreeWorkspace: vi.fn(),
   movePage: vi.fn(),
   renamePage: vi.fn(),
+  unpublishPage: vi.fn(),
 }));
 
 vi.mock("@/components/app-shell", () => ({
@@ -145,6 +147,7 @@ beforeEach(() => {
   vi.mocked(createChildPage).mockResolvedValue("new-page");
   vi.mocked(renamePage).mockResolvedValue(undefined);
   vi.mocked(deletePage).mockResolvedValue(undefined);
+  vi.mocked(unpublishPage).mockResolvedValue(undefined);
   vi.mocked(movePage).mockResolvedValue({
     reparented: false,
     parentTitle: "Home",
@@ -240,6 +243,30 @@ describe("page tree route", () => {
     expect(screen.getByRole("heading", { name: "Delete page?" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Delete page" }));
     await waitFor(() => expect(deletePage).toHaveBeenCalledWith("article"));
+  });
+
+  it("unpublishes a published page after confirmation", async () => {
+    vi.mocked(loadPageTreeWorkspace).mockResolvedValue({
+      ...workspace,
+      pages: [{ ...home, children: [{ ...child, status: "Published" }] }],
+    });
+    await renderRoute();
+    await screen.findByText("Article");
+
+    fireEvent.click(screen.getByRole("button", { name: "More actions for Article" }));
+    fireEvent.click(screen.getByRole("button", { name: "Unpublish page" }));
+    expect(screen.getByRole("heading", { name: "Unpublish page?" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Unpublish" }));
+    await waitFor(() => expect(unpublishPage).toHaveBeenCalledWith("article"));
+    expect(await screen.findByText("Page unpublished")).toBeTruthy();
+  });
+
+  it("does not offer unpublish for concept pages or the homepage", async () => {
+    await renderRoute();
+    await screen.findByText("Article");
+
+    fireEvent.click(screen.getByRole("button", { name: "More actions for Article" }));
+    expect(screen.queryByRole("button", { name: "Unpublish page" })).toBeNull();
   });
 
   it("shows load, template, and empty-filter failures", async () => {

@@ -211,6 +211,14 @@ export async function renamePage(pageId: string, title: string) {
   if (error) throw error;
 }
 
+/** Removes the page from delivery. Its concept and revision history are kept. */
+export async function unpublishPage(pageId: string) {
+  const client = getSupabaseBrowserClient();
+  if (!client) throw getSupabaseConfigError();
+  const { error } = await client.rpc("unpublish_page", { target_page_id: pageId });
+  if (error) throw error;
+}
+
 export async function deletePage(pageId: string) {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
