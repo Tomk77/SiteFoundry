@@ -81,6 +81,9 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
     devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.3.16
+        version: 0.3.16
       '@eslint/js':
         specifier: ^9.39.5
         version: 9.39.5
@@ -392,6 +395,9 @@ packages:
 
   '@dotenvx/primitives@0.8.0':
     resolution: {integrity: sha512-VYJy0uhFm9zTJ1TxBaW/pA8bjbOM/OttaNMwZ1RHG4JKyRG7DhSdiqD1ipQoAyoD22olUtxbP78W9xY3Wd11bg==}
+
+  '@electric-sql/pglite@0.3.16':
+    resolution: {integrity: sha512-mZkZfOd9OqTMHsK+1cje8OSzfAQcpD7JmILXTl5ahdempjUDdmg4euf1biDex5/LfQIDJ3gvCu6qDgdnDxfJmA==}
 
   '@emnapi/core@1.11.1':
     resolution: {integrity: sha512-RSvbQmHzdKzNsLYa/wHrbc3KN4sYLKAdPZxqiM2HATqv/SBk2/ENSHpvXGaLOMcsAyz0poEGqkmmKYG3OWiJEQ==}
@@ -4043,6 +4049,8 @@ snapshots:
       yocto-spinner: 1.2.1
 
   '@dotenvx/primitives@0.8.0': {}
+
+  '@electric-sql/pglite@0.3.16': {}
 
   '@emnapi/core@1.11.1':
     dependencies:
