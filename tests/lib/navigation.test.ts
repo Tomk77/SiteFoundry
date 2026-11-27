@@ -171,14 +171,12 @@ describe("navigation persistence", () => {
     });
   });
 
-  it("saves a draft and publishes the same item payload", async () => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-07-15T14:00:00.000Z"));
+  it("saves a draft and publishes through the database function", async () => {
     const { client, calls } = createSupabaseMock({
-      tables: {
-        navigation_menus: [
-          mockResult({ updated_at: "draft-time" }),
-          mockResult({ updated_at: "publish-time", published_at: "2026-07-15T14:00:00.000Z" }),
+      tables: { navigation_menus: [mockResult({ updated_at: "draft-time" })] },
+      rpc: {
+        publish_navigation_menu: [
+          mockResult({ updatedAt: "publish-time", publishedAt: "2026-07-15T14:00:00.000Z" }),
         ],
       },
     });
@@ -189,8 +187,11 @@ describe("navigation persistence", () => {
       updated_at: "publish-time",
       published_at: "2026-07-15T14:00:00.000Z",
     });
-    expect(calls.filter((call) => call.method === "update")).toHaveLength(2);
-    vi.useRealTimers();
+    expect(calls.filter((call) => call.method === "update")).toHaveLength(1);
+    expect(client.rpc).toHaveBeenCalledWith("publish_navigation_menu", {
+      target_menu_id: "menu-1",
+      target_items: [item],
+    });
   });
 
   it("surfaces configuration and database failures", async () => {

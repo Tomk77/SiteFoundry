@@ -24,6 +24,9 @@
 - Editors can switch between the editable concept and the read-only live version. The editor counts
   changed fields and blocks, disables redundant publication, and can discard a concept by restoring
   the published snapshot.
+- Renaming a page from the page tree (`rename_page`) creates a concept revision like any other save.
+  Pages are deleted only through `delete_page`, which refuses the homepage and pages with children.
+  Menus are published through `publish_navigation_menu` with the database clock.
 - **Unpublish** (`unpublish_page`, page tree row menu, publish capability) sets the page back to
   concept and clears `published_revision_id`. The concept and all revisions stay. The homepage
   cannot be unpublished.

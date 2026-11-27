@@ -600,6 +600,18 @@ export interface Database {
         };
         Returns: unknown;
       };
+      rename_page: {
+        Args: { target_page_id: string; target_title: string };
+        Returns: Json;
+      };
+      delete_page: {
+        Args: { target_page_id: string };
+        Returns: undefined;
+      };
+      publish_navigation_menu: {
+        Args: { target_menu_id: string; target_items: Json };
+        Returns: Json;
+      };
       unpublish_page: {
         Args: { target_page_id: string };
         Returns: undefined;

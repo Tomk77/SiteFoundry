@@ -296,10 +296,10 @@ describe("editable page mutations", () => {
 
   it("surfaces save and delete failures", async () => {
     const { client } = createSupabaseMock({
-      tables: {
-        pages: [mockResult(null, new Error("delete failed"))],
+      rpc: {
+        save_page_revision: [mockResult(null, new Error("save failed"))],
+        delete_page: [mockResult(null, new Error("delete failed"))],
       },
-      rpc: { save_page_revision: [mockResult(null, new Error("save failed"))] },
     });
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
 
@@ -308,12 +308,11 @@ describe("editable page mutations", () => {
   });
 
   it("deletes a page", async () => {
-    const { client, calls } = createSupabaseMock({ tables: { pages: [mockResult(null)] } });
+    const { client } = createSupabaseMock();
     vi.mocked(getSupabaseBrowserClient).mockReturnValue(client as never);
 
     await expect(deleteEditablePage("page-1")).resolves.toBeUndefined();
-    expect(calls).toContainEqual({ method: "delete", args: [] });
-    expect(calls).toContainEqual({ method: "eq", args: ["id", "page-1"] });
+    expect(client.rpc).toHaveBeenCalledWith("delete_page", { target_page_id: "page-1" });
   });
 
   it("discards the concept and reloads the published state", async () => {

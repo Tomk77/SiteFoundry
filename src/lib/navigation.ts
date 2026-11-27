@@ -152,19 +152,16 @@ export async function saveNavigationDraft(menuId: string, items: NavigationItem[
 export async function publishNavigation(menuId: string, items: NavigationItem[]) {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
-  const now = new Date().toISOString();
-  const payload = items as unknown as Json;
-  const { data, error } = await client
-    .from("navigation_menus")
-    .update({
-      draft_items: payload,
-      published_items: payload,
-      published_at: now,
-    })
-    .eq("id", menuId)
-    .select("updated_at, published_at")
-    .single();
+  // The database publishes with its own clock and checks the publish permission.
+  const { data, error } = await client.rpc("publish_navigation_menu", {
+    target_menu_id: menuId,
+    target_items: items as unknown as Json,
+  });
   if (error) throw error;
+  const result = data && typeof data === "object" && !Array.isArray(data) ? data : {};
 
-  return data;
+  return {
+    updated_at: typeof result.updatedAt === "string" ? result.updatedAt : "",
+    published_at: typeof result.publishedAt === "string" ? result.publishedAt : null,
+  };
 }

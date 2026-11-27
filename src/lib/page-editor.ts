@@ -293,6 +293,6 @@ export async function discardEditablePageConcept(pageId: string) {
 export async function deleteEditablePage(pageId: string) {
   const client = getSupabaseBrowserClient();
   if (!client) throw getSupabaseConfigError();
-  const { error } = await client.from("pages").delete().eq("id", pageId);
+  const { error } = await client.rpc("delete_page", { target_page_id: pageId });
   if (error) throw error;
 }
